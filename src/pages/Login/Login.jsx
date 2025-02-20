@@ -1,13 +1,24 @@
 import { useState } from "react";
-import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { Link } from "react-router";
+import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 
 export default function Login() {
   const [showPass, setShowPass] = useState(false);
 
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
+    console.log(email, password);
+  };
+
   return (
     <section className="font-inter flex min-h-screen flex-col justify-center bg-gradient-to-r from-[#4b6cb7] to-[#182848]">
-      <form className="mx-auto w-full rounded-md bg-white px-12 py-6 md:max-w-xl">
+      <form
+        onSubmit={handleLogin}
+        className="mx-auto w-full rounded-md bg-white px-12 py-6 md:max-w-xl"
+      >
         <h1 className="font-poppins text-center text-3xl font-semibold">
           Log in
         </h1>

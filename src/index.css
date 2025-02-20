@@ -5,6 +5,10 @@
 @import "tailwindcss";
 
 @theme {
+  /* colors */
+  --color-primary: #2d67b2;
+
+  /* fonts */
   --font-inter: "Inter", serif;
   --font-poppins: "Poppins", serif;
 }
