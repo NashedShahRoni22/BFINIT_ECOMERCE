@@ -22,7 +22,7 @@ export default function AdminDropdown() {
           className="group flex items-center gap-1 rounded-md p-1 px-3 text-sm capitalize transition-all duration-200 ease-in-out hover:bg-neutral-100"
         >
           <MdOutlineManageAccounts className="group-hover:text-primary text-xl" />
-          <span>Manage Account</span>
+          <span>My Profile</span>
         </Link>
       </div>
 

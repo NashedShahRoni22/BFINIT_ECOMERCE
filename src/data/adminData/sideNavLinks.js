@@ -2,9 +2,11 @@ import {
   MdOutlineHome,
   MdStorefront,
   MdHelpOutline,
-  MdHandshake,
-  MdManageAccounts,
-  MdLogout,
+  MdShoppingCart,
+  MdCategory,
+  MdPeople,
+  MdLibraryBooks,
+  MdPayment
 } from "react-icons/md";
 
 export const sideNavLinks = [
@@ -15,27 +17,32 @@ export const sideNavLinks = [
   },
   {
     icon: MdStorefront,
-    name: "All Stores",
+    name: "Stores",
     url: "/all-stores",
   },
   {
-    icon: MdHelpOutline,
-    name: "Help Center",
-    url: "/help-center",
+    icon: MdShoppingCart,
+    name: "Orders",
+    url: "/orders",
   },
   {
-    icon: MdHandshake,
-    name: "Hire a BFINIT Partner",
-    url: "/hire-partner",
+    icon: MdCategory,
+    name: "Products",
+    url: "/products",
   },
   {
-    icon: MdManageAccounts,
-    name: "Manage Accounts",
-    url: "/manage-accounts",
+    icon: MdPeople,
+    name: "Customers",
+    url: "/customers",
   },
   {
-    icon: MdLogout,
-    name: "Log Out",
-    url: "/logout",
+    icon: MdLibraryBooks,
+    name: "Blogs",
+    url: "/blogs",
+  },
+  {
+    icon: MdPayment,
+    name: "Payments",
+    url: "/payments",
   },
 ];
