@@ -1,16 +1,27 @@
 import { Link } from "react-router";
 import { Popover, PopoverButton, PopoverGroup } from "@headlessui/react";
-import {MdOutlineClose, MdOutlineMenu, MdOutlineNotifications } from "react-icons/md";
+import {
+  MdOutlineClose,
+  MdOutlineMenu,
+  MdOutlineNotifications,
+} from "react-icons/md";
 import logo from "../../../assets/logo/bfinit.png";
 import AdminDropdown from "../dropdowns/AdminDropdown";
 import NotificationDropdown from "../dropdowns/NotificationDropdown";
 
-export default function TopNav({showSideNav,setShowSideNav}) {
+export default function TopNav({ showSideNav, setShowSideNav }) {
   return (
     <nav className="font-inter flex items-center justify-between border-b border-neutral-100 px-5 py-2">
-       {/* mobile sidebar toggle */}
-      <button onClick={() => setShowSideNav((prev) => !prev)} className="lg:hidden cursor-pointer">
-        {showSideNav ? <MdOutlineClose className="text-2xl"/> : <MdOutlineMenu className="text-2xl"/>}
+      {/* mobile sidebar toggle */}
+      <button
+        onClick={() => setShowSideNav((prev) => !prev)}
+        className="cursor-pointer lg:hidden"
+      >
+        {showSideNav ? (
+          <MdOutlineClose className="text-2xl" />
+        ) : (
+          <MdOutlineMenu className="text-2xl" />
+        )}
       </button>
 
       {/* logo */}

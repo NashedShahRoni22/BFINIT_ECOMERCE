@@ -8,10 +8,10 @@ export default function AdminLayout() {
 
   return (
     <>
-      <TopNav showSideNav={showSideNav} setShowSideNav={setShowSideNav}/>
-      <main className={`font-inter flex relative`}>
-        <SideNav showSideNav={showSideNav}/>
-        <div className="w-full">
+      <TopNav showSideNav={showSideNav} setShowSideNav={setShowSideNav} />
+      <main className={`font-inter relative flex`}>
+        <SideNav showSideNav={showSideNav} />
+        <div className="h-[calc(100dvh-55px)] w-full overflow-y-auto">
           <Outlet />
         </div>
       </main>
