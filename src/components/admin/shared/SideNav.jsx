@@ -11,7 +11,7 @@ export default function SideNav({showSideNav}) {
             to={link.url}
             className="group flex gap-1 rounded-md py-2 px-4 text-sm capitalize transition-all duration-200 ease-in-out hover:bg-white"
           >
-            <link.icon className="group-hover:text-primary text-2xl min-w-fit" />
+            <link.icon className="text-primary text-2xl" />
             {link.name}
           </Link>
         ))}

@@ -1,7 +1,6 @@
 import {
   MdOutlineHome,
   MdStorefront,
-  MdHelpOutline,
   MdShoppingCart,
   MdCategory,
   MdPeople,
@@ -13,7 +12,7 @@ export const sideNavLinks = [
   {
     icon: MdOutlineHome,
     name: "Home",
-    url: "/home",
+    url: "/",
   },
   {
     icon: MdStorefront,

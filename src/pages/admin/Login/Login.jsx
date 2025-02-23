@@ -70,7 +70,7 @@ export default function Login() {
           Login
         </button>
 
-        <div className="mt-6 space-x-2 text-right">
+        <div className="mt-6 space-x-2 text-center">
           <Link to="/" className="text-xs text-neutral-500 hover:underline">
             Help
           </Link>
