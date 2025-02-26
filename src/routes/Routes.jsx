@@ -3,6 +3,7 @@ import Login from "../pages/admin/Login/Login";
 import Home from "../pages/admin/Home/Home";
 import AdminLayout from "../layout/AdminLayout";
 import CreateStore from "../pages/admin/CreateStore/CreateStore";
+import AddProduct from "../pages/admin/AddProduct/AddProduct";
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ export const router = createBrowserRouter([
       {
         path: "/create-store",
         element: <CreateStore />,
+      },
+      {
+        path: "/add-product",
+        element: <AddProduct />,
       },
     ],
   },
