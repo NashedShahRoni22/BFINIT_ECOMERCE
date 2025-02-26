@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LuImagePlus } from "react-icons/lu";
+import CreateStoreImgField from "../../../components/admin/CreateStoreImgField/CreateStoreImgField";
 const themes = [
   {
     id: 1,
@@ -32,7 +32,22 @@ const themes = [
 ];
 
 export default function CreateStore() {
+  const [selectedImages, setSelectedImages] = useState({
+    logo: null,
+    favicon: null,
+  });
   const [selectedThemes, setSelectedThemes] = useState("");
+
+  // Show selected image
+  const handleImgChange = (e, type) => {
+    const file = e.target.files[0];
+    setSelectedImages((prev) => ({ ...prev, [type]: file }));
+  };
+
+  // Handle Selected Images
+  const handleRemoveImg = (type) => {
+    setSelectedImages((prev) => ({ ...prev, [type]: null }));
+  };
 
   return (
     <section className="p-5">
@@ -41,48 +56,24 @@ export default function CreateStore() {
       </h1>
 
       <form className="mt-8 space-y-5">
-        {/* logo */}
         <div className="grid gap-8 md:grid-cols-2">
-          <div>
-            <label htmlFor="logo" className="text-sm font-medium">
-              Logo:
-            </label>
-            <input type="file" name="logo" id="logo" className="hidden" />
-            <div className="mt-2 w-full rounded border border-dashed border-neutral-300 bg-neutral-50 px-3 py-6 text-center">
-              <LuImagePlus className="mx-auto text-2xl text-neutral-500" />
-              <div className="mt-1.5 text-sm text-neutral-500">
-                <label
-                  htmlFor="logo"
-                  className="text-primary cursor-pointer underline"
-                >
-                  Click to upload
-                </label>{" "}
-                & <br />
-                select your store logo
-              </div>
-            </div>
-          </div>
+          {/* logo */}
+          <CreateStoreImgField
+            id="logo"
+            label="Logo"
+            selectedImg={selectedImages.logo}
+            handleImgChange={(e) => handleImgChange(e, "logo")}
+            handleRemoveImg={() => handleRemoveImg("logo")}
+          />
 
           {/* favicon */}
-          <div>
-            <label htmlFor="logo" className="text-sm font-medium">
-              Favicon:
-            </label>
-            <input type="file" name="favicon" id="favicon" className="hidden" />
-            <div className="mt-2 w-full rounded border border-dashed border-neutral-300 bg-neutral-50 px-3 py-6 text-center">
-              <LuImagePlus className="mx-auto text-2xl text-neutral-500" />
-              <div className="mt-1.5 text-sm text-neutral-500">
-                <label
-                  htmlFor="logo"
-                  className="text-primary cursor-pointer underline"
-                >
-                  Click to upload
-                </label>{" "}
-                & <br />
-                select your website favicon
-              </div>
-            </div>
-          </div>
+          <CreateStoreImgField
+            id="favicon"
+            label="Favicon"
+            selectedImg={selectedImages.favicon}
+            handleImgChange={(e) => handleImgChange(e, "favicon")}
+            handleRemoveImg={() => handleRemoveImg("favicon")}
+          />
         </div>
 
         {/* store name & contact info */}
@@ -166,7 +157,7 @@ export default function CreateStore() {
           </div>
           <div>
             <label htmlFor="twitter" className="text-sm font-medium">
-              Twitter/X:
+              X:
             </label>
             <input
               type="url"
