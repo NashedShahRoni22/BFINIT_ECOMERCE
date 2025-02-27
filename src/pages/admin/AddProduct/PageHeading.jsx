@@ -6,7 +6,7 @@ export default function PageHeading() {
     <div className="flex h-full w-full items-center gap-3 p-5">
       <Link
         to="/"
-        className="hover:text-primary grid size-10 place-items-center rounded border border-neutral-200 transition-all hover:bg-neutral-100"
+        className="hover:text-primary grid size-10 place-items-center rounded border border-neutral-200 transition-all hover:bg-neutral-50"
       >
         <BsArrowLeft className="text-xl" />
       </Link>

@@ -1,3 +1,4 @@
+import { BsArrow90DegDown } from "react-icons/bs";
 import {
   MdOutlineHome,
   MdStorefront,
@@ -5,7 +6,7 @@ import {
   MdCategory,
   MdPeople,
   MdLibraryBooks,
-  MdPayment
+  MdPayment,
 } from "react-icons/md";
 
 export const sideNavLinks = [
@@ -27,12 +28,34 @@ export const sideNavLinks = [
   {
     icon: MdCategory,
     name: "Products",
-    url: "/products",
+    subCategories: [
+      {
+        name: "Category",
+        url: "/products/category",
+        icon: BsArrow90DegDown,
+      },
+      {
+        name: "Sub Category",
+        url: "/products/sub-category",
+        icon: BsArrow90DegDown,
+      },
+    ],
   },
   {
     icon: MdPeople,
     name: "Customers",
-    url: "/customers",
+    subCategories: [
+      {
+        name: "Category",
+        url: "/products/category",
+        icon: BsArrow90DegDown,
+      },
+      {
+        name: "Sub Category",
+        url: "/products/sub-category",
+        icon: BsArrow90DegDown,
+      },
+    ],
   },
   {
     icon: MdLibraryBooks,

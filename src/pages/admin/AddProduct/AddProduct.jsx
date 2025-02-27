@@ -1,63 +1,102 @@
 import { useState } from "react";
+import SunEditor from "suneditor-react";
 import PageHeading from "./PageHeading";
 import AddImages from "../AddImages/AddImages";
+import "suneditor/dist/css/suneditor.min.css";
+import CheckBoxFeat from "./CheckBoxFeat";
+import InputField from "./InputField";
+import SelectDropdown from "./SelectDropdown";
+
+const options = [
+  {
+    title: "CPU",
+  },
+  {
+    title: "GPU",
+  },
+];
 
 export default function AddProduct() {
   const [selectedImages, setSelectedImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
+  const [formData, setFormData] = useState({
+    name: "",
+    category: "",
+    subCategory: "",
+    originalPrice: "",
+    discountPercent: "",
+    quantity: "",
+    shippingCharge: "",
+    brand: "",
+    status: "yes",
+    bestSelling: "",
+    flashSell: "",
+    featured: "",
+    new: "",
+    description: "",
+  });
+
+  // Handle input field and chekbox
+  const handleInputChange = (e) => {
+    const { value, name } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handle description of suneditor
+  const handleDescriptionChange = (content) => {
+    setFormData((prev) => ({ ...prev, description: content }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
+  };
 
   return (
     <section>
       <PageHeading />
 
-      <form className="mt-6 grid grid-cols-12 gap-5 px-5">
+      <form
+        onSubmit={handleSubmit}
+        className="mt-6 grid grid-cols-12 gap-5 px-5"
+      >
         {/* General Info */}
         <div className="col-span-12 rounded-md border border-neutral-200 px-4 pt-6 pb-4 lg:col-span-8">
           <h4 className="mb-6 font-semibold">General Information</h4>
-          <label htmlFor="title" className={`text-sm text-gray-600`}>
-            Product Name
-          </label>
-          <br />
-          <input
-            className="mt-1 mb-2 w-full rounded-md border border-neutral-200 bg-[#f8fafb] px-2 py-1.5 outline-none"
-            type="text"
-            id="title"
+          {/* name */}
+          <InputField
+            label="Product Name"
+            id="name"
+            name="name"
+            formData={formData.name}
+            required={true}
+            handleInputChange={handleInputChange}
           />
-          <br />
-          <div className="flex gap-4">
-            <div className="w-1/2">
-              <label htmlFor="category" className={`text-sm text-gray-600`}>
-                Category
-              </label>
-              <br />
-              <select
+
+          <div className="grid grid-cols-2 gap-4">
+            {/* category */}
+            <div>
+              <SelectDropdown
+                label="Category"
                 id="category"
-                className="mt-1 mb-2 w-full rounded-md border border-neutral-200 bg-[#f8fafb] px-2 py-1.5 outline-none"
-                defaultValue={""}
-              >
-                <option value="" disabled>
-                  Select Category
-                </option>
-                <option value="cpu">CPU</option>
-                <option value="gpu">Graphics Card</option>
-              </select>
+                name="category"
+                formData={formData.category}
+                required={true}
+                handleInputChange={handleInputChange}
+                options={options}
+              />
             </div>
-            <div className="w-1/2">
-              <label htmlFor="subcategory" className={`text-sm text-gray-600`}>
-                Subcategory
-              </label>
-              <br />
-              <select
-                id="subcategory"
-                className="mt-1 mb-2 w-full rounded-md border border-neutral-200 bg-[#f8fafb] px-2 py-1.5 outline-none"
-                defaultValue={""}
-              >
-                <option value="" disabled>
-                  Select Subcategory
-                </option>
-                <option value="cpu">Computer Parts</option>
-                <option value="gpu">Graphics</option>
-              </select>
+            {/* subCategory */}
+            <div>
+              <SelectDropdown
+                label="Sub-Category"
+                id="subCategory"
+                name="subCategory"
+                formData={formData.subCategory}
+                required={true}
+                handleInputChange={handleInputChange}
+                options={options}
+              />
             </div>
           </div>
         </div>
@@ -73,13 +112,14 @@ export default function AddProduct() {
         {/* Pricing */}
         <div className="col-span-12 rounded-lg border border-neutral-200 bg-white px-4 pt-6 pb-4 lg:col-span-8">
           <h4 className="mb-6 font-semibold">Pricing</h4>
-          <div className="flex items-center gap-4">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+            {/* base price */}
             <div className="w-full">
               <label
                 htmlFor="originalPrice"
                 className={`text-sm text-gray-600`}
               >
-                Base Price
+                Original Price
               </label>
               <br />
               <div className="relative w-full">
@@ -87,38 +127,47 @@ export default function AddProduct() {
                   className="mt-1 mb-2 w-full rounded-md border border-neutral-200 bg-[#f8fafb] px-6 py-1.5 outline-none"
                   type="text"
                   id="originalPrice"
+                  name="originalPrice"
+                  value={formData.originalPrice}
+                  onChange={handleInputChange}
+                  required
                 />
                 <span className="absolute top-1/2 left-2 -translate-y-1/2 pb-1 text-lg">
                   $
                 </span>
               </div>
             </div>
-            <div className="w-full">
-              <label
-                htmlFor="discount_percent"
-                className="text-sm text-gray-600"
-              >
-                Discount Percentage (%)
-              </label>
-              <br />
-              <input
-                className="mt-1 mb-2 w-full rounded-md border border-neutral-200 bg-[#f8fafb] px-2 py-1.5 outline-none"
-                type="text"
-                id="discount_percent"
+            {/* discount percentage */}
+            <div>
+              <InputField
+                label="Discount Percentage (%)"
+                id="discountPercent"
+                name="discountPercent"
+                formData={formData.discountPercent}
+                handleInputChange={handleInputChange}
               />
             </div>
-            <div className="w-full">
-              <label
-                htmlFor="discount_percent"
-                className="text-sm text-gray-600"
-              >
-                Quantity
-              </label>
-              <br />
-              <input
-                className="mt-1 mb-2 w-full rounded-md border border-neutral-200 bg-[#f8fafb] px-2 py-1.5 outline-none"
-                type="text"
-                id="discount_percent"
+
+            {/* quantity */}
+            <div>
+              <InputField
+                label="Quantity"
+                id="quantity"
+                name="quantity"
+                formData={formData.quantity}
+                required={true}
+                handleInputChange={handleInputChange}
+              />
+            </div>
+
+            {/* shipping charge */}
+            <div>
+              <InputField
+                label="Shipping Charge (optional)"
+                id="shippingCharge"
+                name="shippingCharge"
+                formData={formData.shippingCharge}
+                handleInputChange={handleInputChange}
               />
             </div>
           </div>
@@ -127,36 +176,118 @@ export default function AddProduct() {
         {/* Brand & Status */}
         <div className="col-span-12 rounded-lg border border-neutral-200 px-4 pt-6 pb-4 lg:col-span-4">
           <h4 className="mb-6 font-semibold">Brand & Status</h4>
-          <label htmlFor="category" className="text-sm text-gray-600">
-            Select Brand
-          </label>
-          <br />
-          <select
-            className="mt-1 mb-2 w-full rounded-md border border-neutral-200 bg-[#f8fafb] px-2 py-1.5 outline-none"
-            id="category"
-            defaultValue=""
-          >
-            <option value="" disabled>
-              Select Brand
-            </option>
-            <option value="">Intel</option>
-            <option value="">AMD</option>
-          </select>
-          <br />
+          {/* brand */}
+          <SelectDropdown
+            label="Brand"
+            id="brand"
+            name="brand"
+            formData={formData.brand}
+            required={true}
+            handleInputChange={handleInputChange}
+            options={options}
+          />
 
           {/* Status */}
-          <label htmlFor="is_new" className="text-sm text-gray-600">
-            Status
-          </label>
-          <br />
-          <div className="mt-1 mb-2 flex w-full items-center gap-4 px-2 py-1.5">
-            <div>
-              <input type="checkbox" name="new" id="new" /> Active
-            </div>
-            <div>
-              <input type="checkbox" name="new" id="new" /> Deactive
-            </div>
+          <CheckBoxFeat
+            label="Status"
+            customLabel1="Active"
+            customLabel2="Deactive"
+            name="status"
+            id1="active"
+            id2="deactive"
+            formData={formData.status}
+            handleInputChange={handleInputChange}
+          />
+        </div>
+
+        {/* Product Featured */}
+        <div className="col-span-12 rounded-lg border border-neutral-200 px-4 pt-6 pb-4">
+          <div className="grid grid-cols-4">
+            {/* best selling */}
+            <CheckBoxFeat
+              label="Best Selling"
+              name="bestSelling"
+              id1="bestYes"
+              id2="bestNo"
+              formData={formData.bestSelling}
+              handleInputChange={handleInputChange}
+            />
+
+            {/* flash sale */}
+            <CheckBoxFeat
+              label="Flash Sale"
+              name="flashSell"
+              id1="flashYes"
+              id2="flashNo"
+              formData={formData.flashSell}
+              handleInputChange={handleInputChange}
+            />
+
+            {/* featured */}
+            <CheckBoxFeat
+              label="Featured"
+              name="featured"
+              id1="featuredYes"
+              id2="featuredNo"
+              formData={formData.featured}
+              handleInputChange={handleInputChange}
+            />
+
+            {/* New Arrival */}
+            <CheckBoxFeat
+              label="New Arrival"
+              name="new"
+              id1="newYes"
+              id2="newNo"
+              formData={formData.new}
+              handleInputChange={handleInputChange}
+            />
           </div>
+        </div>
+
+        {/* Description */}
+        <div className="col-span-12 rounded-lg border border-neutral-200 px-4 pt-6 pb-4">
+          <h4 className="mb-6 font-semibold">Description</h4>
+          <SunEditor
+            onChange={handleDescriptionChange}
+            name="description"
+            height="220px"
+            setOptions={{
+              buttonList: [
+                [
+                  "undo",
+                  "redo",
+                  "formatBlock",
+                  "bold",
+                  "italic",
+                  "underline",
+                  "strike",
+                ],
+                [
+                  "fontSize",
+                  "fontColor",
+                  "hiliteColor",
+                  "align",
+                  "list",
+                  "link",
+                  "image",
+                  "video",
+                ],
+                ["removeFormat", "preview"],
+              ],
+              charCounter: true,
+            }}
+          />
+        </div>
+
+        {/* submit button */}
+        <div className="col-span-12 mt-12 mb-5 text-center">
+          <button
+            type="submit"
+            className="bg-primary/90 hover:bg-primary cursor-pointer rounded px-4 py-1 text-white transition duration-200 ease-in-out"
+          >
+            Add New Product
+          </button>
         </div>
       </form>
     </section>
