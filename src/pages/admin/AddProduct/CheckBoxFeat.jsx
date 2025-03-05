@@ -21,6 +21,7 @@ export default function CheckBoxFeat({
             value="yes"
             checked={formData === "yes"}
             onChange={handleInputChange}
+            required={formData === ""}
           />{" "}
           <label htmlFor={id1}>{customLabel1 ? customLabel1 : "Yes"}</label>
         </div>
@@ -32,6 +33,7 @@ export default function CheckBoxFeat({
             value="no"
             checked={formData === "no"}
             onChange={handleInputChange}
+            required={formData === ""}
           />{" "}
           <label htmlFor={id2}>{customLabel1 ? customLabel2 : "No"}</label>
         </div>

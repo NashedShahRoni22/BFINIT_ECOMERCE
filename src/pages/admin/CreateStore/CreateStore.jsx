@@ -1,5 +1,7 @@
 import { useState } from "react";
-import CreateStoreImgField from "../../../components/admin/CreateStoreImgField/CreateStoreImgField";
+import ImageField from "../../../components/admin/ImageField/ImageField";
+import { handleImgChange } from "../../../utils/admin/handleImgChange";
+import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
 const themes = [
   {
     id: 1,
@@ -38,17 +40,6 @@ export default function CreateStore() {
   });
   const [selectedThemes, setSelectedThemes] = useState("");
 
-  // Show selected image
-  const handleImgChange = (e, type) => {
-    const file = e.target.files[0];
-    setSelectedImages((prev) => ({ ...prev, [type]: file }));
-  };
-
-  // Handle Selected Images
-  const handleRemoveImg = (type) => {
-    setSelectedImages((prev) => ({ ...prev, [type]: null }));
-  };
-
   return (
     <section className="p-5">
       <h1 className="text-center text-xl font-semibold capitalize">
@@ -58,21 +49,27 @@ export default function CreateStore() {
       <form className="mt-8 space-y-5">
         <div className="grid gap-8 md:grid-cols-2">
           {/* logo */}
-          <CreateStoreImgField
+          <ImageField
             id="logo"
             label="Logo"
             selectedImg={selectedImages.logo}
-            handleImgChange={(e) => handleImgChange(e, "logo")}
-            handleRemoveImg={() => handleRemoveImg("logo")}
+            handleImgChange={(e) =>
+              handleImgChange(e, "logo", setSelectedImages)
+            }
+            handleRemoveImg={() => handleRemoveImg("logo", setSelectedImages)}
           />
 
           {/* favicon */}
-          <CreateStoreImgField
+          <ImageField
             id="favicon"
             label="Favicon"
             selectedImg={selectedImages.favicon}
-            handleImgChange={(e) => handleImgChange(e, "favicon")}
-            handleRemoveImg={() => handleRemoveImg("favicon")}
+            handleImgChange={(e) =>
+              handleImgChange(e, "favicon", setSelectedImages)
+            }
+            handleRemoveImg={() =>
+              handleRemoveImg("favicon", setSelectedImages)
+            }
           />
         </div>
 

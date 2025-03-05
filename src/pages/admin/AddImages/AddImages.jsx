@@ -11,13 +11,24 @@ const AddImages = ({
   // Add New Image
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    const newImages = files;
+    let totalSize = selectedImages.reduce((acc, img) => acc + img.size, 0); // Get current total size
 
-    const updatedImages = [...selectedImages, ...newImages];
-    setSelectedImages(updatedImages);
+    const newImages = [];
+    const newPreviews = [];
 
-    const newPreviews = newImages.map((file) => URL.createObjectURL(file));
-    setImagePreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
+    for (let file of files) {
+      if (totalSize + file.size > 2 * 1024 * 1024) {
+        // 2MB limit
+        alert("Total image size cannot exceed 2MB.");
+        break;
+      }
+      newImages.push(file);
+      newPreviews.push(URL.createObjectURL(file));
+      totalSize += file.size;
+    }
+
+    setSelectedImages([...selectedImages, ...newImages]);
+    setImagePreviews([...imagePreviews, ...newPreviews]);
   };
 
   // Delete image
@@ -38,7 +49,7 @@ const AddImages = ({
           </span>
         </h3>
         <p className="font-regular text-xs text-gray-400">
-          NOTE: Each image should be smaller than 2MB
+          NOTE: Images size should be smaller than 2MB
         </p>
       </div>
 

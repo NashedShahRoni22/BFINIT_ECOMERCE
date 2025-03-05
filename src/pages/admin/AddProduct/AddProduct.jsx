@@ -1,11 +1,11 @@
 import { useState } from "react";
 import SunEditor from "suneditor-react";
-import PageHeading from "./PageHeading";
+import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import AddImages from "../AddImages/AddImages";
-import "suneditor/dist/css/suneditor.min.css";
 import CheckBoxFeat from "./CheckBoxFeat";
 import InputField from "./InputField";
 import SelectDropdown from "./SelectDropdown";
+import "suneditor/dist/css/suneditor.min.css";
 
 const options = [
   {
@@ -49,17 +49,21 @@ export default function AddProduct() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (formData.description === "") {
+      return alert("Description can not be empty!");
+    }
+
+    if (selectedImages.length <= 0) {
+      return alert("Please select at least 1 image!");
+    }
     console.log(formData);
   };
 
   return (
     <section>
-      <PageHeading />
+      <PageHeading heading="Add New Product" />
 
-      <form
-        onSubmit={handleSubmit}
-        className="mt-6 grid grid-cols-12 gap-5 px-5"
-      >
+      <form onSubmit={handleSubmit} className="mt-6 grid grid-cols-12 gap-5">
         {/* General Info */}
         <div className="col-span-12 rounded-md border border-neutral-200 px-4 pt-6 pb-4 lg:col-span-8">
           <h4 className="mb-6 font-semibold">General Information</h4>

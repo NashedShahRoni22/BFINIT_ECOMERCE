@@ -4,6 +4,8 @@ import Home from "../pages/admin/Home/Home";
 import AdminLayout from "../layout/AdminLayout";
 import CreateStore from "../pages/admin/CreateStore/CreateStore";
 import AddProduct from "../pages/admin/AddProduct/AddProduct";
+import Category from "../pages/admin/Category/Category";
+import SubCategory from "../pages/admin/SubCategory/SubCategory";
 
 export const router = createBrowserRouter([
   {
@@ -23,8 +25,16 @@ export const router = createBrowserRouter([
         element: <CreateStore />,
       },
       {
-        path: "/add-product",
+        path: "/products/add-product",
         element: <AddProduct />,
+      },
+      {
+        path: "/products/category",
+        element: <Category />,
+      },
+      {
+        path: "/products/sub-category",
+        element: <SubCategory />,
       },
     ],
   },

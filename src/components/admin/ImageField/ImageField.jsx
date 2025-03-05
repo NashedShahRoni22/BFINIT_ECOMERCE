@@ -1,6 +1,6 @@
 import { LuImagePlus } from "react-icons/lu";
 
-export default function CreateStoreImgField({
+export default function ImageField({
   id,
   label,
   selectedImg,
