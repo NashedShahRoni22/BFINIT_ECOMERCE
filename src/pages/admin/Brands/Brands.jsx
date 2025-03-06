@@ -1,13 +1,13 @@
 import { useState } from "react";
-import PageHeading from "../../../components/admin/PageHeading/PageHeading";
-import ImageField from "../../../components/admin/ImageField/ImageField";
-import { handleImgChange } from "../../../utils/admin/handleImgChange";
-import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
 import BtnSubmit from "../../../components/admin/buttons/BtnSubmit";
 import EditableListItem from "../../../components/admin/EditableListItem/EditableListItem";
+import ImageField from "../../../components/admin/ImageField/ImageField";
+import PageHeading from "../../../components/admin/PageHeading/PageHeading";
+import { handleImgChange } from "../../../utils/admin/handleImgChange";
+import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
 
-export default function Category() {
-  const [categories, setCategories] = useState([
+export default function Brands() {
+  const [brands, setBrands] = useState([
     {
       id: 1,
       name: "Category 1",
@@ -25,55 +25,55 @@ export default function Category() {
     },
   ]);
   const [selectedImages, setSelectedImages] = useState({
-    categoryIcon: null,
+    brandIcon: null,
   });
 
   return (
     <section>
-      <PageHeading heading="Add New Category" />
+      <PageHeading heading="Create & Manage Brands" />
 
       <div className="mt-6 grid grid-cols-12 lg:gap-x-12">
         {/* image & category name field container */}
         <form className="col-span-12 lg:col-span-4">
           <ImageField
-            id="categoryIcon"
-            label="Category Icon"
-            selectedImg={selectedImages.categoryIcon}
+            id="brandIcon"
+            label="Brand Icon"
+            selectedImg={selectedImages.brandIcon}
             handleImgChange={(e) =>
-              handleImgChange(e, "categoryIcon", setSelectedImages)
+              handleImgChange(e, "brandIcon", setSelectedImages)
             }
             handleRemoveImg={() =>
-              handleRemoveImg("categoryIcon", setSelectedImages)
+              handleRemoveImg("brandIcon", setSelectedImages)
             }
           />
 
           <div className="mt-4">
-            <label htmlFor="category" className="text-sm font-medium">
-              Category Name:
+            <label htmlFor="brand" className="text-sm font-medium">
+              Brand Name:
             </label>
             <input
               type="text"
-              name="category"
-              id="category"
+              name="brand"
+              id="brand"
               required
               className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
             />
           </div>
 
           <div className="mt-8 text-center">
-            <BtnSubmit label="Add New Category" />
+            <BtnSubmit label="Add New Brand" />
           </div>
         </form>
 
-        {/* all category lists container */}
+        {/* all brand lists container */}
         <div className="col-span-12 lg:col-span-8">
           <p className="rounded bg-neutral-50 px-4 py-2 font-semibold">
-            List of Categories
+            List of Brands
           </p>
           <ul className="space-y-2">
-            {categories && categories.length > 0 ? (
-              categories.map((subCat) => (
-                <EditableListItem key={subCat.id} item={subCat} />
+            {brands && brands.length > 0 ? (
+              brands.map((brand) => (
+                <EditableListItem key={brand.id} item={brand} />
               ))
             ) : (
               <p className="bg-neutral-50 px-4 pb-2">

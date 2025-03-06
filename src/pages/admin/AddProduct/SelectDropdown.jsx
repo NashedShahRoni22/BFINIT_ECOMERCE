@@ -9,7 +9,7 @@ export default function SelectDropdown({
 }) {
   return (
     <>
-      <label htmlFor={id} className={`text-sm text-gray-600`}>
+      <label htmlFor={id} className="text-sm text-gray-600">
         {label}
       </label>
       <br />
