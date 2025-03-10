@@ -32,7 +32,7 @@ export default function ImageField({
             <div className="absolute top-0 left-0 flex h-full w-full translate-y-full items-center justify-center gap-4 rounded bg-black/50 transition-all duration-200 ease-linear group-hover:translate-y-0">
               <label
                 htmlFor={id}
-                className="bg-primary cursor-pointer rounded px-2 py-1 text-sm font-medium text-white"
+                className="bg-dashboard-primary cursor-pointer rounded px-2 py-1 text-sm font-medium text-white"
               >
                 Upload New {label}
               </label>
@@ -50,7 +50,7 @@ export default function ImageField({
             <div className="mt-1.5 text-sm text-neutral-500">
               <label
                 htmlFor={id}
-                className="text-primary cursor-pointer underline"
+                className="text-dashboard-primary cursor-pointer underline"
               >
                 Click to upload
               </label>{" "}

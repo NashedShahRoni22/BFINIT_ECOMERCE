@@ -201,7 +201,7 @@ export default function CreateStore() {
               <div
                 key={theme.id}
                 onClick={() => setSelectedThemes(theme.id)}
-                className={`cursor-pointer rounded border bg-neutral-50 p-3.5 ${selectedThemes === theme.id ? "border-primary" : "border-neutral-200"}`}
+                className={`cursor-pointer rounded border bg-neutral-50 p-3.5 ${selectedThemes === theme.id ? "border-dashboard-primary" : "border-neutral-200"}`}
               >
                 <div className="flex justify-center gap-1">
                   <div
@@ -231,7 +231,7 @@ export default function CreateStore() {
         <div className="mt-12 mb-5 text-center">
           <button
             type="submit"
-            className="bg-primary/90 hover:bg-primary cursor-pointer rounded px-4 py-1 text-white transition duration-200 ease-in-out"
+            className="bg-dashboard-primary/90 hover:bg-dashboard-primary cursor-pointer rounded px-4 py-1 text-white transition duration-200 ease-in-out"
           >
             Create New Store
           </button>

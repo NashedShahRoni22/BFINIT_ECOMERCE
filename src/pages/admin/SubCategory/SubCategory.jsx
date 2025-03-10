@@ -84,7 +84,7 @@ export default function SubCategory() {
               <button
                 disabled={!subCategoryName}
                 onClick={handleAddSubCategory}
-                className={`mt-4 w-full rounded px-4 py-2 transition duration-200 ease-in-out ${!subCategoryName ? "bg-neutral-200 text-neutral-600" : "bg-primary/90 hover:bg-primary cursor-pointer text-white"}`}
+                className={`mt-4 w-full rounded px-4 py-2 transition duration-200 ease-in-out ${!subCategoryName ? "bg-neutral-200 text-neutral-600" : "bg-dashboard-primary/90 hover:bg-dashboard-primary cursor-pointer text-white"}`}
               >
                 Add Sub-Category
               </button>

@@ -24,7 +24,7 @@ export default function SideNav({ showSideNav }) {
                   className="group flex w-full cursor-pointer gap-1 rounded-md px-4 py-2 text-sm capitalize transition-all duration-200 ease-in-out hover:bg-white"
                   onClick={() => toggleDropdown(i)}
                 >
-                  <link.icon className="text-primary text-2xl" />
+                  <link.icon className="text-dashboard-primary text-2xl" />
                   {link.name}
                 </button>
 
@@ -39,7 +39,7 @@ export default function SideNav({ showSideNav }) {
                         to={subLink.url}
                         className="flex gap-1.5 rounded-md px-4 py-2 text-sm capitalize transition-all duration-200 ease-in-out hover:bg-white"
                       >
-                        <subLink.icon className="text-primary -rotate-90 transform text-xl" />
+                        <subLink.icon className="text-dashboard-primary -rotate-90 transform text-xl" />
                         {subLink.name}
                       </Link>
                     ))}
@@ -51,7 +51,7 @@ export default function SideNav({ showSideNav }) {
                 to={link.url}
                 className="group flex gap-1 rounded-md px-4 py-2 text-sm capitalize transition-all duration-200 ease-in-out hover:bg-white"
               >
-                <link.icon className="text-primary text-2xl" />
+                <link.icon className="text-dashboard-primary text-2xl" />
                 {link.name}
               </Link>
             )}

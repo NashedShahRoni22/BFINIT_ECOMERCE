@@ -22,7 +22,7 @@ export default function ProductRow() {
       <td className="text-sm">
         <div className="space-x-2">
           <button className="cursor-pointer">
-            <MdOutlineEdit className="hover:text-primary text-xl transition-all duration-200 ease-in-out" />
+            <MdOutlineEdit className="hover:text-dashboard-primary text-xl transition-all duration-200 ease-in-out" />
           </button>
           <button className="cursor-pointer">
             <MdOutlineDelete className="text-xl transition-all duration-200 ease-in-out hover:text-red-500" />

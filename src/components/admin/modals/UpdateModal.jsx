@@ -51,7 +51,7 @@ export default function UpdateModal({ isOpen, close, item }) {
                 placeholder={`Enter a new name for ${item.name}`}
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                className="focus:border-primary focus:ring-primary/20 w-full rounded-lg border border-neutral-200 bg-white px-4 py-2.5 text-sm text-neutral-800 transition-all duration-200 outline-none focus:ring-2"
+                className="focus:border-dashboard-primary focus:ring-dashboard-primary/20 w-full rounded-lg border border-neutral-200 bg-white px-4 py-2.5 text-sm text-neutral-800 transition-all duration-200 outline-none focus:ring-2"
               />
             </div>
 
@@ -68,7 +68,7 @@ export default function UpdateModal({ isOpen, close, item }) {
                 className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 ease-in-out focus:outline-none ${
                   newName === item.name
                     ? "cursor-not-allowed bg-neutral-100 text-neutral-400"
-                    : "bg-primary hover:bg-primary/90 cursor-pointer text-white"
+                    : "bg-dashboard-primary hover:bg-dashboard-primary/90 cursor-pointer text-white"
                 }`}
                 onClick={handleUpdate}
               >

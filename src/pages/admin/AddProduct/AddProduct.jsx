@@ -288,7 +288,7 @@ export default function AddProduct() {
         <div className="col-span-12 mt-12 mb-5 text-center">
           <button
             type="submit"
-            className="bg-primary/90 hover:bg-primary cursor-pointer rounded px-4 py-1 text-white transition duration-200 ease-in-out"
+            className="bg-dashboard-primary/90 hover:bg-dashboard-primary cursor-pointer rounded px-4 py-1 text-white transition duration-200 ease-in-out"
           >
             Add New Product
           </button>

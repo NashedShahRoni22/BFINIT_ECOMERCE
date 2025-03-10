@@ -21,7 +21,7 @@ export default function AdminDropdown() {
           to="/accounts"
           className="group flex items-center gap-1 rounded-md p-1 px-3 text-sm capitalize transition-all duration-200 ease-in-out hover:bg-neutral-100"
         >
-          <MdOutlineManageAccounts className="group-hover:text-primary text-xl" />
+          <MdOutlineManageAccounts className="group-hover:text-dashboard-primary text-xl" />
           <span>My Profile</span>
         </Link>
       </div>
@@ -33,7 +33,7 @@ export default function AdminDropdown() {
           to={link.url}
           className="group flex items-center gap-1 rounded-md p-1 px-3 text-sm capitalize transition-all duration-200 ease-in-out hover:bg-neutral-100"
         >
-          <link.icon className="group-hover:text-primary text-xl" />
+          <link.icon className="group-hover:text-dashboard-primary text-xl" />
           {link.name}
         </Link>
       ))}
@@ -41,8 +41,8 @@ export default function AdminDropdown() {
       {/* logout */}
       <div className="border-t border-neutral-100 py-2">
         <button className="group flex w-full cursor-pointer items-center gap-1 rounded-md p-1 px-3 text-sm capitalize transition-all duration-200 ease-in-out hover:bg-neutral-100">
-          <MdOutlineLogout className="group-hover:text-primary text-xl" /> Log
-          Out
+          <MdOutlineLogout className="group-hover:text-dashboard-primary text-xl" />{" "}
+          Log Out
         </button>
       </div>
     </PopoverPanel>

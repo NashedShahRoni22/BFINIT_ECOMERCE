@@ -1,171 +1,162 @@
 import { useState } from "react";
-import BaseAdminLayout from "./BaseAdminLayout";
-// import Navbar1 from "../components/store/Navbar1";
-// import Navbar2 from "../components/store/Navbar2";
-// import Header1 from "../components/store/Header1";
-// import Header2 from "../components/store/Header2";
-
-import { BsArrow90DegDown } from "react-icons/bs";
-import {
-  MdOutlineHome,
-  MdStorefront,
-  MdShoppingCart,
-  MdCategory,
-  MdPeople,
-  MdLibraryBooks,
-  MdPayment,
-} from "react-icons/md";
+import TopNav from "../components/admin/shared/TopNav";
+import CustomizeSideNav from "../components/admin/shared/CustomizeSideNav";
+import Navbar1 from "../components/site/shared/Navbar/Navbar";
+import Banner1 from "../components/site/Banner";
+import Slider1 from "../components/site/sliders/Slider1/Slider1";
+import Slider2 from "../components/site/sliders/Slider2/Slider2";
+import Slider3 from "../components/site/sliders/Slider3/Slider3";
+import Category1 from "../components/site/categories/Category1";
+import Category2 from "../components/site/categories/Category2";
+import Highlight1 from "../components/site/ProductAdBanner";
+import Highlight2 from "../components/site/ProductShowCase";
+import FeaturedProudct from "../components/site/Products";
 
 const componentLinks = [
   {
     name: "Navbar",
     subCategories: [
       {
-        name: "Category",
-        url: "/products/category",
-      },
-      {
-        name: "Sub Category",
-        url: "/products/sub-category",
-      },
-      {
-        name: "Brands",
-        url: "/products/brands",
-      },
-      {
-        name: "Add Product",
-        url: "/products/add-product",
-      },
-      {
-        name: "Manage Product",
-        url: "/products/manage-product",
+        name: "Navbar 1",
+        value: "nav1",
       },
     ],
   },
   {
-    name: "Header",
+    name: "Banner",
     subCategories: [
       {
-        name: "Category",
-        url: "/products/category",
-      },
-      {
-        name: "Sub Category",
-        url: "/products/sub-category",
+        name: "Banner 1",
+        value: "banner1",
       },
     ],
   },
+  {
+    name: "Slider",
+    subCategories: [
+      {
+        name: "Slider 1",
+        value: "slider1",
+      },
+      {
+        name: "Slider 2",
+        value: "slider2",
+      },
+      {
+        name: "Slider 3",
+        value: "slider3",
+      },
+    ],
+  },
+  {
+    name: "Category",
+    subCategories: [
+      {
+        name: "Category 1",
+        value: "category1",
+      },
+      {
+        name: "Category 2",
+        value: "category2",
+      },
+    ],
+  },
+  {
+    name: "Highlight",
+    subCategories: [
+      {
+        name: "Highlight 1",
+        value: "highlight1",
+      },
+      {
+        name: "Highlight 2",
+        value: "highlight2",
+      },
+    ],
+  },
+  {
+    name: "Featured",
+  },
 ];
 
+const componentsData = {
+  navbar: {
+    nav1: Navbar1,
+  },
+  banner: {
+    banner1: Banner1,
+  },
+  slider: {
+    slider1: Slider1,
+    slider2: Slider2,
+    slider3: Slider3,
+  },
+  category: {
+    category1: Category1,
+    category2: Category2,
+  },
+  highlight: {
+    highlight1: Highlight1,
+    highlight2: Highlight2,
+  },
+  featured: {
+    true: FeaturedProudct, // Render the Featured component when the checkbox is checked
+  },
+};
+
 export default function StoreCustomizeLayout() {
+  const [openDropdown, setOpenDropdown] = useState("");
   const [selectedComponents, setSelectedComponents] = useState({
-    navbar: "navbar1",
-    header: "header1",
+    navbar: "nav1",
+    banner: "banner1",
+    slider: "slider1",
+    category: "category1",
+    highlight: "highlight1",
+    featured: false,
   });
 
-  const renderComponent = (type, value) => {
-    const components = {
-      navbar: {
-        navbar1: "nav 1",
-        navbar2: "nav 2",
-      },
-      header: {
-        header1: "head 1",
-        header2: "head 2",
-      },
-    };
-    return components[type]?.[value] || null;
+  // Toggle dropdown visibility
+  const toggleDropdown = (index) => {
+    setOpenDropdown(openDropdown === index ? "" : index);
+  };
+
+  // Handle checkbox selection
+  const handleCheckboxChange = (category, value) => {
+    setSelectedComponents((prev) => ({
+      ...prev,
+      [category]: value,
+    }));
+  };
+
+  // Function to dynamically render components
+  const renderComponent = (category, value) => {
+    const Component = componentsData[category]?.[value];
+    return Component ? <Component /> : null;
   };
 
   return (
-    <BaseAdminLayout>
-      {/* <nav
-        className={`absolute h-[calc(100dvh-55px)] bg-neutral-100 transition-all duration-300 ease-in-out md:px-4 md:py-2 lg:static lg:w-1/6 lg:translate-x-0`}
-      >
-        <h3 className="text-lg font-bold">Customize Store</h3>
+    <>
+      <TopNav />
 
-        <div className="mt-4">
-          <h4 className="font-semibold">Navbar</h4>
-          <label>
-            <input
-              type="radio"
-              name="navbar"
-              value="navbar1"
-              checked={selectedComponents.navbar === "navbar1"}
-              onChange={() =>
-                setSelectedComponents((prev) => ({
-                  ...prev,
-                  navbar: "navbar1",
-                }))
-              }
-            />
-            Navbar 1
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="navbar"
-              value="navbar2"
-              checked={selectedComponents.navbar === "navbar2"}
-              onChange={() =>
-                setSelectedComponents((prev) => ({
-                  ...prev,
-                  navbar: "navbar2",
-                }))
-              }
-            />
-            Navbar 2
-          </label>
+      <main className="font-inter relative flex">
+        <CustomizeSideNav
+          componentLinks={componentLinks}
+          toggleDropdown={toggleDropdown}
+          openDropdown={openDropdown}
+          selectedComponents={selectedComponents}
+          onCheckboxChange={handleCheckboxChange}
+        />
+
+        <div className="h-[calc(100dvh-55px)] w-full overflow-y-auto">
+          {/* Render selected components dynamically */}
+          {renderComponent("navbar", selectedComponents.navbar)}
+          {renderComponent("banner", selectedComponents.banner)}
+          {renderComponent("slider", selectedComponents.slider)}
+          {renderComponent("category", selectedComponents.category)}
+          {renderComponent("highlight", selectedComponents.highlight)}
+          {selectedComponents.featured && renderComponent("featured", true)}
         </div>
-
-        <div className="mt-4">
-          <h4 className="font-semibold">Header</h4>
-          <label>
-            <input
-              type="radio"
-              name="header"
-              value="header1"
-              checked={selectedComponents.header === "header1"}
-              onChange={() =>
-                setSelectedComponents((prev) => ({
-                  ...prev,
-                  header: "header1",
-                }))
-              }
-            />
-            Header 1
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="header"
-              value="header2"
-              checked={selectedComponents.header === "header2"}
-              onChange={() =>
-                setSelectedComponents((prev) => ({
-                  ...prev,
-                  header: "header2",
-                }))
-              }
-            />
-            Header 2
-          </label>
-        </div>
-      </nav> */}
-
-      <ul
-        className={`absolute h-[calc(100dvh-55px)] bg-neutral-100 transition-all duration-300 ease-in-out md:px-4 md:py-2 lg:static lg:w-1/6 lg:translate-x-0`}
-      >
-        {componentLinks.map((link, i) => (
-          <li key={i}>{link.name}</li>
-        ))}
-      </ul>
-
-      <div className="h-[calc(100dvh-55px)] w-full overflow-y-auto p-5">
-        {/* Render selected components dynamically */}
-        {renderComponent("navbar", selectedComponents.navbar)}
-        {renderComponent("header", selectedComponents.header)}
-      </div>
-    </BaseAdminLayout>
+      </main>
+    </>
   );
 }

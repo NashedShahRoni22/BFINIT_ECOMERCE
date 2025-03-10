@@ -86,7 +86,7 @@ const AddImages = ({
               ))}
             <div className="flex size-16 items-center justify-center rounded bg-white">
               <label htmlFor="images">
-                <BsPlusCircle className="hover:text-primary cursor-pointer text-xl transition-all duration-200 ease-in-out" />
+                <BsPlusCircle className="hover:text-dashboard-primary cursor-pointer text-xl transition-all duration-200 ease-in-out" />
               </label>
             </div>
           </div>

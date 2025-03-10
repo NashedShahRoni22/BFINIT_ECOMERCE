@@ -31,7 +31,7 @@ export default function EditableListItem({ item }) {
         <div className="flex items-center gap-4">
           <FaRegEdit
             onClick={() => openModal("update")}
-            className="text-primary/75 hover:text-primary min-w-fit cursor-pointer text-lg transition-all duration-200 ease-in-out"
+            className="text-dashboard-primary/75 hover:text-dashboard-primary min-w-fit cursor-pointer text-lg transition-all duration-200 ease-in-out"
           />
           <FaRegTrashAlt
             onClick={() => openModal("delete")}
