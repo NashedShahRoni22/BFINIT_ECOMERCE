@@ -5,12 +5,39 @@ import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 export default function Login() {
   const [showPass, setShowPass] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     const form = e.target;
     const email = form.email.value;
     const password = form.password.value;
-    console.log(email, password);
+
+    try {
+      const res = await fetch("https://ecomback.bfinit.com/clients/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      // save authinfo to localstorage
+      if (data.message === "login Successfull") {
+        const authInfo = { token: data.token, data: data.data };
+        localStorage.setItem("authInfo", JSON.stringify(authInfo));
+      } else {
+        console.error("Login failed:", data.message);
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
   return (

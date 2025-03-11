@@ -1,3 +1,5 @@
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+
 export default function CustomizeSideNav({
   componentLinks,
   toggleDropdown,
@@ -14,12 +16,13 @@ export default function CustomizeSideNav({
           {link.subCategories ? (
             <div>
               <button
-                className={`w-full cursor-pointer rounded-md px-4 py-2 text-left text-sm capitalize transition-all duration-200 ease-in-out hover:bg-white ${
+                className={`flex w-full cursor-pointer items-center justify-between rounded-md px-4 py-2 text-left text-sm capitalize transition-all duration-200 ease-in-out hover:bg-white ${
                   openDropdown === i && "bg-white"
                 }`}
                 onClick={() => toggleDropdown(i)}
               >
                 {link.name}
+                <MdOutlineKeyboardArrowDown className="text-lg" />
               </button>
 
               {/* Dropdown list */}

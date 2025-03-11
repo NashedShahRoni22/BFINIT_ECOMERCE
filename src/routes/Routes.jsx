@@ -9,6 +9,8 @@ import SubCategory from "../pages/admin/SubCategory/SubCategory";
 import Brands from "../pages/admin/Brands/Brands";
 import ManageProduct from "../pages/admin/ManageProduct/ManageProduct";
 import StoreCustomizeLayout from "../layout/StoreCustomizeLayout";
+import Stores from "../pages/admin/Stores/Stores";
+import Orders from "../pages/admin/Orders/Orders";
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +28,14 @@ export const router = createBrowserRouter([
       {
         path: "/create-store",
         element: <CreateStore />,
+      },
+      {
+        path: "/all-stores",
+        element: <Stores />,
+      },
+      {
+        path: "/orders",
+        element: <Orders />,
       },
       {
         path: "/products/add-product",

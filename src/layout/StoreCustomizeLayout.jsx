@@ -10,7 +10,8 @@ import Category1 from "../components/site/categories/Category1";
 import Category2 from "../components/site/categories/Category2";
 import Highlight1 from "../components/site/ProductAdBanner";
 import Highlight2 from "../components/site/ProductShowCase";
-import FeaturedProudct from "../components/site/Products";
+import Product1 from "../components/site/Products";
+import Footer1 from "../components/site/shared/Footer/Footer";
 
 const componentLinks = [
   {
@@ -75,7 +76,22 @@ const componentLinks = [
     ],
   },
   {
-    name: "Featured",
+    name: "Product",
+    subCategories: [
+      {
+        name: "Product 1",
+        value: "product1",
+      },
+    ],
+  },
+  {
+    name: "Footer",
+    subCategories: [
+      {
+        name: "Footer 1",
+        value: "footer1",
+      },
+    ],
   },
 ];
 
@@ -99,8 +115,11 @@ const componentsData = {
     highlight1: Highlight1,
     highlight2: Highlight2,
   },
-  featured: {
-    true: FeaturedProudct, // Render the Featured component when the checkbox is checked
+  product: {
+    product1: Product1,
+  },
+  footer: {
+    footer1: Footer1,
   },
 };
 
@@ -112,7 +131,8 @@ export default function StoreCustomizeLayout() {
     slider: "slider1",
     category: "category1",
     highlight: "highlight1",
-    featured: false,
+    product: "product1",
+    footer: "footer1",
   });
 
   // Toggle dropdown visibility
@@ -122,10 +142,19 @@ export default function StoreCustomizeLayout() {
 
   // Handle checkbox selection
   const handleCheckboxChange = (category, value) => {
-    setSelectedComponents((prev) => ({
-      ...prev,
-      [category]: value,
-    }));
+    setSelectedComponents((prev) => {
+      if (prev[category] === value) {
+        return {
+          ...prev,
+          [category]: category === "featured" ? false : "",
+        };
+      }
+
+      return {
+        ...prev,
+        [category]: value,
+      };
+    });
   };
 
   // Function to dynamically render components
@@ -147,14 +176,15 @@ export default function StoreCustomizeLayout() {
           onCheckboxChange={handleCheckboxChange}
         />
 
-        <div className="h-[calc(100dvh-55px)] w-full overflow-y-auto">
+        <div className="relative h-[calc(100dvh-55px)] w-full overflow-y-auto">
           {/* Render selected components dynamically */}
           {renderComponent("navbar", selectedComponents.navbar)}
           {renderComponent("banner", selectedComponents.banner)}
           {renderComponent("slider", selectedComponents.slider)}
+          {renderComponent("product", selectedComponents.product)}
           {renderComponent("category", selectedComponents.category)}
           {renderComponent("highlight", selectedComponents.highlight)}
-          {selectedComponents.featured && renderComponent("featured", true)}
+          {renderComponent("footer", selectedComponents.footer)}
         </div>
       </main>
     </>
