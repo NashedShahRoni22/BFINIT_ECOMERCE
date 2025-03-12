@@ -10,7 +10,9 @@ import Category1 from "../components/site/categories/Category1";
 import Category2 from "../components/site/categories/Category2";
 import Highlight1 from "../components/site/ProductAdBanner";
 import Highlight2 from "../components/site/ProductShowCase";
-import Product1 from "../components/site/Products";
+import Product1 from "../components/site/products/Product1";
+import Product2 from "../components/site/products/Product2";
+import Product3 from "../components/site/products/Product3";
 import Footer1 from "../components/site/shared/Footer/Footer";
 
 const componentLinks = [
@@ -82,6 +84,14 @@ const componentLinks = [
         name: "Product 1",
         value: "product1",
       },
+      {
+        name: "Product 2",
+        value: "product2",
+      },
+      {
+        name: "Product 3",
+        value: "product3",
+      },
     ],
   },
   {
@@ -117,6 +127,8 @@ const componentsData = {
   },
   product: {
     product1: Product1,
+    product2: Product2,
+    product3: Product3,
   },
   footer: {
     footer1: Footer1,
@@ -124,6 +136,7 @@ const componentsData = {
 };
 
 export default function StoreCustomizeLayout() {
+  const [showSideNav, setShowSideNav] = useState(false);
   const [openDropdown, setOpenDropdown] = useState("");
   const [selectedComponents, setSelectedComponents] = useState({
     navbar: "nav1",
@@ -165,10 +178,11 @@ export default function StoreCustomizeLayout() {
 
   return (
     <>
-      <TopNav />
+      <TopNav showSideNav={showSideNav} setShowSideNav={setShowSideNav} />
 
       <main className="font-inter relative flex">
         <CustomizeSideNav
+          showSideNav={showSideNav}
           componentLinks={componentLinks}
           toggleDropdown={toggleDropdown}
           openDropdown={openDropdown}
@@ -176,7 +190,7 @@ export default function StoreCustomizeLayout() {
           onCheckboxChange={handleCheckboxChange}
         />
 
-        <div className="relative h-[calc(100dvh-55px)] w-full overflow-y-auto">
+        <div className="relative h-[calc(100dvh-55px)] w-full overflow-y-auto px-5">
           {/* Render selected components dynamically */}
           {renderComponent("navbar", selectedComponents.navbar)}
           {renderComponent("banner", selectedComponents.banner)}

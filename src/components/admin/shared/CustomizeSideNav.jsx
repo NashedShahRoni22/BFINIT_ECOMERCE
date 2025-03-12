@@ -1,6 +1,7 @@
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 export default function CustomizeSideNav({
+  showSideNav,
   componentLinks,
   toggleDropdown,
   openDropdown,
@@ -9,7 +10,7 @@ export default function CustomizeSideNav({
 }) {
   return (
     <div
-      className={`absolute h-[calc(100dvh-55px)] bg-neutral-100 transition-all duration-300 ease-in-out md:px-4 md:py-2 lg:static lg:w-1/6 lg:translate-x-0`}
+      className={`absolute z-50 h-[calc(100dvh-55px)] bg-neutral-100 transition-all duration-300 ease-in-out md:px-4 md:py-2 lg:static lg:w-1/6 lg:translate-x-0 ${showSideNav ? "w-1/2 translate-x-0 md:w-1/3" : "-translate-x-[1000%]"}`}
     >
       {componentLinks.map((link, i) => (
         <div key={i}>

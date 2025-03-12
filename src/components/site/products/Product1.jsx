@@ -1,9 +1,9 @@
-import { products } from "../../data/productData";
-import ProductCard from "./shared/ProductCard";
+import { products } from "../../../data/productData";
+import ProductCard from "../shared/ProductCard";
 
-export default function Products() {
+export default function Product1() {
   return (
-    <section className="mx-5 py-10 md:container md:mx-auto md:py-20">
+    <section className="font-roboto mx-5 py-10 md:container md:mx-auto md:py-20">
       <h2 className="font-merriweather text-xl font-medium md:text-3xl">
         Featured Products
       </h2>

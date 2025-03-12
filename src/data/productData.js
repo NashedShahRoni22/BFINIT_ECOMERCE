@@ -15,6 +15,8 @@ export const products = [
     ratings: 4.7,
     image:
       "https://assets.gadgetandgear.com/upload/media/iphone-16-pro-512gb-black-titanium.jpeg",
+    discount: true,
+    sale: true,
   },
   {
     id: 3,
@@ -33,6 +35,7 @@ export const products = [
     ratings: 4.7,
     image:
       "https://assets.gadgetandgear.com/upload/media/iphone-16-pro-512gb-black-titanium.jpeg",
+    discount: true,
   },
   {
     id: 5,
@@ -49,6 +52,8 @@ export const products = [
     ratings: 4.8,
     image:
       "https://assets.gadgetandgear.com/upload/media/iphone-16-pro-512gb-black-titanium.jpeg",
+    discount: true,
+    sale: true,
   },
 
   // iPhone 13 models
@@ -67,6 +72,7 @@ export const products = [
     ratings: 4.9,
     image:
       "https://assets.gadgetandgear.com/upload/media/iphone-16-pro-512gb-black-titanium.jpeg",
+    discount: true,
   },
   {
     id: 9,
@@ -101,6 +107,7 @@ export const products = [
     ratings: 5.0,
     image:
       "https://assets.gadgetandgear.com/upload/media/iphone-16-pro-512gb-black-titanium.jpeg",
+    discount: true,
   },
 
   // iPhone 15 models
@@ -137,6 +144,7 @@ export const products = [
     ratings: 5.0,
     image:
       "https://assets.gadgetandgear.com/upload/media/iphone-16-pro-512gb-black-titanium.jpeg",
+    discount: true,
   },
   {
     id: 17,
