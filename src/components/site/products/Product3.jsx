@@ -21,7 +21,7 @@ export default function Product3() {
                 loading="lazy"
                 className="h-56 w-full rounded object-cover"
               />
-              {product.sale && (
+              {product.discount && (
                 <p className="absolute top-1.5 left-1.5 bg-[#e74040] px-4 py-0.5 text-sm font-bold text-white">
                   Sale
                 </p>
@@ -43,15 +43,11 @@ export default function Product3() {
               <Link className="hover:text-accent w-fit font-bold transition-all duration-200 ease-in-out">
                 {product.title}
               </Link>
-              <div className="flex h-fit w-fit items-center gap-1 rounded-full bg-[#252b42] px-2 py-0.5 text-sm">
-                <IoIosStar className="text-[#ffc633]" />
-                <p className="mt-0.5 text-white">{product.ratings}</p>
+              <div className="flex h-fit w-fit items-center gap-1 rounded-full bg-[#252b42] px-2 py-0.5">
+                <IoIosStar className="text-sm text-[#ffc633]" />
+                <p className="mt-0.5 text-xs text-white">{product.ratings}</p>
               </div>
             </div>
-
-            <p className="mt-2 text-sm text-neutral-400">
-              We focus on ergonomics and meeting you....
-            </p>
 
             <div className="mt-2 flex items-center gap-2.5">
               {product.discount && (

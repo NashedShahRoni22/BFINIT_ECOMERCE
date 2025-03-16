@@ -16,7 +16,6 @@ export const products = [
     image:
       "https://assets.gadgetandgear.com/upload/media/iphone-16-pro-512gb-black-titanium.jpeg",
     discount: true,
-    sale: true,
   },
   {
     id: 3,
@@ -53,7 +52,6 @@ export const products = [
     image:
       "https://assets.gadgetandgear.com/upload/media/iphone-16-pro-512gb-black-titanium.jpeg",
     discount: true,
-    sale: true,
   },
 
   // iPhone 13 models

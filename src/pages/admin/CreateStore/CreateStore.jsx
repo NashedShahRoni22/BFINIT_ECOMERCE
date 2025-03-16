@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../../Providers/AuthProvider";
 import ImageField from "../../../components/admin/ImageField/ImageField";
 import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
@@ -34,11 +35,57 @@ const themes = [
 ];
 
 export default function CreateStore() {
+  const { user } = useContext(AuthContext);
   const [selectedImages, setSelectedImages] = useState({
     logo: null,
     favicon: null,
   });
   const [selectedThemes, setSelectedThemes] = useState("");
+
+  const handleCreateStore = async (e) => {
+    e.preventDefault();
+
+    if (!selectedImages.logo || !selectedImages.favicon) {
+      return window.alert("Please select Logo & Favicon");
+    }
+
+    const form = e.target;
+
+    const formData = new FormData();
+    formData.append("storeName", form.name.value);
+    formData.append("storeEmail", form.email.value);
+    formData.append("storePhone", form.mobile.value);
+    formData.append("storeTelephone", form.telephone.value);
+    formData.append("storeAddress", form.address.value);
+    formData.append("storeFacebookLink", form.facebook.value);
+    formData.append("storeTwitterLink", form.twitter.value);
+    formData.append("storeInstagramLink", form.instagram.value);
+    formData.append("storeYoutubeLink", form.youtube.value);
+    formData.append("storeTheme", selectedThemes);
+    formData.append("productType", "Fashion");
+    formData.append("country", "United States");
+    formData.append("currency", "USD");
+    formData.append("storeLogo", selectedImages.logo);
+    formData.append("storeFavicon", selectedImages.favicon);
+
+    try {
+      const res = await fetch(
+        `https://ecomback.bfinit.com/ecom/create/${user.data.clientid}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+          body: formData,
+        },
+      );
+
+      const data = await res.json();
+      console.log("store create data:", data);
+    } catch (error) {
+      console.error("Error creating store:", error);
+    }
+  };
 
   return (
     <section className="p-5">
@@ -46,7 +93,7 @@ export default function CreateStore() {
         Create new store
       </h1>
 
-      <form className="mt-8 space-y-5">
+      <form onSubmit={handleCreateStore} className="mt-8 space-y-5">
         <div className="grid gap-8 md:grid-cols-2">
           {/* logo */}
           <ImageField
