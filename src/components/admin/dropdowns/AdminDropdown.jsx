@@ -1,9 +1,16 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { PopoverPanel } from "@headlessui/react";
 import { MdOutlineManageAccounts, MdOutlineLogout } from "react-icons/md";
 import { adminDropdownLinks } from "../../../data/adminData/adminDropdownLinks";
 
 export default function AdminDropdown() {
+  const navigate = useNavigate();
+
+  const handleLogOut = () => {
+    localStorage.removeItem("authInfo");
+    navigate("/login");
+  };
+
   return (
     <PopoverPanel
       transition
@@ -40,7 +47,10 @@ export default function AdminDropdown() {
 
       {/* logout */}
       <div className="border-t border-neutral-100 py-2">
-        <button className="group flex w-full cursor-pointer items-center gap-1 rounded-md p-1 px-3 text-sm capitalize transition-all duration-200 ease-in-out hover:bg-neutral-100">
+        <button
+          onClick={handleLogOut}
+          className="group flex w-full cursor-pointer items-center gap-1 rounded-md p-1 px-3 text-sm capitalize transition-all duration-200 ease-in-out hover:bg-neutral-100"
+        >
           <MdOutlineLogout className="group-hover:text-dashboard-primary text-xl" />{" "}
           Log Out
         </button>

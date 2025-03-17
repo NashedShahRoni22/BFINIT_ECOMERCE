@@ -1,8 +1,9 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../Providers/AuthProvider";
 import ImageField from "../../../components/admin/ImageField/ImageField";
 import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
+
 const themes = [
   {
     id: 1,
@@ -34,14 +35,59 @@ const themes = [
   },
 ];
 
+const productTypes = [
+  { value: "fashion", label: "Fashion" },
+  { value: "electronics", label: "Electronics" },
+  { value: "beauty", label: "Beauty & Personal Care" },
+  { value: "home-living", label: "Home & Living" },
+  { value: "food-beverage", label: "Food & Beverage" },
+  { value: "health-wellness", label: "Health & Wellness" },
+  { value: "sports", label: "Sports & Outdoor" },
+  { value: "automotive", label: "Automotive" },
+  { value: "handmade", label: "Handmade & Crafts" },
+  { value: "toys", label: "Toys & Games" },
+  { value: "digital-products", label: "Digital Products" },
+  { value: "services", label: "Professional Services" },
+];
+
 export default function CreateStore() {
   const { user } = useContext(AuthContext);
+  const [countries, setCountries] = useState([]);
+  useEffect(() => {
+    fetch("country.json")
+      .then((res) => res.json())
+      .then((data) => setCountries(data));
+  }, []);
+
+  // Form state
+  const [formData, setFormData] = useState({
+    storeName: "",
+    storeEmail: "",
+    storePhone: "",
+    storeTelephone: "",
+    storeAddress: "",
+    storeFacebookLink: "",
+    storeTwitterLink: "",
+    storeInstagramLink: "",
+    storeYoutubeLink: "",
+    storeTheme: "",
+    productType: "",
+    country: "",
+    currency: "",
+  });
+
   const [selectedImages, setSelectedImages] = useState({
     logo: null,
     favicon: null,
   });
-  const [selectedThemes, setSelectedThemes] = useState("");
 
+  // Handle input change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handle store creation
   const handleCreateStore = async (e) => {
     e.preventDefault();
 
@@ -49,24 +95,15 @@ export default function CreateStore() {
       return window.alert("Please select Logo & Favicon");
     }
 
-    const form = e.target;
+    const storeData = {
+      ...formData,
+      timeZone: "Pacific Time Zone (PT) UTC -8:00",
+    };
 
-    const formData = new FormData();
-    formData.append("storeName", form.name.value);
-    formData.append("storeEmail", form.email.value);
-    formData.append("storePhone", form.mobile.value);
-    formData.append("storeTelephone", form.telephone.value);
-    formData.append("storeAddress", form.address.value);
-    formData.append("storeFacebookLink", form.facebook.value);
-    formData.append("storeTwitterLink", form.twitter.value);
-    formData.append("storeInstagramLink", form.instagram.value);
-    formData.append("storeYoutubeLink", form.youtube.value);
-    formData.append("storeTheme", selectedThemes);
-    formData.append("productType", "Fashion");
-    formData.append("country", "United States");
-    formData.append("currency", "USD");
-    formData.append("storeLogo", selectedImages.logo);
-    formData.append("storeFavicon", selectedImages.favicon);
+    const formDataObj = new FormData();
+    formDataObj.append("storeData", JSON.stringify(storeData));
+    formDataObj.append("storeLogo", selectedImages.logo);
+    formDataObj.append("storeFavicon", selectedImages.favicon);
 
     try {
       const res = await fetch(
@@ -76,7 +113,7 @@ export default function CreateStore() {
           headers: {
             Authorization: `Bearer ${user.token}`,
           },
-          body: formData,
+          body: formDataObj,
         },
       );
 
@@ -95,7 +132,7 @@ export default function CreateStore() {
 
       <form onSubmit={handleCreateStore} className="mt-8 space-y-5">
         <div className="grid gap-8 md:grid-cols-2">
-          {/* logo */}
+          {/* Logo */}
           <ImageField
             id="logo"
             label="Logo"
@@ -106,7 +143,7 @@ export default function CreateStore() {
             handleRemoveImg={() => handleRemoveImg("logo", setSelectedImages)}
           />
 
-          {/* favicon */}
+          {/* Favicon */}
           <ImageField
             id="favicon"
             label="Favicon"
@@ -120,153 +157,178 @@ export default function CreateStore() {
           />
         </div>
 
-        {/* store name & contact info */}
+        {/* Store Details */}
         <div className="grid grid-cols-2 gap-x-8 gap-y-4">
           <div>
-            <label htmlFor="name" className="text-sm font-medium">
+            <label htmlFor="storeName" className="text-sm font-medium">
               Store Name:
             </label>
             <input
               type="text"
-              name="name"
-              id="name"
+              name="storeName"
+              value={formData.storeName}
+              onChange={handleChange}
               required
               className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
             />
           </div>
+
           <div>
-            <label htmlFor="email" className="text-sm font-medium">
+            <label htmlFor="storeEmail" className="text-sm font-medium">
               Email:
             </label>
             <input
               type="email"
-              name="email"
-              id="email"
+              name="storeEmail"
+              value={formData.storeEmail}
+              onChange={handleChange}
               required
               className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
             />
           </div>
+
           <div>
-            <label htmlFor="mobile" className="text-sm font-medium">
+            <label htmlFor="storePhone" className="text-sm font-medium">
               Mobile No:
             </label>
             <input
               type="text"
-              name="mobile"
-              id="mobile"
+              name="storePhone"
+              value={formData.storePhone}
+              onChange={handleChange}
               required
               className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
             />
           </div>
+
           <div>
-            <label htmlFor="telephone" className="text-sm font-medium">
+            <label htmlFor="storeTelephone" className="text-sm font-medium">
               Telephone:
             </label>
             <input
               type="text"
-              name="telephone"
-              id="telephone"
+              name="storeTelephone"
+              value={formData.storeTelephone}
+              onChange={handleChange}
               required
               className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
             />
           </div>
+
+          {/* Product Type */}
+          <div>
+            <label htmlFor="productType" className="text-sm font-medium">
+              Product Type:
+            </label>
+            <select
+              name="productType"
+              value={formData.productType}
+              onChange={handleChange}
+              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
+            >
+              <option value="" disabled>
+                Select Product Type
+              </option>
+              {productTypes.map((type) => (
+                <option key={type.value} value={type.value}>
+                  {type.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Country Dropdown */}
+          <div>
+            <label htmlFor="country" className="text-sm font-medium">
+              Choose Country:
+            </label>
+            <select
+              name="country"
+              value={formData.country}
+              onChange={handleChange}
+              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
+            >
+              <option value="" disabled>
+                Select Country
+              </option>
+              {countries.map((country, i) => (
+                <option key={i} value={country.countryName}>
+                  {country.countryName}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Currency Dropdown */}
+          <div>
+            <label htmlFor="currency" className="text-sm font-medium">
+              Choose Currency:
+            </label>
+            <select
+              name="currency"
+              value={formData.currency}
+              onChange={handleChange}
+              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
+            >
+              <option value="" disabled>
+                Select Currency
+              </option>
+              {countries.map((country, i) => (
+                <option
+                  key={i}
+                  value={country.currencyCode}
+                  className={`${country.currencyCode === "" && "hidden"}`}
+                >
+                  {country.currencyCode}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Address */}
           <div className="col-span-full">
-            <label htmlFor="address" className="text-sm font-medium">
+            <label htmlFor="storeAddress" className="text-sm font-medium">
               Address:
             </label>
             <textarea
+              name="storeAddress"
+              value={formData.storeAddress}
+              onChange={handleChange}
               rows={3}
-              name="address"
-              id="address"
               required
               className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
             />
           </div>
         </div>
 
-        {/* social info */}
-        <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-          <div>
-            <label htmlFor="facebook" className="text-sm font-medium">
-              Facebook:
-            </label>
-            <input
-              type="url"
-              name="facebook"
-              id="facebook"
-              placeholder="https://facebook.com/john.doe"
-              required
-              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
-            />
-          </div>
-          <div>
-            <label htmlFor="twitter" className="text-sm font-medium">
-              X:
-            </label>
-            <input
-              type="url"
-              name="twitter"
-              id="twitter"
-              placeholder="https://x.com/john.doe"
-              required
-              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
-            />
-          </div>
-          <div>
-            <label htmlFor="instagram" className="text-sm font-medium">
-              Instagram:
-            </label>
-            <input
-              type="url"
-              name="instagram"
-              id="instagram"
-              placeholder="https://www.instagram.com/john.doe"
-              required
-              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
-            />
-          </div>
-          <div>
-            <label htmlFor="youtube" className="text-sm font-medium">
-              Youtube:
-            </label>
-            <input
-              type="url"
-              name="youtube"
-              id="youtube"
-              placeholder="https://www.youtube.com/@john.doe"
-              required
-              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
-            />
-          </div>
-        </div>
-
-        {/* theme */}
+        {/* Store Theme Selection */}
         <div>
           <p className="text-sm font-medium">Choose Theme:</p>
           <div className="mt-2 grid grid-cols-2 gap-8 md:grid-cols-4">
             {themes.map((theme) => (
               <div
                 key={theme.id}
-                onClick={() => setSelectedThemes(theme.id)}
-                className={`cursor-pointer rounded border bg-neutral-50 p-3.5 ${selectedThemes === theme.id ? "border-dashboard-primary" : "border-neutral-200"}`}
+                onClick={() =>
+                  setFormData((prev) => ({ ...prev, storeTheme: theme.id }))
+                }
+                className={`cursor-pointer rounded border bg-neutral-50 p-3.5 ${
+                  formData.storeTheme === theme.id
+                    ? "border-dashboard-primary"
+                    : "border-neutral-200"
+                }`}
               >
                 <div className="flex justify-center gap-1">
-                  <div
-                    style={{ backgroundColor: theme.primary }}
-                    className="size-8 rounded-full border border-neutral-200"
-                  ></div>
-                  <div
-                    style={{ backgroundColor: theme.accent }}
-                    className="size-8 rounded-full border border-neutral-200"
-                  ></div>
-                  <div
-                    style={{ backgroundColor: theme.text }}
-                    className="size-8 rounded-full border border-neutral-200"
-                  ></div>
+                  {[theme.primary, theme.accent, theme.text].map(
+                    (color, idx) => (
+                      <div
+                        key={idx}
+                        style={{ backgroundColor: color }}
+                        className="size-8 rounded-full border border-neutral-200"
+                      ></div>
+                    ),
+                  )}
                 </div>
-                <p
-                  className={`mt-2.5 text-center text-sm font-semibold capitalize ${selectedThemes === theme.id ? "text-neutral-800" : "text-neutral-500"}`}
-                >
+                <p className="mt-2.5 text-center text-sm font-semibold capitalize">
                   {theme.name}
                 </p>
               </div>
@@ -274,11 +336,11 @@ export default function CreateStore() {
           </div>
         </div>
 
-        {/* submit button */}
+        {/* Submit Button */}
         <div className="mt-12 mb-5 text-center">
           <button
             type="submit"
-            className="bg-dashboard-primary/90 hover:bg-dashboard-primary cursor-pointer rounded px-4 py-1 text-white transition duration-200 ease-in-out"
+            className="bg-dashboard-primary hover:bg-dashboard-primary/90 rounded px-4 py-1 text-white transition"
           >
             Create New Store
           </button>

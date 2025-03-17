@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || "/";
   const [showPass, setShowPass] = useState(false);
 
   const handleLogin = async (e) => {
@@ -32,6 +35,7 @@ export default function Login() {
       if (data.message === "login Successfull") {
         const authInfo = { token: data.token, data: data.data };
         localStorage.setItem("authInfo", JSON.stringify(authInfo));
+        navigate(from, { replace: true });
       } else {
         console.error("Login failed:", data.message);
       }

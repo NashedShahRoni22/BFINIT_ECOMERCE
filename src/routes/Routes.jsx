@@ -11,6 +11,7 @@ import ManageProduct from "../pages/admin/ManageProduct/ManageProduct";
 import StoreCustomizeLayout from "../layout/StoreCustomizeLayout";
 import Stores from "../pages/admin/Stores/Stores";
 import Orders from "../pages/admin/Orders/Orders";
+import PrivateRoute from "./PrivateRoute";
 
 export const router = createBrowserRouter([
   {
@@ -19,7 +20,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "/",
-    element: <AdminLayout />,
+    element: (
+      <PrivateRoute>
+        <AdminLayout />
+      </PrivateRoute>
+    ),
     children: [
       {
         path: "/",
@@ -61,6 +66,10 @@ export const router = createBrowserRouter([
   },
   {
     path: "/customize-store",
-    element: <StoreCustomizeLayout />,
+    element: (
+      <PrivateRoute>
+        <StoreCustomizeLayout />
+      </PrivateRoute>
+    ),
   },
 ]);
