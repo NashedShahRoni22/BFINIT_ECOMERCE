@@ -12,6 +12,7 @@ import StoreCustomizeLayout from "../layout/StoreCustomizeLayout";
 import Stores from "../pages/admin/Stores/Stores";
 import Orders from "../pages/admin/Orders/Orders";
 import PrivateRoute from "./PrivateRoute";
+import Preview from "../pages/admin/Preview/Preview";
 
 export const router = createBrowserRouter([
   {
@@ -69,6 +70,14 @@ export const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <StoreCustomizeLayout />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/preview/:id",
+    element: (
+      <PrivateRoute>
+        <Preview />
       </PrivateRoute>
     ),
   },

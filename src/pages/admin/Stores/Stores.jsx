@@ -3,6 +3,7 @@ import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import CreateStoreCard from "../../../components/admin/stores/CreateStoreCard";
 import StoreCard from "../../../components/admin/stores/StoreCard";
 import { HiOutlineEye } from "react-icons/hi2";
+import { Link } from "react-router";
 
 export default function Stores() {
   return (
@@ -46,9 +47,9 @@ export default function Stores() {
                 </td>
                 <td className="text-sm">Active</td>
                 <td>
-                  <p className="flex justify-center">
-                    <HiOutlineEye className="cursor-pointer text-xl" />
-                  </p>
+                  <Link to="/preview/1" className="flex justify-center">
+                    <HiOutlineEye className="hover:text-dashboard-primary cursor-pointer text-xl transition-all duration-200 ease-in-out" />
+                  </Link>
                 </td>
                 <td className="text-sm">
                   <div className="space-x-2">
