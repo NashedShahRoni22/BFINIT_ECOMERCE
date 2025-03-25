@@ -121,15 +121,17 @@ const componentsData = {
     category1: Category1,
     category2: Category2,
   },
-  highlight: {
-    highlight1: Highlight1,
-    highlight2: Highlight2,
-  },
   product: {
     product1: Product1,
     product2: Product2,
     product3: Product3,
   },
+
+  highlight: {
+    highlight1: Highlight1,
+    highlight2: Highlight2,
+  },
+
   footer: {
     footer1: Footer1,
   },
@@ -193,10 +195,10 @@ export default function StoreCustomizeLayout() {
         <div className="relative h-[calc(100dvh-55px)] w-full overflow-y-auto px-5">
           {/* Render selected components dynamically */}
           {renderComponent("navbar", selectedComponents.navbar)}
-          {renderComponent("banner", selectedComponents.banner)}
+          {/* {renderComponent("banner", selectedComponents.banner)} */}
           {renderComponent("slider", selectedComponents.slider)}
-          {renderComponent("product", selectedComponents.product)}
           {renderComponent("category", selectedComponents.category)}
+          {renderComponent("product", selectedComponents.product)}
           {renderComponent("highlight", selectedComponents.highlight)}
           {renderComponent("footer", selectedComponents.footer)}
         </div>

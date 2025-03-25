@@ -9,12 +9,16 @@ export default function ManageProduct() {
       <div className="mt-6 overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-y border-neutral-200">
+            <tr className="border-y border-neutral-200 text-left">
               <th className="py-2 text-sm font-medium">Name</th>
-              <th className="py-2 text-sm font-medium">Category</th>
               <th className="py-2 text-sm font-medium">SKU</th>
               <th className="py-2 text-sm font-medium">Quantity</th>
+              <th className="py-2 text-sm font-medium">Hits</th>
+              <th className="py-2 text-sm font-medium">Category</th>
+              <th className="py-2 text-sm font-medium">Sub Category</th>
+              <th className="py-2 text-sm font-medium">Brand</th>
               <th className="py-2 text-sm font-medium">Price</th>
+              <th className="py-2 text-sm font-medium">Price (Discounted)</th>
               <th className="py-2 text-sm font-medium">Status</th>
               <th className="py-2 text-sm font-medium">Actions</th>
             </tr>

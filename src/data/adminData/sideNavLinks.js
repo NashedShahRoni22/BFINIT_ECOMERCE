@@ -21,11 +21,6 @@ export const sideNavLinks = [
     url: "/all-stores",
   },
   {
-    icon: MdShoppingCart,
-    name: "Orders",
-    url: "/orders",
-  },
-  {
     icon: MdCategory,
     name: "Products",
     subCategories: [
@@ -57,25 +52,30 @@ export const sideNavLinks = [
     ],
   },
   {
+    icon: MdShoppingCart,
+    name: "Orders",
+    url: "/orders",
+  },
+  {
     icon: MdPeople,
     name: "Customers",
-    subCategories: [
-      {
-        name: "Category",
-        url: "/products/category",
-        icon: BsArrow90DegDown,
-      },
-      {
-        name: "Sub Category",
-        url: "/products/sub-category",
-        icon: BsArrow90DegDown,
-      },
-    ],
+    url :"/customers",
   },
   {
     icon: MdLibraryBooks,
     name: "Blogs",
-    url: "/blogs",
+    subCategories: [
+      {
+        name: "Add Blog",
+        url: "/products/category",
+        icon: BsArrow90DegDown,
+      },
+      {
+        name: "Manage Blog",
+        url: "/products/sub-category",
+        icon: BsArrow90DegDown,
+      },
+    ],
   },
   {
     icon: MdPayment,

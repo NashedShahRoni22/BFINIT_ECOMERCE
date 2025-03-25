@@ -13,6 +13,7 @@ import Stores from "../pages/admin/Stores/Stores";
 import Orders from "../pages/admin/Orders/Orders";
 import PrivateRoute from "./PrivateRoute";
 import Preview from "../pages/admin/Preview/Preview";
+import Customers from "../pages/admin/Customers/Customers";
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
       {
         path: "/orders",
         element: <Orders />,
+      },
+      {
+        path: "/customers",
+        element: <Customers />,
       },
       {
         path: "/products/add-product",
