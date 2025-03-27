@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import ImageField from "../../../components/admin/ImageField/ImageField";
 import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
 import BtnSubmit from "../../../components/admin/buttons/BtnSubmit";
 import EditableListItem from "../../../components/admin/EditableListItem/EditableListItem";
+import { AuthContext } from "../../../Providers/AuthProvider";
 
 export default function Category() {
+  const storeId = "67e4f15d94735d0dc19928cb";
+  const { user } = useContext(AuthContext);
   const [categories, setCategories] = useState([
     {
       id: 1,
@@ -27,11 +30,43 @@ export default function Category() {
   const [selectedImages, setSelectedImages] = useState({
     categoryIcon: null,
   });
+  const [categoryName, setCategoryName] = useState("");
 
   const [selectedStore, setSelectedStore] = useState("");
 
   const handleStoreChange = (e) => {
     setSelectedStore(e.target.value);
+  };
+
+  // create new category
+  const createNewCategory = async (e) => {
+    e.preventDefault();
+
+    if (!categoryName) {
+      return window.alert("Category Name is required!");
+    }
+
+    const formDataObj = new FormData();
+
+    formDataObj.append("categoryName", JSON.stringify(categoryName));
+    formDataObj.append("categoryImage", selectedImages.categoryIcon);
+
+    try {
+      const res = await fetch(
+        `https://ecomback.bfinit.com/category/create/${storeId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+          body: formDataObj,
+        },
+      );
+      const data = await res.json();
+      console.log("category name create:", data);
+    } catch (error) {
+      console.error("category name create error", error);
+    }
   };
 
   return (
@@ -40,7 +75,10 @@ export default function Category() {
 
       <div className="mt-6 grid grid-cols-12 lg:gap-x-12">
         {/* image & category name field container */}
-        <form className="col-span-12 lg:col-span-4">
+        <form
+          onSubmit={createNewCategory}
+          className="col-span-12 lg:col-span-4"
+        >
           <label htmlFor="store" className="text-sm text-gray-600">
             Select Store
           </label>
@@ -84,6 +122,8 @@ export default function Category() {
                   name="category"
                   id="category"
                   required
+                  onChange={(e) => setCategoryName(e.target.value)}
+                  value={categoryName}
                   className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
                 />
               </div>

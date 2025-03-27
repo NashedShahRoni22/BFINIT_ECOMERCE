@@ -108,16 +108,14 @@ export default function CreateStore() {
     console.log("Create Store:", user);
 
     try {
-      const res = await fetch(
-        `https://ecomback.bfinit.com/ecom/create/${user.data.clientid}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-          body: formDataObj,
+      const res = await fetch("https://ecomback.bfinit.com/store/create", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+          clientid: `${user.data.clientid}`,
         },
-      );
+        body: formDataObj,
+      });
 
       const data = await res.json();
       console.log("store create data:", data);
