@@ -17,12 +17,14 @@ export default function AuthProvider({ children }) {
         localStorage.removeItem("authInfo"); // Remove invalid data
       }
     }
-  }, []);
+  }, [setUser]);
 
   const authInfo = {
     user,
     setUser,
   };
+
+  console.log("user", user);
 
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>

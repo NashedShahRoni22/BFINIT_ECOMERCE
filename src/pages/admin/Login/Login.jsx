@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
+import { AuthContext } from "../../../Providers/AuthProvider";
 
 export default function Login() {
+  const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from || "/";
@@ -34,6 +36,7 @@ export default function Login() {
       // save authinfo to localstorage
       if (data.message === "login Successfull") {
         const authInfo = { token: data.token, data: data.data };
+        setUser(authInfo);
         localStorage.setItem("authInfo", JSON.stringify(authInfo));
         navigate(from, { replace: true });
       } else {

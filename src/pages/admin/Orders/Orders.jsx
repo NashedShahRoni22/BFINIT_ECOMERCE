@@ -1,24 +1,70 @@
+import { useState } from "react";
 import { HiOutlineEye } from "react-icons/hi2";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import { MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
 
 export default function Orders() {
+  const [selectedStore, setSelectedStore] = useState("all");
+
+  const handleStoreChange = (e) => {
+    setSelectedStore(e.target.value);
+  };
+
   return (
     <section>
       <PageHeading heading="Manage Orders" />
 
+      {/* Store Selection */}
+      <div className="my-6 flex flex-wrap items-center justify-between">
+        {selectedStore === "all" ? (
+          <h3 className="text-lg font-semibold">All Store: Order Management</h3>
+        ) : (
+          <h3 className="text-lg font-semibold">
+            Store {selectedStore}: Order Management
+          </h3>
+        )}
+
+        <div className="relative">
+          <label htmlFor="storeSelect" className="sr-only">
+            Select Store
+          </label>
+          <select
+            id="storeSelect"
+            onChange={handleStoreChange}
+            className="rounded-md border border-neutral-300 p-2 text-sm focus:outline-none"
+          >
+            <option value="all">All Stores</option>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <option key={i} value={i + 1}>
+                Store {i + 1}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Responsive Table */}
       <table className="mt-6 w-full">
         <thead>
-          <tr className="border-y border-neutral-200">
-            <th className="py-2 text-sm font-medium">Product</th>
-            <th className="py-2 text-sm font-medium">Status</th>
-            <th className="py-2 text-sm font-medium">Preview</th>
-            <th className="py-2 text-sm font-medium">Actions</th>
+          <tr className="border-y border-neutral-200 bg-neutral-50">
+            <th className="border-r border-neutral-200 py-3.5 text-sm font-medium">
+              Product
+            </th>
+            <th className="border-r border-neutral-200 py-3.5 text-sm font-medium">
+              Status
+            </th>
+            <th className="border-r border-neutral-200 py-3.5 text-sm font-medium">
+              Preview
+            </th>
+            <th className="py-3.5 text-sm font-medium">Actions</th>
           </tr>
         </thead>
         <tbody>
           {Array.from({ length: 2 }, (_, i) => (
-            <tr key={i} className="border-y border-neutral-200 text-center">
+            <tr
+              key={i}
+              className="border-y border-neutral-200 text-center last:border-y-0"
+            >
               <td className="text-sm">
                 <div className="flex items-center gap-2.5 py-1.5">
                   <img
@@ -30,7 +76,11 @@ export default function Orders() {
                   <p>Mouse Pad</p>
                 </div>
               </td>
-              <td className="text-sm">Active</td>
+              <td>
+                <p className="mx-auto w-fit rounded-full border border-green-200 bg-green-100 px-3 py-0.5 text-xs text-green-500">
+                  Active
+                </p>
+              </td>
               <td>
                 <p className="flex justify-center">
                   <HiOutlineEye className="cursor-pointer text-xl" />

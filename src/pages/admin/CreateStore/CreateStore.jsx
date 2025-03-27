@@ -105,6 +105,8 @@ export default function CreateStore() {
     formDataObj.append("storeLogo", selectedImages.logo);
     formDataObj.append("storeFavicon", selectedImages.favicon);
 
+    console.log("Create Store:", user);
+
     try {
       const res = await fetch(
         `https://ecomback.bfinit.com/ecom/create/${user.data.clientid}`,

@@ -59,23 +59,15 @@ export const sideNavLinks = [
   {
     icon: MdPeople,
     name: "Customers",
-    subCategories: [
-      {
-        name: "Category",
-        url: "/products/category",
-        icon: BsArrow90DegDown,
-      },
-      {
-        name: "Sub Category",
-        url: "/products/sub-category",
-        icon: BsArrow90DegDown,
-      },
-    ],
+    url: "/products/customers",
   },
   {
     icon: MdLibraryBooks,
     name: "Blogs",
-    url: "/blogs",
+    subCategories: [
+      { name: "Manage Blogs", url: "/blogs/manage", icon: BsArrow90DegDown },
+      { name: "Add Blogs", url: "/blogs/add", icon: BsArrow90DegDown },
+    ],
   },
   {
     icon: MdPayment,

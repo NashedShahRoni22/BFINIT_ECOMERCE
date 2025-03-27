@@ -13,6 +13,9 @@ import Stores from "../pages/admin/Stores/Stores";
 import Orders from "../pages/admin/Orders/Orders";
 import PrivateRoute from "./PrivateRoute";
 import Preview from "../pages/admin/Preview/Preview";
+import Customers from "../pages/admin/Customers/Customers";
+import ManageBlog from "../pages/admin/ManageBlog/ManageBlog";
+import AddBlog from "../pages/admin/AddBlog/AddBlog";
 
 export const router = createBrowserRouter([
   {
@@ -62,6 +65,18 @@ export const router = createBrowserRouter([
       {
         path: "/products/manage-product",
         element: <ManageProduct />,
+      },
+      {
+        path: "/products/customers",
+        element: <Customers />,
+      },
+      {
+        path: "/blogs/manage",
+        element: <ManageBlog />,
+      },
+      {
+        path: "/blogs/add",
+        element: <AddBlog />,
       },
     ],
   },
