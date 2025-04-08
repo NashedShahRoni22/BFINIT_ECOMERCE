@@ -1,20 +1,55 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
+import { handleUpdateCategory } from "../../../api/categories";
+import useAuth from "../../../hooks/useAuth";
 
-export default function UpdateModal({ isOpen, close, item }) {
+export default function UpdateModal({ isOpen, close, item, selectedStore }) {
+  const { user } = useAuth();
+  const imgRef = useRef();
+  const [imgPreview, setImgPreview] = useState(null);
   const [newName, setNewName] = useState("");
+
+  // Image click
+  const handleImageClick = () => {
+    imgRef.current.click();
+  };
+
+  // Show currently selected image
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImgPreview(file);
+  };
 
   useEffect(() => {
     if (isOpen) {
-      console.log("Current Sub-Category Name:", item.name);
       setNewName(item.name);
     }
   }, [isOpen, item.name]);
 
-  // Handle the update action
-  const handleUpdate = () => {
-    console.log("Updated Sub-Category Name:", newName);
-    close();
+  // handle category update
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const updateCategoryData = new FormData();
+    updateCategoryData.append("categoryName", JSON.stringify(newName));
+    updateCategoryData.append(
+      "categoryImage",
+      imgPreview || import.meta.env.VITE_BASE_URL + item.image,
+    );
+
+    try {
+      const updateData = await handleUpdateCategory(
+        selectedStore?.storeId,
+        item?.id,
+        updateCategoryData,
+        user?.token,
+      );
+
+      console.log("category update response:", updateData);
+    } catch (err) {
+      console.error(err);
+    }
+    // console.log("Updated Sub-Category Name:", newName);
+    // close();
   };
 
   return (
@@ -24,8 +59,11 @@ export default function UpdateModal({ isOpen, close, item }) {
       className="relative z-10 focus:outline-none"
       onClose={close}
     >
-      <div className="fixed inset-0 z-10 w-screen overflow-y-auto bg-black/25">
-        <div className="flex min-h-full items-center justify-center p-4">
+      <div className="fixed inset-0 z-10 w-screen overflow-y-auto bg-black/25 backdrop-blur-sm">
+        <form
+          className="flex min-h-full items-center justify-center p-4"
+          onSubmit={handleSubmit}
+        >
           <DialogPanel
             transition
             className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
@@ -34,8 +72,49 @@ export default function UpdateModal({ isOpen, close, item }) {
               as="h3"
               className="text-center text-xl font-semibold text-neutral-800"
             >
-              Update Sub-Category Name
+              Update Category Info.
             </DialogTitle>
+
+            {/* Image */}
+            <div className="my-6 flex flex-col items-center">
+              <div
+                onClick={handleImageClick}
+                className="group relative size-28 overflow-hidden rounded-full"
+              >
+                {imgPreview ? (
+                  <img
+                    className="h-full w-full rounded-full object-cover"
+                    src={URL.createObjectURL(imgPreview)}
+                    alt={item?.name}
+                    loading="lazy"
+                  />
+                ) : (
+                  <img
+                    className="h-full w-full rounded-full object-cover"
+                    src={`${import.meta.env.VITE_BASE_URL}${item.image}`}
+                    alt={item?.name}
+                    loading="lazy"
+                  />
+                )}
+                <div className="absolute top-0 left-0 flex h-full w-full scale-75 cursor-pointer items-center justify-center rounded-full bg-black/50 text-sm font-medium text-white opacity-0 backdrop-blur-sm transition-all duration-200 ease-linear group-hover:scale-100 group-hover:opacity-100">
+                  Upload
+                </div>
+              </div>
+
+              <input
+                ref={imgRef}
+                onChange={handleImageChange}
+                className="hidden"
+                type="file"
+                id="image"
+                name="image"
+                accept="image/*"
+              />
+
+              <p className="mt-2 text-xs text-neutral-500">
+                {imgPreview ? "Click to change image" : "Click to upload image"}
+              </p>
+            </div>
 
             <div className="mt-6 space-y-4">
               <p className="text-sm text-neutral-600">
@@ -64,19 +143,19 @@ export default function UpdateModal({ isOpen, close, item }) {
                 Cancel
               </Button>
               <Button
-                disabled={newName === item.name}
                 className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 ease-in-out focus:outline-none ${
                   newName === item.name
                     ? "cursor-not-allowed bg-neutral-100 text-neutral-400"
                     : "bg-dashboard-primary hover:bg-dashboard-primary/90 cursor-pointer text-white"
                 }`}
-                onClick={handleUpdate}
+                disabled={newName === item.name}
+                type="submit"
               >
                 Update
               </Button>
             </div>
           </DialogPanel>
-        </div>
+        </form>
       </div>
     </Dialog>
   );

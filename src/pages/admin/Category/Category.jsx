@@ -6,54 +6,52 @@ import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
 import BtnSubmit from "../../../components/admin/buttons/BtnSubmit";
 import EditableListItem from "../../../components/admin/EditableListItem/EditableListItem";
 import { AuthContext } from "../../../Providers/AuthProvider";
+import { getCategories } from "../../../api/categories";
 
 export default function Category() {
-  const storeId = "67e4f15d94735d0dc19928cb";
   const { user } = useContext(AuthContext);
-  const [categories, setCategories] = useState([
-    {
-      id: 1,
-      name: "Category 1",
-      img: "https://img.icons8.com/fluency/36/image--v1.png",
-    },
-    {
-      id: 2,
-      name: "Category 2",
-      img: "https://img.icons8.com/fluency/36/image--v1.png",
-    },
-    {
-      id: 3,
-      name: "Category 3",
-      img: "https://img.icons8.com/fluency/36/image--v1.png",
-    },
-  ]);
+  const [categories, setCategories] = useState([]);
   const [selectedImages, setSelectedImages] = useState({
     categoryIcon: null,
   });
   const [categoryName, setCategoryName] = useState("");
-
   const [selectedStore, setSelectedStore] = useState("");
 
-  const handleStoreChange = (e) => {
-    setSelectedStore(e.target.value);
+  // handle store selectionId dropdown change
+  const handleStoreChange = async (e) => {
+    const selectedStoreId = e.target.value;
+    const foundStore = user?.data?.EStore?.find(
+      (store) => store.storeId === selectedStoreId,
+    );
+
+    setSelectedStore(foundStore);
+
+    try {
+      const categories = await getCategories(selectedStoreId, user?.token);
+      if (categories.message === "categories retrived succesfully") {
+        setCategories(categories.data);
+      }
+    } catch (err) {
+      console.error(`get categories error: ${err}`);
+    }
   };
 
   // create new category
   const createNewCategory = async (e) => {
     e.preventDefault();
+    const form = e.target;
 
     if (!categoryName) {
       return window.alert("Category Name is required!");
     }
 
     const formDataObj = new FormData();
-
     formDataObj.append("categoryName", JSON.stringify(categoryName));
     formDataObj.append("categoryImage", selectedImages.categoryIcon);
 
     try {
       const res = await fetch(
-        `https://ecomback.bfinit.com/category/create/${storeId}`,
+        `${import.meta.env.VITE_BASE_URL}/category/create/${selectedStore?.storeId}`,
         {
           method: "POST",
           headers: {
@@ -63,11 +61,17 @@ export default function Category() {
         },
       );
       const data = await res.json();
-      console.log("category name create:", data);
+      if (data.message === "category created successfully") {
+        setCategories(data.categories);
+      }
     } catch (error) {
       console.error("category name create error", error);
+    } finally {
+      form.reset();
     }
   };
+
+  console.log("all categories:", categories);
 
   return (
     <section>
@@ -85,18 +89,21 @@ export default function Category() {
           <select
             id="store"
             name="store"
-            value={selectedStore}
+            value={selectedStore?.storeId || ""}
             onChange={handleStoreChange}
             className="mt-1 mb-2 w-full rounded-md border border-neutral-200 bg-[#f8fafb] px-2 py-1.5 outline-none"
           >
             <option value="" disabled>
               Select a store
             </option>
-            {Array.from({ length: 5 }).map((_, i) => (
-              <option key={i} value={i + 1}>
-                Store {i + 1}
-              </option>
-            ))}
+
+            {user?.data?.EStore &&
+              user?.data?.EStore?.length > 0 &&
+              user?.data?.EStore?.map((store) => (
+                <option key={store?.storeId} value={store?.storeId}>
+                  {store?.storeName}
+                </option>
+              ))}
           </select>
 
           {selectedStore && (
@@ -140,17 +147,24 @@ export default function Category() {
           {selectedStore ? (
             <>
               <p className="bg-neutral-50 px-4 py-2">
-                Store {selectedStore} Categories
+                Categories at{" "}
+                <span className="font-semibold text-gray-900">
+                  {selectedStore?.storeName}
+                </span>
               </p>
 
               <ul className="space-y-2">
                 {categories && categories.length > 0 ? (
-                  categories.map((subCat) => (
-                    <EditableListItem key={subCat.id} item={subCat} />
+                  categories.map((category) => (
+                    <EditableListItem
+                      key={category.id}
+                      category={category}
+                      selectedStore={selectedStore}
+                    />
                   ))
                 ) : (
                   <p className="bg-neutral-50 px-4 pb-2">
-                    No sub-categories found. Start by adding a new one.
+                    No categories found. Start by adding a new one.
                   </p>
                 )}
               </ul>

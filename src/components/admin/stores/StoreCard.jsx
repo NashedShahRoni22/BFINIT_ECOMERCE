@@ -1,13 +1,18 @@
 import { Link } from "react-router";
 import { BiEdit } from "react-icons/bi";
-import logo from "../../../assets/store_logo.png";
 
-export default function StoreCard() {
+export default function StoreCard({ storeData }) {
+  const { storeName, storeLogo } = storeData;
+
   return (
     <div className="w-[250px] rounded p-2 shadow">
-      <img className="h-[200px] w-full rounded" src={logo} alt="" />
+      <img
+        className="h-[200px] w-full rounded object-cover"
+        src={`https://ecomback.bfinit.com${storeLogo}`}
+        alt=""
+      />
       <div className="mt-2.5 flex min-w-full items-center justify-between">
-        <h5 className="text-sm">First Store</h5>
+        <h5 className="text-sm">{storeName}</h5>
         <Link
           to="/customize-store"
           className="bg-dashboard-primary rounded-full p-2.5 duration-300 ease-linear hover:bg-blue-500"

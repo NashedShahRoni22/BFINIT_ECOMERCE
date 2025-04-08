@@ -24,11 +24,13 @@ export default function SubCategory() {
     setSubCategoryName(e.target.value);
   };
 
+  // Add New Sub-Catgory
   const handleAddSubCategory = () => {
     if (subCategoryName.trim() === "") {
       alert("Sub-category name cannot be empty!");
       return;
     }
+
     const newSubCategory = {
       id: subCategories.length + 1,
       categoryId: selectedCategory,

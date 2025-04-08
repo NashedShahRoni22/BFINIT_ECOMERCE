@@ -3,7 +3,7 @@ import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import UpdateModal from "../modals/UpdateModal";
 import DeleteModal from "../modals/DeleteModal";
 
-export default function EditableListItem({ item }) {
+export default function EditableListItem({ category, selectedStore }) {
   let [modalState, setModalState] = useState({ update: false, delete: false });
 
   const openModal = (type) => {
@@ -17,16 +17,14 @@ export default function EditableListItem({ item }) {
   return (
     <>
       <li className="flex items-center justify-between border-b border-neutral-200 px-4 py-3 text-neutral-700 last:border-b-0">
-        <div className="flex items-center gap-0.5">
-          {item.img && (
-            <img
-              src={item.img}
-              alt="category icon"
-              loading="lazy"
-              className="size-9 object-cover"
-            />
-          )}
-          <p>{item.name}</p>
+        <div className="flex items-center gap-2">
+          <img
+            src={`${import.meta.env.VITE_BASE_URL}${category?.image}`}
+            alt={category?.name}
+            loading="lazy"
+            className="size-9 object-cover"
+          />
+          <p>{category?.name}</p>
         </div>
         <div className="flex items-center gap-4">
           <FaRegEdit
@@ -44,14 +42,15 @@ export default function EditableListItem({ item }) {
       <UpdateModal
         isOpen={modalState.update}
         close={() => closeModal("update")}
-        item={item}
+        item={category}
+        selectedStore={selectedStore}
       />
 
       {/* Delete Confirm Modal */}
       <DeleteModal
         isOpen={modalState.delete}
         close={() => closeModal("delete")}
-        item={item}
+        item={category}
       />
     </>
   );
