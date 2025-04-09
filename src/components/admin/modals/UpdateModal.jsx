@@ -30,7 +30,7 @@ export default function UpdateModal({ isOpen, close, item, selectedStore }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const updateCategoryData = new FormData();
-    updateCategoryData.append("categoryName", JSON.stringify(newName));
+    updateCategoryData.append("categoryName", newName);
     updateCategoryData.append(
       "categoryImage",
       imgPreview || import.meta.env.VITE_BASE_URL + item.image,

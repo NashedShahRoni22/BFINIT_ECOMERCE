@@ -1,10 +1,23 @@
 import { Button, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
+import { useContext } from "react";
+import { AuthContext } from "../../../Providers/AuthProvider";
+import { handleDeleteCategory } from "../../../api/categories";
 
-export default function DeleteModal({ isOpen, close, item }) {
+export default function DeleteModal({ isOpen, close, item, selectedStore }) {
+  const { user } = useContext(AuthContext);
+
   // Handle the delete action
-  const handleDelete = () => {
-    console.log("Deleted Sub-Category:", item.name);
-    close();
+  const handleDelete = async () => {
+    const categoryId = item.id;
+    const storeId = selectedStore.storeId;
+    try {
+      const data = await handleDeleteCategory(storeId, categoryId, user?.token);
+      if (data.message === "Category deleted successfully") {
+        close();
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -41,12 +54,12 @@ export default function DeleteModal({ isOpen, close, item }) {
               >
                 Cancel
               </Button>
-              <Button
+              <button
                 onClick={handleDelete}
                 className="cursor-pointer rounded border border-red-600 bg-red-600 px-4 py-1.5 text-sm/6 font-semibold text-white transition-all duration-200 ease-in-out hover:bg-red-700 focus:outline-none"
               >
                 Delete
-              </Button>
+              </button>
             </div>
           </DialogPanel>
         </div>

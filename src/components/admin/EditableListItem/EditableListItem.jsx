@@ -51,6 +51,7 @@ export default function EditableListItem({ category, selectedStore }) {
         isOpen={modalState.delete}
         close={() => closeModal("delete")}
         item={category}
+        selectedStore={selectedStore}
       />
     </>
   );

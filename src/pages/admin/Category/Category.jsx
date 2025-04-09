@@ -46,7 +46,7 @@ export default function Category() {
     }
 
     const formDataObj = new FormData();
-    formDataObj.append("categoryName", JSON.stringify(categoryName));
+    formDataObj.append("categoryName", categoryName);
     formDataObj.append("categoryImage", selectedImages.categoryIcon);
 
     try {
