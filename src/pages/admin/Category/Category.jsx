@@ -3,75 +3,79 @@ import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import ImageField from "../../../components/admin/ImageField/ImageField";
 import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
-import BtnSubmit from "../../../components/admin/buttons/BtnSubmit";
 import EditableListItem from "../../../components/admin/EditableListItem/EditableListItem";
 import { AuthContext } from "../../../Providers/AuthProvider";
-import { getCategories } from "../../../api/categories";
+import useCategoryQuery from "../../../hooks/useGetCategoryQuery";
+import ListItemSkeleton from "../../../components/admin/loaders/ListItemSkeleton";
+import useCreateCategory from "../../../hooks/useCreateCategory";
+import toast from "react-hot-toast";
+import Spinner from "../../../components/admin/loaders/Spinner";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Category() {
+  const queryClient = useQueryClient();
   const { user } = useContext(AuthContext);
-  const [categories, setCategories] = useState([]);
   const [selectedImages, setSelectedImages] = useState({
     categoryIcon: null,
   });
   const [categoryName, setCategoryName] = useState("");
   const [selectedStore, setSelectedStore] = useState("");
 
-  // handle store selectionId dropdown change
+  // fetch categories based on storeId
+  const {
+    isLoading,
+    isError,
+    data: categories,
+  } = useCategoryQuery({
+    storeId: selectedStore?.storeId,
+    token: user?.token,
+  });
+
+  // create new category
+  const { mutate, isPending } = useCreateCategory({
+    storeId: selectedStore?.storeId,
+    token: user?.token,
+  });
+
+  // Handle store select dropdown
   const handleStoreChange = async (e) => {
     const selectedStoreId = e.target.value;
     const foundStore = user?.data?.EStore?.find(
       (store) => store.storeId === selectedStoreId,
     );
-
     setSelectedStore(foundStore);
-
-    try {
-      const categories = await getCategories(selectedStoreId, user?.token);
-      if (categories.message === "categories retrived succesfully") {
-        setCategories(categories.data);
-      }
-    } catch (err) {
-      console.error(`get categories error: ${err}`);
-    }
   };
 
   // create new category
   const createNewCategory = async (e) => {
     e.preventDefault();
-    const form = e.target;
-
-    if (!categoryName) {
-      return window.alert("Category Name is required!");
+    if (!categoryName || selectedImages.categoryIcon === null) {
+      return toast.error("Category Name & Image is required!");
     }
 
     const formDataObj = new FormData();
     formDataObj.append("categoryName", categoryName);
     formDataObj.append("categoryImage", selectedImages.categoryIcon);
 
-    try {
-      const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/category/create/${selectedStore?.storeId}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-          body: formDataObj,
-        },
-      );
-      const data = await res.json();
-      if (data.message === "category created successfully") {
-        setCategories(data.categories);
-      }
-    } catch (error) {
-      console.error("category name create error", error);
-    } finally {
-      form.reset();
-    }
+    mutate(formDataObj, {
+      onSuccess: (newCategory) => {
+        setCategoryName("");
+        setSelectedImages({ categoryIcon: null });
+        // update cached categories with new category
+        queryClient.setQueryData(["categories", selectedStore?.storeId], () => {
+          return {
+            data: newCategory.categories,
+          };
+        });
+        toast.success("New category created!");
+      },
+      onError: () => {
+        setCategoryName("");
+        setSelectedImages({ categoryIcon: null });
+        toast.error("Something went wrong!");
+      },
+    });
   };
-
-  console.log("all categories:", categories);
 
   return (
     <section>
@@ -136,7 +140,13 @@ export default function Category() {
               </div>
 
               <div className="mt-8 text-center">
-                <BtnSubmit label="Add New Category" />
+                <button
+                  className="bg-dashboard-primary/90 hover:bg-dashboard-primary flex w-full cursor-pointer items-center justify-center rounded px-4 py-2 text-white transition-all duration-200 ease-in-out"
+                  type="submit"
+                  disabled={isPending}
+                >
+                  {isPending ? <Spinner /> : "Add New Category"}
+                </button>
               </div>
             </>
           )}
@@ -145,34 +155,42 @@ export default function Category() {
         {/* all category lists container */}
         <div className="col-span-12 lg:col-span-8">
           {selectedStore ? (
-            <>
-              <p className="bg-neutral-50 px-4 py-2">
-                Categories at{" "}
-                <span className="font-semibold text-gray-900">
-                  {selectedStore?.storeName}
-                </span>
-              </p>
-
-              <ul className="space-y-2">
-                {categories && categories.length > 0 ? (
-                  categories.map((category) => (
-                    <EditableListItem
-                      key={category.id}
-                      category={category}
-                      selectedStore={selectedStore}
-                    />
-                  ))
-                ) : (
-                  <p className="bg-neutral-50 px-4 pb-2">
-                    No categories found. Start by adding a new one.
-                  </p>
-                )}
-              </ul>
-            </>
+            <p className="bg-neutral-50 px-4 py-2">
+              Categories at{" "}
+              <span className="font-semibold text-gray-900">
+                {selectedStore?.storeName}
+              </span>
+            </p>
           ) : (
             <p className="bg-neutral-50 px-4 py-2">
               <span className="font-medium">Select a Store</span> to view all
               Categories.
+            </p>
+          )}
+
+          {selectedStore && !isError && (isLoading || !categories?.data)
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <ListItemSkeleton key={`skeleton-${i}`} />
+              ))
+            : categories?.data?.map((category) => (
+                <EditableListItem
+                  key={category.id}
+                  category={category}
+                  selectedStore={selectedStore}
+                />
+              ))}
+
+          {selectedStore &&
+            !isError &&
+            !isLoading &&
+            !categories?.data?.length > 0 && (
+              <p>No category found. Please create a new one.</p>
+            )}
+
+          {isError && (
+            <p className="flex items-center text-red-500">
+              <span className="mr-1">⚠️</span>
+              Something went wrong! Please try again.
             </p>
           )}
         </div>

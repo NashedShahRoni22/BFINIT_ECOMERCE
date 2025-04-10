@@ -1,20 +1,43 @@
 import { useState } from "react";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import EditableListItem from "../../../components/admin/EditableListItem/EditableListItem";
+import useAuth from "../../../hooks/useAuth";
+import useCategoryQuery from "../../../hooks/useGetCategoryQuery";
+import useCreateSubCategory from "../../../hooks/useCreateSubCategory";
+import toast from "react-hot-toast";
+import Spinner from "../../../components/admin/loaders/Spinner";
 
 export default function SubCategory() {
-  const [categories, setCategories] = useState([
-    { id: 1, name: "Category 1" },
-    { id: 2, name: "Category 2" },
-    { id: 3, name: "Category 3" },
-  ]);
-  const [subCategories, setSubCategories] = useState([
-    { id: 1, categoryId: 1, name: "Sub-Category 1" },
-    { id: 2, categoryId: 1, name: "Sub-Category 2" },
-    { id: 3, categoryId: 2, name: "Sub-Category 3" },
-  ]);
+  const { user } = useAuth();
+  const [selectedStore, setSelectedStore] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [subCategoryName, setSubCategoryName] = useState("");
+
+  // fetch categories based on storeId
+  const {
+    isLoading,
+    isError,
+    data: categories,
+  } = useCategoryQuery({
+    storeId: selectedStore?.storeId,
+    token: user?.token,
+  });
+
+  // create new sub category
+  const { mutate, isPending } = useCreateSubCategory({
+    storeId: selectedStore?.storeId,
+    categoryId: selectedCategory,
+    token: user?.token,
+  });
+
+  // Handle store select dropdown
+  const handleStoreChange = async (e) => {
+    const selectedStoreId = e.target.value;
+    const foundStore = user?.data?.EStore?.find(
+      (store) => store.storeId === selectedStoreId,
+    );
+    setSelectedStore(foundStore);
+  };
 
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value);
@@ -26,24 +49,25 @@ export default function SubCategory() {
 
   // Add New Sub-Catgory
   const handleAddSubCategory = () => {
-    if (subCategoryName.trim() === "") {
-      alert("Sub-category name cannot be empty!");
-      return;
-    }
-
-    const newSubCategory = {
-      id: subCategories.length + 1,
-      categoryId: selectedCategory,
-      name: subCategoryName,
+    /* const subCategoryArr = [subCategoryName];
+    const subCategoryFormData = {
+      subcategories: 
     };
-    setSubCategories([...subCategories, newSubCategory]);
-    setSubCategoryName("");
-    setSelectedCategory("");
+    subCategoryFormData.append("subcategories", subCategoryArr); */
+    /* mutate([subCategoryFormData], {
+      onSuccess: () => {
+        setSubCategoryName("");
+        toast.success("New Sub-category created!");
+      },
+      onError: () => {
+        setSubCategoryName("");
+        toast.error("Something went wrong!");
+      },
+    }); */
   };
 
-  const filteredSubCategories = subCategories.filter(
-    (subCat) => subCat.categoryId === parseInt(selectedCategory),
-  );
+  console.log("selected category", selectedCategory);
+  console.log("selected store", selectedStore);
 
   return (
     <section>
@@ -51,25 +75,56 @@ export default function SubCategory() {
       <div className="mt-6 grid gap-8 lg:grid-cols-2">
         {/* Left Side: Add Sub-Category Form */}
         <div>
-          <label htmlFor="category" className="text-sm text-gray-600">
-            Select Category
+          {/* select store */}
+          <label htmlFor="store" className="text-sm text-gray-600">
+            Select Store
           </label>
           <select
-            id="category"
-            name="category"
-            value={selectedCategory}
-            onChange={handleCategoryChange}
+            id="store"
+            name="store"
+            value={selectedStore?.storeId || ""}
+            onChange={handleStoreChange}
             className="mt-1 mb-2 w-full rounded-md border border-neutral-200 bg-[#f8fafb] px-2 py-1.5 outline-none"
           >
-            <option value="">Select a category</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
+            <option value="" disabled>
+              Select a store
+            </option>
+
+            {user?.data?.EStore &&
+              user?.data?.EStore?.length > 0 &&
+              user?.data?.EStore?.map((store) => (
+                <option key={store?.storeId} value={store?.storeId}>
+                  {store?.storeName}
+                </option>
+              ))}
           </select>
 
-          {selectedCategory && (
+          {/* select category */}
+          {selectedStore && (
+            <>
+              <label htmlFor="category" className="text-sm text-gray-600">
+                Select Category
+              </label>
+              <select
+                id="category"
+                name="category"
+                value={selectedCategory}
+                onChange={handleCategoryChange}
+                className="mt-1 mb-2 w-full rounded-md border border-neutral-200 bg-[#f8fafb] px-2 py-1.5 outline-none"
+              >
+                <option value="">Select a category</option>
+                {categories &&
+                  categories?.data &&
+                  categories?.data?.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+              </select>
+            </>
+          )}
+
+          {selectedCategory && categories?.data?.length > 0 && (
             <div className="mt-4">
               <label htmlFor="subCategoryName" className="text-sm font-medium">
                 Sub-Category Name
@@ -86,9 +141,9 @@ export default function SubCategory() {
               <button
                 disabled={!subCategoryName}
                 onClick={handleAddSubCategory}
-                className={`mt-4 w-full rounded px-4 py-2 transition duration-200 ease-in-out ${!subCategoryName ? "bg-neutral-200 text-neutral-600" : "bg-dashboard-primary/90 hover:bg-dashboard-primary cursor-pointer text-white"}`}
+                className={`mt-4 flex min-h-10 w-full items-center justify-center rounded px-4 py-2 transition duration-200 ease-in-out ${!subCategoryName ? "bg-neutral-200 text-neutral-600" : "bg-dashboard-primary/90 hover:bg-dashboard-primary cursor-pointer text-white"}`}
               >
-                Add Sub-Category
+                {isPending ? <Spinner /> : "Add Sub-Category"}
               </button>
             </div>
           )}
@@ -99,7 +154,7 @@ export default function SubCategory() {
           <p className="rounded bg-neutral-50 px-4 py-2 font-semibold">
             Existing Sub-Categories
           </p>
-          {selectedCategory ? (
+          {/* {selectedCategory ? (
             <ul className="space-y-2">
               {filteredSubCategories && filteredSubCategories.length > 0 ? (
                 filteredSubCategories.map((subCat) => (
@@ -115,7 +170,7 @@ export default function SubCategory() {
             <p className="bg-neutral-50 px-4 pb-2">
               Select a category to view sub-categories.
             </p>
-          )}
+          )} */}
         </div>
       </div>
     </section>

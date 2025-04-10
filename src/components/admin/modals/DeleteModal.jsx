@@ -1,23 +1,32 @@
 import { Button, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { useContext } from "react";
 import { AuthContext } from "../../../Providers/AuthProvider";
-import { handleDeleteCategory } from "../../../api/categories";
+import useDeleteCategory from "../../../hooks/useDeleteCategory";
+import { useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import Spinner from "../loaders/Spinner";
 
 export default function DeleteModal({ isOpen, close, item, selectedStore }) {
   const { user } = useContext(AuthContext);
+  const queryClient = useQueryClient();
+  const { mutate, isPending } = useDeleteCategory({
+    storeId: selectedStore?.storeId,
+    token: user?.token,
+  });
 
   // Handle the delete action
   const handleDelete = async () => {
-    const categoryId = item.id;
-    const storeId = selectedStore.storeId;
-    try {
-      const data = await handleDeleteCategory(storeId, categoryId, user?.token);
-      if (data.message === "Category deleted successfully") {
+    mutate(item?.id, {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["categories", selectedStore?.storeId]);
+        toast.success("Category deleted!");
         close();
-      }
-    } catch (err) {
-      console.error(err);
-    }
+      },
+      onError: () => {
+        close();
+        toast.error("Something went wrong!");
+      },
+    });
   };
 
   return (
@@ -27,7 +36,7 @@ export default function DeleteModal({ isOpen, close, item, selectedStore }) {
       className="relative z-10 focus:outline-none"
       onClose={close}
     >
-      <div className="fixed inset-0 z-10 w-screen overflow-y-auto bg-black/25">
+      <div className="fixed inset-0 z-10 w-screen overflow-y-auto bg-black/25 backdrop-blur-sm">
         <div className="flex min-h-full items-center justify-center p-4">
           <DialogPanel
             transition
@@ -56,9 +65,9 @@ export default function DeleteModal({ isOpen, close, item, selectedStore }) {
               </Button>
               <button
                 onClick={handleDelete}
-                className="cursor-pointer rounded border border-red-600 bg-red-600 px-4 py-1.5 text-sm/6 font-semibold text-white transition-all duration-200 ease-in-out hover:bg-red-700 focus:outline-none"
+                className="flex min-h-[38px] min-w-[75px] cursor-pointer items-center justify-center rounded border border-red-600 bg-red-600 px-4 py-1.5 text-sm/6 font-semibold text-white transition-all duration-200 ease-in-out hover:bg-red-700 focus:outline-none"
               >
-                Delete
+                {isPending ? <Spinner /> : "Delete"}
               </button>
             </div>
           </DialogPanel>

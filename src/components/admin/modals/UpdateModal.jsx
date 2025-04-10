@@ -1,13 +1,23 @@
 import { useState, useEffect, useRef } from "react";
-import { Button, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
-import { handleUpdateCategory } from "../../../api/categories";
+import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import useAuth from "../../../hooks/useAuth";
+import useUpdateCategory from "../../../hooks/useUpdateCategory";
+import toast from "react-hot-toast";
+import Spinner from "../loaders/Spinner";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function UpdateModal({ isOpen, close, item, selectedStore }) {
+  const queryClient = useQueryClient();
   const { user } = useAuth();
   const imgRef = useRef();
   const [imgPreview, setImgPreview] = useState(null);
   const [newName, setNewName] = useState("");
+
+  const { mutate, isPending } = useUpdateCategory({
+    storeId: selectedStore?.storeId,
+    categoryId: item?.id,
+    token: user?.token,
+  });
 
   // Image click
   const handleImageClick = () => {
@@ -36,20 +46,17 @@ export default function UpdateModal({ isOpen, close, item, selectedStore }) {
       imgPreview || import.meta.env.VITE_BASE_URL + item.image,
     );
 
-    try {
-      const updateData = await handleUpdateCategory(
-        selectedStore?.storeId,
-        item?.id,
-        updateCategoryData,
-        user?.token,
-      );
-
-      console.log("category update response:", updateData);
-    } catch (err) {
-      console.error(err);
-    }
-    // console.log("Updated Sub-Category Name:", newName);
-    // close();
+    mutate(updateCategoryData, {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["categories", selectedStore?.storeId]);
+        toast.success("Categroy name updated!");
+        close();
+      },
+      onError: () => {
+        close();
+        toast.error("Something went wrong!");
+      },
+    });
   };
 
   return (
@@ -136,14 +143,15 @@ export default function UpdateModal({ isOpen, close, item, selectedStore }) {
 
             {/* buttons */}
             <div className="mt-6 flex items-center justify-end gap-3">
-              <Button
+              <button
+                type="button"
                 onClick={close}
                 className="cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold text-neutral-600 transition-all duration-200 ease-in-out hover:bg-neutral-100 focus:outline-none"
               >
                 Cancel
-              </Button>
-              <Button
-                className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 ease-in-out focus:outline-none ${
+              </button>
+              <button
+                className={`flex min-w-20 items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 ease-in-out focus:outline-none ${
                   newName === item.name
                     ? "cursor-not-allowed bg-neutral-100 text-neutral-400"
                     : "bg-dashboard-primary hover:bg-dashboard-primary/90 cursor-pointer text-white"
@@ -151,8 +159,8 @@ export default function UpdateModal({ isOpen, close, item, selectedStore }) {
                 disabled={newName === item.name}
                 type="submit"
               >
-                Update
-              </Button>
+                {isPending ? <Spinner /> : "Update"}
+              </button>
             </div>
           </DialogPanel>
         </form>
