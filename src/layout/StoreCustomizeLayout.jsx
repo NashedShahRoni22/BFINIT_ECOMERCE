@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TopNav from "../components/admin/shared/TopNav";
 import CustomizeSideNav from "../components/admin/shared/CustomizeSideNav";
 import Navbar1 from "../components/site/shared/Navbar/Navbar";
@@ -14,6 +14,10 @@ import Product1 from "../components/site/products/Product1";
 import Product2 from "../components/site/products/Product2";
 import Product3 from "../components/site/products/Product3";
 import Footer1 from "../components/site/shared/Footer/Footer";
+import useGetQuery from "../hooks/useGetQuery";
+import { useParams } from "react-router";
+import useAuth from "../hooks/useAuth";
+import WebsiteSkeleton from "../components/admin/loaders/WebasiteSkeleton";
 
 const componentLinks = [
   {
@@ -107,47 +111,57 @@ const componentLinks = [
 
 const componentsData = {
   navbar: {
-    nav1: Navbar1,
+    1: Navbar1,
   },
   banner: {
-    banner1: Banner1,
+    1: Banner1,
   },
   slider: {
-    slider1: Slider1,
-    slider2: Slider2,
-    slider3: Slider3,
+    1: Slider1,
+    2: Slider2,
+    3: Slider3,
   },
   category: {
-    category1: Category1,
-    category2: Category2,
+    1: Category1,
+    2: Category2,
   },
   product: {
-    product1: Product1,
-    product2: Product2,
-    product3: Product3,
+    1: Product1,
+    2: Product2,
+    3: Product3,
   },
 
   highlight: {
-    highlight1: Highlight1,
-    highlight2: Highlight2,
+    1: Highlight1,
+    2: Highlight2,
   },
 
   footer: {
-    footer1: Footer1,
+    1: Footer1,
   },
 };
 
 export default function StoreCustomizeLayout() {
+  const { user } = useAuth();
+  const { storeId } = useParams();
+  // fetch store preference
+  const { data: storePreferenceData, isLoading } = useGetQuery({
+    endpoint: `/store/preference/?storeId=${storeId}`,
+    token: user?.token,
+    queryKey: ["storePreference", storeId],
+    enabled: !!storeId && !!user?.token,
+  });
+
   const [showSideNav, setShowSideNav] = useState(false);
   const [openDropdown, setOpenDropdown] = useState("");
   const [selectedComponents, setSelectedComponents] = useState({
-    navbar: "nav1",
-    banner: "banner1",
-    slider: "slider1",
-    category: "category1",
-    highlight: "highlight1",
-    product: "product1",
-    footer: "footer1",
+    navbar: "1",
+    banner: "1",
+    slider: "1",
+    category: "1",
+    highlight: "1",
+    product: "1",
+    footer: "1",
   });
 
   // Toggle dropdown visibility
@@ -177,6 +191,22 @@ export default function StoreCustomizeLayout() {
     const Component = componentsData[category]?.[value];
     return Component ? <Component /> : null;
   };
+
+  useEffect(() => {
+    setSelectedComponents({
+      navbar: storePreferenceData?.data?.navbarStyle,
+      banner: storePreferenceData?.data?.bannerStyle,
+      slider: storePreferenceData?.data?.sliderStyle,
+      category: storePreferenceData?.data?.categoryStyle,
+      highlight: storePreferenceData?.data?.highlightStyle,
+      product: storePreferenceData?.data?.productStyle,
+      footer: storePreferenceData?.data?.footerStyle,
+    });
+  }, [storePreferenceData]);
+
+  if (isLoading) {
+    return <WebsiteSkeleton />;
+  }
 
   return (
     <>

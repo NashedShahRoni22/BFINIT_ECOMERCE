@@ -5,12 +5,12 @@ import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
 import EditableListItem from "../../../components/admin/EditableListItem/EditableListItem";
 import { AuthContext } from "../../../Providers/AuthProvider";
-import useCategoryQuery from "../../../hooks/useGetCategoryQuery";
 import ListItemSkeleton from "../../../components/admin/loaders/ListItemSkeleton";
 import useCreateCategory from "../../../hooks/useCreateCategory";
 import toast from "react-hot-toast";
 import Spinner from "../../../components/admin/loaders/Spinner";
 import { useQueryClient } from "@tanstack/react-query";
+import useGetQuery from "../../../hooks/useGetQuery";
 
 export default function Category() {
   const queryClient = useQueryClient();
@@ -26,9 +26,11 @@ export default function Category() {
     isLoading,
     isError,
     data: categories,
-  } = useCategoryQuery({
-    storeId: selectedStore?.storeId,
+  } = useGetQuery({
+    endpoint: `/category/?storeId=${selectedStore?.storeId}`,
     token: user?.token,
+    queryKey: ["categories", selectedStore?.storeId],
+    enabled: !!selectedStore?.storeId && !!user?.token,
   });
 
   // create new category

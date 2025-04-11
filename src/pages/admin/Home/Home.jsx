@@ -6,7 +6,6 @@ import useAuth from "../../../hooks/useAuth";
 
 export default function Home() {
   const { user } = useAuth();
-  console.log(user);
 
   return (
     <section className="px-5">

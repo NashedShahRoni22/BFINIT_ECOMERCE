@@ -85,7 +85,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: "/customize-store",
+    path: "/customize-store/:storeId",
     element: (
       <PrivateRoute>
         <StoreCustomizeLayout />

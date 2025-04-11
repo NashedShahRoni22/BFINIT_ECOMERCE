@@ -60,3 +60,13 @@ export const deleteCategory = async (storeId, categoryId, token) => {
   const data = await res.json();
   return data;
 };
+
+export const fetcher = async ({ url, token }) => {
+  const res = await fetch(url, {
+    headers: {
+      Authorization: token && token,
+    },
+  });
+
+  return res.json();
+};

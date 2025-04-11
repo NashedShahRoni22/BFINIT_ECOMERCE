@@ -2,10 +2,10 @@ import { useState } from "react";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import EditableListItem from "../../../components/admin/EditableListItem/EditableListItem";
 import useAuth from "../../../hooks/useAuth";
-import useCategoryQuery from "../../../hooks/useGetCategoryQuery";
 import useCreateSubCategory from "../../../hooks/useCreateSubCategory";
 import toast from "react-hot-toast";
 import Spinner from "../../../components/admin/loaders/Spinner";
+import useGetQuery from "../../../hooks/useGetQuery";
 
 export default function SubCategory() {
   const { user } = useAuth();
@@ -14,13 +14,11 @@ export default function SubCategory() {
   const [subCategoryName, setSubCategoryName] = useState("");
 
   // fetch categories based on storeId
-  const {
-    isLoading,
-    isError,
-    data: categories,
-  } = useCategoryQuery({
-    storeId: selectedStore?.storeId,
+  const { data: categories } = useGetQuery({
+    endpoint: `/category/?storeId=${selectedStore?.storeId}`,
     token: user?.token,
+    queryKey: ["categories", selectedStore?.storeId],
+    enabled: !!selectedStore?.storeId && !!user?.token,
   });
 
   // create new sub category
@@ -65,9 +63,6 @@ export default function SubCategory() {
       },
     }); */
   };
-
-  console.log("selected category", selectedCategory);
-  console.log("selected store", selectedStore);
 
   return (
     <section>

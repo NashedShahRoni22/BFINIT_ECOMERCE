@@ -1,21 +1,32 @@
-import { MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import CreateStoreCard from "../../../components/admin/stores/CreateStoreCard";
 import StoreCard from "../../../components/admin/stores/StoreCard";
-import { HiOutlineEye } from "react-icons/hi2";
-import { Link } from "react-router";
+import useAuth from "../../../hooks/useAuth";
+import StoreList from "../../../components/admin/stores/StoreList";
 
 export default function Stores() {
+  const { user } = useAuth();
+
   return (
     <section>
       <PageHeading heading="Manage Stores" />
       {/* stores overveiw */}
       <div className="mt-6">
-        <h5 className="font-semibold">Manage Stores (2/5) </h5>
+        <h5 className="font-semibold">
+          Manage Stores{" "}
+          {user && `(${user?.data?.storeCount}/${user?.data?.storeLimit})`}
+        </h5>
         <div className="mt-4 flex flex-wrap justify-center gap-4 md:justify-start">
-          <StoreCard />
-          <StoreCard />
-          <CreateStoreCard />
+          {user &&
+            user?.data?.EStore &&
+            user?.data?.EStore?.length > 0 &&
+            user?.data?.EStore?.map((store) => (
+              <StoreCard key={store?.storeId} storeData={store} />
+            ))}
+
+          {user && user?.data?.TotalstoreCount !== user?.data?.storeLimit && (
+            <CreateStoreCard />
+          )}
         </div>
       </div>
 
@@ -32,36 +43,8 @@ export default function Stores() {
             </tr>
           </thead>
           <tbody>
-            {Array.from({ length: 2 }, (_, i) => (
-              <tr key={i} className="border-y border-neutral-200 text-center">
-                <td className="text-sm">
-                  <div className="flex items-center gap-2.5 py-1.5">
-                    <img
-                      src="https://images.unsplash.com/photo-1545127398-14699f92334b?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                      alt=""
-                      loading="lazy"
-                      className="size-11 rounded-full object-cover"
-                    />
-                    <p>Amazon Lite</p>
-                  </div>
-                </td>
-                <td className="text-sm">Active</td>
-                <td>
-                  <Link to="/preview/1" className="flex justify-center">
-                    <HiOutlineEye className="hover:text-dashboard-primary cursor-pointer text-xl transition-all duration-200 ease-in-out" />
-                  </Link>
-                </td>
-                <td className="text-sm">
-                  <div className="space-x-2">
-                    <button className="cursor-pointer">
-                      <MdOutlineEdit className="hover:text-dashboard-primary text-xl transition-all duration-200 ease-in-out" />
-                    </button>
-                    <button className="cursor-pointer">
-                      <MdOutlineDelete className="text-xl transition-all duration-200 ease-in-out hover:text-red-500" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
+            {user?.data?.EStore?.map((store) => (
+              <StoreList key={store?.storeId} store={store} />
             ))}
           </tbody>
         </table>
