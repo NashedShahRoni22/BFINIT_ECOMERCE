@@ -6,7 +6,6 @@ import CustomizeSideNav from "../components/admin/shared/CustomizeSideNav";
 import useAuth from "../hooks/useAuth";
 import useGetQuery from "../hooks/useGetQuery";
 import { areComponentsEqual } from "../utils/admin/areComponentsEqual";
-import { componentLinks } from "../data/adminData/componentLinks";
 import { componentsData } from "../data/adminData/componentsData";
 
 export default function StoreCustomizeLayout() {
@@ -25,25 +24,25 @@ export default function StoreCustomizeLayout() {
   const [openDropdown, setOpenDropdown] = useState("");
   const [savedComponents, setSavedComponents] = useState({});
   const [selectedComponents, setSelectedComponents] = useState({
-    navbar: "nav1",
-    banner: "banner1",
-    slider: "slider1",
-    category: "category1",
-    highlight: "highlight1",
-    product: "product1",
-    footer: "footer1",
+    navbarStyle: "nav1",
+    sliderStyle: "slider1",
+    categoryStyle: "category1",
+    highlightStyle: "highlight1",
+    productStyle: "product1",
+    bannerStyle: "banner1",
+    footerStyle: "footer1",
   });
 
   // set database saved components to selectedComponents and savedComponents
   useEffect(() => {
     const dbSavedComponents = {
-      navbar: `nav${storePreferenceData?.data?.navbarStyle}`,
-      banner: `banner${storePreferenceData?.data?.bannerStyle}`,
-      slider: `slider${storePreferenceData?.data?.sliderStyle}`,
-      category: `category${storePreferenceData?.data?.categoryStyle}`,
-      highlight: `highlight${storePreferenceData?.data?.highlightStyle}`,
-      product: `product${storePreferenceData?.data?.productStyle}`,
-      footer: `footer${storePreferenceData?.data?.footerStyle}`,
+      navbarStyle: `nav${storePreferenceData?.data?.navbarStyle}`,
+      sliderStyle: `slider${storePreferenceData?.data?.sliderStyle}`,
+      categoryStyle: `category${storePreferenceData?.data?.categoryStyle}`,
+      highlightStyle: `highlight${storePreferenceData?.data?.highlightStyle}`,
+      productStyle: `product${storePreferenceData?.data?.productStyle}`,
+      bannerStyle: `banner${storePreferenceData?.data?.bannerStyle}`,
+      footerStyle: `footer${storePreferenceData?.data?.footerStyle}`,
     };
 
     setSelectedComponents(dbSavedComponents);
@@ -94,7 +93,6 @@ export default function StoreCustomizeLayout() {
       <main className="font-inter relative flex">
         <CustomizeSideNav
           showSideNav={showSideNav}
-          componentLinks={componentLinks}
           toggleDropdown={toggleDropdown}
           openDropdown={openDropdown}
           selectedComponents={selectedComponents}
@@ -104,13 +102,13 @@ export default function StoreCustomizeLayout() {
 
         <div className="relative h-[calc(100dvh-55px)] w-full overflow-y-auto px-5">
           {/* Render selected components dynamically */}
-          {renderComponent("navbar", selectedComponents.navbar)}
-          {renderComponent("slider", selectedComponents.slider)}
-          {renderComponent("category", selectedComponents.category)}
-          {renderComponent("highlight", selectedComponents.highlight)}
-          {renderComponent("product", selectedComponents.product)}
-          {renderComponent("banner", selectedComponents.banner)}
-          {renderComponent("footer", selectedComponents.footer)}
+          {renderComponent("navbarStyle", selectedComponents.navbarStyle)}
+          {renderComponent("sliderStyle", selectedComponents.sliderStyle)}
+          {renderComponent("categoryStyle", selectedComponents.categoryStyle)}
+          {renderComponent("highlightStyle", selectedComponents.highlightStyle)}
+          {renderComponent("productStyle", selectedComponents.productStyle)}
+          {renderComponent("bannerStyle", selectedComponents.bannerStyle)}
+          {renderComponent("footerStyle", selectedComponents.footerStyle)}
         </div>
       </main>
     </>

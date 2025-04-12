@@ -1,12 +1,10 @@
-const baseUrl = "https://ecomback.bfinit.com";
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export const getApi = async (endpoint, token) => {
-  const res = await fetch(baseUrl + endpoint, {
-    headers: token
-      ? {
-          Authorization: `Bearer ${token}`,
-        }
-      : {},
-  });
+  const headers = {
+    ...(token && { Authorization: `Bearer ${token}` }),
+  };
+
+  const res = await fetch(baseUrl + endpoint, { headers });
   return res.json();
 };

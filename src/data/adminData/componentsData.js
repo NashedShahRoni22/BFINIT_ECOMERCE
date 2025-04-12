@@ -13,31 +13,31 @@ import Product3 from "../../components/site/products/Product3";
 import Footer1 from "../../components/site/shared/Footer/Footer";
 
 export const componentsData = {
-  navbar: {
+  navbarStyle: {
     nav1: Navbar1,
   },
-  banner: {
-    banner1: Banner1,
-  },
-  slider: {
+  sliderStyle: {
     slider1: Slider1,
     slider2: Slider2,
     slider3: Slider3,
   },
-  category: {
+  categoryStyle: {
     category1: Category1,
     category2: Category2,
   },
-  product: {
+  highlightStyle: {
+    highlight1: Highlight1,
+    highlight2: Highlight2,
+  },
+  productStyle: {
     product1: Product1,
     product2: Product2,
     product3: Product3,
   },
-  highlight: {
-    highlight1: Highlight1,
-    highlight2: Highlight2,
+  bannerStyle: {
+    banner1: Banner1,
   },
-  footer: {
+  footerStyle: {
     footer1: Footer1,
   },
 };
