@@ -41,8 +41,13 @@ export default function StoreList({ store }) {
       </td>
       <td className="text-sm">
         <div className="space-x-2">
-          <button className="cursor-pointer">
-            <MdOutlineEdit className="hover:text-dashboard-primary text-xl transition-all duration-200 ease-in-out" />
+          <button>
+            <Link
+              to={`/customize-store/${store?.storeId}`}
+              className="cursor-pointer"
+            >
+              <MdOutlineEdit className="hover:text-dashboard-primary text-xl transition-all duration-200 ease-in-out" />
+            </Link>
           </button>
           <button onClick={handleDelete} className="cursor-pointer">
             <MdOutlineDelete className="text-xl transition-all duration-200 ease-in-out hover:text-red-500" />

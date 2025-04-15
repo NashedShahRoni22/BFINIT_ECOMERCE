@@ -2,6 +2,9 @@ import { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { AuthContext } from "../../../Providers/AuthProvider";
+import usePostMutation from "../../../hooks/usePostMutation";
+import toast from "react-hot-toast";
+import Spinner from "../../../components/admin/loaders/Spinner";
 
 export default function Login() {
   const { setUser } = useContext(AuthContext);
@@ -10,41 +13,27 @@ export default function Login() {
   const from = location.state?.from || "/";
   const [showPass, setShowPass] = useState(false);
 
+  const { mutate, isPending } = usePostMutation({ endpoint: "/clients/login" });
+
   const handleLogin = async (e) => {
     e.preventDefault();
     const form = e.target;
-    const email = form.email.value;
-    const password = form.password.value;
+    const loginInfo = {
+      email: form.email.value,
+      password: form.password.value,
+    };
 
-    try {
-      const res = await fetch("https://ecomback.bfinit.com/clients/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error(`HTTP error! Status: ${res.status}`);
-      }
-
-      const data = await res.json();
-      // save authinfo to localstorage
-      if (data.message === "login Successfull") {
-        const authInfo = { token: data.token, data: data.data };
-        setUser(authInfo);
-        localStorage.setItem("authInfo", JSON.stringify(authInfo));
-        navigate(from, { replace: true });
-      } else {
-        console.error("Login failed:", data.message);
-      }
-    } catch (error) {
-      console.error("Login failed:", error);
-    }
+    mutate(loginInfo, {
+      onSuccess: (data) => {
+        if (data.message === "login Successfull") {
+          toast.success("Login success!");
+          const authInfo = { token: data.token, data: data.data };
+          setUser(authInfo);
+          localStorage.setItem("authInfo", JSON.stringify(authInfo));
+          navigate(from, { replace: true });
+        }
+      },
+    });
   };
 
   return (
@@ -98,10 +87,11 @@ export default function Login() {
         </div>
 
         <button
+          className={`mt-6 flex min-h-10 w-full items-center justify-center rounded bg-indigo-500 py-2 text-white transition-all duration-200 ease-linear ${!isPending && "cursor-pointer hover:bg-indigo-600"}`}
           type="submit"
-          className="mt-6 w-full cursor-pointer rounded bg-indigo-500 py-2 text-white transition-all duration-200 ease-linear hover:bg-indigo-600"
+          disabled={isPending}
         >
-          Login
+          {isPending ? <Spinner /> : "Login"}
         </button>
 
         <div className="mt-6 space-x-2 text-center">

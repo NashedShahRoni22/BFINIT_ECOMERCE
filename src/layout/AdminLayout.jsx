@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Outlet } from "react-router";
+import { Outlet, ScrollRestoration } from "react-router";
 import TopNav from "../components/admin/shared/TopNav";
 import SideNav from "../components/admin/shared/SideNav";
 
@@ -15,6 +15,7 @@ export default function AdminLayout() {
           <Outlet />
         </div>
       </main>
+      <ScrollRestoration />
     </>
   );
 }

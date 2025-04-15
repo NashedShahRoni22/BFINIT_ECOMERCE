@@ -3,6 +3,10 @@ import { AuthContext } from "../../../Providers/AuthProvider";
 import ImageField from "../../../components/admin/ImageField/ImageField";
 import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
+import usePostMutation from "../../../hooks/usePostMutation";
+import Spinner from "../../../components/admin/loaders/Spinner";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
 
 const themes = [
   {
@@ -51,7 +55,7 @@ const productTypes = [
 ];
 
 export default function CreateStore() {
-  const { user } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const [countries, setCountries] = useState([]);
   useEffect(() => {
     fetch("country.json")
@@ -81,6 +85,15 @@ export default function CreateStore() {
     favicon: null,
   });
 
+  const navigate = useNavigate();
+
+  // store create post api hooks
+  const { mutate, isPending } = usePostMutation({
+    endpoint: "/store/create",
+    token: user?.token,
+    clientId: user?.data?.clientid,
+  });
+
   // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -88,7 +101,7 @@ export default function CreateStore() {
   };
 
   // Handle store creation
-  const handleCreateStore = async (e) => {
+  const handleCreateStore = (e) => {
     e.preventDefault();
 
     if (!selectedImages.logo || !selectedImages.favicon) {
@@ -105,23 +118,30 @@ export default function CreateStore() {
     formDataObj.append("storeLogo", selectedImages.logo);
     formDataObj.append("storeFavicon", selectedImages.favicon);
 
-    console.log("Create Store:", user);
+    mutate(formDataObj, {
+      onSuccess: (res) => {
+        toast.success("Store created successfully!");
+        const newStore = {
+          storeId: res.storeId,
+          storeName: res.storeName,
+          storeLogo: res.storeLogoUrl,
+        };
+        // Update EStore inside the user context
+        setUser((prevUser) => ({
+          ...prevUser,
+          data: {
+            ...prevUser.data,
+            EStore: [...prevUser.data.EStore, newStore],
+          },
+        }));
+        navigate("/all-stores");
+      },
 
-    try {
-      const res = await fetch("https://ecomback.bfinit.com/store/create", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-          clientid: `${user.data.clientid}`,
-        },
-        body: formDataObj,
-      });
-
-      const data = await res.json();
-      console.log("store create data:", data);
-    } catch (error) {
-      console.error("Error creating store:", error);
-    }
+      onError: (error) => {
+        toast.error("Something went wrong!");
+        console.error(error);
+      },
+    });
   };
 
   return (
@@ -337,12 +357,13 @@ export default function CreateStore() {
         </div>
 
         {/* Submit Button */}
-        <div className="mt-12 mb-5 text-center">
+        <div className="mt-12 mb-5 flex justify-center">
           <button
+            className={`bg-dashboard-primary hover:bg-dashboard-primary/90 flex min-h-8 min-w-[165px] items-center justify-center rounded px-4 py-1 text-white transition ${!isPending && "cursor-pointer"}`}
             type="submit"
-            className="bg-dashboard-primary hover:bg-dashboard-primary/90 rounded px-4 py-1 text-white transition"
+            disabled={isPending}
           >
-            Create New Store
+            {isPending ? <Spinner /> : "Create New Store"}
           </button>
         </div>
       </form>
