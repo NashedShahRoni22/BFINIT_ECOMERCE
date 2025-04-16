@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FcOpenedFolder } from "react-icons/fc";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import EditableListItem from "../../../components/admin/EditableListItem/EditableListItem";
 import useAuth from "../../../hooks/useAuth";
@@ -14,7 +15,7 @@ export default function SubCategory() {
   const [subCategoryName, setSubCategoryName] = useState("");
 
   // fetch categories based on storeId
-  const { data: categories } = useGetQuery({
+  const { data: categories, isLoading } = useGetQuery({
     endpoint: `/category/?storeId=${selectedStore?.storeId}`,
     token: user?.token,
     queryKey: ["categories", selectedStore?.storeId],
@@ -64,6 +65,8 @@ export default function SubCategory() {
     }); */
   };
 
+  console.log("categories:", categories);
+
   return (
     <section>
       <PageHeading heading="Add Sub-Category" />
@@ -95,7 +98,7 @@ export default function SubCategory() {
           </select>
 
           {/* select category */}
-          {selectedStore && (
+          {selectedStore && categories?.data?.length > 0 && (
             <>
               <label htmlFor="category" className="text-sm text-gray-600">
                 Select Category
@@ -117,6 +120,12 @@ export default function SubCategory() {
                   ))}
               </select>
             </>
+          )}
+
+          {selectedStore && !categories?.data?.length > 0 && (
+            <div>
+              <p className="text-gray-600">No categories found</p>
+            </div>
           )}
 
           {selectedCategory && categories?.data?.length > 0 && (

@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import { AuthContext } from "../../../Providers/AuthProvider";
 import ImageField from "../../../components/admin/ImageField/ImageField";
+import Spinner from "../../../components/admin/loaders/Spinner";
+import usePostMutation from "../../../hooks/usePostMutation";
 import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
-import usePostMutation from "../../../hooks/usePostMutation";
-import Spinner from "../../../components/admin/loaders/Spinner";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router";
 
 const themes = [
   {
@@ -55,7 +56,8 @@ const productTypes = [
 ];
 
 export default function CreateStore() {
-  const { user, setUser } = useContext(AuthContext);
+  const queryClient = useQueryClient();
+  const { user } = useContext(AuthContext);
   const [countries, setCountries] = useState([]);
   useEffect(() => {
     fetch("country.json")
@@ -88,7 +90,7 @@ export default function CreateStore() {
   const navigate = useNavigate();
 
   // store create post api hooks
-  const { mutate, isPending } = usePostMutation({
+  const { mutate, isPending, isError } = usePostMutation({
     endpoint: "/store/create",
     token: user?.token,
     clientId: user?.data?.clientid,
@@ -119,21 +121,9 @@ export default function CreateStore() {
     formDataObj.append("storeFavicon", selectedImages.favicon);
 
     mutate(formDataObj, {
-      onSuccess: (res) => {
+      onSuccess: () => {
         toast.success("Store created successfully!");
-        const newStore = {
-          storeId: res.storeId,
-          storeName: res.storeName,
-          storeLogo: res.storeLogoUrl,
-        };
-        // Update EStore inside the user context
-        setUser((prevUser) => ({
-          ...prevUser,
-          data: {
-            ...prevUser.data,
-            EStore: [...prevUser.data.EStore, newStore],
-          },
-        }));
+        queryClient.invalidateQueries(["stores", user?.data?.clientid]);
         navigate("/all-stores");
       },
 
@@ -363,7 +353,7 @@ export default function CreateStore() {
             type="submit"
             disabled={isPending}
           >
-            {isPending ? <Spinner /> : "Create New Store"}
+            {isPending && !isError ? <Spinner /> : "Create New Store"}
           </button>
         </div>
       </form>

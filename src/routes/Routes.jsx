@@ -93,7 +93,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/preview/:id",
+    path: "/preview/:storeId",
     element: (
       <PrivateRoute>
         <Preview />

@@ -1,10 +1,20 @@
 import { Link } from "react-router";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import StoreList from "../../../components/admin/stores/StoreList";
+import ListItemSkeleton from "../../../components/admin/loaders/ListItemSkeleton";
 import useAuth from "../../../hooks/useAuth";
+import useGetQuery from "../../../hooks/useGetQuery";
 
 export default function Stores() {
   const { user } = useAuth();
+
+  // fetch all stores list
+  const { data: stores, isLoading } = useGetQuery({
+    endpoint: `/store/names/${user?.data?.clientid}`,
+    token: user?.token,
+    queryKey: ["stores", user?.data?.clientid],
+    enabled: !!user?.data?.clientid && !!user?.token,
+  });
 
   return (
     <section>
@@ -14,7 +24,8 @@ export default function Stores() {
         <div className="flex items-center justify-between gap-8">
           <h5 className="font-semibold">
             Manage Stores{" "}
-            {user && `(${user?.data?.storeCount}/${user?.data?.storeLimit})`}
+            {user &&
+              `(${stores?.storeData?.length || 0}/${user?.data?.storeLimit})`}
           </h5>
           <Link
             to="/create-store"
@@ -36,9 +47,13 @@ export default function Stores() {
               </tr>
             </thead>
             <tbody>
-              {user?.data?.EStore?.map((store) => (
-                <StoreList key={store?.storeId} store={store} />
-              ))}
+              {isLoading
+                ? Array.from({ length: 4 }).map((_, i) => (
+                    <ListItemSkeleton key={i} />
+                  ))
+                : stores?.storeData?.map((store) => (
+                    <StoreList key={store?.storeId} store={store} />
+                  ))}
             </tbody>
           </table>
         </div>

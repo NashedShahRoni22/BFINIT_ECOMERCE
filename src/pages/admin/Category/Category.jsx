@@ -1,16 +1,16 @@
 import { useContext, useState } from "react";
+import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import ImageField from "../../../components/admin/ImageField/ImageField";
-import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
 import EditableListItem from "../../../components/admin/EditableListItem/EditableListItem";
 import { AuthContext } from "../../../Providers/AuthProvider";
 import ListItemSkeleton from "../../../components/admin/loaders/ListItemSkeleton";
-import useCreateCategory from "../../../hooks/useCreateCategory";
-import toast from "react-hot-toast";
 import Spinner from "../../../components/admin/loaders/Spinner";
-import { useQueryClient } from "@tanstack/react-query";
+import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import useGetQuery from "../../../hooks/useGetQuery";
+import usePostMutation from "../../../hooks/usePostMutation";
 
 export default function Category() {
   const queryClient = useQueryClient();
@@ -34,8 +34,8 @@ export default function Category() {
   });
 
   // create new category
-  const { mutate, isPending } = useCreateCategory({
-    storeId: selectedStore?.storeId,
+  const { mutate, isPending } = usePostMutation({
+    endpoint: `/category/create/${selectedStore?.storeId}`,
     token: user?.token,
   });
 
