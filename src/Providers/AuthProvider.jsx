@@ -14,7 +14,7 @@ export default function AuthProvider({ children }) {
         setUser(parsedUser);
       } catch (error) {
         console.error("Error parsing authInfo from localStorage:", error);
-        localStorage.removeItem("authInfo"); // Remove invalid data
+        localStorage.removeItem("authInfo");
       }
     }
   }, [setUser]);
@@ -23,8 +23,6 @@ export default function AuthProvider({ children }) {
     user,
     setUser,
   };
-
-  console.log("user", user);
 
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>

@@ -3,18 +3,13 @@ import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import StoreList from "../../../components/admin/stores/StoreList";
 import ListItemSkeleton from "../../../components/admin/loaders/ListItemSkeleton";
 import useAuth from "../../../hooks/useAuth";
-import useGetQuery from "../../../hooks/useGetQuery";
+import useGetStores from "../../../hooks/useGetStores";
 
 export default function Stores() {
   const { user } = useAuth();
 
   // fetch all stores list
-  const { data: stores, isLoading } = useGetQuery({
-    endpoint: `/store/names/${user?.data?.clientid}`,
-    token: user?.token,
-    queryKey: ["stores", user?.data?.clientid],
-    enabled: !!user?.data?.clientid && !!user?.token,
-  });
+  const { data: stores, isLoading } = useGetStores();
 
   return (
     <section>

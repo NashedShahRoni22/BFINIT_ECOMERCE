@@ -8,9 +8,10 @@ import EditableListItem from "../../../components/admin/EditableListItem/Editabl
 import { AuthContext } from "../../../Providers/AuthProvider";
 import ListItemSkeleton from "../../../components/admin/loaders/ListItemSkeleton";
 import Spinner from "../../../components/admin/loaders/Spinner";
-import { handleImgChange } from "../../../utils/admin/handleImgChange";
-import useGetQuery from "../../../hooks/useGetQuery";
 import usePostMutation from "../../../hooks/usePostMutation";
+import useGetCategories from "../../../hooks/useGetCategories";
+import { handleImgChange } from "../../../utils/admin/handleImgChange";
+import useGetStores from "../../../hooks/useGetStores";
 
 export default function Category() {
   const queryClient = useQueryClient();
@@ -19,19 +20,20 @@ export default function Category() {
     categoryIcon: null,
   });
   const [categoryName, setCategoryName] = useState("");
-  const [selectedStore, setSelectedStore] = useState("");
+  const [selectedStore, setSelectedStore] = useState({
+    storeId: "",
+    storeName: "",
+  });
+
+  // fetch stores
+  const { data: stores } = useGetStores();
 
   // fetch categories based on storeId
   const {
+    data: categories,
     isLoading,
     isError,
-    data: categories,
-  } = useGetQuery({
-    endpoint: `/category/?storeId=${selectedStore?.storeId}`,
-    token: user?.token,
-    queryKey: ["categories", selectedStore?.storeId],
-    enabled: !!selectedStore?.storeId && !!user?.token,
-  });
+  } = useGetCategories(selectedStore?.storeId);
 
   // create new category
   const { mutate, isPending } = usePostMutation({
@@ -39,13 +41,15 @@ export default function Category() {
     token: user?.token,
   });
 
-  // Handle store select dropdown
-  const handleStoreChange = async (e) => {
-    const selectedStoreId = e.target.value;
-    const foundStore = user?.data?.EStore?.find(
-      (store) => store.storeId === selectedStoreId,
-    );
-    setSelectedStore(foundStore);
+  // store select dropdown
+  const handleStoreChange = (e) => {
+    const selectedIndex = e.target.selectedIndex;
+    const selectedOption = e.target.options[selectedIndex];
+
+    setSelectedStore({
+      storeId: e.target.value,
+      storeName: selectedOption.text,
+    });
   };
 
   // create new category
@@ -103,16 +107,16 @@ export default function Category() {
               Select a store
             </option>
 
-            {user?.data?.EStore &&
-              user?.data?.EStore?.length > 0 &&
-              user?.data?.EStore?.map((store) => (
+            {stores?.storeData &&
+              stores?.storeData?.length > 0 &&
+              stores?.storeData?.map((store) => (
                 <option key={store?.storeId} value={store?.storeId}>
                   {store?.storeName}
                 </option>
               ))}
           </select>
 
-          {selectedStore && (
+          {selectedStore?.storeId && (
             <>
               <ImageField
                 id="categoryIcon"
@@ -156,7 +160,7 @@ export default function Category() {
 
         {/* all category lists container */}
         <div className="col-span-12 lg:col-span-8">
-          {selectedStore ? (
+          {selectedStore?.storeId ? (
             <p className="bg-neutral-50 px-4 py-2">
               Categories at{" "}
               <span className="font-semibold text-gray-900">
@@ -170,7 +174,9 @@ export default function Category() {
             </p>
           )}
 
-          {selectedStore && !isError && (isLoading || !categories?.data)
+          {selectedStore?.storeId &&
+          !isError &&
+          (isLoading || !categories?.data)
             ? Array.from({ length: 4 }).map((_, i) => (
                 <ListItemSkeleton key={`skeleton-${i}`} />
               ))
@@ -182,7 +188,7 @@ export default function Category() {
                 />
               ))}
 
-          {selectedStore &&
+          {selectedStore?.storeId &&
             !isError &&
             !isLoading &&
             !categories?.data?.length > 0 && (

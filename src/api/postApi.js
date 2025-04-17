@@ -1,3 +1,5 @@
+import { handleUnauthorized } from "../utils/admin/auth";
+
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export const postApi = async (endpoint, token, clientId, payload) => {
@@ -14,6 +16,8 @@ export const postApi = async (endpoint, token, clientId, payload) => {
     headers,
     body: isFormData ? payload : JSON.stringify(payload),
   });
+
+  handleUnauthorized(res);
 
   const data = await res.json();
 

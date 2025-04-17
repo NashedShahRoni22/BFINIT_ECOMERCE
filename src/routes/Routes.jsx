@@ -1,7 +1,8 @@
 import { createBrowserRouter } from "react-router";
 import Login from "../pages/admin/Login/Login";
-import Home from "../pages/admin/Home/Home";
+import PrivateRoute from "./PrivateRoute";
 import AdminLayout from "../layout/AdminLayout";
+import Home from "../pages/admin/Home/Home";
 import CreateStore from "../pages/admin/CreateStore/CreateStore";
 import AddProduct from "../pages/admin/AddProduct/AddProduct";
 import Category from "../pages/admin/Category/Category";
@@ -11,7 +12,6 @@ import ManageProduct from "../pages/admin/ManageProduct/ManageProduct";
 import StoreCustomizeLayout from "../layout/StoreCustomizeLayout";
 import Stores from "../pages/admin/Stores/Stores";
 import Orders from "../pages/admin/Orders/Orders";
-import PrivateRoute from "./PrivateRoute";
 import Preview from "../pages/admin/Preview/Preview";
 import Customers from "../pages/admin/Customers/Customers";
 import ManageBlog from "../pages/admin/ManageBlog/ManageBlog";

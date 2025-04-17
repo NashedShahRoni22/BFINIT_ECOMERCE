@@ -1,3 +1,5 @@
+import { handleUnauthorized } from "../utils/admin/auth";
+
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export const deleteApi = async (
@@ -22,6 +24,7 @@ export const deleteApi = async (
   }
 
   const res = await fetch(baseUrl + endpoint, options);
+  handleUnauthorized(res);
   const data = await res.json();
 
   if (!res.ok) {

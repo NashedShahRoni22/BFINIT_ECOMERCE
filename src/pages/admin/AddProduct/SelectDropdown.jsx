@@ -27,8 +27,8 @@ export default function SelectDropdown({
         {options &&
           options.length > 0 &&
           options.map((option, i) => (
-            <option key={i} value={option.title}>
-              {option.title}
+            <option key={i} value={option.id}>
+              {option.name}
             </option>
           ))}
       </select>

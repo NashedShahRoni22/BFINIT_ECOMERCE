@@ -1,71 +1,102 @@
 import { useState } from "react";
-import { FcOpenedFolder } from "react-icons/fc";
+import { MdOutlineClose } from "react-icons/md";
+import toast from "react-hot-toast";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import EditableListItem from "../../../components/admin/EditableListItem/EditableListItem";
-import useAuth from "../../../hooks/useAuth";
-import useCreateSubCategory from "../../../hooks/useCreateSubCategory";
-import toast from "react-hot-toast";
 import Spinner from "../../../components/admin/loaders/Spinner";
-import useGetQuery from "../../../hooks/useGetQuery";
+import useAuth from "../../../hooks/useAuth";
+import usePostMutation from "../../../hooks/usePostMutation";
+import { useQueryClient } from "@tanstack/react-query";
+import useGetCategories from "../../../hooks/useGetCategories";
+import useGetSubCategories from "../../../hooks/useGetSubCategories";
+import useGetStores from "../../../hooks/useGetStores";
 
 export default function SubCategory() {
+  const queryClient = useQueryClient();
   const { user } = useAuth();
-  const [selectedStore, setSelectedStore] = useState("");
+  const [selectedStore, setSelectedStore] = useState({
+    storeId: "",
+    storeName: "",
+  });
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [subCategoryName, setSubCategoryName] = useState("");
+  const [subCategoryInput, setSubCategoryInput] = useState("");
+  const [subCategoires, setSubCategories] = useState([]);
 
+  // fetch stores
+  const { data: stores } = useGetStores();
   // fetch categories based on storeId
-  const { data: categories, isLoading } = useGetQuery({
-    endpoint: `/category/?storeId=${selectedStore?.storeId}`,
+  const { data: categories } = useGetCategories(selectedStore?.storeId);
+  // fetch sub-categories based on storeId & categoryId
+  const { data: subCategoriesData } = useGetSubCategories(
+    selectedStore?.storeId,
+    selectedCategory,
+  );
+
+  // custom hooks to create new sub-category
+  const { mutate, isPending } = usePostMutation({
+    endpoint: `/subcategory/create/${selectedStore?.storeId}/${selectedCategory}`,
     token: user?.token,
-    queryKey: ["categories", selectedStore?.storeId],
-    enabled: !!selectedStore?.storeId && !!user?.token,
   });
 
-  // create new sub category
-  const { mutate, isPending } = useCreateSubCategory({
-    storeId: selectedStore?.storeId,
-    categoryId: selectedCategory,
-    token: user?.token,
-  });
+  // store select dropdown
+  const handleStoreChange = (e) => {
+    const selectedIndex = e.target.selectedIndex;
+    const selectedOption = e.target.options[selectedIndex];
 
-  // Handle store select dropdown
-  const handleStoreChange = async (e) => {
-    const selectedStoreId = e.target.value;
-    const foundStore = user?.data?.EStore?.find(
-      (store) => store.storeId === selectedStoreId,
-    );
-    setSelectedStore(foundStore);
+    setSelectedStore({
+      storeId: e.target.value,
+      storeName: selectedOption.text,
+    });
   };
 
+  // handle category select dropdown
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value);
   };
 
-  const handleSubCategoryNameChange = (e) => {
-    setSubCategoryName(e.target.value);
+  // handle add sub-categories array in local state
+  const handleSubCategories = (e) => {
+    if (!subCategoryInput) {
+      return;
+    }
+
+    if (e.key === "Enter" || e.type === "click") {
+      e.preventDefault();
+      setSubCategories([...subCategoires, subCategoryInput]);
+      setSubCategoryInput("");
+    }
+  };
+
+  // remove sub-category from local subCategories array
+  const removeSubCategory = (indexToRemove) => {
+    const filteredSubCategories = subCategoires.filter(
+      (_, index) => index !== indexToRemove,
+    );
+    setSubCategories(filteredSubCategories);
   };
 
   // Add New Sub-Catgory
   const handleAddSubCategory = () => {
-    /* const subCategoryArr = [subCategoryName];
-    const subCategoryFormData = {
-      subcategories: 
+    const subCategoriesObj = {
+      subcategories: subCategoires,
     };
-    subCategoryFormData.append("subcategories", subCategoryArr); */
-    /* mutate([subCategoryFormData], {
+
+    mutate(subCategoriesObj, {
       onSuccess: () => {
-        setSubCategoryName("");
+        setSubCategories([]);
         toast.success("New Sub-category created!");
+        queryClient.invalidateQueries([
+          "subCategories",
+          selectedStore?.storeId,
+          selectedCategory,
+        ]);
       },
       onError: () => {
-        setSubCategoryName("");
+        setSubCategories([]);
         toast.error("Something went wrong!");
       },
-    }); */
+    });
   };
-
-  console.log("categories:", categories);
 
   return (
     <section>
@@ -88,9 +119,9 @@ export default function SubCategory() {
               Select a store
             </option>
 
-            {user?.data?.EStore &&
-              user?.data?.EStore?.length > 0 &&
-              user?.data?.EStore?.map((store) => (
+            {stores &&
+              stores?.storeData?.length > 0 &&
+              stores?.storeData?.map((store) => (
                 <option key={store?.storeId} value={store?.storeId}>
                   {store?.storeName}
                 </option>
@@ -98,7 +129,7 @@ export default function SubCategory() {
           </select>
 
           {/* select category */}
-          {selectedStore && categories?.data?.length > 0 && (
+          {selectedStore?.storeId && categories?.data?.length > 0 && (
             <>
               <label htmlFor="category" className="text-sm text-gray-600">
                 Select Category
@@ -122,7 +153,7 @@ export default function SubCategory() {
             </>
           )}
 
-          {selectedStore && !categories?.data?.length > 0 && (
+          {selectedStore?.storeId && !categories?.data?.length > 0 && (
             <div>
               <p className="text-gray-600">No categories found</p>
             </div>
@@ -133,19 +164,46 @@ export default function SubCategory() {
               <label htmlFor="subCategoryName" className="text-sm font-medium">
                 Sub-Category Name
               </label>
-              <input
-                type="text"
-                id="subCategoryName"
-                name="subCategoryName"
-                value={subCategoryName}
-                onChange={handleSubCategoryNameChange}
-                className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
-                placeholder="Enter sub-category name"
-              />
+              <div className="relative mt-1.5">
+                <input
+                  type="text"
+                  id="subCategoryName"
+                  name="subCategoryName"
+                  value={subCategoryInput}
+                  onChange={(e) => setSubCategoryInput(e.target.value)}
+                  onKeyDown={handleSubCategories}
+                  className="w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
+                  placeholder="Enter sub-category name"
+                />
+                <button
+                  className={`${subCategoryInput ? "bg-dashboard-primary" : "bg-neutral-400"} absolute top-1/2 right-0 -translate-y-1/2 cursor-pointer rounded-r px-4 py-1 text-white`}
+                  onClick={handleSubCategories}
+                >
+                  Add
+                </button>
+              </div>
+              {/* sub-categories */}
+              <div className="mt-4 flex flex-wrap gap-1.5">
+                {subCategoires.map((subCat, i) => (
+                  <div
+                    key={i}
+                    className="bg-dashboard-primary/85 hover:bg-dashboard-primary inline-flex items-center gap-1 rounded-lg px-2 py-0.5 text-sm text-white transition-all duration-200 ease-linear"
+                  >
+                    <p>{subCat}</p>
+                    <button
+                      className="cursor-pointer"
+                      onClick={() => removeSubCategory(i)}
+                    >
+                      <MdOutlineClose className="text-lg" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
               <button
-                disabled={!subCategoryName}
+                disabled={subCategoires.length < 0}
                 onClick={handleAddSubCategory}
-                className={`mt-4 flex min-h-10 w-full items-center justify-center rounded px-4 py-2 transition duration-200 ease-in-out ${!subCategoryName ? "bg-neutral-200 text-neutral-600" : "bg-dashboard-primary/90 hover:bg-dashboard-primary cursor-pointer text-white"}`}
+                className={`mt-4 flex min-h-10 w-full items-center justify-center rounded px-4 py-2 transition duration-200 ease-in-out ${subCategoires.length > 0 ? "bg-dashboard-primary/90 hover:bg-dashboard-primary cursor-pointer text-white" : "bg-neutral-200 text-neutral-600"}`}
               >
                 {isPending ? <Spinner /> : "Add Sub-Category"}
               </button>
@@ -155,14 +213,16 @@ export default function SubCategory() {
 
         {/* Right Side: List of Sub-Categories */}
         <div>
-          <p className="rounded bg-neutral-50 px-4 py-2 font-semibold">
+          <p className="mb-2 rounded bg-neutral-50 px-4 py-2 font-semibold">
             Existing Sub-Categories
           </p>
-          {/* {selectedCategory ? (
+          {selectedCategory ? (
             <ul className="space-y-2">
-              {filteredSubCategories && filteredSubCategories.length > 0 ? (
-                filteredSubCategories.map((subCat) => (
-                  <EditableListItem key={subCat.id} item={subCat} />
+              {subCategoriesData && subCategoriesData?.data?.length > 0 ? (
+                subCategoriesData?.data?.map((subCat, i) => (
+                  <li key={i} className="px-4">
+                    {subCat}
+                  </li>
                 ))
               ) : (
                 <p className="bg-neutral-50 px-4 pb-2">
@@ -174,7 +234,7 @@ export default function SubCategory() {
             <p className="bg-neutral-50 px-4 pb-2">
               Select a category to view sub-categories.
             </p>
-          )} */}
+          )}
         </div>
       </div>
     </section>

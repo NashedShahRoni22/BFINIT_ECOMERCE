@@ -3,9 +3,11 @@ import QuickTips from "../../../components/admin/quickTips/QuickTips";
 import CreateStoreCard from "../../../components/admin/stores/CreateStoreCard";
 import StoreCard from "../../../components/admin/stores/StoreCard";
 import useAuth from "../../../hooks/useAuth";
+import useGetStores from "../../../hooks/useGetStores";
 
 export default function Home() {
   const { user } = useAuth();
+  const { data: stores } = useGetStores();
 
   return (
     <section className="px-5">
@@ -16,13 +18,14 @@ export default function Home() {
       <div className="mt-8">
         <h5 className="font-semibold">
           Manage Stores{" "}
-          {user && `(${user?.data?.storeCount}/${user?.data?.storeLimit})`}
+          {user &&
+            `(${stores?.storeData?.length > 0 ? stores?.storeData?.length : 0}/${user?.data?.storeLimit})`}
         </h5>
         <div className="mt-4 flex flex-wrap justify-center gap-4 md:justify-start">
-          {user &&
-            user?.data?.EStore &&
-            user?.data?.EStore?.length > 0 &&
-            user?.data?.EStore?.map((store) => (
+          {stores &&
+            stores?.storeData &&
+            stores?.storeData?.length > 0 &&
+            stores?.storeData?.map((store) => (
               <StoreCard key={store?.storeId} storeData={store} />
             ))}
 

@@ -6,6 +6,8 @@ import CheckBoxFeat from "./CheckBoxFeat";
 import InputField from "./InputField";
 import SelectDropdown from "./SelectDropdown";
 import "suneditor/dist/css/suneditor.min.css";
+import useGetStores from "../../../hooks/useGetStores";
+import useGetCategories from "../../../hooks/useGetCategories";
 
 const options = [
   {
@@ -17,7 +19,10 @@ const options = [
 ];
 
 export default function AddProduct() {
-  const [selectedStore, setSelectedStore] = useState("");
+  const [selectedStore, setSelectedStore] = useState({
+    storeId: "",
+    storeName: "",
+  });
   const [selectedImages, setSelectedImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [formData, setFormData] = useState({
@@ -37,9 +42,20 @@ export default function AddProduct() {
     description: "",
   });
 
-  // Handle store select change
+  // fetch all stores list
+  const { data: stores } = useGetStores();
+  // fetch categories based on storeId
+  const { data: categories } = useGetCategories(selectedStore?.storeId);
+
+  // store select dropdown
   const handleStoreChange = (e) => {
-    setSelectedStore(e.target.value);
+    const selectedIndex = e.target.selectedIndex;
+    const selectedOption = e.target.options[selectedIndex];
+
+    setSelectedStore({
+      storeId: e.target.value,
+      storeName: selectedOption.text,
+    });
   };
 
   // Handle input field and chekbox
@@ -73,7 +89,7 @@ export default function AddProduct() {
       <div className="my-6 flex flex-wrap items-center justify-between">
         {selectedStore ? (
           <h3 className="text-lg font-semibold">
-            Add New Product to Store {selectedStore}
+            Add New Product to Store {selectedStore.storeName}
           </h3>
         ) : (
           <h3 className="text-lg font-semibold">
@@ -87,23 +103,25 @@ export default function AddProduct() {
           </label>
           <select
             id="storeSelect"
-            value={selectedStore}
+            value={selectedStore.storeId}
             onChange={handleStoreChange}
             className="rounded-md border border-neutral-300 p-2 text-sm focus:outline-none"
           >
             <option value="" disabled>
               Select Store
             </option>
-            {Array.from({ length: 5 }).map((_, i) => (
-              <option key={i} value={i + 1}>
-                Store {i + 1}
-              </option>
-            ))}
+            {stores &&
+              stores?.storeData?.length > 0 &&
+              stores?.storeData?.map((store) => (
+                <option key={store.id} value={store?.storeId}>
+                  {store?.storeName}
+                </option>
+              ))}
           </select>
         </div>
       </div>
 
-      {selectedStore && (
+      {selectedStore.storeId && (
         <form onSubmit={handleSubmit} className="mt-6 grid grid-cols-12 gap-5">
           {/* General Info */}
           <div className="col-span-12 rounded-md border border-neutral-200 px-4 pt-6 pb-4 lg:col-span-8">
@@ -128,7 +146,11 @@ export default function AddProduct() {
                   formData={formData.category}
                   required={true}
                   handleInputChange={handleInputChange}
-                  options={options}
+                  options={
+                    categories && categories?.data?.length > 0
+                      ? categories?.data
+                      : []
+                  }
                 />
               </div>
               {/* subCategory */}
