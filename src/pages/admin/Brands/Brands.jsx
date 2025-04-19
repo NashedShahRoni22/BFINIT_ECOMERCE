@@ -6,9 +6,9 @@ import EditableListItem from "../../../components/admin/EditableListItem/Editabl
 import ImageField from "../../../components/admin/ImageField/ImageField";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import useAuth from "../../../hooks/useAuth";
-import useGetQuery from "../../../hooks/useGetQuery";
 import usePostMutation from "../../../hooks/usePostMutation";
 import useGetStores from "../../../hooks/useGetStores";
+import useGetBrands from "../../../hooks/useGetBrands";
 import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
 
@@ -27,12 +27,7 @@ export default function Brands() {
   const { data: stores } = useGetStores();
 
   // fetch all brands
-  const { data: brands } = useGetQuery({
-    endpoint: `/brand/?storeId=${selectedStore.storeId}`,
-    token: user?.token,
-    queryKey: ["brands", selectedStore.storeId],
-    enabled: !!user?.token && !!selectedStore.storeId,
-  });
+  const { data: brands } = useGetBrands(selectedStore.storeId);
 
   // custom hook to crete new brand
   const { mutate, isPending } = usePostMutation({

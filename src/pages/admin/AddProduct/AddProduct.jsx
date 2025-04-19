@@ -8,17 +8,15 @@ import SelectDropdown from "./SelectDropdown";
 import "suneditor/dist/css/suneditor.min.css";
 import useGetStores from "../../../hooks/useGetStores";
 import useGetCategories from "../../../hooks/useGetCategories";
-
-const options = [
-  {
-    title: "CPU",
-  },
-  {
-    title: "GPU",
-  },
-];
+import useGetSubCategories from "../../../hooks/useGetSubCategories";
+import useGetBrands from "../../../hooks/useGetBrands";
+import toast from "react-hot-toast";
+import usePostMutation from "../../../hooks/usePostMutation";
+import useAuth from "../../../hooks/useAuth";
+import Spinner from "../../../components/admin/loaders/Spinner";
 
 export default function AddProduct() {
+  const { user } = useAuth();
   const [selectedStore, setSelectedStore] = useState({
     storeId: "",
     storeName: "",
@@ -27,13 +25,19 @@ export default function AddProduct() {
   const [imagePreviews, setImagePreviews] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
-    category: "",
+    category: {
+      id: "",
+      name: "",
+    },
     subCategory: "",
     originalPrice: "",
     discountPercent: "",
     quantity: "",
     shippingCharge: "",
-    brand: "",
+    brand: {
+      id: "",
+      name: "",
+    },
     status: "yes",
     bestSelling: "",
     flashSell: "",
@@ -46,6 +50,13 @@ export default function AddProduct() {
   const { data: stores } = useGetStores();
   // fetch categories based on storeId
   const { data: categories } = useGetCategories(selectedStore?.storeId);
+  // fetch sub-categories based on storeId & categoryId
+  const { data: subCategoriesData } = useGetSubCategories(
+    selectedStore?.storeId,
+    formData.category.id,
+  );
+  // fetch brands based on storeId
+  const { data: brandsData } = useGetBrands(selectedStore?.storeId);
 
   // store select dropdown
   const handleStoreChange = (e) => {
@@ -61,7 +72,20 @@ export default function AddProduct() {
   // Handle input field and chekbox
   const handleInputChange = (e) => {
     const { value, name } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "category" || name === "brand") {
+      const selectedIndex = e.target.selectedIndex;
+      const selectedName = e.target.options[selectedIndex].text;
+      setFormData((prev) => ({
+        ...prev,
+        [name]: {
+          id: value,
+          name: selectedName,
+        },
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   // Handle description of suneditor
@@ -69,16 +93,57 @@ export default function AddProduct() {
     setFormData((prev) => ({ ...prev, description: content }));
   };
 
+  // custom hooks of post api
+  const { mutate, isPending, isError } = usePostMutation({
+    endpoint: `/product/create/${selectedStore?.storeId}`,
+    token: user?.token,
+  });
+
+  // handle product form submit
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (formData.description === "") {
-      return alert("Description can not be empty!");
+      return toast.error("Description can't be emtpy!");
     }
 
-    if (selectedImages.length <= 0) {
-      return alert("Please select at least 1 image!");
+    if (!selectedImages || selectedImages.length <= 0) {
+      return toast.error("Product Images are required — add at least one!");
     }
-    console.log(formData);
+
+    const productData = {
+      productName: formData.name,
+      productCategory: formData.category.name,
+      productSubCategory: formData.subCategory,
+      productBrand: formData.brand.name,
+      productPrice: formData.originalPrice,
+      discountPrice: formData.discountPercent,
+      productQuantity: formData.quantity,
+      shippingCharges: formData.shippingCharge,
+      productStatus: formData.status === "yes" ? true : false,
+      bestSelling: formData.bestSelling === "yes" ? true : false,
+      flashSale: formData.flashSell === "yes" ? true : false,
+      newArraivals: formData.new === "yes" ? true : false,
+      productDescription: formData.description,
+    };
+
+    const payload = new FormData();
+
+    payload.append("productData", JSON.stringify(productData));
+    selectedImages.forEach((image) => {
+      payload.append("productImages", image);
+    });
+
+    mutate(payload, {
+      onSuccess: () => {
+        toast.success("New product added!");
+        e.target.reset();
+      },
+      onError: () => {
+        toast.error("Something went wrong!");
+        e.target.reset();
+      },
+    });
   };
 
   return (
@@ -113,7 +178,7 @@ export default function AddProduct() {
             {stores &&
               stores?.storeData?.length > 0 &&
               stores?.storeData?.map((store) => (
-                <option key={store.id} value={store?.storeId}>
+                <option key={store?.storeId} value={store?.storeId}>
                   {store?.storeName}
                 </option>
               ))}
@@ -143,7 +208,7 @@ export default function AddProduct() {
                   label="Category"
                   id="category"
                   name="category"
-                  formData={formData.category}
+                  formData={formData.category.id}
                   required={true}
                   handleInputChange={handleInputChange}
                   options={
@@ -155,15 +220,30 @@ export default function AddProduct() {
               </div>
               {/* subCategory */}
               <div>
-                <SelectDropdown
-                  label="Sub-Category"
+                <label htmlFor="subCategory" className="text-sm text-gray-600">
+                  Sub-Category
+                </label>
+                <br />
+                <select
+                  onChange={handleInputChange}
                   id="subCategory"
                   name="subCategory"
-                  formData={formData.subCategory}
-                  required={true}
-                  handleInputChange={handleInputChange}
-                  options={options}
-                />
+                  value={formData.subCategory}
+                  required
+                  disabled={formData?.category ? false : true}
+                  className="mt-1 mb-2 w-full rounded-md border border-neutral-200 bg-[#f8fafb] px-2 py-1.5 outline-none"
+                >
+                  <option value="" disabled>
+                    Select Sub-Category
+                  </option>
+                  {subCategoriesData &&
+                    subCategoriesData?.data?.length > 0 &&
+                    subCategoriesData?.data?.map((subCate, i) => (
+                      <option key={i} value={subCate}>
+                        {subCate}
+                      </option>
+                    ))}
+                </select>
               </div>
             </div>
           </div>
@@ -248,10 +328,14 @@ export default function AddProduct() {
               label="Brand"
               id="brand"
               name="brand"
-              formData={formData.brand}
+              formData={formData.brand.id}
               required={true}
               handleInputChange={handleInputChange}
-              options={options}
+              options={
+                brandsData && brandsData?.data?.length > 0
+                  ? brandsData?.data
+                  : []
+              }
             />
 
             {/* Status */}
@@ -348,12 +432,13 @@ export default function AddProduct() {
           </div>
 
           {/* submit button */}
-          <div className="col-span-12 mt-12 mb-5 text-center">
+          <div className="col-span-12 mt-12 mb-5 flex items-center justify-center">
             <button
+              className="bg-dashboard-primary/90 hover:bg-dashboard-primary flex min-h-8 min-w-[164px] cursor-pointer items-center justify-center rounded px-4 py-1 text-white transition duration-200 ease-in-out"
               type="submit"
-              className="bg-dashboard-primary/90 hover:bg-dashboard-primary cursor-pointer rounded px-4 py-1 text-white transition duration-200 ease-in-out"
+              disabled={isPending}
             >
-              Add New Product
+              {isPending && !isError ? <Spinner /> : " Add New Product"}
             </button>
           </div>
         </form>
