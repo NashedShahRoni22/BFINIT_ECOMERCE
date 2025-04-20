@@ -3,8 +3,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import toast from "react-hot-toast";
 import Spinner from "../loaders/Spinner";
-import useAuth from "../../../hooks/useAuth";
-import useUpdateMutation from "../../../hooks/useUpdateMutation";
+import useAuth from "../../../hooks/auth/useAuth";
+import useUpdateMutation from "../../../hooks/mutations/useUpdateMutation";
 
 export default function UpdateModal({ isOpen, close, item, selectedStore }) {
   const queryClient = useQueryClient();
@@ -13,6 +13,7 @@ export default function UpdateModal({ isOpen, close, item, selectedStore }) {
   const [imgPreview, setImgPreview] = useState(null);
   const [newName, setNewName] = useState("");
 
+  // custom update hooks
   const { mutate, isPending } = useUpdateMutation({
     endpoint: `/category/update/${selectedStore?.storeId}/${item?.id}`,
     token: user?.token,

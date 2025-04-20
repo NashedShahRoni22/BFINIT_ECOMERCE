@@ -11,7 +11,9 @@ export default function CartProvider({ children }) {
   // Save cart items to local storage
   const handleAddToCart = (product) => {
     setCartItems((prevItems) => {
-      const isItemInCart = prevItems.some((item) => item.id === product.id);
+      const isItemInCart = prevItems.some(
+        (item) => item.productId === product.productId,
+      );
       if (!isItemInCart) {
         return [{ ...product, quantity: 1 }, ...prevItems];
       }
@@ -23,7 +25,7 @@ export default function CartProvider({ children }) {
   const handleUpdateQuantity = (productId, newQuanity) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
-        item.id === productId ? { ...item, quantity: newQuanity } : item,
+        item.productId === productId ? { ...item, quantity: newQuanity } : item,
       ),
     );
   };
@@ -31,7 +33,9 @@ export default function CartProvider({ children }) {
   // Deleate a cart item from local storage
   const handleCartDelete = (productId) => {
     setCartItems((prevItems) => {
-      const updatedItems = prevItems.filter((item) => item.id !== productId);
+      const updatedItems = prevItems.filter(
+        (item) => item.productId !== productId,
+      );
       return updatedItems;
     });
   };

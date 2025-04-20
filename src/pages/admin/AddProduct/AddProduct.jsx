@@ -6,16 +6,20 @@ import CheckBoxFeat from "./CheckBoxFeat";
 import InputField from "./InputField";
 import SelectDropdown from "./SelectDropdown";
 import "suneditor/dist/css/suneditor.min.css";
-import useGetStores from "../../../hooks/useGetStores";
-import useGetCategories from "../../../hooks/useGetCategories";
-import useGetSubCategories from "../../../hooks/useGetSubCategories";
-import useGetBrands from "../../../hooks/useGetBrands";
+import useGetStores from "../../../hooks/stores/useGetStores";
+import useGetCategories from "../../../hooks/categories/useGetCategories";
+import useGetSubCategories from "../../../hooks/categories/subCategories/useGetSubCategories";
+import useGetBrands from "../../../hooks/brands/useGetBrands";
 import toast from "react-hot-toast";
-import usePostMutation from "../../../hooks/usePostMutation";
-import useAuth from "../../../hooks/useAuth";
+import useAuth from "../../../hooks/auth/useAuth";
 import Spinner from "../../../components/admin/loaders/Spinner";
+import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
+import usePostMutation from "../../../hooks/mutations/usePostMutation";
 
 export default function AddProduct() {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [selectedStore, setSelectedStore] = useState({
     storeId: "",
@@ -45,6 +49,35 @@ export default function AddProduct() {
     new: "",
     description: "",
   });
+
+  // reset form on submit function
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      category: {
+        id: "",
+        name: "",
+      },
+      subCategory: "",
+      originalPrice: "",
+      discountPercent: "",
+      quantity: "",
+      shippingCharge: "",
+      brand: {
+        id: "",
+        name: "",
+      },
+      status: "yes",
+      bestSelling: "",
+      flashSell: "",
+      featured: "",
+      new: "",
+      description: "",
+    });
+
+    setSelectedImages([]);
+    setImagePreviews([]);
+  };
 
   // fetch all stores list
   const { data: stores } = useGetStores();
@@ -137,11 +170,17 @@ export default function AddProduct() {
     mutate(payload, {
       onSuccess: () => {
         toast.success("New product added!");
-        e.target.reset();
+        resetForm();
+        queryClient.invalidateQueries([
+          "products",
+          selectedStore?.storeId,
+          user?.token,
+        ]);
+        navigate("/products/manage-product");
       },
       onError: () => {
         toast.error("Something went wrong!");
-        e.target.reset();
+        resetForm();
       },
     });
   };

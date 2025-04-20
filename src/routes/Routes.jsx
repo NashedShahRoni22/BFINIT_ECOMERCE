@@ -16,6 +16,8 @@ import Preview from "../pages/admin/Preview/Preview";
 import Customers from "../pages/admin/Customers/Customers";
 import ManageBlog from "../pages/admin/ManageBlog/ManageBlog";
 import AddBlog from "../pages/admin/AddBlog/AddBlog";
+import Cart from "../pages/store/Cart";
+import PreviewLayout from "../layout/PreviewLayout";
 
 export const router = createBrowserRouter([
   {
@@ -96,8 +98,18 @@ export const router = createBrowserRouter([
     path: "/preview/:storeId",
     element: (
       <PrivateRoute>
-        <Preview />
+        <PreviewLayout />
       </PrivateRoute>
     ),
+    children: [
+      {
+        index: true,
+        element: <Preview />,
+      },
+      {
+        path: "cart",
+        element: <Cart />,
+      },
+    ],
   },
 ]);

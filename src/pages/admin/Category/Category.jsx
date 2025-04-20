@@ -8,10 +8,10 @@ import EditableListItem from "../../../components/admin/EditableListItem/Editabl
 import { AuthContext } from "../../../Providers/AuthProvider";
 import ListItemSkeleton from "../../../components/admin/loaders/ListItemSkeleton";
 import Spinner from "../../../components/admin/loaders/Spinner";
-import usePostMutation from "../../../hooks/usePostMutation";
-import useGetCategories from "../../../hooks/useGetCategories";
+import usePostMutation from "../../../hooks/mutations/usePostMutation";
+import useGetCategories from "../../../hooks/categories/useGetCategories";
 import { handleImgChange } from "../../../utils/admin/handleImgChange";
-import useGetStores from "../../../hooks/useGetStores";
+import useGetStores from "../../../hooks/stores/useGetStores";
 
 export default function Category() {
   const queryClient = useQueryClient();

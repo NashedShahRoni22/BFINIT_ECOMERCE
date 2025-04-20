@@ -1,7 +1,11 @@
-import { techCategories } from "../../../data/techCategories";
+import { useParams } from "react-router";
 import CategoryCard from "../shared/CategoryCard";
+import useGetCategories from "../../../hooks/categories/useGetCategories";
 
 export default function Category1() {
+  const { storeId } = useParams();
+  const { data: categories } = useGetCategories(storeId);
+
   return (
     <section className="mx-5 py-10 md:container md:mx-auto md:py-20">
       <h2 className="font-merriweather text-center text-xl font-medium md:text-3xl">
@@ -12,9 +16,11 @@ export default function Category1() {
       </p>
 
       <div className="mt-10 grid grid-cols-3 gap-2 md:gap-y-5 lg:grid-cols-6 xl:grid-cols-8">
-        {techCategories.map((category, i) => (
-          <CategoryCard key={i} category={category} />
-        ))}
+        {categories &&
+          categories?.data?.length > 0 &&
+          categories?.data?.map((category) => (
+            <CategoryCard key={category.id} category={category} />
+          ))}
       </div>
     </section>
   );

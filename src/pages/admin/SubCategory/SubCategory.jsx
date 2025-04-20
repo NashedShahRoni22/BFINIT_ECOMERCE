@@ -4,12 +4,12 @@ import toast from "react-hot-toast";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import EditableListItem from "../../../components/admin/EditableListItem/EditableListItem";
 import Spinner from "../../../components/admin/loaders/Spinner";
-import useAuth from "../../../hooks/useAuth";
-import usePostMutation from "../../../hooks/usePostMutation";
+import useAuth from "../../../hooks/auth/useAuth";
+import usePostMutation from "../../../hooks/mutations/usePostMutation";
 import { useQueryClient } from "@tanstack/react-query";
-import useGetCategories from "../../../hooks/useGetCategories";
-import useGetSubCategories from "../../../hooks/useGetSubCategories";
-import useGetStores from "../../../hooks/useGetStores";
+import useGetCategories from "../../../hooks/categories/useGetCategories";
+import useGetSubCategories from "../../../hooks/categories/subCategories/useGetSubCategories";
+import useGetStores from "../../../hooks/stores/useGetStores";
 
 export default function SubCategory() {
   const queryClient = useQueryClient();

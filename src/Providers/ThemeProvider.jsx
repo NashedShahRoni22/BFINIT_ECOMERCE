@@ -1,33 +1,33 @@
-import { createContext, useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 
 export const ThemeContext = createContext(null);
 
 export default function ThemeProvider({ children }) {
-  const blackTheme = {
-    primary: "#000000",
-    accent: "#ff6900",
-    textOnPrimary: "#fff",
+  const themes = {
+    1: {
+      primary: "#000000",
+      accent: "#ff6900",
+      textOnPrimary: "#fff",
+    },
+    2: {
+      primary: "#1e96fc",
+      accent: "#FF8C42",
+      textOnPrimary: "#fff",
+    },
+    3: {
+      primary: "#2f855a",
+      accent: "#84cc16",
+      textOnPrimary: "#fff",
+    },
+    4: {
+      primary: "#faf3e0",
+      accent: "#c084fc",
+      textOnPrimary: "#000",
+    },
   };
 
-  const blueTheme = {
-    primary: "#1e96fc",
-    accent: "#FF8C42",
-    textOnPrimary: "#fff",
-  };
-
-  const greenTheme = {
-    primary: "#2f855a",
-    accent: "#84cc16",
-    textOnPrimary: "#fff",
-  };
-
-  const creamTheme = {
-    primary: "#faf3e0",
-    accent: "#c084fc",
-    textOnPrimary: "#000",
-  };
-
-  const theme = blackTheme;
+  const [selectedTheme, setSelectedTheme] = useState(1);
+  const theme = themes[selectedTheme];
 
   useEffect(() => {
     const root = document.documentElement;
@@ -36,7 +36,12 @@ export default function ThemeProvider({ children }) {
     root.style.setProperty("--color-on-primary", theme.textOnPrimary);
   }, [theme]);
 
+  const themeInfo = {
+    selectedTheme,
+    setSelectedTheme,
+  };
+
   return (
-    <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>
+    <ThemeContext.Provider value={themeInfo}>{children}</ThemeContext.Provider>
   );
 }

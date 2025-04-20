@@ -5,10 +5,10 @@ import BtnSubmit from "../../../components/admin/buttons/BtnSubmit";
 import EditableListItem from "../../../components/admin/EditableListItem/EditableListItem";
 import ImageField from "../../../components/admin/ImageField/ImageField";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
-import useAuth from "../../../hooks/useAuth";
-import usePostMutation from "../../../hooks/usePostMutation";
-import useGetStores from "../../../hooks/useGetStores";
-import useGetBrands from "../../../hooks/useGetBrands";
+import useAuth from "../../../hooks/auth/useAuth";
+import usePostMutation from "../../../hooks/mutations/usePostMutation";
+import useGetStores from "../../../hooks/stores/useGetStores";
+import useGetBrands from "../../../hooks/brands/useGetBrands";
 import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
 

@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { AuthContext } from "../../../Providers/AuthProvider";
 import ImageField from "../../../components/admin/ImageField/ImageField";
 import Spinner from "../../../components/admin/loaders/Spinner";
-import usePostMutation from "../../../hooks/usePostMutation";
+import usePostMutation from "../../../hooks/mutations/usePostMutation";
 import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
 

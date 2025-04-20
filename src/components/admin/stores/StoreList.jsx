@@ -3,8 +3,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { HiOutlineEye } from "react-icons/hi2";
 import { MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
-import useAuth from "../../../hooks/useAuth";
-import useDeleteMutation from "../../../hooks/useDeleteMutation";
+import useAuth from "../../../hooks/auth/useAuth";
+import useDeleteMutation from "../../../hooks/mutations/useDeleteMutation";
 
 export default function StoreList({ store }) {
   const queryClient = useQueryClient();

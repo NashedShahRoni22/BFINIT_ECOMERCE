@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import { HiOutlineMinus, HiOutlinePlus } from "react-icons/hi2";
-import useCategoryLists from "../../../../hooks/useCategoryLists";
+import useCategoryLists from "../../../../hooks/categories/useCategoryLists";
 
 export default function MobileNav() {
   const categoryLists = useCategoryLists();

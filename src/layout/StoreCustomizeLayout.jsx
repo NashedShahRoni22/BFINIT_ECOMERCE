@@ -3,8 +3,8 @@ import { useParams } from "react-router";
 import WebsiteSkeleton from "../components/admin/loaders/WebasiteSkeleton";
 import TopNav from "../components/admin/shared/TopNav";
 import CustomizeSideNav from "../components/admin/shared/CustomizeSideNav";
-import useAuth from "../hooks/useAuth";
-import useGetQuery from "../hooks/useGetQuery";
+import useAuth from "../hooks/auth/useAuth";
+import useGetQuery from "../hooks/queries/useGetQuery";
 import { areComponentsEqual } from "../utils/admin/areComponentsEqual";
 import { componentsData } from "../data/adminData/componentsData";
 

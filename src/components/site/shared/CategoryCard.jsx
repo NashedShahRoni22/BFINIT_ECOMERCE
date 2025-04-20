@@ -1,15 +1,12 @@
 import { Link } from "react-router";
 
 export default function CategoryCard({ category }) {
-  const { url, name, icon } = category;
+  const { id, image, name } = category;
 
   return (
-    <Link
-      to={`/categories/${url}`}
-      className="group rounded bg-[#f6f8fa] p-3 text-center md:py-6"
-    >
+    <Link className="group rounded bg-[#f6f8fa] p-3 text-center md:py-6">
       <img
-        src={icon}
+        src={`https://ecomback.bfinit.com${image}`}
         alt={name}
         className="mx-auto size-16 object-cover md:size-[90px]"
       />

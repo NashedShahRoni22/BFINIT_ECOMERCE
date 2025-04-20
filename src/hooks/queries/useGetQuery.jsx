@@ -9,7 +9,7 @@
  */
 
 import { useQuery } from "@tanstack/react-query";
-import { getApi } from "../api/getApi";
+import { getApi } from "../../api/getApi";
 
 export default function useGetQuery({ endpoint, token, queryKey, enabled }) {
   return useQuery({

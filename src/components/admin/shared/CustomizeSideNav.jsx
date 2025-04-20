@@ -1,8 +1,8 @@
 import { Link, useParams } from "react-router";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { componentLinks } from "../../../data/adminData/componentLinks";
-import useAuth from "../../../hooks/useAuth";
-import useUpdateMutation from "../../../hooks/useUpdateMutation";
+import useAuth from "../../../hooks/auth/useAuth";
+import useUpdateMutation from "../../../hooks/mutations/useUpdateMutation";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import Spinner from "../loaders/Spinner";

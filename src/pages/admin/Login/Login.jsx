@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { AuthContext } from "../../../Providers/AuthProvider";
-import usePostMutation from "../../../hooks/usePostMutation";
+import usePostMutation from "../../../hooks/mutations/usePostMutation";
 import toast from "react-hot-toast";
 import Spinner from "../../../components/admin/loaders/Spinner";
 

@@ -1,5 +1,5 @@
-import useAuth from "./useAuth";
-import useGetQuery from "./useGetQuery";
+import useAuth from "../auth/useAuth";
+import useGetQuery from "../queries/useGetQuery";
 
 export default function useGetCategories(storeId) {
   const { user } = useAuth();

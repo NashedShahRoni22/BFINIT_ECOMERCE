@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 import {
   HiBars3,
   HiMiniXMark,
@@ -7,10 +7,11 @@ import {
 } from "react-icons/hi2";
 import { BsCart3, BsHeart, BsPersonCircle } from "react-icons/bs";
 import MobileNav from "./MobileNav";
-import useCart from "../../../../hooks/useCart";
+import useCart from "../../../../hooks/cart/useCart";
 import logo from "../../../../assets/logo/logo.webp";
 
 export default function Navbar() {
+  const { storeId } = useParams();
   const { cartItems } = useCart();
   const [showMenu, setShowMenu] = useState(false);
 
@@ -32,7 +33,7 @@ export default function Navbar() {
 
           {/* logo */}
           <Link
-            to="/"
+            to={`/preview/${storeId}`}
             className="font-merriweather text-accent text-2xl font-semibold italic"
           >
             {/* <img
@@ -64,7 +65,7 @@ export default function Navbar() {
           {/* Large Device Offers */}
           <div className="hidden items-center gap-6 md:flex">
             {/* cart items */}
-            <Link to="/cart" className="relative">
+            <Link to={`/preview/${storeId}/cart`} className="relative">
               <BsCart3 className="text-2xl" />
               <div className="bg-accent absolute -top-3 -right-3.5 grid size-5 place-items-center rounded-full text-center text-sm text-white tabular-nums">
                 {cartItems?.length < 100 ? cartItems?.length : "99+"}

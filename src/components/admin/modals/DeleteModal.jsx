@@ -1,22 +1,24 @@
-import { Button, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { useContext } from "react";
-import { AuthContext } from "../../../Providers/AuthProvider";
-import useDeleteCategory from "../../../hooks/useDeleteCategory";
-import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
+import { Button, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import Spinner from "../loaders/Spinner";
+import { AuthContext } from "../../../Providers/AuthProvider";
+import useDeleteMutation from "../../../hooks/mutations/useDeleteMutation";
 
 export default function DeleteModal({ isOpen, close, item, selectedStore }) {
   const { user } = useContext(AuthContext);
   const queryClient = useQueryClient();
-  const { mutate, isPending } = useDeleteCategory({
-    storeId: selectedStore?.storeId,
+
+  // custom hooks to delete category
+  const { mutate, isPending } = useDeleteMutation({
+    endpoint: `/category/delete/${selectedStore?.storeId}/${item?.id}`,
     token: user?.token,
   });
 
   // Handle the delete action
   const handleDelete = async () => {
-    mutate(item?.id, {
+    mutate(null, {
       onSuccess: () => {
         queryClient.invalidateQueries(["categories", selectedStore?.storeId]);
         toast.success("Category deleted!");

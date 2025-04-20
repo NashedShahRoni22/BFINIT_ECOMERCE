@@ -2,8 +2,8 @@ import { Link } from "react-router";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import StoreList from "../../../components/admin/stores/StoreList";
 import ListItemSkeleton from "../../../components/admin/loaders/ListItemSkeleton";
-import useAuth from "../../../hooks/useAuth";
-import useGetStores from "../../../hooks/useGetStores";
+import useAuth from "../../../hooks/auth/useAuth";
+import useGetStores from "../../../hooks/stores/useGetStores";
 
 export default function Stores() {
   const { user } = useAuth();

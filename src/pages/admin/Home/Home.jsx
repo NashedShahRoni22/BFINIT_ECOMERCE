@@ -2,8 +2,8 @@ import QuickNavs from "../../../components/admin/quicknavs/QuickNavs";
 import QuickTips from "../../../components/admin/quickTips/QuickTips";
 import CreateStoreCard from "../../../components/admin/stores/CreateStoreCard";
 import StoreCard from "../../../components/admin/stores/StoreCard";
-import useAuth from "../../../hooks/useAuth";
-import useGetStores from "../../../hooks/useGetStores";
+import useAuth from "../../../hooks/auth/useAuth";
+import useGetStores from "../../../hooks/stores/useGetStores";
 
 export default function Home() {
   const { user } = useAuth();

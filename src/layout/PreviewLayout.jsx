@@ -1,18 +1,24 @@
-import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router";
-import { ThemeContext } from "../../../Providers/ThemeProvider";
-import WebsiteSkeleton from "../../../components/admin/loaders/WebasiteSkeleton";
-import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
-import { componentsData } from "../../../data/adminData/componentsData";
+import { useEffect, useState } from "react";
+import { Outlet, useParams } from "react-router";
+import useAuth from "../hooks/auth/useAuth";
+import useGetQuery from "../hooks/queries/useGetQuery";
+import { componentsData } from "../data/adminData/componentsData";
+import WebsiteSkeleton from "../components/admin/loaders/WebasiteSkeleton";
 
-export default function Preview() {
-  const { setSelectedTheme } = useContext(ThemeContext);
+export default function PreviewLayout() {
+  const { user } = useAuth();
   const { storeId } = useParams();
   const [previewData, setPreviewData] = useState([]);
 
   // fetch store preference
-  const { data: storePreferenceData, isLoading } =
-    useGetStorePreference(storeId);
+  const { data: storePreferenceData, isLoading } = useGetQuery({
+    endpoint: `/store/preference/?storeId=${storeId}`,
+    token: user?.token,
+    queryKey: ["storePreference", storeId],
+    enabled: !!storeId && !!user?.token,
+  });
+
+  console.log(storePreferenceData);
 
   // set database saved components to previewData and savedComponents
   useEffect(() => {
@@ -27,8 +33,7 @@ export default function Preview() {
     };
 
     setPreviewData(dbSavedComponents);
-    setSelectedTheme(storePreferenceData?.storeTheme);
-  }, [storePreferenceData, setSelectedTheme]);
+  }, [storePreferenceData]);
 
   // Function to dynamically render components
   const renderComponent = (category, value) => {
@@ -42,11 +47,9 @@ export default function Preview() {
 
   return (
     <div>
-      {renderComponent("sliderStyle", previewData.sliderStyle)}
-      {renderComponent("categoryStyle", previewData.categoryStyle)}
-      {renderComponent("highlightStyle", previewData.highlightStyle)}
-      {renderComponent("productStyle", previewData.productStyle)}
-      {renderComponent("bannerStyle", previewData.bannerStyle)}
+      {renderComponent("navbarStyle", previewData.navbarStyle)}
+      <Outlet />
+      {renderComponent("footerStyle", previewData.footerStyle)}
     </div>
   );
 }
