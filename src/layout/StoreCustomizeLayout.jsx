@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import WebsiteSkeleton from "../components/admin/loaders/WebasiteSkeleton";
 import TopNav from "../components/admin/shared/TopNav";
@@ -7,10 +7,12 @@ import useAuth from "../hooks/auth/useAuth";
 import useGetQuery from "../hooks/queries/useGetQuery";
 import { areComponentsEqual } from "../utils/admin/areComponentsEqual";
 import { componentsData } from "../data/adminData/componentsData";
+import { ThemeContext } from "../Providers/ThemeProvider";
 
 export default function StoreCustomizeLayout() {
   const { user } = useAuth();
   const { storeId } = useParams();
+  const { selectedTheme, setSelectedTheme } = useContext(ThemeContext);
 
   // fetch store preference
   const { data: storePreferenceData, isLoading } = useGetQuery({
@@ -31,6 +33,7 @@ export default function StoreCustomizeLayout() {
     productStyle: "product1",
     bannerStyle: "banner1",
     footerStyle: "footer1",
+    themeStyle: selectedTheme,
   });
 
   // set database saved components to selectedComponents and savedComponents
@@ -43,11 +46,13 @@ export default function StoreCustomizeLayout() {
       productStyle: `product${storePreferenceData?.data?.productStyle}`,
       bannerStyle: `banner${storePreferenceData?.data?.bannerStyle}`,
       footerStyle: `footer${storePreferenceData?.data?.footerStyle}`,
+      themeStyle: storePreferenceData?.storeTheme,
     };
 
     setSelectedComponents(dbSavedComponents);
     setSavedComponents(dbSavedComponents);
-  }, [storePreferenceData]);
+    setSelectedTheme(storePreferenceData?.storeTheme || 2);
+  }, [storePreferenceData, setSelectedTheme]);
 
   // Toggle component link dropdown visibility
   const toggleDropdown = (index) => {
@@ -56,6 +61,10 @@ export default function StoreCustomizeLayout() {
 
   // Handle checkbox selection
   const handleCheckboxChange = (category, value) => {
+    if (category === "themeStyle") {
+      setSelectedTheme(value);
+    }
+
     setSelectedComponents((prev) => {
       if (prev[category] === value) {
         return {

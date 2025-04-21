@@ -17,7 +17,6 @@ export default function CustomizeSideNav({
 }) {
   const { user } = useAuth();
   const { storeId } = useParams();
-
   const queryClient = useQueryClient();
 
   // pass store preference update info
@@ -37,7 +36,7 @@ export default function CustomizeSideNav({
       }),
     );
 
-    const filledPreferences = {
+    const updatePaylod = {
       navbarStyle: selectedValue.navbarStyle || "0",
       sliderStyle: selectedValue.sliderStyle || "0",
       categoryStyle: selectedValue.categoryStyle || "0",
@@ -45,9 +44,10 @@ export default function CustomizeSideNav({
       productStyle: selectedValue.productStyle || "0",
       bannerStyle: selectedValue.bannerStyle || "0",
       footerStyle: selectedValue.footerStyle || "0",
+      storeTheme: selectedValue.themeStyle,
     };
 
-    mutate(filledPreferences, {
+    mutate(updatePaylod, {
       onSuccess: (data) => {
         if (data.message === "store Preference  updated successfully") {
           queryClient.invalidateQueries(["storePreference", storeId]);

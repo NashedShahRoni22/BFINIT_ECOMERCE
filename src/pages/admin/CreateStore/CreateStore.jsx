@@ -8,32 +8,33 @@ import Spinner from "../../../components/admin/loaders/Spinner";
 import usePostMutation from "../../../hooks/mutations/usePostMutation";
 import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
+import useGetQuery from "../../../hooks/queries/useGetQuery";
 
 const themes = [
   {
     id: 1,
-    name: "black theme",
+    name: "Midnight Blaze",
     primary: "#000000",
     accent: "#ff6900",
     text: "#fff",
   },
   {
     id: 2,
-    name: "blue theme",
+    name: "Sky Burst",
     primary: "#1e96fc",
     accent: "#FF8C42",
     text: "#fff",
   },
   {
     id: 3,
-    name: "green theme",
+    name: "Forest Lime",
     primary: "#2f855a",
     accent: "#84cc16",
     text: "#fff",
   },
   {
     id: 4,
-    name: "cream theme",
+    name: "Lilac Cream",
     primary: "#faf3e0",
     accent: "#c084fc",
     text: "#000",
@@ -58,12 +59,10 @@ const productTypes = [
 export default function CreateStore() {
   const queryClient = useQueryClient();
   const { user } = useContext(AuthContext);
-  const [countries, setCountries] = useState([]);
-  useEffect(() => {
-    fetch("country.json")
-      .then((res) => res.json())
-      .then((data) => setCountries(data));
-  }, []);
+  const { data: countries } = useGetQuery({
+    endpoint: "/api/countries",
+    queryKey: ["countries"],
+  });
 
   // Form state
   const [formData, setFormData] = useState({
@@ -81,6 +80,19 @@ export default function CreateStore() {
     country: "",
     currency: "",
   });
+
+  const { data: country, isLoading: isCountryLoading } = useGetQuery({
+    endpoint: `/api/countries/${formData?.country}`,
+    queryKey: ["country", formData?.country],
+    enabled: !!formData?.country,
+  });
+
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      currency: country?.currency_name,
+    }));
+  }, [country]);
 
   const [selectedImages, setSelectedImages] = useState({
     logo: null,
@@ -112,7 +124,8 @@ export default function CreateStore() {
 
     const storeData = {
       ...formData,
-      timeZone: "Pacific Time Zone (PT) UTC -8:00",
+      storePhone: `${country?.phone_code}${formData.storePhone}`,
+      timeZone: country?.timezone,
     };
 
     const formDataObj = new FormData();
@@ -139,6 +152,9 @@ export default function CreateStore() {
       <h1 className="text-center text-xl font-semibold capitalize">
         Create new store
       </h1>
+      <p className="mt-2 text-center text-xs text-neutral-500">
+        <span className="text-red-600">*</span> indicates required fields
+      </p>
 
       <form onSubmit={handleCreateStore} className="mt-8 space-y-5">
         <div className="grid gap-8 md:grid-cols-2">
@@ -171,7 +187,7 @@ export default function CreateStore() {
         <div className="grid grid-cols-2 gap-x-8 gap-y-4">
           <div>
             <label htmlFor="storeName" className="text-sm font-medium">
-              Store Name:
+              Store Name: <span className="text-red-600">*</span>
             </label>
             <input
               type="text"
@@ -185,7 +201,7 @@ export default function CreateStore() {
 
           <div>
             <label htmlFor="storeEmail" className="text-sm font-medium">
-              Email:
+              Email: <span className="text-red-600">*</span>
             </label>
             <input
               type="email"
@@ -197,38 +213,10 @@ export default function CreateStore() {
             />
           </div>
 
-          <div>
-            <label htmlFor="storePhone" className="text-sm font-medium">
-              Mobile No:
-            </label>
-            <input
-              type="text"
-              name="storePhone"
-              value={formData.storePhone}
-              onChange={handleChange}
-              required
-              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="storeTelephone" className="text-sm font-medium">
-              Telephone:
-            </label>
-            <input
-              type="text"
-              name="storeTelephone"
-              value={formData.storeTelephone}
-              onChange={handleChange}
-              required
-              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
-            />
-          </div>
-
           {/* Product Type */}
           <div>
             <label htmlFor="productType" className="text-sm font-medium">
-              Product Type:
+              Product Type: <span className="text-red-600">*</span>
             </label>
             <select
               name="productType"
@@ -250,7 +238,7 @@ export default function CreateStore() {
           {/* Country Dropdown */}
           <div>
             <label htmlFor="country" className="text-sm font-medium">
-              Choose Country:
+              Choose Country: <span className="text-red-600">*</span>
             </label>
             <select
               name="country"
@@ -261,44 +249,99 @@ export default function CreateStore() {
               <option value="" disabled>
                 Select Country
               </option>
-              {countries.map((country, i) => (
-                <option key={i} value={country.countryName}>
-                  {country.countryName}
-                </option>
-              ))}
+              {countries &&
+                countries?.length > 0 &&
+                countries?.map((country, i) => (
+                  <option key={i} value={country}>
+                    {country}
+                  </option>
+                ))}
             </select>
           </div>
 
-          {/* Currency Dropdown */}
+          {/* mobile */}
+          <div>
+            <label htmlFor="storePhone" className="text-sm font-medium">
+              Mobile No: <span className="text-red-600">*</span>
+            </label>
+
+            <div className="mt-1.5 flex items-center rounded border border-neutral-200 bg-neutral-50">
+              <div className="px-3">
+                {isCountryLoading ? <Spinner /> : country?.phone_code}
+              </div>
+
+              <input
+                type="text"
+                name="storePhone"
+                value={formData.storePhone}
+                onChange={handleChange}
+                required
+                className={`w-full px-4 py-1 outline-none ${country?.phone_code && "border-l border-neutral-200"}`}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="storeTelephone" className="text-sm font-medium">
+              Telephone:
+            </label>
+            <input
+              type="text"
+              name="storeTelephone"
+              value={formData.storeTelephone}
+              onChange={handleChange}
+              required
+              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
+            />
+          </div>
+
+          {/* Currency Code and Symbol */}
           <div>
             <label htmlFor="currency" className="text-sm font-medium">
-              Choose Currency:
+              Currency Symbol & Code:{" "}
+              <span className="text-xs font-normal text-neutral-500">
+                (Auto-filled based on country)
+              </span>
             </label>
-            <select
-              name="currency"
-              value={formData.currency}
-              onChange={handleChange}
-              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
-            >
-              <option value="" disabled>
-                Select Currency
-              </option>
-              {countries.map((country, i) => (
-                <option
-                  key={i}
-                  value={country.currencyCode}
-                  className={`${country.currencyCode === "" && "hidden"}`}
-                >
-                  {country.currencyCode}
-                </option>
-              ))}
-            </select>
+            <div className="mt-1.5 flex cursor-not-allowed items-center rounded border border-neutral-200 bg-neutral-50">
+              <div className="px-3">
+                {isCountryLoading ? <Spinner /> : country?.currency_symbol}
+              </div>
+
+              <input
+                type="text"
+                name="storePhone"
+                value={country?.currency_code}
+                required
+                readOnly
+                className={`w-full cursor-not-allowed border-neutral-200 px-4 py-1 outline-none ${country?.currency_symbol && "border-l"}`}
+              />
+            </div>
+          </div>
+
+          {/* Currency Name */}
+          <div>
+            <label htmlFor="currency" className="text-sm font-medium">
+              Currency Name:{" "}
+              <span className="text-xs font-normal text-neutral-500">
+                (Auto-filled based on country)
+              </span>
+            </label>
+
+            <input
+              type="text"
+              name="storePhone"
+              value={country?.currency_name}
+              required
+              readOnly
+              className="mt-1.5 w-full cursor-not-allowed rounded border border-l border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
+            />
           </div>
 
           {/* Address */}
           <div className="col-span-full">
             <label htmlFor="storeAddress" className="text-sm font-medium">
-              Address:
+              Address: <span className="text-red-600">*</span>
             </label>
             <textarea
               name="storeAddress"
@@ -313,7 +356,9 @@ export default function CreateStore() {
 
         {/* Store Theme Selection */}
         <div>
-          <p className="text-sm font-medium">Choose Theme:</p>
+          <p className="text-sm font-medium">
+            Choose Theme: <span className="text-red-600">*</span>
+          </p>
           <div className="mt-2 grid grid-cols-2 gap-8 md:grid-cols-4">
             {themes.map((theme) => (
               <div

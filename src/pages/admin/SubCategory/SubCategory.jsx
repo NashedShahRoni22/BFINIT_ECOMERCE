@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { MdOutlineClose } from "react-icons/md";
+import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { MdOutlineClose } from "react-icons/md";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
-import EditableListItem from "../../../components/admin/EditableListItem/EditableListItem";
 import Spinner from "../../../components/admin/loaders/Spinner";
 import useAuth from "../../../hooks/auth/useAuth";
 import usePostMutation from "../../../hooks/mutations/usePostMutation";
-import { useQueryClient } from "@tanstack/react-query";
 import useGetCategories from "../../../hooks/categories/useGetCategories";
 import useGetSubCategories from "../../../hooks/categories/subCategories/useGetSubCategories";
 import useGetStores from "../../../hooks/stores/useGetStores";
+import SubCategoryList from "../../../components/admin/SubCategoryList";
 
 export default function SubCategory() {
   const queryClient = useQueryClient();
@@ -219,10 +219,13 @@ export default function SubCategory() {
           {selectedCategory ? (
             <ul className="space-y-2">
               {subCategoriesData && subCategoriesData?.data?.length > 0 ? (
-                subCategoriesData?.data?.map((subCat, i) => (
-                  <li key={i} className="px-4">
-                    {subCat}
-                  </li>
+                subCategoriesData?.data?.map((subCategory, i) => (
+                  <SubCategoryList
+                    key={i}
+                    subCategory={subCategory}
+                    categoryId={selectedCategory}
+                    storeId={selectedStore?.storeId}
+                  />
                 ))
               ) : (
                 <p className="bg-neutral-50 px-4 pb-2">

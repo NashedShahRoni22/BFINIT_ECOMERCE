@@ -93,4 +93,14 @@ export const componentLinks = [
       },
     ],
   },
+  {
+    title: "Theme",
+    name: "themeStyle",
+    subCategories: [
+      { name: "Midnight Blaze", value: "1" },
+      { name: "Sky Burst", value: "2" },
+      { name: "Forest Lime", value: "3" },
+      { name: "Lilac Cream", value: "4" },
+    ],
+  },
 ];

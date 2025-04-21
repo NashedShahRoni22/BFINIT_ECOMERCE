@@ -10,7 +10,7 @@ export default function ImageField({
   return (
     <div>
       <label htmlFor={id} className="text-sm font-medium">
-        {label}:
+        {label}: <span className="text-red-600">*</span>
       </label>
       <input
         onChange={handleImgChange}
@@ -27,7 +27,7 @@ export default function ImageField({
             <img
               src={URL.createObjectURL(selectedImg)}
               alt=""
-              className="h-full w-full rounded object-cover"
+              className="h-full w-full rounded object-contain"
             />
             <div className="absolute top-0 left-0 flex h-full w-full translate-y-full items-center justify-center gap-4 rounded bg-black/50 transition-all duration-200 ease-linear group-hover:translate-y-0">
               <label
