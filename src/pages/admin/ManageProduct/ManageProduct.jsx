@@ -87,7 +87,11 @@ export default function ManageProduct() {
             {products &&
               products?.data?.length > 0 &&
               products?.data?.map((product) => (
-                <ProductRow key={product.productId} product={product} />
+                <ProductRow
+                  key={product.productId}
+                  product={product}
+                  storeId={selectedStore?.storeId}
+                />
               ))}
           </tbody>
         </table>

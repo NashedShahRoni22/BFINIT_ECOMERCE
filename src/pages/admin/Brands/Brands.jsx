@@ -2,7 +2,6 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import BtnSubmit from "../../../components/admin/buttons/BtnSubmit";
-import EditableListItem from "../../../components/admin/EditableListItem/EditableListItem";
 import ImageField from "../../../components/admin/ImageField/ImageField";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import useAuth from "../../../hooks/auth/useAuth";
@@ -11,6 +10,7 @@ import useGetStores from "../../../hooks/stores/useGetStores";
 import useGetBrands from "../../../hooks/brands/useGetBrands";
 import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
+import BrandList from "../../../components/admin/BrandList";
 
 export default function Brands() {
   const queryClient = useQueryClient();
@@ -142,7 +142,11 @@ export default function Brands() {
               <ul className="space-y-2">
                 {brands && brands?.data?.length > 0 ? (
                   brands?.data?.map((brand) => (
-                    <EditableListItem key={brand.id} category={brand} />
+                    <BrandList
+                      key={brand.id}
+                      brand={brand}
+                      storeId={selectedStore?.storeId}
+                    />
                   ))
                 ) : (
                   <p className="bg-neutral-50 px-4 pb-2">
