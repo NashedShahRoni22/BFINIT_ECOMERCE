@@ -1,29 +1,29 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import SunEditor from "suneditor-react";
-import { useNavigate } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import Spinner from "../loaders/Spinner";
-import AddImages from "../../../pages/admin/AddImages/AddImages";
 import InputField from "../../../pages/admin/AddProduct/InputField";
 import CheckBoxFeat from "../../../pages/admin/AddProduct/CheckBoxFeat";
 import SelectDropdown from "../../../pages/admin/AddProduct/SelectDropdown";
-import usePostMutation from "../../../hooks/mutations/usePostMutation";
 import useAuth from "../../../hooks/auth/useAuth";
 import useGetQuery from "../../../hooks/queries/useGetQuery";
 import useGetBrands from "../../../hooks/brands/useGetBrands";
 import useGetCategories from "../../../hooks/categories/useGetCategories";
 import useGetSubCategories from "../../../hooks/categories/subCategories/useGetSubCategories";
 import { resetForm } from "../../../utils/admin/resetForm";
+import ProductImgUpdate from "../ProductImgUpdate/ProductImgUpdate";
+import useUpdateMutation from "../../../hooks/mutations/useUpdateMutation";
 
-export default function ProductUpdateModal({ storeId, productId }) {
-  const navigate = useNavigate();
+export default function ProductUpdateModal({ storeId, productId, close }) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
   /* -- Local State -- */
   const [selectedImages, setSelectedImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
+  const [deletedImages, setDeletedImages] = useState([]);
+
   const [formData, setFormData] = useState({
     name: "",
     category: {
@@ -77,6 +77,7 @@ export default function ProductUpdateModal({ storeId, productId }) {
       newArraivals,
       productStatus,
       productDescription,
+      productImage,
     } = productDetails.data;
 
     setFormData((prev) => ({
@@ -93,6 +94,8 @@ export default function ProductUpdateModal({ storeId, productId }) {
       status: productStatus ? "yes" : "no",
       description: productDescription,
     }));
+
+    setImagePreviews(productImage);
   }, [productDetails, isLoading]);
 
   // Event Handlers for input & checkbox field
@@ -120,8 +123,8 @@ export default function ProductUpdateModal({ storeId, productId }) {
   };
 
   // Custom Update Mutation
-  const { mutate, isPending, isError } = usePostMutation({
-    endpoint: `/product/create/${storeId}`,
+  const { mutate, isPending, isError } = useUpdateMutation({
+    endpoint: `/product/update/${productId}`,
     token: user?.token,
   });
 
@@ -133,15 +136,13 @@ export default function ProductUpdateModal({ storeId, productId }) {
       return toast.error("Description can't be emtpy!");
     }
 
-    if (!selectedImages || selectedImages.length <= 0) {
-      return toast.error("Product Images are required — add at least one!");
-    }
-
     const productData = {
       productName: formData.name,
-      productCategory: formData.category.name,
-      productSubCategory: formData.subCategory,
-      productBrand: formData.brand.name,
+      productCategory:
+        formData.category.name || productDetails?.data?.productCategory,
+      productSubCategory:
+        formData.subCategory || productDetails?.data?.productSubcategory,
+      productBrand: formData.brand.name || productDetails?.data?.productBrand,
       productPrice: formData.originalPrice,
       discountPrice: formData.discountPercent,
       productQuantity: formData.quantity,
@@ -150,6 +151,7 @@ export default function ProductUpdateModal({ storeId, productId }) {
       bestSelling: formData.bestSelling === "yes" ? true : false,
       flashSale: formData.flashSell === "yes" ? true : false,
       newArraivals: formData.new === "yes" ? true : false,
+      featured: formData.featured === "yes" ? true : false,
       productDescription: formData.description,
     };
 
@@ -159,17 +161,19 @@ export default function ProductUpdateModal({ storeId, productId }) {
     selectedImages.forEach((image) => {
       payload.append("productImages", image);
     });
+    payload.append("deleteImageUrl", JSON.stringify(deletedImages));
 
     mutate(payload, {
       onSuccess: () => {
-        toast.success("New product added!");
-        resetForm();
+        toast.success("Product description updated!");
         queryClient.invalidateQueries(["products", storeId, user?.token]);
-        navigate("/products/manage-product");
+        close();
+        resetForm(setFormData, setSelectedImages, setImagePreviews);
       },
       onError: () => {
         toast.error("Something went wrong!");
-        resetForm();
+        close();
+        resetForm(setFormData, setSelectedImages, setImagePreviews);
       },
     });
   };
@@ -203,7 +207,6 @@ export default function ProductUpdateModal({ storeId, productId }) {
                 id="category"
                 name="category"
                 formData={formData.category.id}
-                required={true}
                 handleInputChange={handleInputChange}
                 options={
                   categories && categories?.data?.length > 0
@@ -230,7 +233,6 @@ export default function ProductUpdateModal({ storeId, productId }) {
                 id="subCategory"
                 name="subCategory"
                 value={formData.subCategory}
-                required
                 disabled={formData?.category ? false : true}
                 className="mt-1 mb-2 w-full rounded-md border border-neutral-200 bg-[#f8fafb] px-2 py-1.5 outline-none"
               >
@@ -249,12 +251,13 @@ export default function ProductUpdateModal({ storeId, productId }) {
           </div>
         </div>
 
-        {/* Add Image */}
-        <AddImages
+        {/* Product Image Preview & Update */}
+        <ProductImgUpdate
           selectedImages={selectedImages}
           setSelectedImages={setSelectedImages}
           imagePreviews={imagePreviews}
           setImagePreviews={setImagePreviews}
+          setDeletedImages={setDeletedImages}
         />
 
         {/* Pricing */}
@@ -288,7 +291,7 @@ export default function ProductUpdateModal({ storeId, productId }) {
             {/* discount percentage */}
             <div>
               <InputField
-                label="Discount Percentage (%)"
+                label="Discount Amount"
                 id="discountPercent"
                 name="discountPercent"
                 formData={formData.discountPercent}
@@ -331,7 +334,6 @@ export default function ProductUpdateModal({ storeId, productId }) {
             id="brand"
             name="brand"
             formData={formData.brand.id}
-            required={true}
             handleInputChange={handleInputChange}
             options={
               brandsData && brandsData?.data?.length > 0 ? brandsData?.data : []
@@ -403,6 +405,7 @@ export default function ProductUpdateModal({ storeId, productId }) {
             onChange={handleDescriptionChange}
             name="description"
             height="220px"
+            setContents={formData.description}
             setOptions={{
               buttonList: [
                 [

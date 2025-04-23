@@ -73,7 +73,11 @@ export default function ProductRow({ product, storeId }) {
         close={toggleUpdateModal}
         maxWidth="max-w-[90%]"
       >
-        <ProductUpdateModal storeId={storeId} productId={productId} />
+        <ProductUpdateModal
+          storeId={storeId}
+          productId={productId}
+          close={toggleUpdateModal}
+        />
       </ReusableModal>
 
       {/* delete modal */}

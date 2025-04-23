@@ -18,13 +18,13 @@ export default function DeleteProductModal({ product, storeId, close }) {
   const handleDelete = () => {
     mutate(null, {
       onSuccess: () => {
-        queryClient.invalidateQueries(["products", storeId, user?.token]);
         toast.success("Product deleted!");
         close();
+        queryClient.invalidateQueries(["products", storeId, user?.token]);
       },
       onError: () => {
-        close();
         toast.error("Something went wrong!");
+        close();
       },
     });
   };
