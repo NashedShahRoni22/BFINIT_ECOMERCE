@@ -67,12 +67,12 @@ export const sideNavLinks = [
     subCategories: [
       {
         name: "Add Blog",
-        url: "/products/category",
+        url: "/blogs/add",
         icon: BsArrow90DegDown,
       },
       {
         name: "Manage Blog",
-        url: "/products/sub-category",
+        url: "/blogs/manage",
         icon: BsArrow90DegDown,
       },
     ],

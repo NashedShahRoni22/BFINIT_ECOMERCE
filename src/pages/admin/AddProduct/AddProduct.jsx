@@ -1,21 +1,21 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
+import toast from "react-hot-toast";
 import SunEditor from "suneditor-react";
-import PageHeading from "../../../components/admin/PageHeading/PageHeading";
-import AddImages from "../AddImages/AddImages";
+import { useQueryClient } from "@tanstack/react-query";
 import CheckBoxFeat from "./CheckBoxFeat";
 import InputField from "./InputField";
 import SelectDropdown from "./SelectDropdown";
-import "suneditor/dist/css/suneditor.min.css";
+import AddImages from "../AddImages/AddImages";
+import PageHeading from "../../../components/admin/PageHeading/PageHeading";
+import Spinner from "../../../components/admin/loaders/Spinner";
 import useGetStores from "../../../hooks/stores/useGetStores";
 import useGetCategories from "../../../hooks/categories/useGetCategories";
 import useGetSubCategories from "../../../hooks/categories/subCategories/useGetSubCategories";
 import useGetBrands from "../../../hooks/brands/useGetBrands";
-import toast from "react-hot-toast";
 import useAuth from "../../../hooks/auth/useAuth";
-import Spinner from "../../../components/admin/loaders/Spinner";
-import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router";
 import usePostMutation from "../../../hooks/mutations/usePostMutation";
+import "suneditor/dist/css/suneditor.min.css";
 
 export default function AddProduct() {
   const queryClient = useQueryClient();
