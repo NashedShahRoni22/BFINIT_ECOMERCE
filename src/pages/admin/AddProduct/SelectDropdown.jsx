@@ -1,5 +1,4 @@
 export default function SelectDropdown({
-  current,
   label,
   id,
   name,
@@ -14,14 +13,6 @@ export default function SelectDropdown({
       <label htmlFor={id} className="text-sm text-gray-600">
         {label}
       </label>
-      {current && (
-        <>
-          <br />
-          <span className="text-sm text-gray-600">
-            Currently: <span className="font-medium">{current}</span>
-          </span>
-        </>
-      )}
       <br />
       <select
         onChange={handleInputChange}

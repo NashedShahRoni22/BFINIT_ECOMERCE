@@ -10,6 +10,16 @@ export const componentLinks = [
     ],
   },
   {
+    name: "categoryBarStyle",
+    title: "Category Bar",
+    subCategories: [
+      {
+        name: "Category Bar 1",
+        value: "categoryBar1",
+      },
+    ],
+  },
+  {
     name: "sliderStyle",
     title: "Slider",
     subCategories: [

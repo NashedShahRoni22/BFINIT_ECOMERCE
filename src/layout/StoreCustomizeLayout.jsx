@@ -1,5 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";
+import { ThemeContext } from "../Providers/ThemeProvider";
 import WebsiteSkeleton from "../components/admin/loaders/WebasiteSkeleton";
 import TopNav from "../components/admin/shared/TopNav";
 import CustomizeSideNav from "../components/admin/shared/CustomizeSideNav";
@@ -7,7 +8,6 @@ import useAuth from "../hooks/auth/useAuth";
 import useGetQuery from "../hooks/queries/useGetQuery";
 import { areComponentsEqual } from "../utils/admin/areComponentsEqual";
 import { componentsData } from "../data/adminData/componentsData";
-import { ThemeContext } from "../Providers/ThemeProvider";
 
 export default function StoreCustomizeLayout() {
   const { user } = useAuth();
@@ -27,6 +27,7 @@ export default function StoreCustomizeLayout() {
   const [savedComponents, setSavedComponents] = useState({});
   const [selectedComponents, setSelectedComponents] = useState({
     navbarStyle: "nav1",
+    categoryBarStyle: "categoryBar1",
     sliderStyle: "slider1",
     categoryStyle: "category1",
     highlightStyle: "highlight1",
@@ -40,6 +41,7 @@ export default function StoreCustomizeLayout() {
   useEffect(() => {
     const dbSavedComponents = {
       navbarStyle: `nav${storePreferenceData?.data?.navbarStyle}`,
+      categoryBarStyle: `categoryBar1`,
       sliderStyle: `slider${storePreferenceData?.data?.sliderStyle}`,
       categoryStyle: `category${storePreferenceData?.data?.categoryStyle}`,
       highlightStyle: `highlight${storePreferenceData?.data?.highlightStyle}`,
@@ -109,14 +111,19 @@ export default function StoreCustomizeLayout() {
           hasChanges={hasChanges}
         />
 
-        <div className="relative h-[calc(100dvh-55px)] w-full overflow-y-auto px-5">
+        <div className="relative h-[calc(100dvh-55px)] w-full overflow-y-auto">
           {/* Render selected components dynamically */}
           {renderComponent("navbarStyle", selectedComponents.navbarStyle)}
+          {renderComponent(
+            "categoryBarStyle",
+            selectedComponents.categoryBarStyle,
+          )}
           {renderComponent("sliderStyle", selectedComponents.sliderStyle)}
           {renderComponent("categoryStyle", selectedComponents.categoryStyle)}
           {renderComponent("highlightStyle", selectedComponents.highlightStyle)}
           {renderComponent("productStyle", selectedComponents.productStyle)}
           {renderComponent("bannerStyle", selectedComponents.bannerStyle)}
+
           {renderComponent("footerStyle", selectedComponents.footerStyle)}
         </div>
       </main>

@@ -1,6 +1,7 @@
 import { useParams } from "react-router";
 import ProductCard2 from "../cards/ProductCard2";
 import useGetProductsByStoreId from "../../../hooks/products/useGetProductsByStoreId";
+import EmptyState from "../EmptyState";
 
 export default function Product2() {
   const { storeId } = useParams();
@@ -14,13 +15,21 @@ export default function Product2() {
         Featured Products
       </h2>
 
-      <div className="mt-10 grid grid-cols-2 gap-5 md:mt-10 md:grid-cols-3 md:gap-8 lg:grid-cols-5">
-        {products &&
-          products?.data?.length > 0 &&
-          products?.data?.map((product) => (
+      {products && products?.data?.length > 0 && (
+        <div className="mt-10 grid grid-cols-2 gap-5 md:mt-10 md:grid-cols-3 lg:grid-cols-5">
+          {products?.data?.map((product) => (
             <ProductCard2 key={product.productId} product={product} />
           ))}
-      </div>
+        </div>
+      )}
+
+      {!products ||
+        (!products?.data?.length > 0 && (
+          <EmptyState
+            message="No products added yet!"
+            description="It looks like there are no products available at the moment."
+          />
+        ))}
     </section>
   );
 }

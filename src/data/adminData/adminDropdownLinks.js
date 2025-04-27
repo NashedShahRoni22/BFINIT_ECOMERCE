@@ -1,13 +1,10 @@
-import {
-  MdStorefront,
-  MdHelpOutline,
-} from "react-icons/md";
+import { MdStorefront, MdHelpOutline } from "react-icons/md";
 
 export const adminDropdownLinks = [
   {
     icon: MdStorefront,
     name: "Stores",
-    url: "/stores",
+    url: "/all-stores",
   },
   {
     icon: MdHelpOutline,

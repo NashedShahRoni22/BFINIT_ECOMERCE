@@ -8,7 +8,7 @@ import "./slider1.css";
 
 export default function Slider1() {
   return (
-    <section className="mx-5 md:container md:mx-auto">
+    <section className="mx-5 py-5 md:container md:mx-auto">
       <Swiper
         autoplay={{
           delay: 4000,

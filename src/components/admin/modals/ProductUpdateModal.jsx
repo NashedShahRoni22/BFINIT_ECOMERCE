@@ -61,9 +61,11 @@ export default function ProductUpdateModal({ storeId, productId, close }) {
   );
   const { data: brandsData } = useGetBrands(storeId);
 
+  console.log(productDetails?.data);
+
   /* -- Side Effects -- */
   useEffect(() => {
-    if (isLoading && !productDetails) return;
+    if (isLoading || !productDetails) return;
 
     const {
       productName,
@@ -78,25 +80,47 @@ export default function ProductUpdateModal({ storeId, productId, close }) {
       productStatus,
       productDescription,
       productImage,
+      productCategory,
+      productSubcategory,
+      productBrand,
     } = productDetails.data;
+
+    // Find the matching category from categories list (based on name)
+    const matchedCategory = categories?.data?.find(
+      (cat) => cat.name === productCategory,
+    );
+
+    // Find the matching brand from categories list (based on name)
+    const matchedBrand = brandsData?.data?.find(
+      (brand) => brand.name === productBrand,
+    );
 
     setFormData((prev) => ({
       ...prev,
-      name: productName,
-      originalPrice: productPrice.$numberDecimal,
-      discountPercent: productDiscountPrice.$numberDecimal,
-      quantity: productQuantity,
-      shippingCharge: productShippingCharges.$numberDecimal,
+      name: productName || "",
+      originalPrice: productPrice?.$numberDecimal || "",
+      discountPercent: productDiscountPrice?.$numberDecimal || "",
+      quantity: productQuantity || "",
+      shippingCharge: productShippingCharges?.$numberDecimal || "",
       bestSelling: bestSeling ? "yes" : "no",
       flashSell: flashSale ? "yes" : "no",
       featured: featured ? "yes" : "no",
       new: newArraivals ? "yes" : "no",
       status: productStatus ? "yes" : "no",
-      description: productDescription,
+      description: productDescription || "",
+      category: {
+        id: matchedCategory?.id || "",
+        name: productCategory || "",
+      },
+      subCategory: productSubcategory || "",
+      brand: {
+        id: matchedBrand?.id,
+        name: productBrand,
+      },
     }));
 
-    setImagePreviews(productImage);
-  }, [productDetails, isLoading]);
+    setImagePreviews(productImage || []);
+  }, [productDetails, isLoading, categories, brandsData]);
 
   // Event Handlers for input & checkbox field
   const handleInputChange = (e) => {
@@ -221,13 +245,6 @@ export default function ProductUpdateModal({ storeId, productId, close }) {
                 Sub-Category
               </label>
               <br />
-              <span className="text-sm text-gray-600">
-                Currently:{" "}
-                <span className="font-medium">
-                  {productDetails?.data?.productSubcategory}
-                </span>
-              </span>
-              <br />
               <select
                 onChange={handleInputChange}
                 id="subCategory"
@@ -329,7 +346,6 @@ export default function ProductUpdateModal({ storeId, productId, close }) {
           <h4 className="mb-6 font-semibold">Brand & Status</h4>
           {/* brand */}
           <SelectDropdown
-            current={productDetails?.data?.productBrand}
             label="Brand"
             id="brand"
             name="brand"

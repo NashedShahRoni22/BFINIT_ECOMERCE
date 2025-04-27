@@ -11,10 +11,14 @@ import Product1 from "../../components/site/products/Product1";
 import Product2 from "../../components/site/products/Product2";
 import Product3 from "../../components/site/products/Product3";
 import Footer1 from "../../components/site/shared/Footer/Footer";
+import CategoryBar from "../../components/site/shared/CategoryBar/CategoryBar";
 
 export const componentsData = {
   navbarStyle: {
     nav1: Navbar1,
+  },
+  categoryBarStyle: {
+    categoryBar1: CategoryBar,
   },
   sliderStyle: {
     slider1: Slider1,

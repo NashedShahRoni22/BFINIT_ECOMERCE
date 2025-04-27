@@ -10,7 +10,7 @@ import "./slider2.css";
 
 export default function Slider2() {
   return (
-    <section className="mx-5 grid grid-cols-12 gap-y-8 md:container md:mx-auto md:gap-x-8">
+    <section className="mx-5 grid grid-cols-12 gap-y-8 py-5 md:container md:mx-auto md:gap-x-8">
       <Swiper
         autoplay={{
           delay: 4000,

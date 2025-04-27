@@ -11,7 +11,7 @@ import "./slider3.css";
 
 export default function Slider3() {
   return (
-    <section className="mx-5 grid grid-cols-12 gap-y-8 md:container md:mx-auto md:h-[496px] md:gap-x-8">
+    <section className="mx-5 grid grid-cols-12 gap-y-8 py-5 md:container md:mx-auto md:h-[496px] md:gap-x-8">
       {/* Left Image */}
       <div className="col-span-2 hidden md:block">
         <img src={banner3} alt="" className="h-full w-full object-cover" />

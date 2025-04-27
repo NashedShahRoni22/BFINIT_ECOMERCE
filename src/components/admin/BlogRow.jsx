@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import ReusableModal from "./modals/ReusableModal";
 import DeleteBlogModal from "./modals/DeleteBlogModal";
+import BlogUpdateModal from "./modals/BlogUpdateModal";
 
 export default function BlogRow({ blog, storeId }) {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -54,7 +55,7 @@ export default function BlogRow({ blog, storeId }) {
         close={toggleUpdateModal}
         maxWidth="max-w-[90%]"
       >
-        Upate mdoal
+        <BlogUpdateModal blogId={blog?.blogId} />
       </ReusableModal>
 
       {/* delete modal */}
