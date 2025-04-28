@@ -18,8 +18,6 @@ export default function PreviewLayout() {
     enabled: !!storeId && !!user?.token,
   });
 
-  console.log(storePreferenceData);
-
   // set database saved components to previewData and savedComponents
   useEffect(() => {
     const dbSavedComponents = {

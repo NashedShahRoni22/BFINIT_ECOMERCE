@@ -31,10 +31,11 @@ export default function ThemeProvider({ children }) {
 
   useEffect(() => {
     const root = document.documentElement;
-    root.style.setProperty("--color-primary", theme.primary);
-    root.style.setProperty("--color-accent", theme.accent);
-    root.style.setProperty("--color-on-primary", theme.textOnPrimary);
-  }, [theme]);
+    root.style.setProperty("--color-primary", theme?.primary);
+    root.style.setProperty("--color-accent", theme?.accent);
+    root.style.setProperty("--color-on-primary", theme?.textOnPrimary);
+    localStorage.setItem("selectedTheme", JSON.stringify(selectedTheme));
+  }, [theme, selectedTheme]);
 
   const themeInfo = {
     selectedTheme,

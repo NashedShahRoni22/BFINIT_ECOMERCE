@@ -9,9 +9,12 @@ import useAuth from "../../../hooks/auth/useAuth";
 import useGetQuery from "../../../hooks/queries/useGetQuery";
 import useUpdateMutation from "../../../hooks/mutations/useUpdateMutation";
 import "suneditor/dist/css/suneditor.min.css";
+import Spinner from "../loaders/Spinner";
+import { useQueryClient } from "@tanstack/react-query";
 
-export default function BlogUpdateModal({ blogId }) {
+export default function BlogUpdateModal({ blogId, storeId, close }) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { user } = useAuth();
   const thumbnailRef = useRef();
   const [selectedThumbnail, setSelectedThumbnail] = useState("");
@@ -39,9 +42,6 @@ export default function BlogUpdateModal({ blogId }) {
       blogImage: blogDetails?.data.blogImage[0],
     });
   }, [blogDetails]);
-
-  console.log(blogDetails);
-  console.log(formData);
 
   // handle input field change
   const handleInputChange = (e) => {
@@ -81,27 +81,23 @@ export default function BlogUpdateModal({ blogId }) {
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
-    const isFormFilled = Object.values(formData).every(
-      (value) => value.trim() !== "",
-    );
-    if (!isFormFilled || !selectedThumbnail) {
-      return toast.error("Please fill in all fields!");
-    }
-
     const payload = new FormData();
     payload.append("blogData", JSON.stringify(formData));
     if (selectedThumbnail) {
-      payload.append("blogImages", JSON.stringify([selectedThumbnail]));
+      payload.append("blogImages", selectedThumbnail);
       payload.append("deleteImageUrl", JSON.stringify([formData?.blogImage]));
     }
 
     mutate(payload, {
       onSuccess: () => {
         toast.success("New blog added");
+        close();
         navigate("/blogs/manage");
+        queryClient.invalidateQueries(["blogs", storeId]);
       },
       onError: () => {
         toast.error("Something went wrong!");
+        close();
       },
     });
   };
@@ -242,7 +238,7 @@ export default function BlogUpdateModal({ blogId }) {
             type="submit"
             disabled={isPending}
           >
-            Upload
+            {isPending ? <Spinner /> : "Upload"}
           </button>
         </div>
       </div>

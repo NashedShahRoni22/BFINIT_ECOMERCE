@@ -1,27 +1,36 @@
 import { Link } from "react-router";
 import { IoIosHeartEmpty, IoIosStar } from "react-icons/io";
 import { IoCartOutline, IoStarOutline } from "react-icons/io5";
+import useCart from "../../../hooks/cart/useCart";
 
 export default function ProductCard2({ product }) {
+  const { handleAddToCart } = useCart();
+
   const { productName, productImage, productPrice, productDiscountPrice } =
     product;
 
   return (
     <div className="group flex flex-col gap-1">
-      <Link className="relative flex-1 overflow-hidden rounded border border-neutral-100 p-1.5">
-        <img
-          src={`https://ecomback.bfinit.com${productImage}`}
-          alt=""
-          loading="lazy"
-          className="h-56 w-full rounded object-cover transition-all duration-200 ease-linear group-hover:scale-[1.07]"
-        />
-        <div className="hover:text-accent absolute top-1.5 right-1.5 translate-x-[110%] rounded-full bg-white p-1 text-xl shadow-md transition-all duration-200 ease-linear group-hover:translate-x-0">
+      <div className="relative flex-1 overflow-hidden rounded border border-neutral-100 p-1.5">
+        <Link>
+          <img
+            src={`https://ecomback.bfinit.com${productImage}`}
+            alt=""
+            loading="lazy"
+            className="h-56 w-full rounded object-cover transition-all duration-200 ease-linear group-hover:scale-[1.07]"
+          />
+        </Link>
+        <div className="hover:text-accent absolute top-1.5 right-1.5 translate-x-[130%] rounded-full bg-white p-1 text-xl shadow-md transition-all duration-200 ease-linear group-hover:translate-x-0">
           <IoIosHeartEmpty />
         </div>
-        <div className="hover:text-accent absolute bottom-0 left-0 flex w-full translate-y-full items-center justify-center gap-1.5 bg-black/85 p-1 text-white transition-all duration-200 ease-linear group-hover:translate-y-0">
-          <IoCartOutline className="min-w-fit text-xl" /> Add To Cart
-        </div>
-      </Link>
+        <button
+          className="hover:text-accent absolute bottom-0 left-0 flex w-full translate-y-full cursor-pointer items-center justify-center gap-1.5 bg-black/85 p-1 text-white transition-all duration-200 ease-linear group-hover:translate-y-0"
+          onClick={() => handleAddToCart(product)}
+        >
+          <IoCartOutline className="min-w-fit text-xl" />
+          Add To Cart
+        </button>
+      </div>
       <Link className="hover:text-accent w-fit text-lg font-bold transition-all duration-200 ease-in-out">
         {productName}
       </Link>
@@ -43,9 +52,6 @@ export default function ProductCard2({ product }) {
             <p className="text-lg font-bold text-neutral-400 line-through">
               ${productDiscountPrice.$numberDecimal}
             </p>
-            <div className="rounded-full bg-[#ff3333]/10 px-3.5 py-1 text-xs text-[#ff3333]">
-              -20%
-            </div>
           </>
         )}
       </div>

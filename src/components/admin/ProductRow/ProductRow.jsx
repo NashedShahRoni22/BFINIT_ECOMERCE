@@ -45,17 +45,20 @@ export default function ProductRow({ product, storeId }) {
             <p>{productName}</p>
           </div>
         </td>
-        <td className="text-sm">SJ4961</td>
-        <td className="text-sm">{productQuantity}</td>
-        <td className="text-sm">255</td>
-        <td className="text-sm">{productCategory}</td>
-        <td className="text-sm">{productSubcategory}</td>
-        <td className="text-sm">{productBrand}</td>
-        <td className="text-sm">${productPrice.$numberDecimal}</td>
-        <td className="text-sm">${productDiscountPrice.$numberDecimal}</td>
-        <td className="text-sm">{productStatus ? "Active" : "Inactive"}</td>
-        <td className="text-sm">
-          <div className="space-x-2">
+        <td className="text-center text-sm">SJ4961</td>
+        <td className="text-center text-sm">{productQuantity}</td>
+        <td className="text-center text-sm">{productCategory}</td>
+        <td className="text-center text-sm">{productSubcategory}</td>
+        <td className="text-center text-sm">{productBrand}</td>
+        <td className="text-center text-sm">${productPrice.$numberDecimal}</td>
+        <td className="text-center text-sm">
+          ${productDiscountPrice.$numberDecimal}
+        </td>
+        <td className="text-center text-sm">
+          {productStatus ? "Active" : "Inactive"}
+        </td>
+        <td className="text-center text-sm">
+          <div className="inline-flex items-center justify-center space-x-2">
             <button onClick={toggleUpdateModal}>
               <FaRegEdit className="text-dashboard-primary/75 hover:text-dashboard-primary min-w-fit cursor-pointer text-lg transition-all duration-200 ease-in-out" />
             </button>

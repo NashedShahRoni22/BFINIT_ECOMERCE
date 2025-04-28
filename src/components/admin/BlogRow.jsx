@@ -55,7 +55,11 @@ export default function BlogRow({ blog, storeId }) {
         close={toggleUpdateModal}
         maxWidth="max-w-[90%]"
       >
-        <BlogUpdateModal blogId={blog?.blogId} />
+        <BlogUpdateModal
+          blogId={blog?.blogId}
+          storeId={storeId}
+          close={toggleUpdateModal}
+        />
       </ReusableModal>
 
       {/* delete modal */}

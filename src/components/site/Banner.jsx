@@ -7,7 +7,7 @@ export default function Banner() {
       style={{
         background: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${banner}) center/cover no-repeat`,
       }}
-      className="flex min-h-96 w-full items-center justify-center px-5 text-white md:container md:mx-auto"
+      className="my-10 flex min-h-96 w-full items-center justify-center px-5 text-white md:container md:mx-auto md:my-20"
     >
       <div className="text-center">
         <h2 className="font-merriweather text-xl font-medium md:text-3xl">

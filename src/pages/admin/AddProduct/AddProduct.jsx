@@ -35,7 +35,7 @@ export default function AddProduct() {
     },
     subCategory: "",
     originalPrice: "",
-    discountPercent: "",
+    discountPrice: "",
     quantity: "",
     shippingCharge: "",
     brand: {
@@ -43,10 +43,10 @@ export default function AddProduct() {
       name: "",
     },
     status: "yes",
-    bestSelling: "",
-    flashSell: "",
-    featured: "",
-    new: "",
+    bestSelling: "no",
+    flashSell: "no",
+    featured: "no",
+    new: "no",
     description: "",
   });
 
@@ -60,7 +60,7 @@ export default function AddProduct() {
       },
       subCategory: "",
       originalPrice: "",
-      discountPercent: "",
+      discountPrice: "",
       quantity: "",
       shippingCharge: "",
       brand: {
@@ -136,6 +136,9 @@ export default function AddProduct() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const disocuntFloatingPrice = Math.round(formData.discountPrice * 100);
+    const originalFloatingPrice = Math.round(formData.originalPrice * 100);
+
     if (formData.description === "") {
       return toast.error("Description can't be emtpy!");
     }
@@ -144,13 +147,17 @@ export default function AddProduct() {
       return toast.error("Product Images are required — add at least one!");
     }
 
+    if (disocuntFloatingPrice > originalFloatingPrice) {
+      return toast.error("Discount Price must be less than Original Price");
+    }
+
     const productData = {
       productName: formData.name,
       productCategory: formData.category.name,
       productSubCategory: formData.subCategory,
       productBrand: formData.brand.name,
       productPrice: formData.originalPrice,
-      discountPrice: formData.discountPercent,
+      discountPrice: formData.discountPrice,
       productQuantity: formData.quantity,
       shippingCharges: formData.shippingCharge,
       productStatus: formData.status === "yes" ? true : false,
@@ -269,7 +276,7 @@ export default function AddProduct() {
                   name="subCategory"
                   value={formData.subCategory}
                   required
-                  disabled={formData?.category ? false : true}
+                  disabled={formData?.category.id ? false : true}
                   className="mt-1 mb-2 w-full rounded-md border border-neutral-200 bg-[#f8fafb] px-2 py-1.5 outline-none"
                 >
                   <option value="" disabled>
@@ -323,13 +330,13 @@ export default function AddProduct() {
                   </span>
                 </div>
               </div>
-              {/* discount percentage */}
+              {/* discount price */}
               <div>
                 <InputField
-                  label="Discount Percentage (%)"
-                  id="discountPercent"
-                  name="discountPercent"
-                  formData={formData.discountPercent}
+                  label="Discount Price"
+                  id="discountPrice"
+                  name="discountPrice"
+                  formData={formData.discountPrice}
                   handleInputChange={handleInputChange}
                 />
               </div>

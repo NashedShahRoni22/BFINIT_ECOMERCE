@@ -18,6 +18,8 @@ import ManageBlog from "../pages/admin/ManageBlog/ManageBlog";
 import AddBlog from "../pages/admin/AddBlog/AddBlog";
 import Cart from "../pages/store/Cart";
 import PreviewLayout from "../layout/PreviewLayout";
+import StoreThemeInitializer from "../components/admin/StoreThemeInitializer";
+import Checkout from "../pages/store/Checkout/Checkout";
 
 export const router = createBrowserRouter([
   {
@@ -98,7 +100,9 @@ export const router = createBrowserRouter([
     path: "/preview/:storeId",
     element: (
       <PrivateRoute>
-        <PreviewLayout />
+        <StoreThemeInitializer>
+          <PreviewLayout />
+        </StoreThemeInitializer>
       </PrivateRoute>
     ),
     children: [
@@ -109,6 +113,10 @@ export const router = createBrowserRouter([
       {
         path: "cart",
         element: <Cart />,
+      },
+      {
+        path: "checkout",
+        element: <Checkout />,
       },
     ],
   },
