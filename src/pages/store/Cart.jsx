@@ -3,10 +3,12 @@ import { BsCartX } from "react-icons/bs";
 import CartItemRow from "../../components/site/CartItemRow";
 import useCart from "../../hooks/cart/useCart";
 import { tableHeadings } from "../../data/tableHeadings";
+import useGetStorePreference from "../../hooks/stores/useGetStorePreference";
 
 export default function Cart() {
   const { storeId } = useParams();
   const navigate = useNavigate();
+  const { data: storePreference } = useGetStorePreference(storeId);
   const { cartItems, handleUpdateQuantity, handleCartDelete } = useCart();
 
   const subTotalInCents = cartItems.reduce((total, item) => {
@@ -45,6 +47,7 @@ export default function Cart() {
                     <CartItemRow
                       key={item.productId}
                       item={item}
+                      currencySymbol={storePreference?.data?.currencySymbol}
                       handleUpdateQuantity={handleUpdateQuantity}
                       handleCartDelete={handleCartDelete}
                     />
@@ -59,7 +62,7 @@ export default function Cart() {
                     Sub-Total:
                   </td>
                   <td className="text-accent px-1.5 py-2 md:px-3">
-                    ${subTotal}
+                    {storePreference?.data?.currencyCode} {subTotal}
                   </td>
                 </tr>
                 {/* Total Amount */}
@@ -71,7 +74,7 @@ export default function Cart() {
                     Total:
                   </td>
                   <td className="text-accent px-1.5 py-2 text-lg font-semibold md:px-3">
-                    ${subTotal}
+                    {storePreference?.data?.currencyCode} {subTotal}
                   </td>
                 </tr>
               </tbody>

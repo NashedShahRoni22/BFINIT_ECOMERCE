@@ -20,6 +20,7 @@ import Cart from "../pages/store/Cart";
 import PreviewLayout from "../layout/PreviewLayout";
 import StoreThemeInitializer from "../components/admin/StoreThemeInitializer";
 import Checkout from "../pages/store/Checkout/Checkout";
+import OrderDetails from "../pages/admin/OrderDetails/OrderDetails";
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ export const router = createBrowserRouter([
       {
         path: "/orders",
         element: <Orders />,
+      },
+      {
+        path: "/orders/:orderId",
+        element: <OrderDetails />,
       },
       {
         path: "/customers",

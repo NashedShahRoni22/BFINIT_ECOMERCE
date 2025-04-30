@@ -67,37 +67,43 @@ export default function ManageProduct() {
       </div>
 
       <div className="mt-6 overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-y border-neutral-200 text-left">
-              <th className="py-2 text-center text-sm font-medium">Name</th>
-              <th className="py-2 text-center text-sm font-medium">SKU</th>
-              <th className="py-2 text-center text-sm font-medium">Quantity</th>
-              <th className="py-2 text-center text-sm font-medium">Category</th>
-              <th className="py-2 text-center text-sm font-medium">
-                Sub Category
-              </th>
-              <th className="py-2 text-center text-sm font-medium">Brand</th>
-              <th className="py-2 text-center text-sm font-medium">Price</th>
-              <th className="py-2 text-center text-sm font-medium">
-                Discount Price
-              </th>
-              <th className="py-2 text-center text-sm font-medium">Status</th>
-              <th className="py-2 text-center text-sm font-medium">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products &&
-              products?.data?.length > 0 &&
-              products?.data?.map((product) => (
+        {products && products?.data?.length > 0 && (
+          <table className="w-full">
+            <thead>
+              <tr className="border-y border-neutral-200 text-left">
+                <th className="py-2 text-center text-sm font-medium">Name</th>
+                <th className="py-2 text-center text-sm font-medium">SKU</th>
+                <th className="py-2 text-center text-sm font-medium">
+                  Quantity
+                </th>
+                <th className="py-2 text-center text-sm font-medium">
+                  Category
+                </th>
+                <th className="py-2 text-center text-sm font-medium">
+                  Sub Category
+                </th>
+                <th className="py-2 text-center text-sm font-medium">Brand</th>
+                <th className="py-2 text-center text-sm font-medium">Price</th>
+                <th className="py-2 text-center text-sm font-medium">
+                  Discount Price
+                </th>
+                <th className="py-2 text-center text-sm font-medium">Status</th>
+                <th className="py-2 text-center text-sm font-medium">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {products?.data?.map((product) => (
                 <ProductRow
                   key={product.productId}
                   product={product}
                   storeId={selectedStore?.storeId}
                 />
               ))}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        )}
       </div>
     </section>
   );

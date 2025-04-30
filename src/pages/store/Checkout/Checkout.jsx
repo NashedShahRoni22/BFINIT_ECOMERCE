@@ -5,9 +5,10 @@ import useCart from "../../../hooks/cart/useCart";
 import useGetQuery from "../../../hooks/queries/useGetQuery";
 import Spinner from "../../../components/admin/loaders/Spinner";
 import usePostMutation from "../../../hooks/mutations/usePostMutation";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import useAuth from "../../../hooks/auth/useAuth";
 import toast from "react-hot-toast";
+import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
 
 const paymentMethods = [
   {
@@ -24,8 +25,10 @@ const paymentMethods = [
 
 export default function Checkout() {
   const { storeId } = useParams();
+  const navigate = useNavigate();
   const { user } = useAuth();
-  const { cartItems } = useCart();
+  const { cartItems, setCartItems } = useCart();
+  const { data: storePreference } = useGetStorePreference(storeId);
 
   // subtotal amount in cents
   const subTotalInCents = cartItems.reduce((total, item) => {
@@ -121,14 +124,23 @@ export default function Checkout() {
 
   // handle confirm order
   const handleConfirmOrder = () => {
+    const formattedCartItems = cartItems.map((item) => ({
+      productId: item.productId,
+      productName: item.productName,
+      price: item.productDiscountPrice.$numberDecimal,
+      quantity: item.quantity,
+    }));
+
     const payload = {
-      products: cartItems,
+      products: formattedCartItems,
       ...formData,
     };
 
     mutate(payload, {
       onSuccess: () => {
         toast.success("Order have been placed!");
+        navigate(`/preview/${storeId}`);
+        setCartItems([]);
       },
       onError: () => {
         toast.error("Something went wrong!");
@@ -346,7 +358,7 @@ export default function Checkout() {
                 </div>
               </div>
               <p>
-                $
+                {storePreference?.data?.currencySymbol}{" "}
                 {(
                   item.productDiscountPrice.$numberDecimal * item.quantity
                 ).toFixed(2)}
@@ -358,26 +370,33 @@ export default function Checkout() {
         <div className="mt-6 space-y-1.5 border-y border-neutral-200 py-2">
           <div className="flex items-center justify-between">
             <p className="text-lg">Subtotal</p>
-            <p className="text-lg">$100.00</p>
+            <p className="text-lg">
+              {storePreference?.data?.currencyCode} {subTotal}
+            </p>
           </div>
           <div className="flex items-center justify-between">
             <p className="text-lg">Delivery Charge</p>
-            <p className="text-lg">$15.00</p>
+            {/* TODO: add dynamic delivery charge of individual product */}
+            <p className="text-lg">
+              {storePreference?.data?.currencyCode} 00.00
+            </p>
           </div>
         </div>
 
         <div className="flex items-center justify-between py-2">
           <p className="text-lg font-medium">Total</p>
-          <p className="text-lg font-medium">$115.00</p>
+          <p className="text-lg font-medium">
+            {storePreference?.data?.currencyCode} {subTotal}
+          </p>
         </div>
 
         <div className="mt-6 flex justify-center">
           <button
-            disabled={isDisabled}
+            disabled={isDisabled || isPending}
             onClick={handleConfirmOrder}
-            className={`text-on-primary rounded-lg px-4 py-2 transition-all duration-200 ease-in-out ${isDisabled ? "bg-accent/75" : "bg-accent hover:bg-accent/90 cursor-pointer"}`}
+            className={`text-on-primary rounded-lg px-4 py-2 transition-all duration-200 ease-in-out ${isDisabled || isPending ? "bg-accent/50" : "bg-accent hover:bg-accent/90 cursor-pointer"}`}
           >
-            Confirm Order
+            {isPending ? <Spinner /> : "Confirm Order"}
           </button>
         </div>
       </div>

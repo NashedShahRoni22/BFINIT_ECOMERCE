@@ -1,10 +1,12 @@
 import { useParams } from "react-router";
 import ProductCard from "../shared/ProductCard";
-import useGetProductsByStoreId from "../../../hooks/products/useGetProductsByStoreId";
 import EmptyState from "../EmptyState";
+import useGetProductsByStoreId from "../../../hooks/products/useGetProductsByStoreId";
+import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
 
 export default function Product1() {
   const { storeId } = useParams();
+  const { data: storePreference } = useGetStorePreference(storeId);
 
   // fetch all products by selected storeId
   const { data: products } = useGetProductsByStoreId(storeId);
@@ -18,7 +20,11 @@ export default function Product1() {
       {products && products?.data?.length > 0 && (
         <div className="mt-10 grid grid-cols-2 gap-5 md:mt-10 md:grid-cols-3 lg:grid-cols-5">
           {products?.data?.map((product) => (
-            <ProductCard key={product.productId} product={product} />
+            <ProductCard
+              key={product.productId}
+              product={product}
+              currencySymbol={storePreference?.data?.currencySymbol}
+            />
           ))}
         </div>
       )}

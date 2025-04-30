@@ -78,7 +78,10 @@ export default function CreateStore() {
     storeTheme: "",
     productType: "",
     country: "",
-    currency: "",
+    currencyName: "",
+    currencyCode: "",
+    currencySymbol: "",
+    timezone: "",
   });
 
   const { data: country, isLoading: isCountryLoading } = useGetQuery({
@@ -90,7 +93,10 @@ export default function CreateStore() {
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
-      currency: country?.currency_name,
+      currencyName: country?.currency_name,
+      currencyCode: country?.currency_code,
+      currencySymbol: country?.currency_symbol,
+      timezone: country?.timezone,
     }));
   }, [country]);
 
@@ -305,16 +311,16 @@ export default function CreateStore() {
             </label>
             <div className="mt-1.5 flex cursor-not-allowed items-center rounded border border-neutral-200 bg-neutral-50">
               <div className="px-3">
-                {isCountryLoading ? <Spinner /> : country?.currency_symbol}
+                {isCountryLoading ? <Spinner /> : formData?.currencySymbol}
               </div>
 
               <input
                 type="text"
-                name="storePhone"
-                value={country?.currency_code}
+                name="currencyCode"
+                value={formData?.currencyCode}
                 required
                 readOnly
-                className={`w-full cursor-not-allowed border-neutral-200 px-4 py-1 outline-none ${country?.currency_symbol && "border-l"}`}
+                className={`w-full cursor-not-allowed border-neutral-200 px-4 py-1 outline-none ${formData?.currencyCode && "border-l"}`}
               />
             </div>
           </div>
@@ -330,8 +336,8 @@ export default function CreateStore() {
 
             <input
               type="text"
-              name="storePhone"
-              value={country?.currency_name}
+              name="currencyName"
+              value={formData?.currencyName}
               required
               readOnly
               className="mt-1.5 w-full cursor-not-allowed rounded border border-l border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"

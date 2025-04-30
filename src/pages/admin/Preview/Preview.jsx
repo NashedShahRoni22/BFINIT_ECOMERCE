@@ -18,6 +18,7 @@ export default function Preview() {
   useEffect(() => {
     const dbSavedComponents = {
       navbarStyle: `nav${storePreferenceData?.data?.navbarStyle}`,
+      categoryBarStyle: `categoryBar${storePreferenceData?.storeTheme}`,
       sliderStyle: `slider${storePreferenceData?.data?.sliderStyle}`,
       categoryStyle: `category${storePreferenceData?.data?.categoryStyle}`,
       highlightStyle: `highlight${storePreferenceData?.data?.highlightStyle}`,

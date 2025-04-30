@@ -3,6 +3,7 @@ import { BsTrash3 } from "react-icons/bs";
 
 export default function CartItemRow({
   item,
+  currencySymbol,
   handleUpdateQuantity,
   handleCartDelete,
 }) {
@@ -59,10 +60,14 @@ export default function CartItemRow({
         </div>
       </td>
       {/* Per Unit Price */}
-      <td className="px-1.5 py-2 md:px-3">{Number(price)}</td>
+      <td className="px-1.5 py-2 md:px-3">
+        {currencySymbol}
+        {Number(price)}
+      </td>
       {/* price based on quantiy */}
       <td className="px-1.5 py-2 tabular-nums md:px-3">
         <div className="flex items-center justify-between gap-1.5 md:justify-normal">
+          {currencySymbol}
           {quantity ? Number(price) * quantity : Number(price) * 1}
           <button onClick={() => handleCartDelete(item.productId)}>
             <BsTrash3 className="hover:text-accent cursor-pointer transition-all duration-200 ease-in-out" />

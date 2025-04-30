@@ -56,11 +56,12 @@ export const sideNavLinks = [
     name: "Orders",
     url: "/orders",
   },
-  {
+  // TODO: customers api not ready that's why hidden
+  /* {
     icon: MdPeople,
     name: "Customers",
     url: "/customers",
-  },
+  }, */
   {
     icon: MdLibraryBooks,
     name: "Blogs",

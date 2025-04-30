@@ -22,6 +22,7 @@ export default function PreviewLayout() {
   useEffect(() => {
     const dbSavedComponents = {
       navbarStyle: `nav${storePreferenceData?.data?.navbarStyle}`,
+      categoryBarStyle: `categoryBar${storePreferenceData?.storeTheme}`,
       sliderStyle: `slider${storePreferenceData?.data?.sliderStyle}`,
       categoryStyle: `category${storePreferenceData?.data?.categoryStyle}`,
       highlightStyle: `highlight${storePreferenceData?.data?.highlightStyle}`,
@@ -46,6 +47,7 @@ export default function PreviewLayout() {
   return (
     <div>
       {renderComponent("navbarStyle", previewData.navbarStyle)}
+      {renderComponent("categoryBarStyle", previewData.categoryBarStyle)}
       <Outlet />
       {renderComponent("footerStyle", previewData.footerStyle)}
     </div>
