@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Outlet, useParams } from "react-router";
+import { Outlet, ScrollRestoration, useParams } from "react-router";
 import useAuth from "../hooks/auth/useAuth";
 import useGetQuery from "../hooks/queries/useGetQuery";
 import { componentsData } from "../data/adminData/componentsData";
@@ -50,6 +50,7 @@ export default function PreviewLayout() {
       {renderComponent("categoryBarStyle", previewData.categoryBarStyle)}
       <Outlet />
       {renderComponent("footerStyle", previewData.footerStyle)}
+      <ScrollRestoration />
     </div>
   );
 }

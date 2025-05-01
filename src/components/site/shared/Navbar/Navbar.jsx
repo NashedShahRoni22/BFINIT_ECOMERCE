@@ -72,16 +72,16 @@ export default function Navbar() {
               </div>
             </Link>
             {/* favourite items */}
-            <Link to="/wishlist" className="relative">
+            {/* <Link to="/wishlist" className="relative">
               <BsHeart className="text-2xl" />
               <div className="bg-accent absolute -top-3 -right-3.5 grid size-5 place-items-center rounded-full text-center text-sm text-white">
                 0
               </div>
-            </Link>
+            </Link> */}
             {/* login */}
-            <Link to="/login">
+            {/* <Link to="/login">
               <BsPersonCircle className="hover:text-accent text-2xl transition-all duration-200 ease-in-out" />
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>

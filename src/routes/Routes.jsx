@@ -21,6 +21,7 @@ import PreviewLayout from "../layout/PreviewLayout";
 import StoreThemeInitializer from "../components/admin/StoreThemeInitializer";
 import Checkout from "../pages/store/Checkout/Checkout";
 import OrderDetails from "../pages/admin/OrderDetails/OrderDetails";
+import ProductDetails from "../pages/store/ProductDetails/ProductDetails";
 
 export const router = createBrowserRouter([
   {
@@ -122,6 +123,10 @@ export const router = createBrowserRouter([
       {
         path: "checkout",
         element: <Checkout />,
+      },
+      {
+        path: "products/:productId",
+        element: <ProductDetails />,
       },
     ],
   },

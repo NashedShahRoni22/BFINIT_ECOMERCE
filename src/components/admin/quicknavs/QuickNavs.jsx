@@ -7,6 +7,7 @@ export default function QuickNavs() {
       {quickNavigationLinks.map((quickNav, index) => (
         <Link
           key={index}
+          to={quickNav.url}
           className="flex size-[120px] flex-col items-center justify-center gap-2.5 rounded p-2 shadow"
         >
           <quickNav.icon className="text-dashboard-primary text-4xl" />

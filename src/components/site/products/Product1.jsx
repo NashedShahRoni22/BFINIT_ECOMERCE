@@ -24,6 +24,7 @@ export default function Product1() {
               key={product.productId}
               product={product}
               currencySymbol={storePreference?.data?.currencySymbol}
+              storeId={storeId}
             />
           ))}
         </div>
