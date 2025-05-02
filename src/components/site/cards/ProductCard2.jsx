@@ -21,9 +21,9 @@ export default function ProductCard2({ product, storeId, currencySymbol }) {
           />
         </Link>
         {/* add to favourite temporarily hidden */}
-        <div className="hover:text-accent absolute top-1.5 right-1.5 hidden translate-x-[130%] rounded-full bg-white p-1 text-xl shadow-md transition-all duration-200 ease-linear group-hover:translate-x-0">
+        {/* <div className="hover:text-accent absolute top-1.5 right-1.5 translate-x-[130%] rounded-full bg-white p-1 text-xl shadow-md transition-all duration-200 ease-linear group-hover:translate-x-0">
           <IoIosHeartEmpty />
-        </div>
+        </div> */}
         <button
           className="hover:text-accent absolute bottom-0 left-0 flex w-full translate-y-full cursor-pointer items-center justify-center gap-1.5 bg-black/85 p-1 text-white transition-all duration-200 ease-linear group-hover:translate-y-0"
           onClick={() => handleAddToCart(product)}

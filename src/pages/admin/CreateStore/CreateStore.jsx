@@ -169,6 +169,7 @@ export default function CreateStore() {
             id="logo"
             label="Logo"
             selectedImg={selectedImages.logo}
+            sizeMention={true}
             handleImgChange={(e) =>
               handleImgChange(e, "logo", setSelectedImages)
             }

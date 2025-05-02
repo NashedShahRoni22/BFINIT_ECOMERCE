@@ -4,7 +4,7 @@ import useGetProductsByStoreId from "../../../hooks/products/useGetProductsBySto
 import ProductCard3 from "../cards/ProductCard3";
 import EmptyState from "../EmptyState";
 
-export default function Product3() {
+export default function Product3({ customProducts }) {
   const { storeId } = useParams();
   const { data: storePreference } = useGetStorePreference(storeId);
 
@@ -12,12 +12,21 @@ export default function Product3() {
   const { data: products } = useGetProductsByStoreId(storeId);
 
   return (
-    <section className="font-roboto mx-5 py-10 md:container md:mx-auto md:py-20">
-      <h2 className="font-merriweather text-xl font-medium md:text-3xl">
-        Featured Products
-      </h2>
+    <>
+      {customProducts && customProducts && customProducts?.data?.length > 0 && (
+        <div className="grid grid-cols-2 gap-5 md:mt-10 md:grid-cols-3 lg:grid-cols-5">
+          {customProducts?.data?.map((product) => (
+            <ProductCard3
+              key={product.productId}
+              product={product}
+              currencySymbol={storePreference?.data?.currencySymbol}
+              storeId={storeId}
+            />
+          ))}
+        </div>
+      )}
 
-      {products && products?.data?.length > 0 && (
+      {!customProducts && products && products?.data?.length > 0 && (
         <div className="mt-10 grid grid-cols-2 gap-5 md:mt-10 md:grid-cols-3 lg:grid-cols-5">
           {products?.data?.map((product) => (
             <ProductCard3
@@ -37,6 +46,6 @@ export default function Product3() {
             description="It looks like there are no products available at the moment."
           />
         ))}
-    </section>
+    </>
   );
 }

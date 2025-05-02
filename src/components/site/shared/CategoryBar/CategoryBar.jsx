@@ -1,7 +1,7 @@
+import { useRef, useState } from "react";
 import { Link, useParams } from "react-router";
 import useGetCategories from "../../../../hooks/categories/useGetCategories";
 import useGetSubCategories from "../../../../hooks/categories/subCategories/useGetSubCategories";
-import { useRef, useState } from "react";
 
 export default function CategoryBar() {
   const { storeId } = useParams();
@@ -29,14 +29,14 @@ export default function CategoryBar() {
 
   return (
     <div className="sticky -top-0.5 left-0 z-50 bg-white shadow-sm">
-      <div className="mx-5 hidden justify-between md:container md:mx-auto md:flex">
+      <div className="mx-5 hidden gap-4 md:container md:mx-auto md:flex">
         {categories &&
           categories?.data?.length > 0 &&
           categories?.data?.map((category) => (
             <div key={category.id} className="group relative py-3 text-sm">
               <Link
                 className="group-hover:text-accent font-medium transition-all duration-200 ease-in-out"
-                to="/"
+                to={`/preview/${storeId}/products/categories/${encodeURIComponent(category.name)}`}
                 onMouseEnter={() => handleMouseEnter(category.id)}
               >
                 {category.name}
@@ -49,7 +49,7 @@ export default function CategoryBar() {
                     {subCategories.data.map((subCategoryName, i) => (
                       <Link
                         key={i}
-                        to="/"
+                        to={`/preview/${storeId}/products/categories/${encodeURIComponent(category.name)}?subCategory=${encodeURIComponent(subCategoryName)}`}
                         className="hover:bg-accent rounded p-2 transition-all duration-200 ease-in-out hover:text-white"
                       >
                         {subCategoryName}

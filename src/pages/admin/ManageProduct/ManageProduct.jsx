@@ -34,11 +34,11 @@ export default function ManageProduct() {
       <div className="my-6 flex flex-wrap items-center justify-between">
         {selectedStore ? (
           <h3 className="text-lg font-semibold">
-            Add New Product to Store {selectedStore.storeName}
+            Manage Product of Store {selectedStore.storeName}
           </h3>
         ) : (
           <h3 className="text-lg font-semibold">
-            Select a Store to Add New Product
+            Select a Store to Manage Product
           </h3>
         )}
 

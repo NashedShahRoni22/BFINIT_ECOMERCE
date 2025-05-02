@@ -6,6 +6,7 @@ export default function ImageField({
   selectedImg,
   handleImgChange,
   handleRemoveImg,
+  sizeMention,
 }) {
   return (
     <div>
@@ -56,6 +57,14 @@ export default function ImageField({
               </label>{" "}
               & <br />
               select your store logo
+              {sizeMention && (
+                <p className="mt-1 text-xs text-neutral-400">
+                  Required: 240px (width) × 80px (height) <br />
+                  <span className="text-[11px]">
+                    Recommended: PNG or SVG format
+                  </span>
+                </p>
+              )}
             </div>
           </div>
         )}

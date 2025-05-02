@@ -46,11 +46,11 @@ export default function PreviewLayout() {
 
   return (
     <div>
+      <ScrollRestoration />
       {renderComponent("navbarStyle", previewData.navbarStyle)}
       {renderComponent("categoryBarStyle", previewData.categoryBarStyle)}
       <Outlet />
       {renderComponent("footerStyle", previewData.footerStyle)}
-      <ScrollRestoration />
     </div>
   );
 }

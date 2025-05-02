@@ -8,12 +8,15 @@ import {
 import { BsCart3, BsHeart, BsPersonCircle } from "react-icons/bs";
 import MobileNav from "./MobileNav";
 import useCart from "../../../../hooks/cart/useCart";
-import logo from "../../../../assets/logo/logo.webp";
+import useGetStorePreference from "../../../../hooks/stores/useGetStorePreference";
 
 export default function Navbar() {
   const { storeId } = useParams();
   const { cartItems } = useCart();
   const [showMenu, setShowMenu] = useState(false);
+
+  // store preference
+  const { data: storePreference } = useGetStorePreference(storeId);
 
   // handle mobile hamburger menu
   const handleShowMenu = () => {
@@ -36,13 +39,14 @@ export default function Navbar() {
             to={`/preview/${storeId}`}
             className="font-merriweather text-accent text-2xl font-semibold italic"
           >
-            {/* <img
-              src={logo}
-              alt="brand logo"
-              loading="lazy"
-              className="w-24 md:w-36"
-            /> */}
-            Brand Logo
+            <div className="max-w-[200px]">
+              <img
+                src={`https://ecomback.bfinit.com${storePreference?.storeLogo}`}
+                alt="brand logo"
+                loading="lazy"
+                className="h-10 w-auto object-contain md:h-12"
+              />
+            </div>
           </Link>
 
           {/* Mobile Search Button */}

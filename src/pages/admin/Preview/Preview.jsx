@@ -46,7 +46,12 @@ export default function Preview() {
       {renderComponent("sliderStyle", previewData.sliderStyle)}
       {renderComponent("categoryStyle", previewData.categoryStyle)}
       {renderComponent("highlightStyle", previewData.highlightStyle)}
-      {renderComponent("productStyle", previewData.productStyle)}
+      <div className="font-roboto mx-5 py-10 md:container md:mx-auto md:py-20">
+        <h2 className="font-merriweather mb-10 text-center text-xl font-medium md:text-3xl">
+          Featured Products
+        </h2>
+        {renderComponent("productStyle", previewData.productStyle)}
+      </div>
       {renderComponent("bannerStyle", previewData.bannerStyle)}
     </div>
   );

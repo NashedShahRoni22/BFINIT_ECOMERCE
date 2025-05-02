@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { useParams, useSearchParams } from "react-router";
 import useGetQuery from "../../../hooks/queries/useGetQuery";
 import useAuth from "../../../hooks/auth/useAuth";
 import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
@@ -7,28 +7,38 @@ import { componentsData } from "../../../data/adminData/componentsData";
 
 export default function Categories() {
   const { storeId, categoryName } = useParams();
+  const [searchParams] = useSearchParams();
+  const subCategoryName = searchParams.get("subCategory");
   const { user } = useAuth();
   const [previewData, setPreviewData] = useState([]);
 
   const { data: storePreference } = useGetStorePreference(storeId);
-  const { data } = useGetQuery({
-    endpoint: `/product/by-category/?storeId=${storeId}&categoryName=${decodeURIComponent(categoryName)}`,
+  // dynamic api endpoint for cateogory and sub-category
+  const endpointUrl = subCategoryName
+    ? `/product/by-subcategory/?storeId=${storeId}&categoryName=${encodeURIComponent(categoryName)}&subCategoryName=${decodeURIComponent(subCategoryName)}`
+    : `/product/by-category/?storeId=${storeId}&categoryName=${encodeURIComponent(categoryName)}`;
+
+  // custom get api hooks for category products or sub category products
+  const { data: categoryProducts } = useGetQuery({
+    endpoint: endpointUrl,
     token: user?.token,
-    queryKey: ["products", storeId, categoryName],
-    enabled: !!storeId && !!categoryName && !!user?.token,
+    queryKey: [
+      "products",
+      storeId,
+      categoryName,
+      ...(subCategoryName ? [subCategoryName] : []),
+    ],
+    enabled:
+      !!storeId &&
+      !!user?.token &&
+      !!categoryName &&
+      (!subCategoryName || !!subCategoryName),
   });
 
   // set database saved components to previewData and savedComponents
   useEffect(() => {
     const dbSavedComponents = {
-      navbarStyle: `nav${storePreference?.data?.navbarStyle}`,
-      categoryBarStyle: `categoryBar${storePreference?.storeTheme}`,
-      sliderStyle: `slider${storePreference?.data?.sliderStyle}`,
-      categoryStyle: `category${storePreference?.data?.categoryStyle}`,
-      highlightStyle: `highlight${storePreference?.data?.highlightStyle}`,
       productStyle: `product${storePreference?.data?.productStyle}`,
-      bannerStyle: `banner${storePreference?.data?.bannerStyle}`,
-      footerStyle: `footer${storePreference?.data?.footerStyle}`,
     };
 
     setPreviewData(dbSavedComponents);
@@ -37,8 +47,16 @@ export default function Categories() {
   // Function to dynamically render components
   const renderComponent = (category, value) => {
     const Component = componentsData[category]?.[value];
-    return Component ? <Component /> : null;
+    return Component ? <Component customProducts={categoryProducts} /> : null;
   };
 
-  return <div>{renderComponent("productStyle", previewData.productStyle)}</div>;
+  return (
+    <div className="font-roboto mx-5 py-10 md:container md:mx-auto md:py-20">
+      <h1 className="font-merriweather mb-10 text-center text-xl font-medium md:text-3xl">
+        Explore{" "}
+        {decodeURIComponent(subCategoryName ? subCategoryName : categoryName)}
+      </h1>
+      {renderComponent("productStyle", previewData.productStyle)}
+    </div>
+  );
 }
