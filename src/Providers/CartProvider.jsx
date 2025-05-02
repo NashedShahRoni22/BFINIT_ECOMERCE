@@ -10,7 +10,7 @@ export default function CartProvider({ children }) {
   );
 
   // Save cart items to local storage
-  const handleAddToCart = (product) => {
+  const handleAddToCart = (product, quantity) => {
     const isItemInCart = cartItems.find(
       (item) => item.productId === product.productId,
     );
@@ -18,7 +18,10 @@ export default function CartProvider({ children }) {
     if (isItemInCart) {
       return toast.error("Item already in cart!");
     } else {
-      setCartItems((prevItems) => [{ ...product, quantity: 1 }, ...prevItems]);
+      setCartItems((prevItems) => [
+        { ...product, quantity: quantity ? quantity : 1 },
+        ...prevItems,
+      ]);
       toast.success("New item added!");
     }
   };

@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import useCart from "../../../hooks/cart/useCart";
 
 export default function ProductCard({ product, currencySymbol, storeId }) {
-  const { productName, productImage, productPrice } = product;
+  const { productName, productImage, productDiscountPrice } = product;
 
   const { handleAddToCart } = useCart();
 
@@ -28,14 +28,22 @@ export default function ProductCard({ product, currencySymbol, storeId }) {
         {/* <p>{p.ratings}</p> */}
         <p className="font-semibold">
           {currencySymbol}
-          {productPrice.$numberDecimal}
+          {productDiscountPrice.$numberDecimal}
         </p>
-        <button
-          onClick={() => handleAddToCart(product)}
-          className="w-full cursor-pointer rounded border px-2 py-1"
-        >
-          Buy Now
-        </button>
+        <div className="flex w-full items-center gap-2 text-sm">
+          <Link
+            to={`/preview/${storeId}/products/${product.productId}`}
+            className="border-accent bg-accent hover:bg-accent/85 ease-in-sout w-full cursor-pointer rounded border p-1 text-center text-white transition-all duration-200"
+          >
+            Buy Now
+          </Link>
+          <button
+            onClick={() => handleAddToCart(product)}
+            className="border-accent hover:bg-accent w-full cursor-pointer rounded border p-1 transition-all duration-200 ease-in-out hover:text-white"
+          >
+            Add to Cart
+          </button>
+        </div>
       </div>
     </div>
   );

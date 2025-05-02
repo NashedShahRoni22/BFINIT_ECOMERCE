@@ -23,7 +23,7 @@ export default function CartItemRow({
       <td className="w-20 px-1.5 py-2 md:px-3">
         <Link to={`/product/${productId}`}>
           <img
-            src={`https://ecomback.bfinit.com${productImage}`}
+            src={`https://ecomback.bfinit.com${Array.isArray(productImage) ? productImage[0] : productImage}`}
             alt={productName}
             className="w-full"
           />

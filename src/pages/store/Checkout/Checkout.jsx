@@ -339,7 +339,7 @@ export default function Checkout() {
       <div className="w-full md:w-1/2">
         <h2 className="font-merriweather text-xl font-bold">Your Order</h2>
 
-        <ul className="mt-4">
+        <ul className="mt-4 space-y-4">
           {cartItems?.map((item) => (
             <li
               key={item.productId}
@@ -348,7 +348,7 @@ export default function Checkout() {
               <div className="flex items-center gap-1.5">
                 <img
                   className="size-12 object-contain"
-                  src={`https://ecomback.bfinit.com${item.productImage}`}
+                  src={`https://ecomback.bfinit.com${Array.isArray(item.productImage) ? item.productImage[0] : item.productImage}`}
                   alt={`image of ${item.productName}`}
                   loading="lazy"
                 />

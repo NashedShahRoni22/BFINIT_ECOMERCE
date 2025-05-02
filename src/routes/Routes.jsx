@@ -22,6 +22,7 @@ import StoreThemeInitializer from "../components/admin/StoreThemeInitializer";
 import Checkout from "../pages/store/Checkout/Checkout";
 import OrderDetails from "../pages/admin/OrderDetails/OrderDetails";
 import ProductDetails from "../pages/store/ProductDetails/ProductDetails";
+import Categories from "../pages/store/Categories/Categories";
 
 export const router = createBrowserRouter([
   {
@@ -127,6 +128,10 @@ export const router = createBrowserRouter([
       {
         path: "products/:productId",
         element: <ProductDetails />,
+      },
+      {
+        path: "products/categories/:categoryName",
+        element: <Categories />,
       },
     ],
   },

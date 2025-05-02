@@ -38,6 +38,7 @@ export default function CustomizeSideNav({
 
     const updatePaylod = {
       navbarStyle: selectedValue.navbarStyle || "0",
+      categoryBarStyle: selectedValue.categoryBarStyle || "1", // TODO: category bar will be always shown
       sliderStyle: selectedValue.sliderStyle || "0",
       categoryStyle: selectedValue.categoryStyle || "0",
       highlightStyle: selectedValue.highlightStyle || "0",

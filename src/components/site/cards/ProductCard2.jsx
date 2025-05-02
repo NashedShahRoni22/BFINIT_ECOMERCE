@@ -3,7 +3,7 @@ import { IoIosHeartEmpty, IoIosStar } from "react-icons/io";
 import { IoCartOutline, IoStarOutline } from "react-icons/io5";
 import useCart from "../../../hooks/cart/useCart";
 
-export default function ProductCard2({ product }) {
+export default function ProductCard2({ product, storeId, currencySymbol }) {
   const { handleAddToCart } = useCart();
 
   const { productName, productImage, productPrice, productDiscountPrice } =
@@ -12,7 +12,7 @@ export default function ProductCard2({ product }) {
   return (
     <div className="group flex flex-col gap-1">
       <div className="relative flex-1 overflow-hidden rounded border border-neutral-100 p-1.5">
-        <Link>
+        <Link to={`/preview/${storeId}/products/${product.productId}`}>
           <img
             src={`https://ecomback.bfinit.com${productImage}`}
             alt=""
@@ -20,7 +20,8 @@ export default function ProductCard2({ product }) {
             className="h-56 w-full rounded object-cover transition-all duration-200 ease-linear group-hover:scale-[1.07]"
           />
         </Link>
-        <div className="hover:text-accent absolute top-1.5 right-1.5 translate-x-[130%] rounded-full bg-white p-1 text-xl shadow-md transition-all duration-200 ease-linear group-hover:translate-x-0">
+        {/* add to favourite temporarily hidden */}
+        <div className="hover:text-accent absolute top-1.5 right-1.5 hidden translate-x-[130%] rounded-full bg-white p-1 text-xl shadow-md transition-all duration-200 ease-linear group-hover:translate-x-0">
           <IoIosHeartEmpty />
         </div>
         <button
@@ -31,26 +32,36 @@ export default function ProductCard2({ product }) {
           Add To Cart
         </button>
       </div>
-      <Link className="hover:text-accent w-fit text-lg font-bold transition-all duration-200 ease-in-out">
+      <Link
+        to={`/preview/${storeId}/products/${product.productId}`}
+        className="hover:text-accent w-fit text-lg font-bold transition-all duration-200 ease-in-out"
+      >
         {productName}
       </Link>
-      <div className="flex items-center gap-0.5">
+
+      {/* ratings temprary hidden */}
+      {/* <div className="flex items-center gap-0.5">
         {Array.from({ length: 4 }, (_, i) => (
           <IoIosStar key={i} className="text-lg text-[#ffc633]" />
         ))}
         <IoStarOutline className="text-lg text-[#ffc633]" />
-        {/* {product.ratings < 5 && (
-      )} */}
+        {product.ratings < 5 && (
+      )}
         <div className="ml-1 text-sm">
-          {/* {product.ratings.toFixed(1)} */}4/5
+          {product.ratings.toFixed(1)}4/5
         </div>
-      </div>
+      </div> */}
+
       <div className="mt-1 flex items-center gap-2.5">
-        <p className="text-lg font-bold">${productPrice.$numberDecimal}</p>
+        <p className="text-lg font-bold">
+          {currencySymbol}
+          {productDiscountPrice.$numberDecimal}
+        </p>
         {productDiscountPrice && (
           <>
             <p className="text-lg font-bold text-neutral-400 line-through">
-              ${productDiscountPrice.$numberDecimal}
+              {currencySymbol}
+              {productPrice.$numberDecimal}
             </p>
           </>
         )}

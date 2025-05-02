@@ -19,7 +19,11 @@ export default function Category1() {
         {categories &&
           categories?.data?.length > 0 &&
           categories?.data?.map((category) => (
-            <CategoryCard key={category.id} category={category} />
+            <CategoryCard
+              key={category.id}
+              category={category}
+              storeId={storeId}
+            />
           ))}
       </div>
     </section>

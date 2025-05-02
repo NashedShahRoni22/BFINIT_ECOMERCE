@@ -41,7 +41,7 @@ export default function StoreCustomizeLayout() {
   useEffect(() => {
     const dbSavedComponents = {
       navbarStyle: `nav${storePreferenceData?.data?.navbarStyle}`,
-      categoryBarStyle: `categoryBar${storePreferenceData?.storeTheme}`,
+      categoryBarStyle: `categoryBar${storePreferenceData?.data?.categoryBarStyle}`,
       sliderStyle: `slider${storePreferenceData?.data?.sliderStyle}`,
       categoryStyle: `category${storePreferenceData?.data?.categoryStyle}`,
       highlightStyle: `highlight${storePreferenceData?.data?.highlightStyle}`,

@@ -1,10 +1,13 @@
 import { Link } from "react-router";
 
-export default function CategoryCard({ category }) {
-  const { id, image, name } = category;
+export default function CategoryCard({ category, storeId }) {
+  const { image, name } = category;
 
   return (
-    <Link className="group rounded bg-[#f6f8fa] p-3 text-center md:py-6">
+    <Link
+      to={`/preview/${storeId}/products/categories/${encodeURIComponent(name)}`}
+      className="group rounded bg-[#f6f8fa] p-3 text-center md:py-6"
+    >
       <img
         src={`https://ecomback.bfinit.com${image}`}
         alt={name}
