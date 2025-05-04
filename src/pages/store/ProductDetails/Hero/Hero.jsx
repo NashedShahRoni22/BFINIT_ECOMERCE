@@ -1,5 +1,6 @@
 import { useState } from "react";
 import useCart from "../../../../hooks/cart/useCart";
+import { useNavigate, useParams } from "react-router";
 
 export default function Hero({ productDetails, currencySymbol }) {
   const {
@@ -11,6 +12,8 @@ export default function Hero({ productDetails, currencySymbol }) {
     productBrand,
     productQuantity,
   } = productDetails.data;
+  const { storeId } = useParams();
+  const navigate = useNavigate();
   const { handleAddToCart } = useCart();
   const [highlightImg, setHighLightImg] = useState(
     productDetails?.data?.productImage[0],
@@ -31,6 +34,11 @@ export default function Hero({ productDetails, currencySymbol }) {
     if (quantity > 1) {
       setQuantity(quantity - 1);
     }
+  };
+
+  const handleBuyNow = (product, quantity) => {
+    handleAddToCart(product, quantity);
+    navigate(`/preview/${storeId}/checkout`);
   };
 
   return (
@@ -121,7 +129,10 @@ export default function Hero({ productDetails, currencySymbol }) {
             >
               Add to Cart
             </button>
-            <button className="border-accent text-accent hover:bg-accent cursor-pointer rounded border px-6 py-3 font-medium transition-all duration-200 ease-in-out hover:text-white">
+            <button
+              onClick={() => handleBuyNow(productDetails?.data, quantity)}
+              className="border-accent text-accent hover:bg-accent cursor-pointer rounded border px-6 py-3 font-medium transition-all duration-200 ease-in-out hover:text-white"
+            >
               Buy Now
             </button>
           </div>

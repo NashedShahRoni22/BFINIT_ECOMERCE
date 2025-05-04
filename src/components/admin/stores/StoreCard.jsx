@@ -7,7 +7,7 @@ export default function StoreCard({ storeData }) {
   return (
     <div className="w-[250px] rounded p-2 shadow">
       <img
-        className="h-[200px] w-full rounded object-cover"
+        className="h-[200px] w-full rounded object-contain"
         src={`https://ecomback.bfinit.com${storeLogo}`}
         alt=""
       />

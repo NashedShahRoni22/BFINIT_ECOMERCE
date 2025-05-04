@@ -457,7 +457,7 @@ export default function ProductUpdateModal({ storeId, productId, close }) {
             type="submit"
             disabled={isPending}
           >
-            {isPending && !isError ? <Spinner /> : " Add New Product"}
+            {isPending && !isError ? <Spinner /> : "Update Product Info"}
           </button>
         </div>
       </form>

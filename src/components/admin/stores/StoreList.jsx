@@ -43,7 +43,11 @@ export default function StoreList({ store }) {
       </td>
       <td className="text-sm">Active</td>
       <td>
-        <Link to={`/preview/${store?.storeId}`} className="flex justify-center">
+        <Link
+          to={`/preview/${store?.storeId}`}
+          target="_blanck"
+          className="flex justify-center"
+        >
           <HiOutlineEye className="hover:text-dashboard-primary cursor-pointer text-xl transition-all duration-200 ease-in-out" />
         </Link>
       </td>

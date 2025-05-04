@@ -12,8 +12,11 @@ import usePostMutation from "../../../hooks/mutations/usePostMutation";
 import useGetCategories from "../../../hooks/categories/useGetCategories";
 import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import useGetStores from "../../../hooks/stores/useGetStores";
+import { useSearchParams } from "react-router";
 
 export default function Category() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const storeId = searchParams.get("storeId") || "";
   const queryClient = useQueryClient();
   const { user } = useContext(AuthContext);
   const [selectedImages, setSelectedImages] = useState({
@@ -21,7 +24,7 @@ export default function Category() {
   });
   const [categoryName, setCategoryName] = useState("");
   const [selectedStore, setSelectedStore] = useState({
-    storeId: "",
+    storeId,
     storeName: "",
   });
 
@@ -45,9 +48,12 @@ export default function Category() {
   const handleStoreChange = (e) => {
     const selectedIndex = e.target.selectedIndex;
     const selectedOption = e.target.options[selectedIndex];
+    const newStoreId = e.target.value;
+
+    setSearchParams({ storeId: newStoreId });
 
     setSelectedStore({
-      storeId: e.target.value,
+      storeId: newStoreId,
       storeName: selectedOption.text,
     });
   };

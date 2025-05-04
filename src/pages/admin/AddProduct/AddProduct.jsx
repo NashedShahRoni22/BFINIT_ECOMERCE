@@ -16,6 +16,7 @@ import useGetBrands from "../../../hooks/brands/useGetBrands";
 import useAuth from "../../../hooks/auth/useAuth";
 import usePostMutation from "../../../hooks/mutations/usePostMutation";
 import "suneditor/dist/css/suneditor.min.css";
+import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
 
 export default function AddProduct() {
   const queryClient = useQueryClient();
@@ -90,6 +91,10 @@ export default function AddProduct() {
   );
   // fetch brands based on storeId
   const { data: brandsData } = useGetBrands(selectedStore?.storeId);
+  // fetch store preference based on storeId
+  const { data: storePreference } = useGetStorePreference(
+    selectedStore?.storeId,
+  );
 
   // store select dropdown
   const handleStoreChange = (e) => {
@@ -326,7 +331,7 @@ export default function AddProduct() {
                     required
                   />
                   <span className="absolute top-1/2 left-2 -translate-y-1/2 pb-1 text-lg">
-                    $
+                    {storePreference?.data?.currencySymbol}
                   </span>
                 </div>
               </div>

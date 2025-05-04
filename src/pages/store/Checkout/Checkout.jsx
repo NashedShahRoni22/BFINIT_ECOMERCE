@@ -139,7 +139,7 @@ export default function Checkout() {
     mutate(payload, {
       onSuccess: () => {
         toast.success("Order have been placed!");
-        navigate(`/preview/${storeId}`);
+        navigate(`/preview/${storeId}/order-success`);
         setCartItems([]);
       },
       onError: () => {

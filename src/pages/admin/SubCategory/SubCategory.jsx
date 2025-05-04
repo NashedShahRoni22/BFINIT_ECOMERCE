@@ -101,9 +101,9 @@ export default function SubCategory() {
   return (
     <section>
       <PageHeading heading="Add Sub-Category" />
-      <div className="mt-6 grid gap-8 lg:grid-cols-2">
+      <div className="mt-6 grid grid-cols-12 lg:gap-x-12">
         {/* Left Side: Add Sub-Category Form */}
-        <div>
+        <div className="col-span-12 lg:col-span-4">
           {/* select store */}
           <label htmlFor="store" className="text-sm text-gray-600">
             Select Store
@@ -212,7 +212,7 @@ export default function SubCategory() {
         </div>
 
         {/* Right Side: List of Sub-Categories */}
-        <div>
+        <div className="col-span-12 lg:col-span-8">
           <p className="mb-2 rounded bg-neutral-50 px-4 py-2 font-semibold">
             Existing Sub-Categories
           </p>

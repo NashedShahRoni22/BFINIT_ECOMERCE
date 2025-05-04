@@ -24,7 +24,7 @@ createRoot(document.getElementById("root")).render(
           </CartProvider>
         </CategoryProvider>
       </AuthProvider>
-      <Toaster position="top-right" />
+      <Toaster position="top-center" />
     </QueryClientProvider>
   </StrictMode>,
 );

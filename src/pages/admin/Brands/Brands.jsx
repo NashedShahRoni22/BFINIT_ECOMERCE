@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import BtnSubmit from "../../../components/admin/buttons/BtnSubmit";
@@ -13,13 +14,15 @@ import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
 import BrandList from "../../../components/admin/BrandList";
 
 export default function Brands() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const storeId = searchParams.get("storeId") || "";
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const [selectedImages, setSelectedImages] = useState({
     brandIcon: null,
   });
   const [selectedStore, setSelectedStore] = useState({
-    storeId: "",
+    storeId,
     storeName: "",
   });
 
@@ -39,12 +42,34 @@ export default function Brands() {
   const handleStoreChange = (e) => {
     const selectedIndex = e.target.selectedIndex;
     const selectedOption = e.target.options[selectedIndex];
+    const newStoreId = e.target.value;
+
+    setSearchParams({ storeId: newStoreId });
 
     setSelectedStore({
-      storeId: e.target.value,
+      storeId: newStoreId,
       storeName: selectedOption.text,
     });
   };
+
+  useEffect(() => {
+    if (!storeId || !stores?.storeData) return;
+
+    const matchedStore = stores.storeData.find(
+      (store) => store.storeId === storeId,
+    );
+
+    if (!matchedStore) {
+      toast.error("Selected store not found");
+      setSearchParams({}); // Clear invalid storeId from URL
+      return;
+    }
+
+    setSelectedStore({
+      storeId,
+      storeName: matchedStore.storeName,
+    });
+  }, [storeId, stores?.storeData, setSearchParams]);
 
   // form submit
   const handleFormSubmit = (e) => {
@@ -74,30 +99,48 @@ export default function Brands() {
     <section>
       <PageHeading heading="Create & Manage Brands" />
 
-      <div className="mt-6 grid grid-cols-12 lg:gap-x-12">
-        {/* image & category name field container */}
-        <form onSubmit={handleFormSubmit} className="col-span-12 lg:col-span-4">
-          <label htmlFor="store" className="text-sm text-gray-600">
+      {/* Store Selection */}
+      <div className="my-6 flex flex-wrap items-center justify-between">
+        {selectedStore.storeId ? (
+          <h3 className="text-lg font-semibold">
+            Managing brands for:{" "}
+            <span className="text-dashboard-primary">
+              {selectedStore.storeName}
+            </span>
+          </h3>
+        ) : (
+          <h3 className="text-lg font-semibold">
+            Select a store to view and manage its brands
+          </h3>
+        )}
+
+        <div className="relative">
+          <label htmlFor="storeSelect" className="sr-only">
             Select Store
           </label>
           <select
-            id="store"
-            name="store"
+            id="storeSelect"
             value={selectedStore.storeId}
             onChange={handleStoreChange}
-            className="mt-1 mb-2 w-full rounded-md border border-neutral-200 bg-[#f8fafb] px-2 py-1.5 outline-none"
+            className="rounded-md border border-neutral-300 p-2 text-sm focus:outline-none"
           >
             <option value="" disabled>
-              Select a store
+              Select Store
             </option>
             {stores &&
               stores?.storeData?.length > 0 &&
               stores?.storeData?.map((store) => (
-                <option key={store.id} value={store?.storeId}>
+                <option key={store?.storeId} value={store?.storeId}>
                   {store?.storeName}
                 </option>
               ))}
           </select>
+        </div>
+      </div>
+
+      <div className="mt-6 grid grid-cols-12 lg:gap-x-12">
+        {/* image & category name field container */}
+        <form onSubmit={handleFormSubmit} className="col-span-12 lg:col-span-4">
           {selectedStore.storeId && (
             <>
               <ImageField
@@ -134,11 +177,8 @@ export default function Brands() {
 
         {/* all brand lists container */}
         <div className="col-span-12 lg:col-span-8">
-          {selectedStore.storeId ? (
+          {selectedStore.storeId && (
             <>
-              <p className="rounded bg-neutral-50 px-4 py-2 font-semibold">
-                Store {selectedStore.storeName} Brands
-              </p>
               <ul className="space-y-2">
                 {brands && brands?.data?.length > 0 ? (
                   brands?.data?.map((brand) => (
@@ -150,16 +190,11 @@ export default function Brands() {
                   ))
                 ) : (
                   <p className="bg-neutral-50 px-4 pb-2">
-                    No sub-categories found. Start by adding a new one.
+                    No Brands found. Start by adding a new one.
                   </p>
                 )}
               </ul>
             </>
-          ) : (
-            <p className="bg-neutral-50 px-4 py-2">
-              <span className="font-medium">Select a Store</span> to view all
-              Brands.
-            </p>
           )}
         </div>
       </div>

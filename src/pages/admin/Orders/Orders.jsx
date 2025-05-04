@@ -104,6 +104,14 @@ export default function Orders() {
           </tbody>
         </table>
       )}
+
+      {/* no order message */}
+      {orders && orders?.message === "No orders available for this store" && (
+        <p className="mt-12 text-center text-lg">
+          You haven&apos;t received any orders yet. When you do, they&apos;ll
+          appear here.
+        </p>
+      )}
     </section>
   );
 }

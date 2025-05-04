@@ -32,7 +32,7 @@ export default function ManageProduct() {
 
       {/* Store Selection */}
       <div className="my-6 flex flex-wrap items-center justify-between">
-        {selectedStore ? (
+        {selectedStore.storeId ? (
           <h3 className="text-lg font-semibold">
             Manage Product of Store {selectedStore.storeName}
           </h3>

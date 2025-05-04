@@ -23,6 +23,7 @@ import Checkout from "../pages/store/Checkout/Checkout";
 import OrderDetails from "../pages/admin/OrderDetails/OrderDetails";
 import ProductDetails from "../pages/store/ProductDetails/ProductDetails";
 import Categories from "../pages/store/Categories/Categories";
+import { OrderSuccess } from "../pages/store/OrderSuccess/OrderSuccess";
 
 export const router = createBrowserRouter([
   {
@@ -132,6 +133,10 @@ export const router = createBrowserRouter([
       {
         path: "products/categories/:categoryName",
         element: <Categories />,
+      },
+      {
+        path: "order-success",
+        element: <OrderSuccess />,
       },
     ],
   },

@@ -86,7 +86,7 @@ export default function OrderDetails() {
                   {orderData?.data?.ShippingDetails?.addressLine2}
                 </p>
                 <p>
-                  <span className="font-medium">State:</span>{" "}
+                  <span className="font-medium">State (optional):</span>{" "}
                   {orderData?.data?.ShippingDetails?.state}
                 </p>
                 <p>
