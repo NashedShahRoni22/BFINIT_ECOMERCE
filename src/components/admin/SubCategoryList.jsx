@@ -21,7 +21,7 @@ export default function SubCategoryList({ subCategory, categoryId, storeId }) {
 
   return (
     <>
-      <li className="flex items-center justify-between border-b border-neutral-200 px-4 py-3 text-neutral-700 last:border-b-0">
+      <li className="flex items-center justify-between border-b border-neutral-200 px-4 py-3 text-neutral-700 last:border-b-0 hover:bg-neutral-50">
         <p className="min-w-fit">{subCategory}</p>
 
         <div className="flex items-center gap-4">

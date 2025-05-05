@@ -138,66 +138,67 @@ export default function Brands() {
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-12 lg:gap-x-12">
-        {/* image & category name field container */}
-        <form onSubmit={handleFormSubmit} className="col-span-12 lg:col-span-4">
-          {selectedStore.storeId && (
-            <>
-              <ImageField
-                id="brandIcon"
-                label="Brand Icon"
-                selectedImg={selectedImages.brandIcon}
-                handleImgChange={(e) =>
-                  handleImgChange(e, "brandIcon", setSelectedImages)
-                }
-                handleRemoveImg={() =>
-                  handleRemoveImg("brandIcon", setSelectedImages)
-                }
+      {selectedStore.storeId && (
+        <div className="mt-6 grid grid-cols-12 gap-y-12 lg:gap-x-12">
+          {/* image & category name field container */}
+          <form
+            onSubmit={handleFormSubmit}
+            className="col-span-12 rounded border border-neutral-200 px-4 py-2 lg:col-span-4"
+          >
+            <ImageField
+              id="brandIcon"
+              label="Brand Icon"
+              selectedImg={selectedImages.brandIcon}
+              handleImgChange={(e) =>
+                handleImgChange(e, "brandIcon", setSelectedImages)
+              }
+              handleRemoveImg={() =>
+                handleRemoveImg("brandIcon", setSelectedImages)
+              }
+            />
+
+            <div className="mt-4">
+              <label htmlFor="brand" className="text-sm font-medium">
+                Brand Name: <span className="text-red-600">*</span>
+              </label>
+              <input
+                type="text"
+                name="brand"
+                id="brand"
+                required
+                className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
               />
+            </div>
 
-              <div className="mt-4">
-                <label htmlFor="brand" className="text-sm font-medium">
-                  Brand Name:
-                </label>
-                <input
-                  type="text"
-                  name="brand"
-                  id="brand"
-                  required
-                  className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
-                />
-              </div>
+            <div className="mt-8 text-center">
+              <BtnSubmit isPending={isPending} label="Add New Brand" />
+            </div>
+          </form>
 
-              <div className="mt-8 text-center">
-                <BtnSubmit isPending={isPending} label="Add New Brand" />
-              </div>
-            </>
-          )}
-        </form>
+          {/* all brand lists container */}
+          <div className="col-span-12 rounded border border-neutral-200 lg:col-span-8">
+            <h3 className="bg-neutral-100 px-4 py-2 font-semibold">
+              All Brands
+            </h3>
 
-        {/* all brand lists container */}
-        <div className="col-span-12 lg:col-span-8">
-          {selectedStore.storeId && (
-            <>
-              <ul className="space-y-2">
-                {brands && brands?.data?.length > 0 ? (
-                  brands?.data?.map((brand) => (
-                    <BrandList
-                      key={brand.id}
-                      brand={brand}
-                      storeId={selectedStore?.storeId}
-                    />
-                  ))
-                ) : (
-                  <p className="bg-neutral-50 px-4 pb-2">
-                    No Brands found. Start by adding a new one.
-                  </p>
-                )}
-              </ul>
-            </>
-          )}
+            <ul>
+              {brands && brands?.data?.length > 0 ? (
+                brands?.data?.map((brand) => (
+                  <BrandList
+                    key={brand.id}
+                    brand={brand}
+                    storeId={selectedStore?.storeId}
+                  />
+                ))
+              ) : (
+                <div className="px-4 py-6 text-center text-sm text-gray-500">
+                  No brands found for this store. Start by adding a new one.
+                </div>
+              )}
+            </ul>
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }

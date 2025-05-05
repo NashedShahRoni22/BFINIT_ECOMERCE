@@ -169,7 +169,8 @@ export default function CreateStore() {
             id="logo"
             label="Logo"
             selectedImg={selectedImages.logo}
-            sizeMention={true}
+            sizeMention="1200px (width) × 400px (height)"
+            formatMention="PNG or SVG format"
             handleImgChange={(e) =>
               handleImgChange(e, "logo", setSelectedImages)
             }
@@ -181,6 +182,20 @@ export default function CreateStore() {
             id="favicon"
             label="Favicon"
             selectedImg={selectedImages.favicon}
+            sizeMention="512px (width) × 512px (height)"
+            formatMention={
+              <>
+                PNG or{" "}
+                <a
+                  href="https://favicon.io"
+                  target="_blank"
+                  className="underline"
+                >
+                  .ico
+                </a>{" "}
+                format
+              </>
+            }
             handleImgChange={(e) =>
               handleImgChange(e, "favicon", setSelectedImages)
             }

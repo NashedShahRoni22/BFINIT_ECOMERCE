@@ -10,7 +10,9 @@ export default function CheckBoxFeat({
 }) {
   return (
     <div>
-      <label className="text-sm text-gray-600">{label}</label>
+      <label className="text-sm text-gray-600">
+        {label} <span className="text-red-600">*</span>
+      </label>
       <br />
       <div className="mt-1 mb-2 flex w-full items-center gap-4 px-2 py-1.5">
         <div>

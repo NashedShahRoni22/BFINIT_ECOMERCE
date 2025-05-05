@@ -11,7 +11,7 @@ export default function SelectDropdown({
   return (
     <>
       <label htmlFor={id} className="text-sm text-gray-600">
-        {label}
+        {label} {required && <span className="text-red-600">*</span>}
       </label>
       <br />
       <select

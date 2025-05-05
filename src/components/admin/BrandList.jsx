@@ -20,15 +20,15 @@ export default function BrandList({ brand, storeId }) {
 
   return (
     <>
-      <li className="flex items-center justify-between border-b border-neutral-200 px-4 py-3 text-neutral-700 last:border-b-0">
+      <li className="flex items-center justify-between border-b border-neutral-200 px-4 py-2 text-neutral-700 last:border-b-0 hover:bg-neutral-50">
         <div className="flex items-center gap-2">
           <img
             src={`${import.meta.env.VITE_BASE_URL}${brand?.image}`}
             alt={brand?.name}
             loading="lazy"
-            className="size-9 object-cover"
+            className="mx-auto size-11 rounded border border-neutral-100 object-contain p-1"
           />
-          <p>{brand?.name}</p>
+          <p className="text-sm font-medium">{brand?.name}</p>
         </div>
         <div className="flex items-center gap-4">
           <button onClick={toggleUpdateModal}>

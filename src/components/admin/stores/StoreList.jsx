@@ -1,31 +1,16 @@
+import { useState } from "react";
 import { Link } from "react-router";
-import { useQueryClient } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 import { HiOutlineEye } from "react-icons/hi2";
 import { MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
-import useAuth from "../../../hooks/auth/useAuth";
-import useDeleteMutation from "../../../hooks/mutations/useDeleteMutation";
+import ReusableModal from "../modals/ReusableModal";
+import StoreDeleteModal from "../modals/StoreDeleteModal";
 
 export default function StoreList({ store }) {
-  const queryClient = useQueryClient();
-  const { user } = useAuth();
-  // custom delete hook
-  const { mutate } = useDeleteMutation({
-    endpoint: `/store/delete/${store?.storeId}`,
-    token: user?.token,
-  });
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  // handle store delete
-  const handleDelete = () => {
-    mutate(null, {
-      onSuccess: () => {
-        toast.success("Store deleted successfully!");
-        queryClient.invalidateQueries(["stores", user?.data?.clientid]);
-      },
-      onError: () => {
-        toast.error("Something went wrong!");
-      },
-    });
+  // toggle delete modal
+  const toggleDeleteModal = () => {
+    setIsDeleteModalOpen((prev) => !prev);
   };
 
   return (
@@ -61,10 +46,16 @@ export default function StoreList({ store }) {
               <MdOutlineEdit className="hover:text-dashboard-primary text-xl transition-all duration-200 ease-in-out" />
             </Link>
           </button>
-          <button onClick={handleDelete} className="cursor-pointer">
+
+          <button onClick={toggleDeleteModal} className="cursor-pointer">
             <MdOutlineDelete className="text-xl transition-all duration-200 ease-in-out hover:text-red-500" />
           </button>
         </div>
+
+        {/* delete modal */}
+        <ReusableModal isOpen={isDeleteModalOpen} close={toggleDeleteModal}>
+          <StoreDeleteModal store={store} close={toggleDeleteModal} />
+        </ReusableModal>
       </td>
     </tr>
   );

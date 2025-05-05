@@ -16,15 +16,15 @@ export default function EditableListItem({ category, selectedStore }) {
 
   return (
     <>
-      <li className="flex items-center justify-between border-b border-neutral-200 px-4 py-3 text-neutral-700 last:border-b-0">
+      <li className="flex items-center justify-between border-b border-neutral-100 px-4 py-2 text-neutral-800 last:border-b-0 hover:bg-neutral-50">
         <div className="flex items-center gap-2">
           <img
             src={`${import.meta.env.VITE_BASE_URL}${category?.image}`}
             alt={category?.name}
             loading="lazy"
-            className="size-9 object-cover"
+            className="mx-auto size-11 rounded border border-neutral-100 object-cover p-1"
           />
-          <p>{category?.name}</p>
+          <p className="text-sm font-medium">{category?.name}</p>
         </div>
         <div className="flex items-center gap-4">
           <FaRegEdit

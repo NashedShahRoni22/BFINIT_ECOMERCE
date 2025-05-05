@@ -9,7 +9,7 @@ export default function InputField({
   return (
     <>
       <label htmlFor={id} className={`text-sm text-gray-600`}>
-        {label}
+        {label} {required && <span className="text-red-600">*</span>}
       </label>
       <br />
       <input

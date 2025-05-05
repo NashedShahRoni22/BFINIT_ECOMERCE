@@ -40,13 +40,7 @@ const AddImages = ({
     <div className="col-span-12 rounded-lg border border-neutral-200 bg-white px-4 pt-6 pb-4 lg:col-span-4">
       <div className="mb-6">
         <h3 className="flex items-center gap-1 font-semibold">
-          Product Images
-          <span
-            className="group tooltip font-normal"
-            data-tip="You need to select at least 5 images."
-          >
-            <BsInfoCircle className="text-gray-500 transition-all group-hover:text-black" />
-          </span>
+          Product Images <span className="text-red-600">*</span>
         </h3>
         <p className="font-regular text-xs text-gray-400">
           NOTE: Images size should be smaller than 2MB
