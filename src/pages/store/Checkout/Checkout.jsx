@@ -77,7 +77,6 @@ export default function Checkout() {
     endpoint: "/api/countries",
     queryKey: ["countries"],
   });
-
   // fetch country code, currency etc based on selected country
   const { data: country, isLoading: isCountryLoading } = useGetQuery({
     endpoint: `/api/countries/${formData?.shippingDetails?.country}`,
@@ -124,28 +123,33 @@ export default function Checkout() {
 
   // handle confirm order
   const handleConfirmOrder = () => {
-    const formattedCartItems = cartItems.map((item) => ({
-      productId: item.productId,
-      productName: item.productName,
-      price: item.productDiscountPrice.$numberDecimal,
-      quantity: item.quantity,
-    }));
+    if (formData.paymentMethod === "STRIPE") {
+      toast.error("Stripe Payment Method Coming Soon!");
+    } else {
+      const formattedCartItems = cartItems.map((item) => ({
+        productId: item.productId,
+        productName: item.productName,
+        price: item.productDiscountPrice.$numberDecimal,
+        quantity: item.quantity,
+      }));
 
-    const payload = {
-      products: formattedCartItems,
-      ...formData,
-    };
+      const payload = {
+        products: formattedCartItems,
+        ...formData,
+      };
 
-    mutate(payload, {
-      onSuccess: () => {
-        toast.success("Order have been placed!");
-        navigate(`/preview/${storeId}/order-success`);
-        setCartItems([]);
-      },
-      onError: () => {
-        toast.error("Something went wrong!");
-      },
-    });
+      mutate(payload, {
+        onSuccess: () => {
+          toast.success("Order have been placed!");
+          navigate(`/preview/${storeId}/order-success`);
+          setCartItems([]);
+          localStorage.removeItem("cartItems");
+        },
+        onError: () => {
+          toast.error("Something went wrong!");
+        },
+      });
+    }
   };
 
   return (

@@ -61,7 +61,7 @@ export default function Brands() {
 
     if (!matchedStore) {
       toast.error("Selected store not found");
-      setSearchParams({}); // Clear invalid storeId from URL
+      setSearchParams({});
       return;
     }
 

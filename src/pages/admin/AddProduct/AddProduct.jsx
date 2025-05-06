@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router";
 import toast from "react-hot-toast";
 import SunEditor from "suneditor-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -19,11 +19,13 @@ import "suneditor/dist/css/suneditor.min.css";
 import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
 
 export default function AddProduct() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const storeId = searchParams.get("storeId") || "";
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [selectedStore, setSelectedStore] = useState({
-    storeId: "",
+    storeId,
     storeName: "",
   });
   const [selectedImages, setSelectedImages] = useState([]);
@@ -100,12 +102,34 @@ export default function AddProduct() {
   const handleStoreChange = (e) => {
     const selectedIndex = e.target.selectedIndex;
     const selectedOption = e.target.options[selectedIndex];
+    const newStoreId = e.target.value;
+
+    setSearchParams({ storeId: newStoreId });
 
     setSelectedStore({
       storeId: e.target.value,
       storeName: selectedOption.text,
     });
   };
+
+  useEffect(() => {
+    if (!storeId || !stores?.storeData) return;
+
+    const matchedStore = stores.storeData.find(
+      (store) => store.storeId === storeId,
+    );
+
+    if (!matchedStore) {
+      toast.error("Selected store not found");
+      setSearchParams({});
+      return;
+    }
+
+    setSelectedStore({
+      storeId,
+      storeName: matchedStore.storeName,
+    });
+  }, [storeId, stores?.storeData, setSearchParams]);
 
   // Handle input field and chekbox
   const handleInputChange = (e) => {

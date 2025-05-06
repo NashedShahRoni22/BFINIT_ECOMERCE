@@ -1,18 +1,28 @@
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
+import toast from "react-hot-toast";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import OrderRow from "../../../components/admin/OrderRow/OrderRow";
-import { useState } from "react";
+import useAuth from "../../../hooks/auth/useAuth";
 import useGetStores from "../../../hooks/stores/useGetStores";
 import useGetQuery from "../../../hooks/queries/useGetQuery";
-import useAuth from "../../../hooks/auth/useAuth";
+import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
 
 export default function Orders() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const storeId = searchParams.get("storeId") || "";
   const { user } = useAuth();
-  // fetch all stores
-  const { data: stores } = useGetStores();
   const [selectedStore, setSelectedStore] = useState({
-    storeId: "",
+    storeId,
     storeName: "",
   });
+
+  // fetch all stores
+  const { data: stores } = useGetStores();
+  // fetch store preference
+  const { data: storePreference } = useGetStorePreference(
+    selectedStore?.storeId,
+  );
 
   // fetch orders of selected store
   const { data: orders } = useGetQuery({
@@ -26,12 +36,35 @@ export default function Orders() {
   const handleStoreChange = (e) => {
     const selectedIndex = e.target.selectedIndex;
     const selectedOption = e.target.options[selectedIndex];
+    const newStoreId = e.target.value;
+
+    setSearchParams({ storeId: newStoreId });
 
     setSelectedStore({
-      storeId: e.target.value,
+      storeId: newStoreId,
       storeName: selectedOption.text,
     });
   };
+
+  // keep the store name and id on component mount or reload on store select
+  useEffect(() => {
+    if (!storeId || !stores?.storeData) return;
+
+    const matchedStore = stores.storeData.find(
+      (store) => store.storeId === storeId,
+    );
+
+    if (!matchedStore) {
+      toast.error("Selected store not found");
+      setSearchParams({});
+      return;
+    }
+
+    setSelectedStore({
+      storeId,
+      storeName: matchedStore.storeName,
+    });
+  }, [storeId, stores?.storeData, setSearchParams]);
 
   return (
     <section>
@@ -80,26 +113,31 @@ export default function Orders() {
             <tr className="border-y border-neutral-200 text-left">
               <th className="py-2 text-sm font-medium">Order ID</th>
               <th className="py-2 text-center text-sm font-medium">
-                Order Status
+                Total Amount
               </th>
               <th className="py-2 text-center text-sm font-medium">
-                Total Amount
+                Payment Method
               </th>
               <th className="py-2 text-center text-sm font-medium">
                 Payment Status
               </th>
               <th className="py-2 text-center text-sm font-medium">
-                Delivery Status
+                Order Status
               </th>
               <th className="py-2 text-center text-sm font-medium">
-                Payment Method
+                Delivery Status
               </th>
-              <th className="py-2 text-center text-sm font-medium">Actions</th>
+              <th className="py-2 text-center text-sm font-medium">Details</th>
             </tr>
           </thead>
           <tbody>
             {orders?.OrdersData?.map((order) => (
-              <OrderRow key={order?.orderId} order={order} />
+              <OrderRow
+                key={order?.orderId}
+                order={order}
+                currencySymbol={storePreference?.currencySymbol}
+                storeId={selectedStore?.storeId}
+              />
             ))}
           </tbody>
         </table>

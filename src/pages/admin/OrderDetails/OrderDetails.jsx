@@ -43,13 +43,21 @@ export default function OrderDetails() {
             </p>
           </div>
           <div className="flex flex-col items-end">
-            <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-500">
-              {orderData?.data?.orderStatus}
-            </span>
-            <span className="mt-2 text-sm font-semibold">
-              Total: {orderData?.data?.Currency_code}{" "}
-              {orderData?.data?.TotalAmount?.$numberDecimal}
-            </span>
+            <p>
+              <span className="font-semibold">Order Status: </span>
+              <span
+                className={`rounded-full px-2 py-0.5 text-xs font-medium ${orderData?.data?.orderStatus === "Pending" ? "bg-yellow-100 text-yellow-500" : "bg-green-100 text-green-600"}`}
+              >
+                {orderData?.data?.orderStatus}
+              </span>
+            </p>
+            <p className="mt-2 text-sm font-semibold">
+              Total:{" "}
+              <span className="text-gray-500">
+                {orderData?.data?.Currency_code}{" "}
+                {orderData?.data?.TotalAmount?.$numberDecimal}
+              </span>
+            </p>
           </div>
         </div>
 
@@ -102,30 +110,29 @@ export default function OrderDetails() {
           </div>
 
           {/* payment information */}
-          <div className="mt-4 space-y-2 border border-neutral-100 p-5">
-            <h2 className="mb-4 text-lg font-medium">Payment Information</h2>
-            <p>
-              <span className="font-medium">Payment Method:</span>{" "}
-              {orderData?.data?.PaymentMethod}
-            </p>
-            <p>
-              <span className="font-medium">Payment Status:</span>{" "}
-              <span className="rounded-full bg-yellow-100 px-3 py-0.5 text-xs text-yellow-500">
-                {orderData?.data?.paymentStatus}
-              </span>
-            </p>
-            <p>
-              <span className="font-medium">Delivery Status:</span>{" "}
-              <span className="rounded-full bg-yellow-100 px-3 py-0.5 text-xs text-yellow-500">
-                {orderData?.data?.deliveryStatus}
-              </span>
-            </p>
-            <p>
-              <span className="font-medium">Order Status:</span>{" "}
-              <span className="rounded-full bg-yellow-100 px-3 py-0.5 text-xs text-yellow-500">
-                {orderData?.data?.orderStatus}
-              </span>
-            </p>
+          <div className="mt-4 border border-neutral-100 p-5">
+            <h2 className="text-lg font-medium">Payment Information</h2>
+
+            <div className="mt-4 space-y-2.5">
+              <p>
+                <span className="font-medium">Payment Method:</span>{" "}
+                {orderData?.data?.PaymentMethod}
+              </p>
+              <p>
+                <span className="font-medium">Payment Status:</span>{" "}
+                <span className="rounded-full bg-yellow-100 px-3 py-0.5 text-xs text-yellow-500">
+                  {orderData?.data?.paymentStatus}
+                </span>
+              </p>
+              <p>
+                <span className="font-medium">Delivery Status:</span>{" "}
+                <span
+                  className={`rounded-full px-3 py-0.5 text-xs ${orderData?.data?.deliveryStatus === "Pending" ? "bg-yellow-100 text-yellow-500" : "bg-green-100 text-green-600"}`}
+                >
+                  {orderData?.data?.deliveryStatus}
+                </span>
+              </p>
+            </div>
           </div>
         </div>
 

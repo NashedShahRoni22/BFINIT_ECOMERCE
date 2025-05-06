@@ -1,14 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import ProductRow from "../../../components/admin/ProductRow/ProductRow";
 import useGetStores from "../../../hooks/stores/useGetStores";
 import useGetProductsByStoreId from "../../../hooks/products/useGetProductsByStoreId";
+import toast from "react-hot-toast";
 
 export default function ManageProduct() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const storeId = searchParams.get("storeId") || "";
   // fetch stores using custom hook
   const { data: stores } = useGetStores();
   const [selectedStore, setSelectedStore] = useState({
-    storeId: "",
+    storeId,
     storeName: "",
   });
 
@@ -16,12 +20,34 @@ export default function ManageProduct() {
   const handleStoreChange = (e) => {
     const selectedIndex = e.target.selectedIndex;
     const selectedOption = e.target.options[selectedIndex];
+    const newStoreId = e.target.value;
+
+    setSearchParams({ storeId: newStoreId });
 
     setSelectedStore({
-      storeId: e.target.value,
+      storeId: newStoreId,
       storeName: selectedOption.text,
     });
   };
+
+  useEffect(() => {
+    if (!storeId || !stores?.storeData) return;
+
+    const matchedStore = stores.storeData.find(
+      (store) => store.storeId === storeId,
+    );
+
+    if (!matchedStore) {
+      toast.error("Selected store not found");
+      setSearchParams({});
+      return;
+    }
+
+    setSelectedStore({
+      storeId,
+      storeName: matchedStore.storeName,
+    });
+  }, [storeId, stores?.storeData, setSearchParams]);
 
   // fetch all products by selected storeId
   const { data: products } = useGetProductsByStoreId(selectedStore?.storeId);
