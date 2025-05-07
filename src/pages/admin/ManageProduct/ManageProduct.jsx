@@ -130,6 +130,13 @@ export default function ManageProduct() {
             </tbody>
           </table>
         )}
+
+        {products &&
+          products?.message === "No products found for this store." && (
+            <div className="px-4 text-center text-sm text-gray-500">
+              No products found for this store. Start by adding a new one.
+            </div>
+          )}
       </div>
     </section>
   );
