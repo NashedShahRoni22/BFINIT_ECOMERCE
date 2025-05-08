@@ -8,6 +8,7 @@ import useAuth from "../hooks/auth/useAuth";
 import useGetQuery from "../hooks/queries/useGetQuery";
 import { areComponentsEqual } from "../utils/admin/areComponentsEqual";
 import { componentsData } from "../data/adminData/componentsData";
+import useGetProductsByStoreId from "../hooks/products/useGetProductsByStoreId";
 
 export default function StoreCustomizeLayout() {
   const { user } = useAuth();
@@ -21,6 +22,8 @@ export default function StoreCustomizeLayout() {
     queryKey: ["storePreference", storeId],
     enabled: !!storeId && !!user?.token,
   });
+  // fetch all products by selected storeId
+  const { data: products } = useGetProductsByStoreId(storeId);
 
   const [showSideNav, setShowSideNav] = useState(false);
   const [openDropdown, setOpenDropdown] = useState("");
@@ -85,6 +88,11 @@ export default function StoreCustomizeLayout() {
   // Function to dynamically render components
   const renderComponent = (category, value) => {
     const Component = componentsData[category]?.[value];
+
+    if (category === "productStyle") {
+      return Component ? <Component products={products?.data} /> : null;
+    }
+
     return Component ? <Component /> : null;
   };
 

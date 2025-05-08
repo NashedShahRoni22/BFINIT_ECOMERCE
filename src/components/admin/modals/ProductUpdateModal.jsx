@@ -15,7 +15,12 @@ import { resetForm } from "../../../utils/admin/resetForm";
 import ProductImgUpdate from "../ProductImgUpdate/ProductImgUpdate";
 import useUpdateMutation from "../../../hooks/mutations/useUpdateMutation";
 
-export default function ProductUpdateModal({ storeId, productId, close }) {
+export default function ProductUpdateModal({
+  storeId,
+  productId,
+  close,
+  currencySymbol,
+}) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
@@ -301,7 +306,7 @@ export default function ProductUpdateModal({ storeId, productId, close }) {
                   required
                 />
                 <span className="absolute top-1/2 left-2 -translate-y-1/2 pb-1 text-lg">
-                  $
+                  {currencySymbol}
                 </span>
               </div>
             </div>

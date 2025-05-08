@@ -19,7 +19,7 @@ export default function Categories() {
     : `/product/by-category/?storeId=${storeId}&categoryName=${encodeURIComponent(categoryName)}`;
 
   // custom get api hooks for category products or sub category products
-  const { data: categoryProducts } = useGetQuery({
+  const { data: categoryProducts, isLoading: isProductsLoading } = useGetQuery({
     endpoint: endpointUrl,
     token: user?.token,
     queryKey: [
@@ -47,7 +47,12 @@ export default function Categories() {
   // Function to dynamically render components
   const renderComponent = (category, value) => {
     const Component = componentsData[category]?.[value];
-    return Component ? <Component customProducts={categoryProducts} /> : null;
+    return Component ? (
+      <Component
+        products={categoryProducts?.data}
+        isProductsLoading={isProductsLoading}
+      />
+    ) : null;
   };
 
   return (

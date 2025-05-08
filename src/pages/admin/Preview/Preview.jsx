@@ -4,6 +4,7 @@ import { ThemeContext } from "../../../Providers/ThemeProvider";
 import WebsiteSkeleton from "../../../components/admin/loaders/WebasiteSkeleton";
 import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
 import { componentsData } from "../../../data/adminData/componentsData";
+import useGetProductsByStoreId from "../../../hooks/products/useGetProductsByStoreId";
 
 export default function Preview() {
   const { setSelectedTheme } = useContext(ThemeContext);
@@ -13,6 +14,8 @@ export default function Preview() {
   // fetch store preference
   const { data: storePreferenceData, isLoading } =
     useGetStorePreference(storeId);
+  // fetch all products by selected storeId
+  const { data: products } = useGetProductsByStoreId(storeId);
 
   // set database saved components to previewData and savedComponents
   useEffect(() => {
@@ -34,6 +37,11 @@ export default function Preview() {
   // Function to dynamically render components
   const renderComponent = (category, value) => {
     const Component = componentsData[category]?.[value];
+
+    if (category === "productStyle") {
+      return Component ? <Component products={products?.data} /> : null;
+    }
+
     return Component ? <Component /> : null;
   };
 

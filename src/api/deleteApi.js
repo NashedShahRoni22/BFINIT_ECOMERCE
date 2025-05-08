@@ -11,7 +11,7 @@ export const deleteApi = async (
   const headers = {
     "Content-Type": "application/json",
     ...(token && { Authorization: `Bearer ${token}` }),
-    ...(clientId && { clientId }),
+    ...(clientId && { "client-id": clientId }),
   };
 
   const options = {

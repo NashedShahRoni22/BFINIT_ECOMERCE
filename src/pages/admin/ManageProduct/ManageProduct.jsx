@@ -5,6 +5,7 @@ import ProductRow from "../../../components/admin/ProductRow/ProductRow";
 import useGetStores from "../../../hooks/stores/useGetStores";
 import useGetProductsByStoreId from "../../../hooks/products/useGetProductsByStoreId";
 import toast from "react-hot-toast";
+import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
 
 export default function ManageProduct() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -51,6 +52,10 @@ export default function ManageProduct() {
 
   // fetch all products by selected storeId
   const { data: products } = useGetProductsByStoreId(selectedStore?.storeId);
+  // fetch store preference
+  const { data: storePreference } = useGetStorePreference(
+    selectedStore?.storeId,
+  );
 
   return (
     <section>
@@ -125,6 +130,7 @@ export default function ManageProduct() {
                   key={product.productId}
                   product={product}
                   storeId={selectedStore?.storeId}
+                  currencySymbol={storePreference?.currencySymbol}
                 />
               ))}
             </tbody>

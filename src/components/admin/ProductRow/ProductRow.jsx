@@ -4,7 +4,7 @@ import ReusableModal from "../modals/ReusableModal";
 import DeleteProductModal from "../modals/DeleteProductModal";
 import ProductUpdateModal from "../modals/ProductUpdateModal";
 
-export default function ProductRow({ product, storeId }) {
+export default function ProductRow({ product, storeId, currencySymbol }) {
   const {
     productId,
     productName,
@@ -50,9 +50,13 @@ export default function ProductRow({ product, storeId }) {
         <td className="text-center text-sm">{productCategory}</td>
         <td className="text-center text-sm">{productSubcategory}</td>
         <td className="text-center text-sm">{productBrand}</td>
-        <td className="text-center text-sm">${productPrice.$numberDecimal}</td>
         <td className="text-center text-sm">
-          ${productDiscountPrice.$numberDecimal}
+          {currencySymbol}
+          {productPrice.$numberDecimal}
+        </td>
+        <td className="text-center text-sm">
+          {currencySymbol}
+          {productDiscountPrice.$numberDecimal}
         </td>
         <td className="text-center text-sm">
           {productStatus ? "Active" : "Inactive"}
@@ -80,6 +84,7 @@ export default function ProductRow({ product, storeId }) {
           storeId={storeId}
           productId={productId}
           close={toggleUpdateModal}
+          currencySymbol={currencySymbol}
         />
       </ReusableModal>
 
