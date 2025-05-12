@@ -12,7 +12,7 @@ import ManageProduct from "../pages/admin/ManageProduct/ManageProduct";
 import StoreCustomizeLayout from "../layout/StoreCustomizeLayout";
 import Stores from "../pages/admin/Stores/Stores";
 import Orders from "../pages/admin/Orders/Orders";
-import Preview from "../pages/admin/Preview/Preview";
+import Preview from "../pages/store/Preview/Preview";
 import Customers from "../pages/admin/Customers/Customers";
 import ManageBlog from "../pages/admin/ManageBlog/ManageBlog";
 import AddBlog from "../pages/admin/AddBlog/AddBlog";

@@ -89,14 +89,14 @@ export default function Checkout() {
     if (country) {
       setFormData((prev) => ({
         ...prev,
-        currency_code: country.currency_code,
+        currency_code: storePreference?.currencyCode,
         shippingDetails: {
           ...prev.shippingDetails,
           countryPhoneCode: country.phone_code,
         },
       }));
     }
-  }, [country]);
+  }, [country, storePreference]);
 
   // Handle both top-level and nested shipping details changes
   const handleInputChange = (e) => {

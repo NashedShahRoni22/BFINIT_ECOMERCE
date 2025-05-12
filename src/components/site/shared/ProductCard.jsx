@@ -7,7 +7,7 @@ export default function ProductCard({ product, currencySymbol, storeId }) {
   const { handleAddToCart } = useCart();
 
   return (
-    <div className="flex flex-col items-center gap-2.5 overflow-hidden rounded">
+    <div className="flex flex-col items-center gap-2.5 overflow-hidden rounded border border-gray-200 px-4 py-4">
       <Link
         to={`/preview/${storeId}/products/${product.productId}`}
         className="group h-56 w-full flex-1 overflow-hidden"
