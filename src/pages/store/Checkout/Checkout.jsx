@@ -115,16 +115,42 @@ export default function Checkout() {
     }
   };
 
-  // custom post hooks
+  // custom post hooks for cod
   const { mutate, isPending } = usePostMutation({
     endpoint: `/orders/create/cod/${storeId}`,
+    token: user?.token,
+  });
+
+  // custom post hooks for stripe
+  const { mutate: stripeMutate, isPending: isStripePending } = usePostMutation({
+    endpoint: `/orders/create/online/${storeId}`,
     token: user?.token,
   });
 
   // handle confirm order
   const handleConfirmOrder = () => {
     if (formData.paymentMethod === "STRIPE") {
-      toast.error("Stripe Payment Method Coming Soon!");
+      const formattedCartItems = cartItems.map((item) => ({
+        productId: item.productId,
+        productName: item.productName,
+        price: item.productDiscountPrice.$numberDecimal,
+        quantity: item.quantity,
+      }));
+
+      const payload = {
+        products: formattedCartItems,
+        ...formData,
+      };
+
+      // TODO: check stripe payment response
+      stripeMutate(payload, {
+        onSuccess: (responseData) => {
+          console.log("Stripe API Response:", responseData);
+        },
+        onError: () => {
+          toast.error("Something went wrong!");
+        },
+      });
     } else {
       const formattedCartItems = cartItems.map((item) => ({
         productId: item.productId,
@@ -396,9 +422,9 @@ export default function Checkout() {
 
         <div className="mt-6 flex justify-center">
           <button
-            disabled={isDisabled || isPending}
+            disabled={isDisabled || isPending || isStripePending}
             onClick={handleConfirmOrder}
-            className={`text-on-primary rounded-lg px-4 py-2 transition-all duration-200 ease-in-out ${isDisabled || isPending ? "bg-accent/50" : "bg-accent hover:bg-accent/90 cursor-pointer"}`}
+            className={`text-on-primary rounded-lg px-4 py-2 transition-all duration-200 ease-in-out ${isDisabled || isPending || isStripePending ? "bg-accent/50" : "bg-accent hover:bg-accent/90 cursor-pointer"}`}
           >
             {isPending ? <Spinner /> : "Confirm Order"}
           </button>
