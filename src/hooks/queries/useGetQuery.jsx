@@ -11,10 +11,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { getApi } from "../../api/getApi";
 
-export default function useGetQuery({ endpoint, token, queryKey, enabled }) {
+export default function useGetQuery({
+  endpoint,
+  token,
+  clientId,
+  queryKey,
+  enabled,
+}) {
   return useQuery({
     queryKey,
-    queryFn: () => getApi(endpoint, token),
+    queryFn: () => getApi(endpoint, token, clientId),
     enabled,
   });
 }
