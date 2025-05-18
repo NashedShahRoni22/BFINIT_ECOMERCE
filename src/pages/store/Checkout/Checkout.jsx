@@ -142,10 +142,9 @@ export default function Checkout() {
         ...formData,
       };
 
-      // TODO: check stripe payment response
       stripeMutate(payload, {
-        onSuccess: (responseData) => {
-          console.log("Stripe API Response:", responseData);
+        onSuccess: (data) => {
+          window.location = data.url;
         },
         onError: () => {
           toast.error("Something went wrong!");
