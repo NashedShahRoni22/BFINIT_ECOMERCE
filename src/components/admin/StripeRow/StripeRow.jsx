@@ -51,7 +51,7 @@ export default function StripeRow({ store, token }) {
         )}
       </td>
       <td className="px-4 py-2 text-xs font-medium whitespace-nowrap">
-        {(!store?.charges_enabled || !store?.payouts_enabled) && (
+        {!store?.charges_enabled || !store?.payouts_enabled ? (
           <button
             onClick={handleStripeConnect}
             disabled={isPending}
@@ -60,6 +60,11 @@ export default function StripeRow({ store, token }) {
             <BsPlus className="min-w-fit text-xl" />
             Connect Stripe
           </button>
+        ) : (
+          <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-500">
+            <BsCheckCircle className="min-w-fit text-sm" /> Active (Stripe
+            Connected)
+          </span>
         )}
       </td>
     </tr>

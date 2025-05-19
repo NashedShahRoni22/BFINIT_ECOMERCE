@@ -25,11 +25,16 @@ import ProductDetails from "../pages/store/ProductDetails/ProductDetails";
 import Categories from "../pages/store/Categories/Categories";
 import { OrderSuccess } from "../pages/store/OrderSuccess/OrderSuccess";
 import Payments from "../pages/admin/Payments/Payments";
+import NotFound from "../pages/admin/NotFound/NotFound";
 
 export const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
   {
     path: "/",

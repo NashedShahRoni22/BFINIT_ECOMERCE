@@ -21,6 +21,7 @@ export default function StoreDeleteModal({ store, close }) {
       onSuccess: () => {
         toast.success("Store deleted successfully!");
         queryClient.invalidateQueries(["stores", user?.data?.clientid]);
+        close();
       },
       onError: () => {
         toast.error("Something went wrong!");
