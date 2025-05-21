@@ -19,7 +19,7 @@ const paymentMethods = [
   {
     icon: stripeIcon,
     title: "Online Payment (Stripe)",
-    value: "STRIPE",
+    value: "Online",
   },
 ];
 
@@ -129,7 +129,7 @@ export default function Checkout() {
 
   // handle confirm order
   const handleConfirmOrder = () => {
-    if (formData.paymentMethod === "STRIPE") {
+    if (formData.paymentMethod === "Online") {
       const formattedCartItems = cartItems.map((item) => ({
         productId: item.productId,
         productName: item.productName,
