@@ -2,12 +2,9 @@ import { useState } from "react";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import useGetStores from "../../../hooks/stores/useGetStores";
 import useGetQuery from "../../../hooks/queries/useGetQuery";
-import useAuth from "../../../hooks/auth/useAuth";
 import BlogRow from "../../../components/admin/BlogRow";
 
 export default function ManageBlog() {
-  const { user } = useAuth();
-
   const [selectedStore, setSelectedStore] = useState({
     storeId: "",
     storeName: "",
@@ -18,9 +15,8 @@ export default function ManageBlog() {
   // fetch all blogs of currently selected store
   const { data: blogs } = useGetQuery({
     endpoint: `/blog/all/?storeId=${selectedStore?.storeId}`,
-    token: user?.token,
     queryKey: ["blogs", selectedStore?.storeId],
-    enabled: !!user?.token && !!selectedStore?.storeId,
+    enabled: !!selectedStore?.storeId,
   });
 
   // store select dropdown

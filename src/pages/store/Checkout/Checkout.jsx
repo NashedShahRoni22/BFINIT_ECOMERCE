@@ -6,7 +6,6 @@ import useGetQuery from "../../../hooks/queries/useGetQuery";
 import Spinner from "../../../components/admin/loaders/Spinner";
 import usePostMutation from "../../../hooks/mutations/usePostMutation";
 import { useNavigate, useParams } from "react-router";
-import useAuth from "../../../hooks/auth/useAuth";
 import toast from "react-hot-toast";
 import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
 
@@ -26,7 +25,6 @@ const paymentMethods = [
 export default function Checkout() {
   const { storeId } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
   const { cartItems, setCartItems } = useCart();
   const { data: storePreference } = useGetStorePreference(storeId);
 
@@ -118,13 +116,11 @@ export default function Checkout() {
   // custom post hooks for cod
   const { mutate, isPending } = usePostMutation({
     endpoint: `/orders/create/cod/${storeId}`,
-    token: user?.token,
   });
 
   // custom post hooks for stripe
   const { mutate: stripeMutate, isPending: isStripePending } = usePostMutation({
     endpoint: `/orders/create/online/${storeId}`,
-    token: user?.token,
   });
 
   // handle confirm order

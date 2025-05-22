@@ -55,9 +55,8 @@ export default function ProductUpdateModal({
   /* -- Fetch product details, categories, sub-categories, brands -- */
   const { data: productDetails, isLoading } = useGetQuery({
     endpoint: `/product/?productId=${productId}`,
-    token: user?.token,
     queryKey: ["product", productId],
-    enabled: !!user?.token && !!productId,
+    enabled: !!productId,
   });
   const { data: categories } = useGetCategories(storeId);
   const { data: subCategoriesData } = useGetSubCategories(

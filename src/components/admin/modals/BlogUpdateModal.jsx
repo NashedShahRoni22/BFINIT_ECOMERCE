@@ -28,9 +28,8 @@ export default function BlogUpdateModal({ blogId, storeId, close }) {
   // fetch blog details
   const { data: blogDetails } = useGetQuery({
     endpoint: `/blog/?blogId=${blogId}`,
-    token: user?.token,
     queryKey: ["blog", blogId],
-    enabled: !!blogId && !!user?.token,
+    enabled: !!blogId,
   });
 
   // update blog field value from api response

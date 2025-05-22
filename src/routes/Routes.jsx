@@ -117,11 +117,9 @@ export const router = createBrowserRouter([
   {
     path: "/preview/:storeId",
     element: (
-      <PrivateRoute>
-        <StoreThemeInitializer>
-          <PreviewLayout />
-        </StoreThemeInitializer>
-      </PrivateRoute>
+      <StoreThemeInitializer>
+        <PreviewLayout />
+      </StoreThemeInitializer>
     ),
     children: [
       {

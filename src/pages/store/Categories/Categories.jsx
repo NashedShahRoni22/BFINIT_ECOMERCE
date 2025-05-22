@@ -1,15 +1,13 @@
-import { useParams, useSearchParams } from "react-router";
-import useGetQuery from "../../../hooks/queries/useGetQuery";
-import useAuth from "../../../hooks/auth/useAuth";
-import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
 import { useEffect, useState } from "react";
+import { useParams, useSearchParams } from "react-router";
+import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
+import useGetQuery from "../../../hooks/queries/useGetQuery";
 import { componentsData } from "../../../data/adminData/componentsData";
 
 export default function Categories() {
   const { storeId, categoryName } = useParams();
   const [searchParams] = useSearchParams();
   const subCategoryName = searchParams.get("subCategory");
-  const { user } = useAuth();
   const [previewData, setPreviewData] = useState([]);
 
   const { data: storePreference } = useGetStorePreference(storeId);
@@ -21,7 +19,6 @@ export default function Categories() {
   // custom get api hooks for category products or sub category products
   const { data: categoryProducts, isLoading: isProductsLoading } = useGetQuery({
     endpoint: endpointUrl,
-    token: user?.token,
     queryKey: [
       "products",
       storeId,
@@ -29,10 +26,7 @@ export default function Categories() {
       ...(subCategoryName ? [subCategoryName] : []),
     ],
     enabled:
-      !!storeId &&
-      !!user?.token &&
-      !!categoryName &&
-      (!subCategoryName || !!subCategoryName),
+      !!storeId && !!categoryName && (!subCategoryName || !!subCategoryName),
   });
 
   // set database saved components to previewData and savedComponents
