@@ -26,6 +26,8 @@ import Categories from "../pages/store/Categories/Categories";
 import { OrderSuccess } from "../pages/store/OrderSuccess/OrderSuccess";
 import Payments from "../pages/admin/Payments/Payments";
 import NotFound from "../pages/admin/NotFound/NotFound";
+import Blog from "../pages/store/Blog/Blog";
+import BlogDetails from "../pages/store/BlogDetails/BlogDetails";
 
 export const router = createBrowserRouter([
   {
@@ -145,6 +147,14 @@ export const router = createBrowserRouter([
       {
         path: "order-success",
         element: <OrderSuccess />,
+      },
+      {
+        path: "blogs",
+        element: <Blog />,
+      },
+      {
+        path: "blogs/:blogId",
+        element: <BlogDetails />,
       },
     ],
   },

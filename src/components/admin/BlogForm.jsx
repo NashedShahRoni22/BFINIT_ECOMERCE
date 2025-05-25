@@ -8,6 +8,7 @@ import { BsFillInfoCircleFill } from "react-icons/bs";
 import useAuth from "../../hooks/auth/useAuth";
 import usePostMutation from "../../hooks/mutations/usePostMutation";
 import "suneditor/dist/css/suneditor.min.css";
+import ActionBtn from "./buttons/ActionBtn";
 
 export default function BlogForm({ storeId }) {
   const navigate = useNavigate();
@@ -205,13 +206,9 @@ export default function BlogForm({ storeId }) {
         </div>
 
         <div className="col-span-12 mt-12 mb-5 flex items-center justify-center">
-          <button
-            className="bg-dashboard-primary/90 hover:bg-dashboard-primary flex min-h-8 min-w-[164px] cursor-pointer items-center justify-center rounded px-4 py-1 text-white transition duration-200 ease-in-out"
-            type="submit"
-            disabled={isPending}
-          >
-            Upload
-          </button>
+          <ActionBtn type="submit" loading={isPending}>
+            Add New Blog
+          </ActionBtn>
         </div>
       </div>
     </form>

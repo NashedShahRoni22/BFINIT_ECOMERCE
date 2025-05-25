@@ -401,9 +401,8 @@ export default function Checkout() {
           </div>
           <div className="flex items-center justify-between">
             <p className="text-lg">Delivery Charge</p>
-            {/* TODO: add dynamic delivery charge of individual product */}
-            <p className="text-lg">
-              {storePreference?.data?.currencyCode} 00.00
+            <p className="text-accent text-xs italic">
+              (To be confirmed by seller after order placement)
             </p>
           </div>
         </div>
