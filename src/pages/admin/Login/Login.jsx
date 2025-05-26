@@ -143,12 +143,13 @@ export default function Login() {
 
         <div className="mt-8 text-center text-sm text-gray-500">
           <p>
-            Need an account?{" "}
+            No account?{" "}
             <Link
-              to="/contact"
+              to="https://bfinit.com/bfinit-ecomerce-platform"
+              target="_blanck"
               className="font-medium text-indigo-600 hover:text-indigo-500"
             >
-              Contact admin
+              Buy a Pack to start
             </Link>
           </p>
         </div>

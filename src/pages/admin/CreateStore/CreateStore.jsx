@@ -9,6 +9,7 @@ import usePostMutation from "../../../hooks/mutations/usePostMutation";
 import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
 import useGetQuery from "../../../hooks/queries/useGetQuery";
+import ActionBtn from "../../../components/admin/buttons/ActionBtn";
 
 const themes = [
   {
@@ -108,7 +109,7 @@ export default function CreateStore() {
   const navigate = useNavigate();
 
   // store create post api hooks
-  const { mutate, isPending, isError } = usePostMutation({
+  const { mutate, isPending } = usePostMutation({
     endpoint: "/store/create",
     token: user?.token,
     clientId: user?.data?.clientid,
@@ -415,13 +416,9 @@ export default function CreateStore() {
 
         {/* Submit Button */}
         <div className="mt-12 mb-5 flex justify-center">
-          <button
-            className={`bg-dashboard-primary hover:bg-dashboard-primary/90 flex min-h-8 min-w-[165px] items-center justify-center rounded px-4 py-1 text-white transition ${!isPending && "cursor-pointer"}`}
-            type="submit"
-            disabled={isPending}
-          >
-            {isPending && !isError ? <Spinner /> : "Create New Store"}
-          </button>
+          <ActionBtn type="submit" loading={isPending}>
+            Create New Store
+          </ActionBtn>
         </div>
       </form>
     </section>
