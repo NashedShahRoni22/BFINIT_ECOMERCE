@@ -39,10 +39,8 @@ export default function Category() {
 
   // on component mount or page reload keep the store name
   useEffect(() => {
-    if (stores && stores?.storeData?.length > 0) {
-      const foundStore = stores.storeData.find(
-        (store) => store.storeId === storeId,
-      );
+    if (stores && stores?.data?.length > 0) {
+      const foundStore = stores.data.find((store) => store.storeId === storeId);
       if (foundStore) {
         setSelectedStore({
           storeId,
@@ -136,8 +134,8 @@ export default function Category() {
               Select Store
             </option>
             {stores &&
-              stores?.storeData?.length > 0 &&
-              stores?.storeData?.map((store) => (
+              stores?.data?.length > 0 &&
+              stores?.data?.map((store) => (
                 <option key={store?.storeId} value={store?.storeId}>
                   {store?.storeName}
                 </option>

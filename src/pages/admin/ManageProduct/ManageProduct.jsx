@@ -32,11 +32,9 @@ export default function ManageProduct() {
   };
 
   useEffect(() => {
-    if (!storeId || !stores?.storeData) return;
+    if (!storeId || !stores?.data) return;
 
-    const matchedStore = stores.storeData.find(
-      (store) => store.storeId === storeId,
-    );
+    const matchedStore = stores.data.find((store) => store.storeId === storeId);
 
     if (!matchedStore) {
       toast.error("Selected store not found");
@@ -48,7 +46,7 @@ export default function ManageProduct() {
       storeId,
       storeName: matchedStore.storeName,
     });
-  }, [storeId, stores?.storeData, setSearchParams]);
+  }, [storeId, stores?.data, setSearchParams]);
 
   // fetch all products by selected storeId
   const { data: products } = useGetProductsByStoreId(selectedStore?.storeId);
@@ -87,8 +85,8 @@ export default function ManageProduct() {
               Select Store
             </option>
             {stores &&
-              stores?.storeData?.length > 0 &&
-              stores?.storeData?.map((store) => (
+              stores?.data?.length > 0 &&
+              stores?.data?.map((store) => (
                 <option key={store?.storeId} value={store?.storeId}>
                   {store?.storeName}
                 </option>

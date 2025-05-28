@@ -48,11 +48,9 @@ export default function Orders() {
 
   // keep the store name and id on component mount or reload on store select
   useEffect(() => {
-    if (!storeId || !stores?.storeData) return;
+    if (!storeId || !stores?.data) return;
 
-    const matchedStore = stores.storeData.find(
-      (store) => store.storeId === storeId,
-    );
+    const matchedStore = stores.data.find((store) => store.storeId === storeId);
 
     if (!matchedStore) {
       toast.error("Selected store not found");
@@ -64,7 +62,7 @@ export default function Orders() {
       storeId,
       storeName: matchedStore.storeName,
     });
-  }, [storeId, stores?.storeData, setSearchParams]);
+  }, [storeId, stores?.data, setSearchParams]);
 
   return (
     <section>
@@ -96,8 +94,8 @@ export default function Orders() {
               Select Store
             </option>
             {stores &&
-              stores?.storeData?.length > 0 &&
-              stores?.storeData?.map((store) => (
+              stores?.data?.length > 0 &&
+              stores?.data?.map((store) => (
                 <option key={store?.storeId} value={store?.storeId}>
                   {store?.storeName}
                 </option>

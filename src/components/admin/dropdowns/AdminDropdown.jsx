@@ -1,6 +1,11 @@
 import { Link, useNavigate } from "react-router";
 import { PopoverPanel } from "@headlessui/react";
-import { MdOutlineManageAccounts, MdOutlineLogout } from "react-icons/md";
+import toast from "react-hot-toast";
+import {
+  MdOutlineManageAccounts,
+  MdOutlineLogout,
+  MdOutlineFileDownload,
+} from "react-icons/md";
 import useGetQuery from "../../../hooks/queries/useGetQuery";
 import useAuth from "../../../hooks/auth/useAuth";
 import { adminDropdownLinks } from "../../../data/adminData/adminDropdownLinks";
@@ -19,6 +24,7 @@ export default function AdminDropdown({ close }) {
 
   const handleLogOut = () => {
     localStorage.removeItem("authInfo");
+    toast.success("Logged out successfully");
     close();
     navigate("/login");
   };
@@ -60,6 +66,12 @@ export default function AdminDropdown({ close }) {
           {link.name}
         </Link>
       ))}
+
+      {/* ecommerce guide download button */}
+      <button className="group flex cursor-pointer items-center gap-1 rounded-md p-1 px-3 text-sm capitalize transition-all duration-200 ease-in-out hover:bg-neutral-100">
+        <MdOutlineFileDownload className="group-hover:text-dashboard-primary text-xl" />
+        Get Help Guide
+      </button>
 
       {/* logout */}
       <div className="border-t border-neutral-100 py-2">

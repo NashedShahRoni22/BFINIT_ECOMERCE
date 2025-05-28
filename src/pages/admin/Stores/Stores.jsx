@@ -20,11 +20,11 @@ export default function Stores() {
       ) : (
         <div className="mt-6">
           <div className="flex items-center justify-between gap-8">
-            {stores && stores?.storeData?.length > 0 ? (
+            {stores && stores?.data?.length > 0 ? (
               <h5 className="font-semibold">
                 Manage Stores{" "}
                 {user &&
-                  `(${stores?.storeData?.length || 0}/${user?.data?.storeLimit})`}
+                  `(${stores?.data?.length || 0}/${user?.data?.storeLimit})`}
               </h5>
             ) : (
               <h5 className="font-semibold">
@@ -40,7 +40,7 @@ export default function Stores() {
           </div>
 
           {/* stores details table */}
-          {stores && stores?.storeData?.length > 0 && (
+          {stores && stores?.data?.length > 0 && (
             <div className="mt-4 w-full overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -52,7 +52,7 @@ export default function Stores() {
                   </tr>
                 </thead>
                 <tbody>
-                  {stores?.storeData?.map((store) => (
+                  {stores?.data?.map((store) => (
                     <StoreList key={store?.storeId} store={store} />
                   ))}
                 </tbody>

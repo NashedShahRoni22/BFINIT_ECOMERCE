@@ -53,8 +53,8 @@ export default function AddBlog() {
               Select Store
             </option>
             {stores &&
-              stores?.storeData?.length > 0 &&
-              stores?.storeData?.map((store) => (
+              stores?.data?.length > 0 &&
+              stores?.data?.map((store) => (
                 <option key={store?.storeId} value={store?.storeId}>
                   {store?.storeName}
                 </option>

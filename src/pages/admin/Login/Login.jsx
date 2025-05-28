@@ -34,6 +34,9 @@ export default function Login() {
           navigate(from, { replace: true });
         }
       },
+      onError: (error) => {
+        toast.error(error?.message);
+      },
     });
   };
 

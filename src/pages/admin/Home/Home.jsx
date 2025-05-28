@@ -31,19 +31,20 @@ export default function Home() {
         <h5 className="font-semibold">
           Manage Stores{" "}
           {user &&
-            `(${stores?.storeData?.length > 0 ? stores?.storeData?.length : 0}/${user?.data?.storeLimit})`}
+            `(${stores?.data?.length > 0 ? stores?.data?.length : 0}/${user?.data?.storeLimit})`}
         </h5>
         <div className="mt-4 flex flex-wrap justify-center gap-4 md:justify-start">
           {stores &&
-            stores?.storeData &&
-            stores?.storeData?.length > 0 &&
-            stores?.storeData?.map((store) => (
+            stores?.data &&
+            stores?.data?.length > 0 &&
+            stores?.data?.map((store) => (
               <StoreCard key={store?.storeId} storeData={store} />
             ))}
-
-          {user && user?.data?.TotalstoreCount !== user?.data?.storeLimit && (
-            <CreateStoreCard />
-          )}
+          {user &&
+            stores &&
+            stores?.data?.length !== user?.data?.storeLimit && (
+              <CreateStoreCard />
+            )}
         </div>
       </div>
 

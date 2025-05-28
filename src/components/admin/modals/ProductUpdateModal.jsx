@@ -65,8 +65,6 @@ export default function ProductUpdateModal({
   );
   const { data: brandsData } = useGetBrands(storeId);
 
-  console.log(productDetails?.data);
-
   /* -- Side Effects -- */
   useEffect(() => {
     if (isLoading || !productDetails) return;
