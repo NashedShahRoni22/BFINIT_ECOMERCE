@@ -31,12 +31,24 @@ export default function Stores() {
                 No stores found! Please add a new one.
               </h5>
             )}
-            <Link
-              to="/create-store"
-              className="bg-dashboard-primary/90 hover:bg-dashboard-primary cursor-pointer rounded-md px-4 py-2 text-sm text-white transition-all duration-200 ease-in-out"
-            >
-              + Create New Store
-            </Link>
+
+            {/* create store button */}
+            {stores?.data?.length < user?.data?.storeLimit ? (
+              <Link
+                to="/create-store"
+                className="bg-dashboard-primary/90 hover:bg-dashboard-primary cursor-pointer rounded-md px-4 py-2 text-sm text-white transition-all duration-200 ease-in-out"
+              >
+                + Create New Store
+              </Link>
+            ) : (
+              <Link
+                to="https://bfinit.com/contact"
+                target="_blanck"
+                className="inline-block w-fit rounded-md bg-gradient-to-r from-gray-700 to-gray-800 px-3 py-2 text-center text-xs font-medium text-white shadow-sm transition-all duration-200 ease-linear active:scale-95"
+              >
+                Upgrade Plan
+              </Link>
+            )}
           </div>
 
           {/* stores details table */}

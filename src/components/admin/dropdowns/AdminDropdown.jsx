@@ -68,10 +68,16 @@ export default function AdminDropdown({ close }) {
       ))}
 
       {/* ecommerce guide download button */}
-      <button className="group flex cursor-pointer items-center gap-1 rounded-md p-1 px-3 text-sm capitalize transition-all duration-200 ease-in-out hover:bg-neutral-100">
+      <a
+        href="https://ecomback.bfinit.com/uploads/ecom/guide/BFINIT%20E-Commerce%20Guide.pdf"
+        download
+        target="_blank"
+        onClick={close}
+        className="group flex cursor-pointer items-center gap-1 rounded-md p-1 px-3 text-sm capitalize transition-all duration-200 ease-in-out hover:bg-neutral-100"
+      >
         <MdOutlineFileDownload className="group-hover:text-dashboard-primary text-xl" />
         Get Help Guide
-      </button>
+      </a>
 
       {/* logout */}
       <div className="border-t border-neutral-100 py-2">

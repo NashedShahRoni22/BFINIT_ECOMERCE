@@ -85,7 +85,7 @@ export default function SideNav({ showSideNav }) {
 
       {/* guide download btn */}
       {showGuide && (
-        <div className="group relative rounded-md border border-neutral-300 px-4 pt-6 pb-2">
+        <div className="group relative rounded-md border border-neutral-200 bg-[#f5f8fc] px-4 pt-6 pb-2">
           <div className="absolute -top-5 left-1/2 flex size-10 -translate-x-1/2 items-center justify-center overflow-hidden rounded-full bg-blue-200">
             <img
               src={bookIcon}
@@ -98,7 +98,7 @@ export default function SideNav({ showSideNav }) {
           {/* close button */}
           <button
             onClick={closeGuide}
-            className="absolute -top-2 -right-2 cursor-pointer rounded-full bg-white"
+            className="absolute -top-2 -right-2 cursor-pointer rounded-full bg-[#f5f8fc]"
           >
             <IoIosCloseCircleOutline className="size-5 text-red-600" />
           </button>
@@ -108,9 +108,14 @@ export default function SideNav({ showSideNav }) {
             How our ecommerce platform works
           </p>
 
-          <button className="mt-3 w-full cursor-pointer rounded-full bg-gray-900 py-1.5 text-xs text-white transition-all duration-200 ease-linear hover:bg-gray-800 active:scale-95">
+          <a
+            href="https://ecomback.bfinit.com/uploads/ecom/guide/BFINIT%20E-Commerce%20Guide.pdf"
+            download
+            target="_blanck"
+            className="mt-3 inline-block w-full cursor-pointer rounded-full bg-gray-900 py-1.5 text-center text-xs text-white transition-all duration-200 ease-linear hover:bg-gray-800 active:scale-95"
+          >
             Get Help Guide
-          </button>
+          </a>
         </div>
       )}
     </aside>

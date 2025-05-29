@@ -2,6 +2,7 @@ import QuickNavs from "../../../components/admin/quicknavs/QuickNavs";
 import QuickTips from "../../../components/admin/quickTips/QuickTips";
 import CreateStoreCard from "../../../components/admin/stores/CreateStoreCard";
 import StoreCard from "../../../components/admin/stores/StoreCard";
+import StoreLimitCard from "../../../components/admin/stores/StoreLimitCard";
 import useAuth from "../../../hooks/auth/useAuth";
 import useGetQuery from "../../../hooks/queries/useGetQuery";
 import useGetStores from "../../../hooks/stores/useGetStores";
@@ -40,11 +41,12 @@ export default function Home() {
             stores?.data?.map((store) => (
               <StoreCard key={store?.storeId} storeData={store} />
             ))}
-          {user &&
-            stores &&
-            stores?.data?.length !== user?.data?.storeLimit && (
-              <CreateStoreCard />
-            )}
+
+          {stores?.data?.length < user?.data?.storeLimit ? (
+            <CreateStoreCard />
+          ) : (
+            <StoreLimitCard />
+          )}
         </div>
       </div>
 
