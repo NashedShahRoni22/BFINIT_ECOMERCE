@@ -11,7 +11,7 @@ export default function CreateStoreCard() {
       <div className="flex h-[180px] flex-col items-center justify-center">
         <div className="relative">
           <div className="absolute inset-0 scale-0 rounded-full bg-[#E0EAF5] transition-all duration-300 group-hover:scale-100" />
-          <BsPlusLg className="group-hover:text-dashboard-primary relative z-10 text-5xl text-gray-500 transition-all duration-200 group-hover:rotate-90" />
+          <BsPlusLg className="group-hover:text-dashboard-primary relative text-5xl text-gray-500 transition-all duration-200 group-hover:rotate-90" />
         </div>
       </div>
 
@@ -22,11 +22,6 @@ export default function CreateStoreCard() {
         </h5>
         <p className="mt-1 text-xs text-gray-500">Click to add another store</p>
       </div>
-
-      {/* Optional: Premium badge if applicable */}
-      {/* <div className="absolute top-2 right-2 rounded-full bg-blue-600 px-2 py-0.5 text-xs font-medium text-white">
-        PRO
-      </div> */}
     </Link>
   );
 }
