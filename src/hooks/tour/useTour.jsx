@@ -1,0 +1,255 @@
+import { useNavigate } from "react-router";
+import Shepherd from "shepherd.js";
+
+const tour = new Shepherd.Tour({
+  defaultStepOptions: {
+    exitOnEsc: true,
+    cancelIcon: { enabled: true },
+  },
+  useModalOverlay: true,
+});
+
+export default function useTour() {
+  const navigate = useNavigate();
+
+  const TOUR_COMPLETE_KEY = "bfinit_tour_complete";
+
+  const startTour = (startFromId = "") => {
+    const isComplete = localStorage.getItem(TOUR_COMPLETE_KEY) === "true";
+    if (isComplete) return;
+
+    if (startFromId) {
+      tour.start();
+      tour.show(startFromId);
+    } else {
+      tour.start();
+    }
+  };
+
+  const addSteps = () => {
+    if (tour.steps.length) return;
+
+    tour.addStep({
+      id: "step-1",
+      text: `
+        <div class="text-gray-700 text-sm leading-relaxed space-y-3">
+          <h2 class="text-xl font-semibold text-gray-800">Welcome to BFINIT Ecommerce Admin Dashboard</h2>
+          <p>
+            In this short tutorial, we'll walk you through the key features of your admin dashboard —
+            from creating your first store, customizing its settings, and adding products to managing your business efficiently.
+          </p>
+          <p>
+            This is a general overview to help you get started quickly. You’ll be able to explore each step with guided highlights.
+          </p>
+          <p>
+            Prefer reading instead? We’ve got you covered! A full PDF guide is available — just look at the bottom of your navigation bar
+            labeled <span class="font-medium text-gray-800">"Get Help Guide"</span>, or access it via the second dropdown menu at the top right corner of your dashboard.
+          </p>
+          <p class="text-sm text-gray-500 italic">
+            Let’s get started!
+          </p>
+        </div>`,
+      attachTo: {
+        element: '[data-tour="step-1"]',
+        on: "right-end",
+      },
+      buttons: [
+        {
+          text: "Skip",
+          action: () => {
+            localStorage.setItem("bfinit_tour_complete", "true");
+            tour.cancel();
+          },
+        },
+        {
+          text: "Next",
+          action: () => {
+            navigate("/");
+            tour.next();
+          },
+        },
+      ],
+    });
+
+    tour.addStep({
+      id: "step-2",
+      text: `
+        <p class="text-sm text-gray-700">
+          Clicking your name in the top-right corner opens a dropdown with useful links — like your profile, store access, Help Center, the downloadable <span class="font-medium text-gray-800">Get Help Guide</span>, and the logout option.
+        </p>`,
+      attachTo: {
+        element: '[data-tour="step-2"]',
+        on: "bottom",
+      },
+      buttons: [
+        {
+          text: "Back",
+          action: tour.back,
+        },
+        {
+          text: "Next",
+          action: tour.next,
+        },
+      ],
+    });
+
+    tour.addStep({
+      id: "step-3",
+      text: `
+        <p class="text-sm text-gray-700">
+          Click the bell icon at the top to view your latest notifications. This dropdown keeps you updated on new orders, messages, and important alerts — so you never miss a thing.
+        </p>`,
+      attachTo: {
+        element: '[data-tour="step-3"]',
+        on: "bottom",
+      },
+      buttons: [
+        {
+          text: "Back",
+          action: tour.back,
+        },
+        {
+          text: "Next",
+          action: tour.next,
+        },
+      ],
+    });
+
+    tour.addStep({
+      id: "step-4",
+      text: `
+        <p class="text-sm text-gray-700">
+          Create your first store by clicking here.
+        </p>`,
+      attachTo: {
+        element: '[data-tour="step-4"]',
+        on: "bottom",
+      },
+      buttons: [
+        {
+          text: "Back",
+          action: tour.back,
+        },
+        {
+          text: "Next",
+          action: () => {
+            navigate("/create-store");
+            tour.next();
+          },
+        },
+      ],
+    });
+
+    tour.addStep({
+      id: "step-5",
+      text: `
+        <div class="text-sm text-gray-700 space-y-3">
+          <p>
+            This is where you'll <strong>create your first store</strong>. Just fill in the required fields marked with an asterisk (<span class="text-red-500">*</span>).
+          </p>
+          <p>
+            <strong>Logo</strong> and <strong>Favicon</strong> uploads are required. Make sure to follow the recommended dimensions and formats for best results.
+          </p>
+          <p>
+            When you choose a <strong>Country</strong>, the <strong>Currency</strong> fields will be auto-filled based on your selection.
+          </p>
+          <p>
+            Don't forget to pick a <strong>Store Theme</strong> at the bottom — this will control how your storefront looks. <span class="text-gray-600">By default,</span> the <strong class="text-dashboard-primary">Midnight Blaze</strong> theme is selected, but feel free to explore and choose the one that best suits your brand.
+          </p>
+          <p class="italic text-gray-500">
+            Once everything is set, click the <strong>Create New Store</strong> button to finish setup.
+          </p>
+        </div>`,
+      attachTo: {
+        element: '[data-tour="step-5"]',
+        on: "bottom",
+      },
+      buttons: [
+        {
+          text: "Back",
+          action: () => {
+            navigate("/");
+            tour.back();
+          },
+        },
+        {
+          text: "Next",
+          action: tour.complete,
+        },
+      ],
+    });
+
+    tour.addStep({
+      id: "step-6",
+      text: `
+        <p class="text-sm text-gray-700">
+          This is your <strong>Stores</strong> section — here you can see a list of all the stores you've created.
+          From this page, you can <strong>preview</strong> a store, <strong>customize</strong> its appearance, or even <strong>delete</strong> a store if needed.
+          We'll guide you through each of these actions in the next steps.
+        </p>`,
+      attachTo: {
+        element: '[data-tour="step-6"]',
+        on: "bottom",
+      },
+      buttons: [
+        {
+          text: "Back",
+          action: tour.back,
+        },
+        {
+          text: "Next",
+          action: tour.next,
+        },
+      ],
+    });
+
+    tour.addStep({
+      id: "step-7",
+      text: `
+        <p class="text-sm text-gray-700">
+          This section shows how many stores you've created out of your total allowed limit.
+          For example, <strong>(2/5)</strong> means you've created 2 stores out of your 5-store limit.
+          It helps you keep track of your usage and know when you're nearing the limit.
+        </p>`,
+      attachTo: {
+        element: '[data-tour="step-7"]',
+        on: "bottom",
+      },
+      buttons: [
+        {
+          text: "Back",
+          action: tour.back,
+        },
+        {
+          text: "Next",
+          action: tour.next,
+        },
+      ],
+    });
+
+    tour.addStep({
+      id: "step-8",
+      text: `
+        <p class="text-sm text-gray-700">
+          Here's a list of all your created stores. Each row represents a store, showing key info like its status, a preview link, and action buttons to manage it.
+        </p>`,
+      attachTo: {
+        element:
+          "#root > main > div > section > div.mt-6 > div.mt-4.w-full.overflow-x-auto > table > tbody > tr:nth-child(1)",
+        on: "bottom",
+      },
+      buttons: [
+        {
+          text: "Back",
+          action: tour.back,
+        },
+        {
+          text: "Next",
+          action: tour.next,
+        },
+      ],
+    });
+  };
+
+  return { startTour, addSteps };
+}

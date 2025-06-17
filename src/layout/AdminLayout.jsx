@@ -2,15 +2,16 @@ import { useEffect, useState } from "react";
 import { Outlet, ScrollRestoration } from "react-router";
 import TopNav from "../components/admin/shared/TopNav";
 import SideNav from "../components/admin/shared/SideNav";
-import { useTour } from "@reactour/tour";
+import useTour from "../hooks/tour/useTour";
 
 export default function AdminLayout() {
-  const { setIsOpen } = useTour();
+  const { addSteps, startTour } = useTour();
   const [showSideNav, setShowSideNav] = useState(false);
 
   useEffect(() => {
-    setIsOpen(true);
-  }, [setIsOpen]);
+    addSteps();
+    startTour();
+  }, []);
 
   return (
     <>

@@ -21,7 +21,7 @@ export default function Stores() {
         <div className="mt-6">
           <div className="flex items-center justify-between gap-8">
             {stores && stores?.data?.length > 0 ? (
-              <h5 className="font-semibold">
+              <h5 data-tour="step-7" className="font-semibold">
                 Manage Stores{" "}
                 {user &&
                   `(${stores?.data?.length || 0}/${user?.data?.storeLimit})`}

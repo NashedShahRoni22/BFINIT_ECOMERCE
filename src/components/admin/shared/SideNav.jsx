@@ -45,6 +45,7 @@ export default function SideNav({ showSideNav }) {
             {link.subCategories ? (
               <div>
                 <button
+                  data-tour={link?.tourId}
                   className="group flex w-full cursor-pointer gap-1 rounded-md px-4 py-2 capitalize transition-all duration-200 ease-in-out hover:bg-white"
                   onClick={() => toggleDropdown(i)}
                 >
@@ -73,6 +74,7 @@ export default function SideNav({ showSideNav }) {
             ) : (
               <Link
                 to={link.url}
+                data-tour={link?.tourId}
                 className="group flex gap-1 rounded-md px-4 py-2 capitalize transition-all duration-200 ease-in-out hover:bg-white"
               >
                 <link.icon className="text-dashboard-primary text-2xl" />

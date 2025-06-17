@@ -19,6 +19,7 @@ export const sideNavLinks = [
     icon: MdStorefront,
     name: "Stores",
     url: "/all-stores",
+    tourId: "step-6",
   },
   {
     icon: MdCategory,

@@ -33,7 +33,10 @@ export default function TopNav({ showSideNav, setShowSideNav }) {
       <PopoverGroup className="flex items-center justify-center gap-4">
         {/* notification */}
         <Popover className="group">
-          <PopoverButton className="cursor-pointer rounded-lg border border-transparent p-1.5 transition-all duration-200 ease-linear outline-none group-data-[open]:border-neutral-100 group-data-[open]:bg-neutral-50 hover:border-neutral-100 hover:bg-neutral-50">
+          <PopoverButton
+            data-tour="step-3"
+            className="cursor-pointer rounded-lg border border-transparent p-1.5 transition-all duration-200 ease-linear outline-none group-data-[open]:border-neutral-100 group-data-[open]:bg-neutral-50 hover:border-neutral-100 hover:bg-neutral-50"
+          >
             <MdOutlineNotifications className="text-xl" />
           </PopoverButton>
 
@@ -44,7 +47,10 @@ export default function TopNav({ showSideNav, setShowSideNav }) {
         <Popover className="group">
           {({ close }) => (
             <>
-              <PopoverButton className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-transparent p-1.5 transition-all duration-200 ease-linear outline-none group-data-[open]:border-neutral-100 group-data-[open]:bg-neutral-50 hover:border-neutral-100 hover:bg-neutral-50">
+              <PopoverButton
+                data-tour="step-2"
+                className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-transparent p-1.5 transition-all duration-200 ease-linear outline-none group-data-[open]:border-neutral-100 group-data-[open]:bg-neutral-50 hover:border-neutral-100 hover:bg-neutral-50"
+              >
                 <div className="bg-dashboard-primary flex size-6 items-center justify-center rounded-lg p-0.5 text-xs font-medium text-white">
                   MS
                 </div>
