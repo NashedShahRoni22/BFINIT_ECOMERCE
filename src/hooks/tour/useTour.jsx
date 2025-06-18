@@ -231,12 +231,129 @@ export default function useTour() {
       id: "step-8",
       text: `
         <p class="text-sm text-gray-700">
-          Here's a list of all your created stores. Each row represents a store, showing key info like its status, a preview link, and action buttons to manage it.
+          Each row shows a created store with quick action buttons. Click the <strong>eye icon</strong> to preview your store as customers will see it. The <strong>pencil icon</strong> lets you customize your layout, sections, and theme. The <strong>trash icon</strong> will permanently delete the store and all its products.
         </p>`,
       attachTo: {
         element:
           "#root > main > div > section > div.mt-6 > div.mt-4.w-full.overflow-x-auto > table > tbody > tr:nth-child(1)",
         on: "bottom",
+      },
+      buttons: [
+        {
+          text: "Back",
+          action: tour.back,
+        },
+        {
+          text: "Next",
+          action: tour.next,
+        },
+      ],
+    });
+
+    tour.addStep({
+      id: "step-9",
+      text: `
+        <p class="text-sm text-gray-700">
+          The <strong>Products</strong> menu gives access to tools like Category, Brand and Product Management. Click to get started.
+        </p>`,
+      attachTo: {
+        element: "[data-tour='step-9']",
+        on: "right-start",
+      },
+      beforeShowPromise: function () {
+        return new Promise(function (resolve) {
+          const el = document.querySelector("[data-tour='step-9']");
+          if (el) el.click();
+          resolve();
+        });
+      },
+      buttons: [
+        {
+          text: "Back",
+          action: tour.back,
+        },
+        {
+          text: "Next",
+          action: tour.next,
+        },
+      ],
+    });
+
+    tour.addStep({
+      id: "step-10",
+      text: `
+        <p class="text-sm text-gray-700">
+          To manage categories, first select a store from the "Select Store" dropdown at the top right corner. Then, you can upload a category icon and enter a name to add a new category. On the right side, under "All Categories", you can update the category name or image, or delete a category if needed.
+        </p>`,
+      attachTo: {
+        element: "[data-tour='step-10']",
+        on: "right-start",
+      },
+      buttons: [
+        {
+          text: "Back",
+          action: tour.back,
+        },
+        {
+          text: "Next",
+          action: tour.next,
+        },
+      ],
+    });
+
+    tour.addStep({
+      id: "step-11",
+      text: `
+        <p class="text-sm text-gray-700">
+          sub-category
+        </p>`,
+      attachTo: {
+        element: "[data-tour='step-11']",
+        on: "right-start",
+      },
+      buttons: [
+        {
+          text: "Back",
+          action: tour.back,
+        },
+        {
+          text: "Next",
+          action: tour.next,
+        },
+      ],
+    });
+
+    tour.addStep({
+      id: "step-12",
+      text: `
+        <p class="text-sm text-gray-700">
+          brands
+        </p>`,
+      attachTo: {
+        element: "[data-tour='step-12']",
+        on: "right-start",
+      },
+      buttons: [
+        {
+          text: "Back",
+          action: tour.back,
+        },
+        {
+          text: "Next",
+          action: tour.next,
+        },
+      ],
+    });
+
+    tour.addStep({
+      id: "step-13",
+      text: `
+        <p class="text-sm text-gray-700">
+          add product
+        </p>`,
+      attachTo: {
+        element: "[data-tour='step-13']",
+        on: "right-start",
       },
       buttons: [
         {

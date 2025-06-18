@@ -62,6 +62,7 @@ export default function SideNav({ showSideNav }) {
                       <Link
                         key={j}
                         to={subLink.url}
+                        data-tour={subLink?.tourId}
                         className="flex gap-1.5 rounded-md px-4 py-2 capitalize transition-all duration-200 ease-in-out hover:bg-white"
                       >
                         <subLink.icon className="text-dashboard-primary -rotate-90 transform text-xl" />
