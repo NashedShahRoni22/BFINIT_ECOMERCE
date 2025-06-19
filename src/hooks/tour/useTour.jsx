@@ -296,7 +296,10 @@ export default function useTour() {
         },
         {
           text: "Next",
-          action: tour.next,
+          action: () => {
+            navigate("/products/category");
+            tour.next();
+          },
         },
       ],
     });
@@ -305,7 +308,7 @@ export default function useTour() {
       id: "step-11",
       text: `
         <p class="text-sm text-gray-700">
-          sub-category
+          category details info will be here
         </p>`,
       attachTo: {
         element: "[data-tour='step-11']",
@@ -318,51 +321,10 @@ export default function useTour() {
         },
         {
           text: "Next",
-          action: tour.next,
-        },
-      ],
-    });
-
-    tour.addStep({
-      id: "step-12",
-      text: `
-        <p class="text-sm text-gray-700">
-          brands
-        </p>`,
-      attachTo: {
-        element: "[data-tour='step-12']",
-        on: "right-start",
-      },
-      buttons: [
-        {
-          text: "Back",
-          action: tour.back,
-        },
-        {
-          text: "Next",
-          action: tour.next,
-        },
-      ],
-    });
-
-    tour.addStep({
-      id: "step-13",
-      text: `
-        <p class="text-sm text-gray-700">
-          add product
-        </p>`,
-      attachTo: {
-        element: "[data-tour='step-13']",
-        on: "right-start",
-      },
-      buttons: [
-        {
-          text: "Back",
-          action: tour.back,
-        },
-        {
-          text: "Next",
-          action: tour.next,
+          action: () => {
+            navigate("/products/category");
+            tour.next();
+          },
         },
       ],
     });

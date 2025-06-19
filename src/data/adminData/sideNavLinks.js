@@ -36,19 +36,16 @@ export const sideNavLinks = [
         name: "Sub Category",
         url: "/products/sub-category",
         icon: BsArrow90DegDown,
-        tourId: "step-11",
       },
       {
         name: "Brands",
         url: "/products/brands",
         icon: BsArrow90DegDown,
-        tourId: "step-12",
       },
       {
         name: "Add Product",
         url: "/products/add-product",
         icon: BsArrow90DegDown,
-        tourId: "step-13",
       },
       {
         name: "Manage Product",

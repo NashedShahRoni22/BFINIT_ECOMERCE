@@ -46,6 +46,13 @@ export default function Category() {
           storeId,
           storeName: foundStore.storeName,
         });
+      } else {
+        const firstStore = stores?.data[0];
+        setSelectedStore({
+          storeId: firstStore?.storeId,
+          storeName: firstStore?.storeName,
+        });
+        setSearchParams({ storeId: firstStore?.storeId });
       }
     }
   }, [stores, storeId]);

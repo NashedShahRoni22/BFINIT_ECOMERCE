@@ -10,7 +10,7 @@ export default function AdminLayout() {
 
   useEffect(() => {
     addSteps();
-    startTour();
+    startTour("step-9");
   }, []);
 
   return (
