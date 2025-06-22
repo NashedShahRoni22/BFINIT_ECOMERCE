@@ -308,11 +308,11 @@ export default function useTour() {
       id: "step-11",
       text: `
         <p class="text-sm text-gray-700">
-          category details info will be here
+          here select the store. that you want to add the new category
         </p>`,
       attachTo: {
         element: "[data-tour='step-11']",
-        on: "right-start",
+        on: "left-start",
       },
       buttons: [
         {
@@ -321,10 +321,96 @@ export default function useTour() {
         },
         {
           text: "Next",
-          action: () => {
-            navigate("/products/category");
-            tour.next();
-          },
+          action: tour.next,
+        },
+      ],
+    });
+
+    tour.addStep({
+      id: "step-12",
+      text: `
+        <p class="text-sm text-gray-700">
+          here you can see your currently selected store name.
+        </p>`,
+      attachTo: {
+        element: "[data-tour='step-12']",
+        on: "bottom",
+      },
+      buttons: [
+        {
+          text: "Back",
+          action: tour.back,
+        },
+        {
+          text: "Next",
+          action: tour.next,
+        },
+      ],
+    });
+
+    tour.addStep({
+      id: "step-13",
+      text: `
+        <p class="text-sm text-gray-700">
+          in this field upload the category image & name. to add a new category. after adding the new category the tour will take you to next step.
+        </p>`,
+      attachTo: {
+        element: "[data-tour='step-13']",
+        on: "right",
+      },
+      buttons: [
+        {
+          text: "Back",
+          action: tour.back,
+        },
+        {
+          text: "Next",
+          action: tour.next,
+        },
+      ],
+    });
+
+    tour.addStep({
+      id: "step-14",
+      text: `
+        <p class="text-sm text-gray-700">
+          from this section you can see all the existing categories list for currently selected store.
+        </p>`,
+      attachTo: {
+        element: "[data-tour='step-14']",
+        on: "right",
+      },
+      buttons: [
+        {
+          text: "Back",
+          action: tour.back,
+        },
+        {
+          text: "Next",
+          action: tour.next,
+        },
+      ],
+    });
+
+    tour.addStep({
+      id: "step-15",
+      text: `
+        <p class="text-sm text-gray-700">
+          to simply update or delete a category just come here.
+        </p>`,
+      attachTo: {
+        element:
+          "#root > main > div > section > div.mt-6.grid.grid-cols-12.gap-y-12.lg\\:gap-x-12 > div > ul > li > div.flex.items-center.gap-4",
+        on: "bottom",
+      },
+      buttons: [
+        {
+          text: "Back",
+          action: tour.back,
+        },
+        {
+          text: "Next",
+          action: tour.next,
         },
       ],
     });
