@@ -15,15 +15,17 @@ export default function ProductCard({ product, currencySymbol, storeId }) {
         <img
           src={`https://ecomback.bfinit.com${productImage}`}
           alt=""
-          className="h-full w-full object-cover transition-all duration-200 ease-linear group-hover:scale-105"
+          className="h-full w-full object-contain transition-all duration-200 ease-linear group-hover:scale-105"
         />
       </Link>
       <div className="flex w-full flex-col items-center gap-2.5">
         <Link
-          className="hover:text-accent w-fit text-lg font-bold transition-all duration-200 ease-in-out"
+          className="hover:text-accent text-center text-lg font-bold transition-all duration-200 ease-in-out"
           to={`/preview/${storeId}/products/${product.productId}`}
         >
-          {productName}
+          {productName.length > 38
+            ? `${productName.slice(0, 38)}...`
+            : productName}
         </Link>
         {/* <p>{p.ratings}</p> */}
         <p className="font-semibold">
