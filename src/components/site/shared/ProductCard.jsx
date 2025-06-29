@@ -20,7 +20,7 @@ export default function ProductCard({ product, currencySymbol, storeId }) {
       </Link>
       <div className="flex w-full flex-col items-center gap-2.5">
         <Link
-          className="hover:text-accent text-center text-lg font-bold transition-all duration-200 ease-in-out"
+          className="hover:text-accent truncate text-center text-lg font-bold transition-all duration-200 ease-in-out"
           to={`/preview/${storeId}/products/${product.productId}`}
         >
           {productName.length > 38

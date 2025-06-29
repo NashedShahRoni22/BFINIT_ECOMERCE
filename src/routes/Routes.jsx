@@ -116,6 +116,7 @@ export const router = createBrowserRouter([
       </PrivateRoute>
     ),
   },
+  // preview routes
   {
     path: "/preview/:storeId",
     element: (

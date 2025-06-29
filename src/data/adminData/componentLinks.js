@@ -1,5 +1,5 @@
 export const componentLinks = [
-  {
+  /* {
     name: "navbarStyle",
     title: "Navbar",
     subCategories: [
@@ -8,8 +8,8 @@ export const componentLinks = [
         value: "nav1",
       },
     ],
-  },
-  {
+  }, */
+  /* {
     name: "categoryBarStyle",
     title: "Category Bar",
     subCategories: [
@@ -18,7 +18,7 @@ export const componentLinks = [
         value: "categoryBar1",
       },
     ],
-  },
+  }, */
   {
     name: "sliderStyle",
     title: "Slider",
@@ -27,14 +27,14 @@ export const componentLinks = [
         name: "Slider 1",
         value: "slider1",
       },
-      {
+      /* {
         name: "Slider 2",
         value: "slider2",
       },
       {
         name: "Slider 3",
         value: "slider3",
-      },
+      }, */
     ],
   },
   {
@@ -51,7 +51,7 @@ export const componentLinks = [
       },
     ],
   },
-  {
+  /* {
     name: "highlightStyle",
     title: "Highlight",
     subCategories: [
@@ -64,7 +64,7 @@ export const componentLinks = [
         value: "highlight2",
       },
     ],
-  },
+  }, */
   {
     name: "productStyle",
     title: "Product",
@@ -83,7 +83,7 @@ export const componentLinks = [
       },
     ],
   },
-  {
+  /*  {
     name: "bannerStyle",
     title: "Banner",
     subCategories: [
@@ -92,8 +92,8 @@ export const componentLinks = [
         value: "banner1",
       },
     ],
-  },
-  {
+  }, */
+  /* {
     name: "footerStyle",
     title: "Footer",
     subCategories: [
@@ -102,7 +102,7 @@ export const componentLinks = [
         value: "footer1",
       },
     ],
-  },
+  }, */
   {
     title: "Theme",
     name: "themeStyle",

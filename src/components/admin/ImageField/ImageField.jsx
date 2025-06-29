@@ -1,6 +1,8 @@
+import { HiOutlineArrowUpTray, HiOutlineTrash } from "react-icons/hi2";
 import { LuImagePlus } from "react-icons/lu";
 
 export default function ImageField({
+  ref,
   id,
   label,
   selectedImg,
@@ -15,6 +17,7 @@ export default function ImageField({
         {label}: <span className="text-red-600">*</span>
       </label>
       <input
+        ref={ref}
         onChange={handleImgChange}
         type="file"
         name={id}
@@ -31,18 +34,22 @@ export default function ImageField({
               alt=""
               className="h-full w-full rounded object-contain"
             />
-            <div className="absolute top-0 left-0 flex h-full w-full translate-y-full items-center justify-center gap-4 rounded bg-black/50 transition-all duration-200 ease-linear group-hover:translate-y-0">
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-lg bg-gradient-to-t from-black/80 via-black/60 to-black/40 opacity-0 backdrop-blur-sm transition-all duration-300 ease-in-out group-hover:opacity-100">
               <label
                 htmlFor={id}
-                className="bg-dashboard-primary cursor-pointer rounded px-2 py-1 text-sm font-medium text-white"
+                className="bg-dashboard-primary flex min-w-[140px] cursor-pointer items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-white shadow-md transition-all hover:bg-blue-700 hover:shadow-lg focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
               >
-                Upload New {label}
+                <HiOutlineArrowUpTray className="h-4 w-4 flex-shrink-0" />
+                <span>Upload New {label}</span>
               </label>
+
               <button
                 onClick={handleRemoveImg}
-                className="cursor-pointer rounded bg-red-100 px-2 py-1 text-sm font-medium text-red-500 transition-all duration-200 ease-in-out hover:bg-red-200"
+                className="flex min-w-[140px] items-center justify-center gap-2 rounded-lg bg-white/90 px-4 py-2.5 text-sm font-medium text-gray-800 shadow-sm transition-all hover:bg-white hover:text-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
+                aria-label={`Remove ${label}`}
               >
-                Cancel
+                <HiOutlineTrash className="h-4 w-4 flex-shrink-0" />
+                <span>Remove</span>
               </button>
             </div>
           </div>
@@ -57,7 +64,7 @@ export default function ImageField({
                 Click to upload
               </label>{" "}
               & <br />
-              select your store logo
+              select your <span className="lowercase">{label}</span>
               {sizeMention && (
                 <p className="mt-1 text-xs text-neutral-400">
                   Required: {sizeMention} <br />

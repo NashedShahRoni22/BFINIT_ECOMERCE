@@ -141,7 +141,7 @@ export default function Brands() {
           {/* image & category name field container */}
           <form
             onSubmit={handleFormSubmit}
-            className="col-span-12 rounded border border-neutral-200 px-4 py-2 lg:col-span-4"
+            className="col-span-12 h-fit rounded border border-neutral-200 px-4 py-2 lg:col-span-4"
           >
             <ImageField
               id="brandIcon"

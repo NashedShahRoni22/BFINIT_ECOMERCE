@@ -163,7 +163,7 @@ export default function SubCategory() {
       {selectedStore.storeId && (
         <div className="mt-6 grid grid-cols-12 gap-y-12 lg:gap-x-12">
           {/* Left Side: Add Sub-Category Form */}
-          <div className="col-span-12 rounded border border-neutral-200 px-4 py-2 lg:col-span-4">
+          <div className="col-span-12 h-fit rounded border border-neutral-200 px-4 py-2 lg:col-span-4">
             {/* select category */}
             {categories?.data?.length > 0 && (
               <>

@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { BsInfoCircle } from "react-icons/bs";
 import { AuthContext } from "../../../Providers/AuthProvider";
 import ImageField from "../../../components/admin/ImageField/ImageField";
 import Spinner from "../../../components/admin/loaders/Spinner";
@@ -10,62 +11,18 @@ import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
 import useGetQuery from "../../../hooks/queries/useGetQuery";
 import ActionBtn from "../../../components/admin/buttons/ActionBtn";
-
-const themes = [
-  {
-    id: 1,
-    name: "Midnight Blaze",
-    primary: "#000000",
-    accent: "#ff6900",
-    text: "#fff",
-  },
-  {
-    id: 2,
-    name: "Sky Burst",
-    primary: "#1e96fc",
-    accent: "#FF8C42",
-    text: "#fff",
-  },
-  {
-    id: 3,
-    name: "Forest Lime",
-    primary: "#2f855a",
-    accent: "#84cc16",
-    text: "#fff",
-  },
-  {
-    id: 4,
-    name: "Lilac Cream",
-    primary: "#faf3e0",
-    accent: "#c084fc",
-    text: "#000",
-  },
-];
-
-const productTypes = [
-  { value: "fashion", label: "Fashion" },
-  { value: "electronics", label: "Electronics" },
-  { value: "beauty", label: "Beauty & Personal Care" },
-  { value: "home-living", label: "Home & Living" },
-  { value: "food-beverage", label: "Food & Beverage" },
-  { value: "health-wellness", label: "Health & Wellness" },
-  { value: "sports", label: "Sports & Outdoor" },
-  { value: "automotive", label: "Automotive" },
-  { value: "handmade", label: "Handmade & Crafts" },
-  { value: "toys", label: "Toys & Games" },
-  { value: "digital-products", label: "Digital Products" },
-  { value: "services", label: "Professional Services" },
-];
+import themes from "../../../data/adminData/themes";
+import productTypes from "../../../data/adminData/productTypes";
+import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 
 export default function CreateStore() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { user } = useContext(AuthContext);
-  const { data: countries } = useGetQuery({
-    endpoint: "/api/countries",
-    queryKey: ["countries"],
+  const [selectedImages, setSelectedImages] = useState({
+    logo: null,
+    favicon: null,
   });
-
-  // Form state
   const [formData, setFormData] = useState({
     storeName: "",
     storeEmail: "",
@@ -85,12 +42,34 @@ export default function CreateStore() {
     timezone: "",
   });
 
+  const isDisabled =
+    !selectedImages.logo ||
+    !selectedImages.favicon ||
+    !formData.storeName ||
+    !formData.storeEmail ||
+    !formData.productType ||
+    !formData.country ||
+    !formData.storePhone ||
+    !formData.currencyCode ||
+    !formData.currencySymbol ||
+    !formData.currencyName ||
+    !formData.storeAddress ||
+    !formData.storeTheme;
+
+  // fetch all countries
+  const { data: countries } = useGetQuery({
+    endpoint: "/api/countries",
+    queryKey: ["countries"],
+  });
+
+  // fetch selected country details (currency, country code etc.)
   const { data: country, isLoading: isCountryLoading } = useGetQuery({
     endpoint: `/api/countries/${formData?.country}`,
     queryKey: ["country", formData?.country],
     enabled: !!formData?.country,
   });
 
+  // update formData state based on selected country
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
@@ -100,13 +79,6 @@ export default function CreateStore() {
       timezone: country?.timezone,
     }));
   }, [country]);
-
-  const [selectedImages, setSelectedImages] = useState({
-    logo: null,
-    favicon: null,
-  });
-
-  const navigate = useNavigate();
 
   // store create post api hooks
   const { mutate, isPending } = usePostMutation({
@@ -148,7 +120,7 @@ export default function CreateStore() {
       },
 
       onError: (error) => {
-        toast.error("Something went wrong!");
+        toast.error(error?.message || "Something went wrong!");
         console.error(error);
       },
     });
@@ -156,14 +128,13 @@ export default function CreateStore() {
 
   return (
     <section className="p-5">
-      <h1 className="text-center text-xl font-semibold capitalize">
-        Create new store
-      </h1>
-      <p className="mt-2 text-center text-xs text-neutral-500">
-        <span className="text-red-600">*</span> indicates required fields
-      </p>
+      <PageHeading heading="Create New Store" />
+      <div className="mt-8 flex items-center justify-end gap-1 text-xs font-medium text-red-600/80">
+        <BsInfoCircle className="size-4" />
+        <p>* Required fields</p>
+      </div>
 
-      <form onSubmit={handleCreateStore} className="mt-8 space-y-5">
+      <form onSubmit={handleCreateStore} className="mt-4 space-y-5">
         <div className="grid gap-8 md:grid-cols-2">
           {/* Logo */}
           <ImageField
@@ -228,6 +199,7 @@ export default function CreateStore() {
             </label>
             <input
               type="email"
+              id="storeEmail"
               name="storeEmail"
               value={formData.storeEmail}
               onChange={handleChange}
@@ -242,9 +214,11 @@ export default function CreateStore() {
               Product Type: <span className="text-red-600">*</span>
             </label>
             <select
+              id="productType"
               name="productType"
               value={formData.productType}
               onChange={handleChange}
+              required
               className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
             >
               <option value="" disabled>
@@ -264,9 +238,11 @@ export default function CreateStore() {
               Choose Country: <span className="text-red-600">*</span>
             </label>
             <select
+              id="country"
               name="country"
               value={formData.country}
               onChange={handleChange}
+              required
               className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
             >
               <option value="" disabled>
@@ -295,6 +271,7 @@ export default function CreateStore() {
 
               <input
                 type="text"
+                id="storePhone"
                 name="storePhone"
                 value={formData.storePhone}
                 onChange={handleChange}
@@ -310,10 +287,10 @@ export default function CreateStore() {
             </label>
             <input
               type="text"
+              id="storeTelephone"
               name="storeTelephone"
               value={formData.storeTelephone}
               onChange={handleChange}
-              required
               className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
             />
           </div>
@@ -333,6 +310,7 @@ export default function CreateStore() {
 
               <input
                 type="text"
+                id="currency"
                 name="currencyCode"
                 value={formData?.currencyCode}
                 required
@@ -344,7 +322,7 @@ export default function CreateStore() {
 
           {/* Currency Name */}
           <div>
-            <label htmlFor="currency" className="text-sm font-medium">
+            <label htmlFor="currencyName" className="text-sm font-medium">
               Currency Name:{" "}
               <span className="text-xs font-normal text-neutral-500">
                 (Auto-filled based on country)
@@ -353,11 +331,76 @@ export default function CreateStore() {
 
             <input
               type="text"
+              id="currencyName"
               name="currencyName"
               value={formData?.currencyName}
               required
               readOnly
-              className="mt-1.5 w-full cursor-not-allowed rounded border border-l border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
+              className="mt-1.5 w-full cursor-not-allowed rounded border border-l border-neutral-200 bg-neutral-50 px-4 py-1 outline-none"
+            />
+          </div>
+
+          {/* facebook link */}
+          <div>
+            <label htmlFor="storeFacebookLink" className="text-sm font-medium">
+              Facebook Link:
+            </label>
+
+            <input
+              type="url"
+              id="storeFacebookLink"
+              name="storeFacebookLink"
+              value={formData?.storeFacebookLink}
+              onChange={handleChange}
+              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
+            />
+          </div>
+
+          {/* twitter link */}
+          <div>
+            <label htmlFor="storeTwitterLink" className="text-sm font-medium">
+              Twitter Link:
+            </label>
+
+            <input
+              type="url"
+              id="storeTwitterLink"
+              name="storeTwitterLink"
+              value={formData?.storeTwitterLink}
+              onChange={handleChange}
+              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
+            />
+          </div>
+
+          {/* instagram link */}
+          <div>
+            <label htmlFor="storeInstagramLink" className="text-sm font-medium">
+              Instagram Link:
+            </label>
+
+            <input
+              type="url"
+              id="storeInstagramLink"
+              name="storeInstagramLink"
+              value={formData?.storeInstagramLink}
+              onChange={handleChange}
+              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
+            />
+          </div>
+
+          {/* youtube link */}
+          <div>
+            <label htmlFor="storeYoutubeLink" className="text-sm font-medium">
+              Youtube Link:
+            </label>
+
+            <input
+              type="url"
+              id="storeYoutubeLink"
+              name="storeYoutubeLink"
+              value={formData?.storeYoutubeLink}
+              onChange={handleChange}
+              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
             />
           </div>
 
@@ -415,8 +458,15 @@ export default function CreateStore() {
         </div>
 
         {/* Submit Button */}
-        <div className="mt-12 mb-5 flex justify-center">
-          <ActionBtn type="submit" loading={isPending}>
+        <div className="mt-12 mb-5 flex items-center justify-center gap-8">
+          <Link
+            to="/"
+            className="min-h-9 rounded border border-gray-400 px-5 py-2 text-gray-800 transition-all duration-200 ease-linear hover:bg-gray-200 active:scale-[0.98]"
+          >
+            Cancel
+          </Link>
+
+          <ActionBtn type="submit" loading={isPending} disabled={isDisabled}>
             Create New Store
           </ActionBtn>
         </div>

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
@@ -15,10 +15,11 @@ import useGetStores from "../../../hooks/stores/useGetStores";
 import { useSearchParams } from "react-router";
 
 export default function Category() {
+  const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
   const storeId = searchParams.get("storeId") || "";
-  const queryClient = useQueryClient();
   const { user } = useContext(AuthContext);
+  const imageFieldRef = useRef(null);
   const [selectedImages, setSelectedImages] = useState({
     categoryIcon: null,
   });
@@ -46,13 +47,6 @@ export default function Category() {
           storeId,
           storeName: foundStore.storeName,
         });
-      } else {
-        const firstStore = stores?.data[0];
-        setSelectedStore({
-          storeId: firstStore?.storeId,
-          storeName: firstStore?.storeName,
-        });
-        setSearchParams({ storeId: firstStore?.storeId });
       }
     }
   }, [stores, storeId]);
@@ -80,8 +74,12 @@ export default function Category() {
   // create new category
   const createNewCategory = async (e) => {
     e.preventDefault();
-    if (!categoryName || selectedImages.categoryIcon === null) {
-      return toast.error("Category Name & Image is required!");
+
+    // category icon & name validation
+    if (selectedImages.categoryIcon === null) {
+      return toast.error("Category icon is required!");
+    } else if (!categoryName) {
+      return toast.error("Category name is required!");
     }
 
     const formDataObj = new FormData();
@@ -89,17 +87,15 @@ export default function Category() {
     formDataObj.append("categoryImage", selectedImages.categoryIcon);
 
     mutate(formDataObj, {
-      onSuccess: (newCategory) => {
+      onSuccess: () => {
         setCategoryName("");
         setSelectedImages({ categoryIcon: null });
+
         // update cached categories with new category
-        queryClient.setQueryData(["categories", selectedStore?.storeId], () => {
-          return {
-            data: newCategory.categories,
-          };
-        });
+        queryClient.invalidateQueries(["categories", selectedStore?.storeId]);
         toast.success("New category created!");
       },
+
       onError: () => {
         setCategoryName("");
         setSelectedImages({ categoryIcon: null });
@@ -156,9 +152,10 @@ export default function Category() {
           {/* image & category name field container */}
           <form
             onSubmit={createNewCategory}
-            className="col-span-12 rounded border border-neutral-200 px-4 py-2 lg:col-span-4"
+            className="col-span-12 h-fit rounded border border-neutral-200 px-4 py-2 lg:col-span-4"
           >
             <ImageField
+              ref={imageFieldRef}
               id="categoryIcon"
               label="Category Icon"
               selectedImg={selectedImages.categoryIcon}

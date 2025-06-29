@@ -36,7 +36,7 @@ export default function SideNav({ showSideNav }) {
 
   return (
     <aside
-      className={`absolute z-10 flex h-[calc(100dvh-55px)] flex-col gap-10 overflow-y-auto bg-neutral-100 text-sm transition-all duration-300 ease-in-out md:px-4 md:py-2 lg:static lg:w-1/6 lg:translate-x-0 ${showSideNav ? "w-1/2 translate-x-0 md:w-1/3" : "-translate-x-[1000%]"}`}
+      className={`absolute z-10 flex h-[calc(100dvh-55px)] flex-col gap-10 overflow-y-auto bg-neutral-100 text-sm transition-all duration-300 ease-in-out md:px-4 md:py-2 lg:static lg:w-1/6 lg:min-w-[231px] lg:translate-x-0 ${showSideNav ? "w-1/2 translate-x-0 md:w-1/3" : "-translate-x-[1000%]"}`}
     >
       <nav className="flex flex-1 flex-col gap-1.5">
         {sideNavLinks.map((link, i) => (
