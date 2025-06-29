@@ -10,7 +10,6 @@ import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
 import useGetQuery from "../../../hooks/queries/useGetQuery";
 import ActionBtn from "../../../components/admin/buttons/ActionBtn";
-import useTour from "../../../hooks/tour/useTour";
 
 const themes = [
   {
@@ -61,7 +60,6 @@ const productTypes = [
 export default function CreateStore() {
   const queryClient = useQueryClient();
   const { user } = useContext(AuthContext);
-  const { startTour } = useTour();
   const { data: countries } = useGetQuery({
     endpoint: "/api/countries",
     queryKey: ["countries"],
@@ -146,7 +144,6 @@ export default function CreateStore() {
       onSuccess: () => {
         toast.success("Store created successfully!");
         queryClient.invalidateQueries(["stores", user?.data?.clientid]);
-        startTour("step-6");
         navigate("/all-stores");
       },
 

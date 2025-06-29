@@ -115,7 +115,7 @@ export default function Category() {
       {/* Store Selection */}
       <div className="my-6 flex flex-wrap items-center justify-between">
         {selectedStore.storeId ? (
-          <h3 data-tour="step-12" className="text-lg font-semibold">
+          <h3 className="text-lg font-semibold">
             Manage categories of:{" "}
             <span className="text-dashboard-primary">
               {selectedStore.storeName}
@@ -135,7 +135,6 @@ export default function Category() {
             id="storeSelect"
             value={selectedStore.storeId}
             onChange={handleStoreChange}
-            data-tour="step-11"
             className="rounded-md border border-neutral-300 p-2 text-sm focus:outline-none"
           >
             <option value="" disabled>
@@ -157,7 +156,6 @@ export default function Category() {
           {/* image & category name field container */}
           <form
             onSubmit={createNewCategory}
-            data-tour="step-13"
             className="col-span-12 rounded border border-neutral-200 px-4 py-2 lg:col-span-4"
           >
             <ImageField
@@ -199,10 +197,7 @@ export default function Category() {
           </form>
 
           {/* all category lists container */}
-          <div
-            data-tour="step-14"
-            className="col-span-12 rounded border border-neutral-200 lg:col-span-8"
-          >
+          <div className="col-span-12 rounded border border-neutral-200 lg:col-span-8">
             <h3 className="bg-neutral-100 px-4 py-2 font-semibold">
               All Categories
             </h3>

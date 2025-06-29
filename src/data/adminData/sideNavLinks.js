@@ -19,18 +19,15 @@ export const sideNavLinks = [
     icon: MdStorefront,
     name: "Stores",
     url: "/all-stores",
-    tourId: "step-6",
   },
   {
     icon: MdCategory,
     name: "Products",
-    tourId: "step-9",
     subCategories: [
       {
         name: "Category",
         url: "/products/category",
         icon: BsArrow90DegDown,
-        tourId: "step-10",
       },
       {
         name: "Sub Category",
