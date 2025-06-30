@@ -23,6 +23,7 @@ export default function CustomizeSideNav({
   const { mutate, isPending } = useUpdateMutation({
     endpoint: `/store/update/preference/${storeId}`,
     token: user?.token,
+    clientId: user?.data?.clientid,
   });
 
   // handle update store preference
@@ -103,7 +104,9 @@ export default function CustomizeSideNav({
                             onCheckboxChange(link.name, subLink.value)
                           }
                         />
-                        <label htmlFor={subLink.value}>{subLink.name}</label>
+                        <label htmlFor={subLink.value}>
+                          {subLink?.label ? subLink.label : subLink.name}
+                        </label>
                       </div>
                     ))}
                   </div>

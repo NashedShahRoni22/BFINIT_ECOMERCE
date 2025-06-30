@@ -7,6 +7,7 @@ export default function useGetStores() {
   return useGetQuery({
     endpoint: `/store/names/${user?.data?.clientid}`,
     token: user?.token,
+    clientId: user?.data?.clientid,
     queryKey: ["stores", user?.data?.clientid],
     enabled: !!user?.data?.clientid && !!user?.token,
   });

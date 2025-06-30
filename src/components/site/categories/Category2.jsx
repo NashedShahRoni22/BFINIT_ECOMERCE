@@ -14,13 +14,13 @@ export default function Category2() {
         Get your desired product from our category
       </p>
 
-      <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         {categories?.data?.length > 0 &&
-          categories?.data?.slice(0, 2)?.map((category) => (
+          categories?.data?.slice(0, 4)?.map((category) => (
             <Link
               key={category.id}
               to={`/preview/${storeId}/products/categories/${encodeURIComponent(category.name)}`}
-              className="group relative flex h-96 w-full items-end overflow-hidden md:h-[550px]"
+              className="group relative flex h-72 w-full items-end overflow-hidden md:h-[550px]"
             >
               <img
                 src={`https://ecomback.bfinit.com${category.image}`}
@@ -29,7 +29,7 @@ export default function Category2() {
                 className="absolute top-0 left-0 -z-10 h-full w-full object-contain transition-all duration-200 ease-linear group-hover:scale-105"
               />
               <div className="absolute -z-10 h-full w-full bg-black/15"></div>
-              <h3 className="text-on-primary p-6 text-2xl font-bold md:text-3xl">
+              <h3 className="text-on-primary p-6 text-lg font-bold md:text-3xl">
                 {category.name}
               </h3>
             </Link>

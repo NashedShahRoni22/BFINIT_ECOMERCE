@@ -16,7 +16,7 @@ export default function Product1({ products, isProductsLoading }) {
   return (
     <>
       {products && products?.length > 0 ? (
-        <div className="grid grid-cols-2 gap-5 md:mt-10 md:grid-cols-3 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4 md:mt-10 md:grid-cols-4 md:gap-6 lg:grid-cols-5">
           {products?.map((product) => (
             <ProductCard
               key={product.productId}

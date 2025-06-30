@@ -14,6 +14,7 @@ import ActionBtn from "../../../components/admin/buttons/ActionBtn";
 import themes from "../../../data/adminData/themes";
 import productTypes from "../../../data/adminData/productTypes";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
+import FormInput from "../../../components/admin/FormInput";
 
 export default function CreateStore() {
   const queryClient = useQueryClient();
@@ -179,34 +180,21 @@ export default function CreateStore() {
 
         {/* Store Details */}
         <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-          <div>
-            <label htmlFor="storeName" className="text-sm font-medium">
-              Store Name: <span className="text-red-600">*</span>
-            </label>
-            <input
-              type="text"
-              name="storeName"
-              value={formData.storeName}
-              onChange={handleChange}
-              required
-              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
-            />
-          </div>
+          <FormInput
+            label="Store Name"
+            name="storeName"
+            value={formData.storeName}
+            onChange={handleChange}
+            required
+          />
 
-          <div>
-            <label htmlFor="storeEmail" className="text-sm font-medium">
-              Email: <span className="text-red-600">*</span>
-            </label>
-            <input
-              type="email"
-              id="storeEmail"
-              name="storeEmail"
-              value={formData.storeEmail}
-              onChange={handleChange}
-              required
-              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
-            />
-          </div>
+          <FormInput
+            label="Email"
+            name="storeEmail"
+            value={formData.storeEmail}
+            onChange={handleChange}
+            required
+          />
 
           {/* Product Type */}
           <div>
@@ -281,19 +269,12 @@ export default function CreateStore() {
             </div>
           </div>
 
-          <div>
-            <label htmlFor="storeTelephone" className="text-sm font-medium">
-              Telephone:
-            </label>
-            <input
-              type="text"
-              id="storeTelephone"
-              name="storeTelephone"
-              value={formData.storeTelephone}
-              onChange={handleChange}
-              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
-            />
-          </div>
+          <FormInput
+            label="Telephone"
+            name="storeTelephone"
+            value={formData.storeTelephone}
+            onChange={handleChange}
+          />
 
           {/* Currency Code and Symbol */}
           <div>
@@ -340,69 +321,33 @@ export default function CreateStore() {
             />
           </div>
 
-          {/* facebook link */}
-          <div>
-            <label htmlFor="storeFacebookLink" className="text-sm font-medium">
-              Facebook Link:
-            </label>
+          <FormInput
+            label="Facebook Link"
+            name="storeFacebookLink"
+            value={formData.storeFacebookLink}
+            onChange={handleChange}
+          />
 
-            <input
-              type="url"
-              id="storeFacebookLink"
-              name="storeFacebookLink"
-              value={formData?.storeFacebookLink}
-              onChange={handleChange}
-              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
-            />
-          </div>
+          <FormInput
+            label="Twitter Link"
+            name="storeTwitterLink"
+            value={formData.storeTwitterLink}
+            onChange={handleChange}
+          />
 
-          {/* twitter link */}
-          <div>
-            <label htmlFor="storeTwitterLink" className="text-sm font-medium">
-              Twitter Link:
-            </label>
+          <FormInput
+            label="Instagram Link"
+            name="storeInstagramLink"
+            value={formData.storeInstagramLink}
+            onChange={handleChange}
+          />
 
-            <input
-              type="url"
-              id="storeTwitterLink"
-              name="storeTwitterLink"
-              value={formData?.storeTwitterLink}
-              onChange={handleChange}
-              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
-            />
-          </div>
-
-          {/* instagram link */}
-          <div>
-            <label htmlFor="storeInstagramLink" className="text-sm font-medium">
-              Instagram Link:
-            </label>
-
-            <input
-              type="url"
-              id="storeInstagramLink"
-              name="storeInstagramLink"
-              value={formData?.storeInstagramLink}
-              onChange={handleChange}
-              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
-            />
-          </div>
-
-          {/* youtube link */}
-          <div>
-            <label htmlFor="storeYoutubeLink" className="text-sm font-medium">
-              Youtube Link:
-            </label>
-
-            <input
-              type="url"
-              id="storeYoutubeLink"
-              name="storeYoutubeLink"
-              value={formData?.storeYoutubeLink}
-              onChange={handleChange}
-              className="mt-1.5 w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
-            />
-          </div>
+          <FormInput
+            label="Youtube Link"
+            name="storeYoutubeLink"
+            value={formData.storeYoutubeLink}
+            onChange={handleChange}
+          />
 
           {/* Address */}
           <div className="col-span-full">

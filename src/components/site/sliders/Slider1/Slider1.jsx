@@ -26,7 +26,7 @@ export default function Slider1() {
               <img
                 src={data.img}
                 alt=""
-                className="h-full w-full object-cover"
+                className="h-auto w-full object-cover"
               />
             </Link>
           </SwiperSlide>

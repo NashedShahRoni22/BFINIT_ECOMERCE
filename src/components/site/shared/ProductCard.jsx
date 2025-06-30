@@ -7,45 +7,40 @@ export default function ProductCard({ product, currencySymbol, storeId }) {
   const { handleAddToCart } = useCart();
 
   return (
-    <div className="flex flex-col items-center gap-2.5 overflow-hidden rounded border border-gray-200 px-4 py-4">
+    <div className="flex flex-col rounded-sm px-2 shadow-sm">
       <Link
         to={`/preview/${storeId}/products/${product.productId}`}
-        className="group h-56 w-full flex-1 overflow-hidden"
+        className="group inline-block flex-1 text-center text-sm"
       >
-        <img
-          src={`https://ecomback.bfinit.com${productImage}`}
-          alt=""
-          className="h-full w-full object-contain transition-all duration-200 ease-linear group-hover:scale-105"
-        />
-      </Link>
-      <div className="flex w-full flex-col items-center gap-2.5">
-        <Link
-          className="hover:text-accent truncate text-center text-lg font-bold transition-all duration-200 ease-in-out"
-          to={`/preview/${storeId}/products/${product.productId}`}
-        >
-          {productName.length > 38
-            ? `${productName.slice(0, 38)}...`
-            : productName}
-        </Link>
-        {/* <p>{p.ratings}</p> */}
-        <p className="font-semibold">
+        <div className="w-full overflow-hidden">
+          <div className="flex h-44 w-full items-center justify-center">
+            <img
+              src={`https://ecomback.bfinit.com${productImage}`}
+              alt=""
+              className="max-h-full max-w-full object-contain transition-all duration-200 ease-linear group-hover:scale-105"
+            />
+          </div>
+        </div>
+        <p className="line-clamp-2">{productName}</p>
+        <p className="group-hover:text-accent mt-2 transition-all duration-200 ease-in-out">
           {currencySymbol}
           {productDiscountPrice.$numberDecimal}
         </p>
-        <div className="flex w-full items-center gap-2 text-sm">
-          <Link
-            to={`/preview/${storeId}/products/${product.productId}`}
-            className="border-accent bg-accent hover:bg-accent/85 ease-in-sout w-full cursor-pointer rounded border p-1 text-center text-white transition-all duration-200"
-          >
-            Buy Now
-          </Link>
-          <button
-            onClick={() => handleAddToCart(product)}
-            className="border-accent hover:bg-accent w-full cursor-pointer rounded border p-1 transition-all duration-200 ease-in-out hover:text-white"
-          >
-            Add to Cart
-          </button>
-        </div>
+      </Link>
+
+      <div className="flex justify-between gap-1 py-4 text-[13px]">
+        <Link
+          to={`/preview/${storeId}/products/${product.productId}`}
+          className="bg-accent border-accent text-on-primary w-full cursor-pointer rounded-sm border p-0.5 text-center"
+        >
+          Buy Now
+        </Link>
+        <button
+          onClick={() => handleAddToCart(product)}
+          className="border-accent text-accent w-full cursor-pointer rounded-sm border p-0.5 text-center"
+        >
+          Add to Cart
+        </button>
       </div>
     </div>
   );

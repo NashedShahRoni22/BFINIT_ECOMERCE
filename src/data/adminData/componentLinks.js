@@ -42,10 +42,12 @@ export const componentLinks = [
     title: "Category",
     subCategories: [
       {
+        label: "Standard Grid",
         name: "Category 1",
         value: "category1",
       },
       {
+        label: "Featured Showcase",
         name: "Category 2",
         value: "category2",
       },

@@ -18,6 +18,7 @@ export default function AdminDropdown({ close }) {
   const { data: clientInfo } = useGetQuery({
     endpoint: `/clients/${user?.data?.clientid}`,
     token: user?.token,
+    clientId: user?.data?.clientid,
     queryKey: ["clientInfo", user?.data?.clientid],
     enabled: !!user?.data?.clientid && !!user?.token,
   });
