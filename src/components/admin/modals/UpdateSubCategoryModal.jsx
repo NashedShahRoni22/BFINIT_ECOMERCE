@@ -22,6 +22,7 @@ export default function UpdateSubCategoryModal({
   const { mutate, isPending } = useUpdateMutation({
     endpoint: `/subcategory/update/${storeId}/${categoryId}`,
     token: user?.token,
+    clientId: user?.data?.clientid,
   });
 
   // submit updated sub-category name

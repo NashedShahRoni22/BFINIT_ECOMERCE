@@ -24,6 +24,7 @@ export default function OrderRow({ order, currencySymbol, storeId }) {
   const { mutate: orderMutate, isPending: orderLoading } = usePatchMutaion({
     endpoint: `/orders/update/order/${orderId}`,
     token: user?.token,
+    clientId: user?.data?.clientid,
   });
 
   // custom patch hooks to update delivery status
@@ -31,6 +32,7 @@ export default function OrderRow({ order, currencySymbol, storeId }) {
     usePatchMutaion({
       endpoint: `/orders/update/delivery/${orderId}`,
       token: user?.token,
+      clientId: user?.data?.clientid,
     });
 
   // function to update order status

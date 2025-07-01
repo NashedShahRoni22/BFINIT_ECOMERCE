@@ -8,7 +8,7 @@ export const putApi = async (endpoint, token, clientId, payload) => {
   const headers = {
     ...(!isFormData && { "Content-Type": "application/json" }),
     ...(token && { Authorization: `Bearer ${token}` }),
-    ...(clientId && { clientId }),
+    ...(clientId && { clientid: clientId }),
   };
 
   const res = await fetch(baseUrl + endpoint, {

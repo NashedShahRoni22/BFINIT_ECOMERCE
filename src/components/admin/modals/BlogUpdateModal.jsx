@@ -74,6 +74,7 @@ export default function BlogUpdateModal({ blogId, storeId, close }) {
   const { mutate, isPending } = useUpdateMutation({
     endpoint: `/blog/update/${blogId}`,
     token: user?.token,
+    clientId: user?.data?.clientid,
   });
 
   // Handle Add New Blog Form Submit

@@ -12,6 +12,7 @@ export default function DeleteProductModal({ product, storeId, close }) {
   const { mutate, isPending } = useDeleteMutation({
     endpoint: `/product/delete/${product?.productId}`,
     token: user?.token,
+    clientId: user?.data?.clientid,
   });
 
   //  handle sub-category delete

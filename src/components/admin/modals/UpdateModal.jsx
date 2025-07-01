@@ -17,6 +17,7 @@ export default function UpdateModal({ isOpen, close, item, selectedStore }) {
   const { mutate, isPending } = useUpdateMutation({
     endpoint: `/category/update/${selectedStore?.storeId}/${item?.id}`,
     token: user?.token,
+    clientId: user?.data?.clientid,
   });
 
   // Image click

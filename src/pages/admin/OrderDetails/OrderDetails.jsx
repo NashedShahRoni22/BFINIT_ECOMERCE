@@ -10,6 +10,7 @@ export default function OrderDetails() {
   const { data: orderData, isLoading } = useGetQuery({
     endpoint: `/orders/${orderId}`,
     token: user?.token,
+    clientId: user?.data?.clientid,
     queryKey: ["orders", orderId],
     enabled: !!orderId && !!user?.token,
   });

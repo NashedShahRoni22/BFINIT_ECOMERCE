@@ -2,10 +2,11 @@ import toast from "react-hot-toast";
 import { BsCheckCircle, BsPlus, BsXCircle } from "react-icons/bs";
 import usePostMutation from "../../../hooks/mutations/usePostMutation";
 
-export default function StripeRow({ store, token }) {
+export default function StripeRow({ store, token, clientId }) {
   const { mutate, isPending } = usePostMutation({
     endpoint: `/payments/stripe/connect/?storeId=${store?.storeId}`,
     token,
+    clientId,
   });
 
   const handleStripeConnect = () => {

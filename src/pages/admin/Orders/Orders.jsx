@@ -28,6 +28,7 @@ export default function Orders() {
   const { data: orders } = useGetQuery({
     endpoint: `/orders/all/${selectedStore?.storeId}`,
     token: user?.token,
+    clientId: user?.data?.clientid,
     queryKey: ["orders", selectedStore?.storeId],
     enabled: !!selectedStore?.storeId && !!user?.token,
   });

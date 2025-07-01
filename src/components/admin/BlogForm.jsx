@@ -24,6 +24,7 @@ export default function BlogForm({ storeId }) {
   const { mutate, isPending } = usePostMutation({
     endpoint: `/blog/create/${storeId}`,
     token: user?.token,
+    clientId: user?.data?.clientid,
   });
 
   // handle input field change

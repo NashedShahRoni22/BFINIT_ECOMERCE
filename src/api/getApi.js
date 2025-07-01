@@ -5,7 +5,7 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 export const getApi = async (endpoint, token, clientId) => {
   const headers = {
     ...(token && { Authorization: `Bearer ${token}` }),
-    ...(clientId && { "client-id": clientId }),
+    ...(clientId && { clientid: clientId }),
   };
 
   const res = await fetch(baseUrl + endpoint, { headers });

@@ -46,6 +46,7 @@ export default function Payments() {
                   key={store?.storeId}
                   store={store}
                   token={user?.token}
+                  clientId={user?.data?.clientid}
                 />
               ))}
             </tbody>

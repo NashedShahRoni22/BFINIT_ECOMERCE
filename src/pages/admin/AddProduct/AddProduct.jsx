@@ -157,6 +157,7 @@ export default function AddProduct() {
   const { mutate, isPending, isError } = usePostMutation({
     endpoint: `/product/create/${selectedStore?.storeId}`,
     token: user?.token,
+    clientId: user?.data?.clientid,
   });
 
   // handle product form submit

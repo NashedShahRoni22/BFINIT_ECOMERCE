@@ -152,6 +152,7 @@ export default function ProductUpdateModal({
   const { mutate, isPending, isError } = useUpdateMutation({
     endpoint: `/product/update/${productId}`,
     token: user?.token,
+    clientId: user?.data?.clientid,
   });
 
   // Form Submit

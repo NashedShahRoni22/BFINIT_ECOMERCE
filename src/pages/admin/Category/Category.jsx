@@ -69,6 +69,7 @@ export default function Category() {
   const { mutate, isPending } = usePostMutation({
     endpoint: `/category/create/${selectedStore?.storeId}`,
     token: user?.token,
+    clientId: user?.data?.clientid,
   });
 
   // create new category

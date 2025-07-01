@@ -6,9 +6,9 @@ export const postApi = async (endpoint, token, clientId, payload) => {
   const isFormData = payload instanceof FormData; // check form data is raw json or new FormData();
 
   const headers = {
+    ...(!isFormData && { "Content-Type": "application/json" }),
     ...(token && { Authorization: `Bearer ${token}` }),
     ...(clientId && { clientid: clientId }),
-    ...(!isFormData && { "Content-Type": "application/json" }),
   };
 
   const res = await fetch(baseUrl + endpoint, {

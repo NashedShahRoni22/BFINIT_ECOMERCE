@@ -36,6 +36,7 @@ export default function Brands() {
   const { mutate, isPending } = usePostMutation({
     endpoint: `/brand/create/${selectedStore.storeId}`,
     token: user?.token,
+    clientId: user?.data?.clientid,
   });
 
   // store select dropdown

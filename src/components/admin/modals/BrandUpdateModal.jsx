@@ -27,6 +27,7 @@ export default function BrandUpdateModal({ brand, storeId, close }) {
   const { mutate, isPending } = useUpdateMutation({
     endpoint: `/brand/update/${storeId}/${brand?.id}`,
     token: user?.token,
+    clientId: user?.data?.clientid,
   });
 
   // handle brand update

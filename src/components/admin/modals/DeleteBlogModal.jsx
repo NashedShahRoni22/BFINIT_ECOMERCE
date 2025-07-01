@@ -12,6 +12,7 @@ export default function DeleteBlogModal({ blog, storeId, close }) {
   const { mutate, isPending } = useDeleteMutation({
     endpoint: `/blog/delete/${blog?.blogId}`,
     token: user?.token,
+    clientId: user?.data?.clientid,
   });
 
   //  handle blog delete

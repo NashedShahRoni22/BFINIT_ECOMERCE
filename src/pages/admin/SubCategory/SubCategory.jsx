@@ -52,6 +52,7 @@ export default function SubCategory() {
   const { mutate, isPending } = usePostMutation({
     endpoint: `/subcategory/create/${selectedStore?.storeId}/${selectedCategory}`,
     token: user?.token,
+    clientId: user?.data?.clientid,
   });
 
   // store select dropdown

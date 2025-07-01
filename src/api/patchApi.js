@@ -2,12 +2,13 @@ import { handleUnauthorized } from "../utils/admin/auth";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
-export const patchApi = async (endpoint, token, payload) => {
+export const patchApi = async (endpoint, token, clientId, payload) => {
   const isFormData = payload instanceof FormData;
 
   const headers = {
-    ...(token && { Authorization: `Bearer ${token}` }),
     ...(!isFormData && { "Content-Type": "application/json" }),
+    ...(token && { Authorization: `Bearer ${token}` }),
+    ...(clientId && { clientid: clientId }),
   };
 
   const res = await fetch(baseUrl + endpoint, {

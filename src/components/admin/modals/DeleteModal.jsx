@@ -14,6 +14,7 @@ export default function DeleteModal({ isOpen, close, item, selectedStore }) {
   const { mutate, isPending } = useDeleteMutation({
     endpoint: `/category/delete/${selectedStore?.storeId}/${item?.id}`,
     token: user?.token,
+    clientId: user?.data?.clientid,
   });
 
   // Handle the delete action
