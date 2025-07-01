@@ -29,18 +29,18 @@ export const componentsData = {
     category1: Category1,
     category2: Category2,
   },
-  highlightStyle: {
+  /* highlightStyle: {
     highlight1: Highlight1,
     highlight2: Highlight2,
-  },
+  }, */
   productStyle: {
     product1: Product1,
     product2: Product2,
     product3: Product3,
   },
-  bannerStyle: {
+  /*  bannerStyle: {
     banner1: Banner1,
-  },
+  }, */
   footerStyle: {
     footer1: Footer1,
   },

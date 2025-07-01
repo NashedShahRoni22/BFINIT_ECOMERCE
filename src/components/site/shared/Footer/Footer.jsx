@@ -63,7 +63,7 @@ export default function Footer() {
           </div>
 
           {/* Payment Methods */}
-          <div>
+          {/*  <div>
             <p className="mb-3 font-medium">Payment Methods</p>
             <div className="flex flex-wrap gap-4">
               {paymentMethods.map((payment, i) => (
@@ -76,10 +76,10 @@ export default function Footer() {
                 />
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Our Apps */}
-          <div>
+          {/* <div>
             <p className="mb-3 font-medium">Download Our Apps</p>
             <div className="flex items-center gap-4">
               <Link to="/">
@@ -99,7 +99,7 @@ export default function Footer() {
                 />
               </Link>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </footer>
