@@ -5,24 +5,10 @@ import img4 from "../assets/slider/img1.png";
 import img6 from "../assets/slider/slider-demo-2.png";
 
 export const carouselData = [
-  {
-    img: img6,
-    url: "/",
-  },
-  {
-    img: img6,
-    url: "/",
-  },
-  {
-    img: img6,
-    url: "/",
-  },
-  {
-    img: img6,
-    url: "/",
-  },
-  {
-    img: img6,
-    url: "/",
-  },
+  { id: 1, img: img6, url: "/" },
+  { id: 2, img: img6, url: "/" },
+  { id: 3, img: img6, url: "/" },
+  { id: 4, img: img6, url: "/" },
+  { id: 5, img: img6, url: "/" },
+  { id: 6, img: img6, url: "/" },
 ];
