@@ -8,7 +8,6 @@ import CartProvider from "./Providers/CartProvider.jsx";
 import CategoryProvider from "./Providers/CategoryProvider.jsx";
 import ThemeProvider from "./Providers/ThemeProvider.jsx";
 import AuthProvider from "./Providers/AuthProvider.jsx";
-import "shepherd.js/dist/css/shepherd.css";
 import "./index.css";
 
 const queryClient = new QueryClient();
