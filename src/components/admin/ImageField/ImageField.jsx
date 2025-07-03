@@ -22,7 +22,6 @@ export default function ImageField({
         type="file"
         name={id}
         id={id}
-        required
         accept="image/*"
         className="hidden"
       />

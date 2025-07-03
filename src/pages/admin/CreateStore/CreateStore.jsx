@@ -99,7 +99,7 @@ export default function CreateStore() {
     e.preventDefault();
 
     if (!selectedImages.logo || !selectedImages.favicon) {
-      return window.alert("Please select Logo & Favicon");
+      return toast.error("Please select Logo & Favicon");
     }
 
     const storeData = {

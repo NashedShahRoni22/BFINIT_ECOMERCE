@@ -19,7 +19,7 @@ export const componentLinks = [
       },
     ],
   }, */
-  {
+  /*  {
     name: "sliderStyle",
     title: "Slider",
     subCategories: [
@@ -27,16 +27,16 @@ export const componentLinks = [
         name: "Slider 1",
         value: "slider1",
       },
-      /* {
+      {
         name: "Slider 2",
         value: "slider2",
       },
       {
         name: "Slider 3",
         value: "slider3",
-      }, */
+      },
     ],
-  },
+  }, */
   {
     name: "categoryStyle",
     title: "Category",
