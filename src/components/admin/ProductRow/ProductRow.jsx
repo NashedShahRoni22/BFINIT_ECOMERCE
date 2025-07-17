@@ -33,42 +33,85 @@ export default function ProductRow({ product, storeId, currencySymbol }) {
 
   return (
     <>
-      <tr className="border-y border-neutral-200 text-left">
-        <td className="text-sm">
-          <div className="flex items-center gap-2.5 py-1.5">
-            <img
-              src={`https://ecomback.bfinit.com${productImage}`}
-              alt=""
-              loading="lazy"
-              className="size-11 rounded-full object-cover"
-            />
-            <p>{productName}</p>
+      <tr className="group transition-colors duration-200 ease-in-out hover:bg-gray-50">
+        {/* Product name & image */}
+        <td className="px-6 py-4 whitespace-nowrap">
+          <div className="flex items-center space-x-4">
+            <div className="flex-shrink-0">
+              <img
+                src={`https://ecomback.bfinit.com${productImage}`}
+                alt={productName}
+                loading="lazy"
+                className="h-12 w-12 rounded-lg border border-gray-200 object-cover shadow-sm"
+              />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p
+                className="max-w-[200px] truncate text-sm font-medium text-gray-900"
+                title={productName}
+              >
+                {productName}
+              </p>
+            </div>
           </div>
         </td>
-        <td className="text-center text-sm">SJ4961</td>
-        <td className="text-center text-sm">{productQuantity}</td>
-        <td className="text-center text-sm">{productCategory}</td>
-        <td className="text-center text-sm">{productSubcategory}</td>
-        <td className="text-center text-sm">{productBrand}</td>
-        <td className="text-center text-sm">
-          {currencySymbol}
-          {productPrice.$numberDecimal}
+
+        {/* Price */}
+        <td className="px-6 py-4 whitespace-nowrap">
+          <div className="text-sm font-semibold text-gray-900">
+            {currencySymbol}
+            {productDiscountPrice.$numberDecimal}
+          </div>
         </td>
-        <td className="text-center text-sm">
-          {currencySymbol}
-          {productDiscountPrice.$numberDecimal}
+
+        {/* Stock quantity */}
+        <td className="px-6 py-4 whitespace-nowrap">
+          <div className="flex items-center">
+            <span
+              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                productQuantity > 10
+                  ? "bg-green-100 text-green-800"
+                  : productQuantity > 0
+                    ? "bg-yellow-100 text-yellow-800"
+                    : "bg-red-100 text-red-800"
+              }`}
+            >
+              {productQuantity} {productQuantity === 1 ? "unit" : "units"}
+            </span>
+          </div>
         </td>
-        <td className="text-center text-sm">
-          {productStatus ? "Active" : "Inactive"}
+
+        {/* Category */}
+        <td className="px-6 py-4 whitespace-nowrap">
+          <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
+            {productCategory}
+          </span>
         </td>
-        <td className="text-center text-sm">
-          <div className="inline-flex items-center justify-center space-x-2">
-            <button onClick={toggleUpdateModal}>
-              <FaRegEdit className="text-dashboard-primary/75 hover:text-dashboard-primary min-w-fit cursor-pointer text-lg transition-all duration-200 ease-in-out" />
+
+        {/* Brand */}
+        <td className="px-6 py-4 whitespace-nowrap">
+          <div className="text-sm font-medium text-gray-900">
+            {productBrand}
+          </div>
+        </td>
+
+        {/* Actions */}
+        <td className="px-6 py-4 text-center whitespace-nowrap">
+          <div className="flex items-center justify-center space-x-3">
+            <button
+              onClick={toggleUpdateModal}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-600 transition-all duration-200 ease-in-out hover:bg-blue-100 hover:text-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+              title="Edit product"
+            >
+              <FaRegEdit className="h-4 w-4" />
             </button>
 
-            <button onClick={toggleDeleteModal}>
-              <FaRegTrashAlt className="min-w-fit cursor-pointer text-lg text-red-300 transition-all duration-200 ease-in-out hover:text-red-500" />
+            <button
+              onClick={toggleDeleteModal}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-600 transition-all duration-200 ease-in-out hover:bg-red-100 hover:text-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
+              title="Delete product"
+            >
+              <FaRegTrashAlt className="h-4 w-4" />
             </button>
           </div>
         </td>
