@@ -26,7 +26,7 @@ export default function Category2() {
                 src={`https://ecomback.bfinit.com${category.image}`}
                 alt={category.name}
                 loading="lazy"
-                className="absolute top-0 left-0 -z-10 h-full w-full object-contain transition-all duration-200 ease-linear group-hover:scale-105"
+                className="absolute top-0 left-0 -z-10 h-full w-full object-cover transition-all duration-200 ease-linear group-hover:scale-105"
               />
               <div className="absolute -z-10 h-full w-full bg-black/15"></div>
               <h3 className="text-on-primary p-6 text-lg font-bold md:text-3xl">
