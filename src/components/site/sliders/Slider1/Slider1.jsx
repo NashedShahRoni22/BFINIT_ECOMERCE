@@ -1,21 +1,61 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
+import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
 import { HiOutlinePencilSquare } from "react-icons/hi2";
+import SliderUpdateCard from "../../../admin/SliderUpdateCard/SliderUpdateCard";
+import Spinner from "../../../admin/loaders/Spinner";
+import useUpdateMutation from "../../../../hooks/mutations/useUpdateMutation";
+import useAuth from "../../../../hooks/auth/useAuth";
+import useGetQuery from "../../../../hooks/queries/useGetQuery";
 import { carouselData } from "../../../../data/carouselData";
 import "swiper/css";
 import "swiper/css/navigation";
 import "./slider1.css";
-import SliderUpdateCard from "../../../admin/SliderUpdateCard/SliderUpdateCard";
-import toast from "react-hot-toast";
 
 export default function Slider1() {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
   const { pathname } = useLocation();
   const pathSegment = pathname?.split("/")[1];
+  const storeId = pathname?.split("/")[2];
   const isCustomize = pathSegment === "customize-store";
+
+  // get slider data from api
+  const { data: sliderApiData } = useGetQuery({
+    endpoint: `/slider/images?storeId=${storeId}`,
+    queryKey: ["slider1", storeId],
+    enabled: !!storeId,
+  });
+
+  // upload slider image
+  const { mutate, isPending } = useUpdateMutation({
+    endpoint: `/slider/images/${storeId}`,
+    token: user?.token,
+    clientId: user?.data?.clientid,
+  });
+
   const [showSlideEdit, setShowSlideEdit] = useState(false);
   const [sliderData, setSliderData] = useState([...carouselData]);
+  const [deleteImgUrls, setDeleteImgUrls] = useState([]);
+
+  // update placeholder slider image with slider api data
+  useEffect(() => {
+    if (sliderApiData?.message === "Slider Images successfully retrieved ") {
+      // make api data image object into array of objects
+      const imagesArray = Object.entries(sliderApiData?.data).map(
+        ([key, value], i) => ({
+          id: i + 1,
+          img: value && `https://ecomback.bfinit.com${value}`,
+          url: "/",
+        }),
+      );
+
+      setSliderData(imagesArray);
+    }
+  }, [sliderApiData]);
 
   // toggle slide edit component
   const toggleSlideEdit = () => {
@@ -24,6 +64,12 @@ export default function Slider1() {
 
   // remove image
   const handleImgRemove = (id) => {
+    const findSlider = sliderData.find((slider) => slider.id === id);
+
+    if (findSlider && findSlider.img !== null) {
+      setDeleteImgUrls((prev) => [...prev, findSlider.img]);
+    }
+
     const filteredImg = sliderData.map((slider) =>
       slider.id === id ? { ...slider, img: null } : slider,
     );
@@ -51,7 +97,35 @@ export default function Slider1() {
 
   // handle update
   const handleUpdate = () => {
-    toggleSlideEdit();
+    const formData = new FormData();
+
+    sliderData.forEach((sliderImg, i) => {
+      if (sliderImg.img instanceof File) {
+        formData.append(`image${i + 1}`, sliderImg.img);
+      }
+    });
+
+    if (deleteImgUrls.length > 0) {
+      formData.append("deleteImageUrl", JSON.stringify(deleteImgUrls));
+    }
+
+    // function to upload/delete or update image
+    mutate(formData, {
+      onSuccess: (res) => {
+        if (res?.message === "Images Uploaded Successfully") {
+          toast.success("Slider updated");
+          queryClient.invalidateQueries(["slider1", storeId]);
+        }
+      },
+
+      onError: (err) => {
+        console.log(err);
+      },
+
+      onSettled: () => {
+        toggleSlideEdit();
+      },
+    });
   };
 
   return (
@@ -90,9 +164,16 @@ export default function Slider1() {
             </button>
             <button
               onClick={handleUpdate}
-              className="bg-dashboard-primary hover:bg-dashboard-primary-hover cursor-pointer rounded-lg px-3 py-1.5 text-[13px] font-medium text-white transition-all duration-200 ease-in-out"
+              className={`inline-flex min-w-[110px] items-center justify-center gap-1 rounded-lg px-3 py-1.5 text-[13px] font-medium text-white transition-all duration-200 ease-in-out ${isPending ? "bg-dashboard-primary/50 cursor-not-allowed" : "bg-dashboard-primary hover:bg-dashboard-primary-hover cursor-pointer"}`}
             >
-              Update
+              {isPending ? (
+                <>
+                  <Spinner />
+                  Updating...
+                </>
+              ) : (
+                "Update"
+              )}
             </button>
           </div>
         </div>
