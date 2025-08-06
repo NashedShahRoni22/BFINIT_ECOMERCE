@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
@@ -15,6 +15,22 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "./slider1.css";
 
+// Skeleton Loading Component
+const SliderSkeleton = () => {
+  return (
+    <div className="relative h-[200px] w-full overflow-hidden rounded-lg bg-gray-200 sm:h-[300px] md:h-[400px] lg:h-[500px] xl:h-[600px]">
+      <div className="absolute inset-0 animate-[shimmer_1.5s_infinite] animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]"></div>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="text-gray-400">
+          <svg className="h-16 w-16" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function Slider1() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -24,7 +40,7 @@ export default function Slider1() {
   const isCustomize = pathSegment === "customize-store";
 
   // get slider data from api
-  const { data: sliderApiData } = useGetQuery({
+  const { data: sliderApiData, isLoading: isSliderLoading } = useGetQuery({
     endpoint: `/slider/images?storeId=${storeId}`,
     queryKey: ["slider1", storeId],
     enabled: !!storeId,
@@ -38,8 +54,16 @@ export default function Slider1() {
   });
 
   const [showSlideEdit, setShowSlideEdit] = useState(false);
-  const [sliderData, setSliderData] = useState([...carouselData]);
+  const [sliderData, setSliderData] = useState([]);
   const [deleteImgUrls, setDeleteImgUrls] = useState([]);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+
+  // calculate total images count
+  const totalImg = useMemo(() => {
+    return sliderData.reduce((acc, img) => {
+      return img.img ? acc + 1 : acc;
+    }, 0);
+  }, [sliderData]);
 
   // update placeholder slider image with slider api data
   useEffect(() => {
@@ -54,8 +78,24 @@ export default function Slider1() {
       );
 
       setSliderData(imagesArray);
+      setIsDataLoaded(true);
+    } else if (
+      sliderApiData &&
+      sliderApiData?.message !== "Slider Images successfully retrieved "
+    ) {
+      // If API returns but no data, use default carousel data
+      setSliderData([...carouselData]);
+      setIsDataLoaded(true);
     }
   }, [sliderApiData]);
+
+  // Fallback for when storeId is not available or API fails
+  useEffect(() => {
+    if (!storeId || (!isSliderLoading && !sliderApiData)) {
+      setSliderData([...carouselData]);
+      setIsDataLoaded(true);
+    }
+  }, [storeId, isSliderLoading, sliderApiData]);
 
   // toggle slide edit component
   const toggleSlideEdit = () => {
@@ -64,10 +104,14 @@ export default function Slider1() {
 
   // remove image
   const handleImgRemove = (id) => {
+    if (totalImg <= 1) {
+      return toast.error("At least 1 image must be selected!");
+    }
+
     const findSlider = sliderData.find((slider) => slider.id === id);
 
     if (findSlider && findSlider.img !== null) {
-      setDeleteImgUrls((prev) => [...prev, findSlider.img]);
+      setDeleteImgUrls((prev) => [...prev, `image${findSlider.id}`]);
     }
 
     const filteredImg = sliderData.map((slider) =>
@@ -128,8 +172,18 @@ export default function Slider1() {
     });
   };
 
+  // Show skeleton while loading
+  if (isSliderLoading || !isDataLoaded) {
+    return (
+      <section className="mx-5 py-5 md:container md:mx-auto">
+        <SliderSkeleton />
+      </section>
+    );
+  }
+
   return (
     <section className="mx-5 py-5 md:container md:mx-auto">
+      {/* Slider edit button and customization for admin */}
       {showSlideEdit && isCustomize && (
         <div className="relative w-full overflow-hidden rounded-lg border border-dashed border-neutral-200 p-4">
           <div className="mb-4 flex justify-between">
@@ -145,6 +199,7 @@ export default function Slider1() {
           {/* slider cards container */}
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
             {sliderData?.map((data, i) => (
+              // slider image card
               <SliderUpdateCard
                 key={data.id}
                 i={i}
@@ -155,6 +210,7 @@ export default function Slider1() {
             ))}
           </div>
 
+          {/* action buttons container */}
           <div className="mt-4 flex items-center justify-end gap-4">
             <button
               onClick={toggleSlideEdit}
@@ -179,6 +235,7 @@ export default function Slider1() {
         </div>
       )}
 
+      {/* swiper slider */}
       {!showSlideEdit && (
         <Swiper
           autoplay={{
@@ -207,12 +264,7 @@ export default function Slider1() {
                 <SwiperSlide key={i}>
                   <div className="block h-full w-full">
                     <img
-                      // TODO: remove file type checking here. only show data.img
-                      src={
-                        data.img instanceof File
-                          ? URL.createObjectURL(data.img)
-                          : data.img
-                      }
+                      src={data.img}
                       alt={data.title || `Slide ${i + 1}`}
                       className="h-full w-full object-cover"
                       loading={i === 0 ? "eager" : "lazy"}

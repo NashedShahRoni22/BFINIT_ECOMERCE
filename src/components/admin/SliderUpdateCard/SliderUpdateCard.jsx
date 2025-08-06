@@ -9,7 +9,6 @@ export default function SliderUpdateCard({
   data,
   handleImgRemove,
   handleImgChange,
-  handleUpdate,
 }) {
   return (
     <div className="flex flex-col rounded-lg border border-dashed border-neutral-200 p-2.5">
