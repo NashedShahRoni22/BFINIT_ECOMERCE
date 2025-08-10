@@ -5,14 +5,15 @@ export default function StoreCard({ storeData }) {
   const { storeId, storeName, storeLogo } = storeData;
 
   return (
-    <div className="flex min-h-[250px] w-[250px] flex-col overflow-hidden rounded border border-neutral-200">
+    <div className="flex min-h-[250px] w-full flex-col overflow-hidden rounded border border-neutral-200 md:w-[250px]">
       <Link
         to={`/preview/${storeId}`}
         target="_blank"
-        className="flex flex-1 items-center justify-center bg-[#f5f8fc] px-2"
+        title="Preview"
+        className="group flex flex-1 items-center justify-center border-b border-neutral-200 bg-[#f5f8fc] p-2"
       >
         <img
-          className="h-auto w-full rounded border border-neutral-200 object-contain"
+          className="h-auto w-full object-contain transition-all duration-200 ease-linear group-hover:scale-95"
           src={`https://ecomback.bfinit.com${storeLogo}`}
           alt=""
         />

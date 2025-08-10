@@ -20,21 +20,44 @@ export default function Home() {
   // fetch stores details
   const { data: stores } = useGetStores();
 
+  const storeCount = stores?.data?.length > 0 ? stores?.data?.length : 0;
+  const storeLimit = user?.data?.storeLimit || 0;
+
   return (
-    <section className="px-5">
-      <div className="mt-5">
-        <p className="font-semibold">
+    <section className="mx-auto max-w-7xl">
+      {/* Welcome Section */}
+      <div className="mb-8">
+        <h1 className="mb-1 text-2xl font-semibold text-gray-900">
           Hi {clientInfo?.data?.clientFname} {clientInfo?.data?.clientLname},
-        </p>
+        </h1>
+        <p className="text-gray-600">Welcome back to your dashboard</p>
       </div>
 
-      <div className="mt-8">
-        <h5 className="font-semibold">
-          Manage Stores{" "}
-          {user &&
-            `(${stores?.data?.length > 0 ? stores?.data?.length : 0}/${user?.data?.storeLimit})`}
-        </h5>
-        <div className="mt-4 flex flex-wrap justify-center gap-4 md:justify-start">
+      {/* Stores Management Section */}
+      <div className="mb-10">
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">
+              Manage Stores
+            </h2>
+            <p className="mt-1 text-sm text-gray-500">
+              {storeCount} of {storeLimit} stores created
+            </p>
+          </div>
+          <div className="hidden items-center space-x-2 rounded-lg bg-gray-50 px-3 py-2 sm:flex">
+            <span className="text-sm font-medium text-gray-700">
+              {storeCount}/{storeLimit}
+            </span>
+            <div className="h-2 w-20 overflow-hidden rounded-full bg-gray-200">
+              <div
+                className="h-full rounded-full bg-blue-500 transition-all duration-300"
+                style={{ width: `${(storeCount / storeLimit) * 100}%` }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {stores &&
             stores?.data &&
             stores?.data?.length > 0 &&
@@ -42,26 +65,33 @@ export default function Home() {
               <StoreCard key={store?.storeId} storeData={store} />
             ))}
 
-          {stores?.data?.length < user?.data?.storeLimit ? (
-            <CreateStoreCard />
-          ) : (
-            <StoreLimitCard />
-          )}
+          {storeCount < storeLimit ? <CreateStoreCard /> : <StoreLimitCard />}
         </div>
       </div>
 
-      <div className="mt-8">
-        <h5 className="font-semibold">Quick Navigation </h5>
-        <div className="mt-4">
-          <QuickNavs />
+      {/* Quick Navigation Section */}
+      <div className="mb-10">
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-gray-900">
+            Quick Navigation
+          </h2>
+          <p className="mt-1 text-sm text-gray-500">
+            Access your most used features
+          </p>
         </div>
+
+        <QuickNavs />
       </div>
 
-      <div className="mt-8">
-        <h5 className="font-semibold">Quick Tips </h5>
-        <div className="mt-4">
-          <QuickTips />
+      {/* Quick Tips Section */}
+      <div className="mb-6">
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-gray-900">Quick Tips</h2>
+          <p className="mt-1 text-sm text-gray-500">
+            Learn how to get the most out of Bfinit
+          </p>
         </div>
+        <QuickTips />
       </div>
     </section>
   );

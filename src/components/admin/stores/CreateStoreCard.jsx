@@ -5,7 +5,7 @@ export default function CreateStoreCard() {
   return (
     <Link
       to="/create-store"
-      className="group hover:border-dashboard-primary relative block min-h-[250px] w-[250px] rounded border border-dashed border-neutral-200 bg-white p-4 transition-all duration-200 hover:bg-[#f5f8fc]"
+      className="group hover:border-dashboard-primary relative block min-h-[250px] w-full rounded border border-dashed border-neutral-200 bg-white p-4 transition-all duration-200 hover:bg-[#f5f8fc] md:w-[250px]"
     >
       {/* Plus icon with animated circle */}
       <div className="flex h-[180px] flex-col items-center justify-center">

@@ -3,7 +3,7 @@ import { Link } from "react-router";
 
 export default function QuickNavs() {
   return (
-    <div className="flex flex-wrap justify-center gap-4 md:justify-start">
+    <div className="flex flex-wrap gap-4">
       {quickNavigationLinks.map((quickNav, index) => (
         <Link
           key={index}

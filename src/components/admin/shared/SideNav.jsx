@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { IoIosCloseCircleOutline } from "react-icons/io";
+import { LuChevronDown } from "react-icons/lu";
 import { sideNavLinks } from "../../../data/adminData/sideNavLinks";
 import useAuth from "../../../hooks/auth/useAuth";
 import bookIcon from "../../../assets/icons/book.png";
 
-export default function SideNav({ showSideNav }) {
+export default function SideNav({ showSideNav, setShowSideNav }) {
   const { user } = useAuth();
   const [openDropdown, setOpenDropdown] = useState("");
   const [showGuide, setShowGuide] = useState(true);
@@ -45,11 +46,14 @@ export default function SideNav({ showSideNav }) {
             {link.subCategories ? (
               <div>
                 <button
-                  className="group flex w-full cursor-pointer gap-1 rounded-md px-4 py-2 capitalize transition-all duration-200 ease-in-out hover:bg-white"
+                  className="group flex w-full cursor-pointer items-center justify-between gap-1 rounded-md px-4 py-2 capitalize transition-all duration-200 ease-in-out hover:bg-white"
                   onClick={() => toggleDropdown(i)}
                 >
-                  <link.icon className="text-dashboard-primary text-2xl" />
-                  {link.name}
+                  <div className="flex gap-1">
+                    <link.icon className="text-dashboard-primary text-2xl" />
+                    {link.name}
+                  </div>
+                  <LuChevronDown className="text-dashboard-primary text-lg" />
                 </button>
 
                 {/* Dropdown list */}
@@ -61,6 +65,7 @@ export default function SideNav({ showSideNav }) {
                       <Link
                         key={j}
                         to={subLink.url}
+                        onClick={() => setShowSideNav(false)}
                         className="flex gap-1.5 rounded-md px-4 py-2 capitalize transition-all duration-200 ease-in-out hover:bg-white"
                       >
                         <subLink.icon className="text-dashboard-primary -rotate-90 transform text-xl" />
@@ -73,6 +78,7 @@ export default function SideNav({ showSideNav }) {
             ) : (
               <Link
                 to={link.url}
+                onClick={() => setShowSideNav(false)}
                 className="group flex gap-1 rounded-md px-4 py-2 capitalize transition-all duration-200 ease-in-out hover:bg-white"
               >
                 <link.icon className="text-dashboard-primary text-2xl" />
@@ -84,40 +90,43 @@ export default function SideNav({ showSideNav }) {
       </nav>
 
       {/* guide download btn */}
-      {showGuide && (
-        <div className="group relative rounded-md border border-neutral-200 bg-[#f5f8fc] px-4 pt-6 pb-2">
-          <div className="absolute -top-5 left-1/2 flex size-10 -translate-x-1/2 items-center justify-center overflow-hidden rounded-full bg-blue-200">
-            <img
-              src={bookIcon}
-              alt="book icon"
-              loading="lazy"
-              className="size-8"
-            />
+      <div className="px-4 md:px-0">
+        {showGuide && (
+          <div className="group relative rounded-md border border-neutral-200 bg-[#f5f8fc] px-4 pt-6 pb-2">
+            <div className="absolute -top-5 left-1/2 flex size-10 -translate-x-1/2 items-center justify-center overflow-hidden rounded-full bg-blue-200">
+              <img
+                src={bookIcon}
+                alt="book icon"
+                loading="lazy"
+                className="size-8"
+              />
+            </div>
+
+            {/* close button */}
+            <button
+              onClick={closeGuide}
+              className="absolute -top-2 -right-2 cursor-pointer rounded-full bg-[#f5f8fc]"
+            >
+              <IoIosCloseCircleOutline className="size-5 text-red-600" />
+            </button>
+
+            <p className="text-center font-semibold">BFINIT Guide</p>
+            <p className="mt-1.5 text-center text-[11px] leading-tight tracking-tight text-balance text-gray-700">
+              How our ecommerce platform works
+            </p>
+
+            <a
+              href="https://ecomback.bfinit.com/uploads/ecom/guide/BFINIT%20E-Commerce%20Guide.pdf"
+              download
+              target="_blanck"
+              onClick={() => setShowSideNav(false)}
+              className="mt-3 inline-block w-full cursor-pointer rounded-full bg-gray-900 py-1.5 text-center text-xs text-white transition-all duration-200 ease-linear hover:bg-gray-800 active:scale-95"
+            >
+              Get Help Guide
+            </a>
           </div>
-
-          {/* close button */}
-          <button
-            onClick={closeGuide}
-            className="absolute -top-2 -right-2 cursor-pointer rounded-full bg-[#f5f8fc]"
-          >
-            <IoIosCloseCircleOutline className="size-5 text-red-600" />
-          </button>
-
-          <p className="text-center font-semibold">BFINIT Guide</p>
-          <p className="mt-1.5 text-center text-[11px] leading-tight tracking-tight text-balance text-gray-700">
-            How our ecommerce platform works
-          </p>
-
-          <a
-            href="https://ecomback.bfinit.com/uploads/ecom/guide/BFINIT%20E-Commerce%20Guide.pdf"
-            download
-            target="_blanck"
-            className="mt-3 inline-block w-full cursor-pointer rounded-full bg-gray-900 py-1.5 text-center text-xs text-white transition-all duration-200 ease-linear hover:bg-gray-800 active:scale-95"
-          >
-            Get Help Guide
-          </a>
-        </div>
-      )}
+        )}
+      </div>
     </aside>
   );
 }

@@ -33,6 +33,7 @@ export default function ProductDetails() {
             </h2>
 
             <div
+              id="preview"
               dangerouslySetInnerHTML={renderDescription(
                 productDetails?.data?.productDescription,
               )}
