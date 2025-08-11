@@ -5,6 +5,7 @@ import WebsiteSkeleton from "../../../components/admin/loaders/WebasiteSkeleton"
 import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
 import { componentsData } from "../../../data/adminData/componentsData";
 import useGetProductsByStoreId from "../../../hooks/products/useGetProductsByStoreId";
+import { Helmet } from "react-helmet";
 
 export default function Preview() {
   const { setSelectedTheme } = useContext(ThemeContext);
@@ -16,6 +17,17 @@ export default function Preview() {
     useGetStorePreference(storeId);
   // fetch all products by selected storeId
   const { data: products } = useGetProductsByStoreId(storeId);
+
+  // Set document title using React 19's native support
+  useEffect(() => {
+    if (isLoading) {
+      document.title = "Loading...";
+    } else if (storePreferenceData?.storeName) {
+      document.title = storePreferenceData.storeName;
+    } else {
+      document.title = "Store Preview";
+    }
+  }, [isLoading, storePreferenceData]);
 
   // set database saved components to previewData and savedComponents
   useEffect(() => {
@@ -46,11 +58,22 @@ export default function Preview() {
   };
 
   if (isLoading) {
-    return <WebsiteSkeleton />;
+    return (
+      <>
+        <Helmet>
+          <title>Loading...</title>
+        </Helmet>
+        <WebsiteSkeleton />
+      </>
+    );
   }
 
   return (
     <div>
+      <Helmet>
+        <title>Title</title>
+      </Helmet>
+
       {renderComponent("sliderStyle", previewData.sliderStyle)}
       {renderComponent("categoryStyle", previewData.categoryStyle)}
       {renderComponent("highlightStyle", previewData.highlightStyle)}

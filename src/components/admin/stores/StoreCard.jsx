@@ -1,37 +1,50 @@
 import { Link } from "react-router";
-import { BiEdit } from "react-icons/bi";
+import { LuExternalLink, LuPanelsTopLeft, LuStore } from "react-icons/lu";
 
 export default function StoreCard({ storeData }) {
   const { storeId, storeName, storeLogo } = storeData;
 
   return (
-    <div className="flex min-h-[250px] w-full flex-col overflow-hidden rounded border border-neutral-200 md:w-[250px]">
-      <Link
-        to={`/preview/${storeId}`}
-        target="_blank"
-        title="Preview"
-        className="group flex flex-1 items-center justify-center border-b border-neutral-200 bg-[#f5f8fc] p-2"
-      >
-        <img
-          className="h-auto w-full object-contain transition-all duration-200 ease-linear group-hover:scale-95"
-          src={`https://ecomback.bfinit.com${storeLogo}`}
-          alt=""
-        />
-      </Link>
+    <div className="group flex w-full flex-col overflow-hidden rounded border border-neutral-200">
+      {/* Header with store logo and info */}
+      <div className="relative bg-blue-50 py-2.5 text-center">
+        {/* Store Logo */}
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-white p-2 shadow-sm">
+          <img
+            src={`https://ecomback.bfinit.com${storeLogo}`}
+            alt={storeName}
+            className="h-full w-full object-contain"
+          />
+        </div>
 
-      <div className="mt-2.5 flex min-w-full items-center justify-between px-4 pb-2">
+        {/* Store Name */}
+        <h3 className="mb-2 text-xl font-semibold text-gray-900">
+          {storeName}
+        </h3>
+
+        {/* Preview Link */}
         <Link
           to={`/preview/${storeId}`}
-          target="_blank"
-          className="hover:text-dashboard-primary hover:decoration-dashboard-primary text-sm font-semibold text-gray-900 transition-all duration-200 hover:underline hover:underline-offset-2"
+          className="absolute top-4 right-4 p-2 text-gray-400 transition-all duration-200 ease-linear hover:text-gray-600 active:scale-95"
         >
-          {storeName}
+          <LuExternalLink />
         </Link>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="mt-6 flex flex-col gap-2.5 px-4">
         <Link
           to={`/customize-store/${storeId}`}
-          className="bg-dashboard-primary rounded-full p-2.5 transition-all duration-200 ease-linear hover:bg-blue-500 active:scale-95"
+          className="bg-dashboard-primary hover:bg-dashboard-primary-hover flex w-full items-center justify-center gap-1 rounded px-4 py-1.5 text-white transition-all duration-200 ease-linear active:scale-95"
         >
-          <BiEdit className="text-xl text-white" />
+          <LuPanelsTopLeft /> Layout
+        </Link>
+        <Link
+          to={`/store-settings/${storeId}`}
+          className="flex w-full items-center justify-center gap-1 rounded bg-neutral-200 px-4 py-1.5 text-neutral-600 transition-all duration-200 ease-linear hover:bg-neutral-300 hover:text-neutral-800 active:scale-95"
+        >
+          <LuStore />
+          Settings
         </Link>
       </div>
     </div>

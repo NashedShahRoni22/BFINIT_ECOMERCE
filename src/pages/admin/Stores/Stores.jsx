@@ -27,7 +27,7 @@ export default function Stores() {
                   `(${stores?.data?.length || 0}/${user?.data?.storeLimit})`}
               </h5>
             ) : (
-              <h5 className="font-semibold">
+              <h5 className="text-sm font-semibold">
                 No stores found! Please add a new one.
               </h5>
             )}
@@ -36,7 +36,7 @@ export default function Stores() {
             {stores?.data?.length < user?.data?.storeLimit ? (
               <Link
                 to="/create-store"
-                className="bg-dashboard-primary/90 hover:bg-dashboard-primary cursor-pointer rounded-md px-4 py-2 text-sm text-white transition-all duration-200 ease-in-out"
+                className="bg-dashboard-primary/90 hover:bg-dashboard-primary cursor-pointer rounded-md px-2.5 py-1 text-sm text-white transition-all duration-200 ease-in-out md:px-4 md:py-2"
               >
                 + Create New Store
               </Link>
