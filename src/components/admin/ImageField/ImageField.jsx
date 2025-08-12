@@ -29,7 +29,11 @@ export default function ImageField({
         {selectedImg ? (
           <div className="group relative h-40 overflow-hidden">
             <img
-              src={URL.createObjectURL(selectedImg)}
+              src={
+                selectedImg instanceof File
+                  ? URL.createObjectURL(selectedImg)
+                  : `https://ecomback.bfinit.com${selectedImg}`
+              }
               alt=""
               className="h-full w-full rounded object-contain"
             />

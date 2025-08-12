@@ -4,9 +4,9 @@ import {
   MdStorefront,
   MdShoppingCart,
   MdCategory,
-  MdPeople,
   MdLibraryBooks,
   MdPayment,
+  MdOutlineBuild,
 } from "react-icons/md";
 
 export const sideNavLinks = [
@@ -56,12 +56,11 @@ export const sideNavLinks = [
     name: "Orders",
     url: "/orders",
   },
-  // TODO: customers api not ready that's why hidden
-  /* {
-    icon: MdPeople,
-    name: "Customers",
-    url: "/customers",
-  }, */
+  {
+    icon: MdOutlineBuild,
+    name: "SEO & Meta",
+    url: "/seo-meta",
+  },
   {
     icon: MdLibraryBooks,
     name: "Blogs",

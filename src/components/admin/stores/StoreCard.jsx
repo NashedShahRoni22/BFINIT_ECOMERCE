@@ -40,7 +40,7 @@ export default function StoreCard({ storeData }) {
           <LuPanelsTopLeft /> Layout
         </Link>
         <Link
-          to={`/store-settings/${storeId}`}
+          to={`/update-store/${storeId}`}
           className="flex w-full items-center justify-center gap-1 rounded bg-neutral-200 px-4 py-1.5 text-neutral-600 transition-all duration-200 ease-linear hover:bg-neutral-300 hover:text-neutral-800 active:scale-95"
         >
           <LuStore />

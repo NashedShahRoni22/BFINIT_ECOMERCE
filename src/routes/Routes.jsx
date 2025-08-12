@@ -3,7 +3,6 @@ import Login from "../pages/admin/Login/Login";
 import PrivateRoute from "./PrivateRoute";
 import AdminLayout from "../layout/AdminLayout";
 import Home from "../pages/admin/Home/Home";
-import CreateStore from "../pages/admin/CreateStore/CreateStore";
 import AddProduct from "../pages/admin/AddProduct/AddProduct";
 import Category from "../pages/admin/Category/Category";
 import SubCategory from "../pages/admin/SubCategory/SubCategory";
@@ -28,6 +27,8 @@ import Payments from "../pages/admin/Payments/Payments";
 import NotFound from "../pages/admin/NotFound/NotFound";
 import Blog from "../pages/store/Blog/Blog";
 import BlogDetails from "../pages/store/BlogDetails/BlogDetails";
+import StoreForm from "../components/admin/stores/StoreForm";
+import AddSeo from "../pages/admin/AddSeo/AddSeo";
 
 export const router = createBrowserRouter([
   {
@@ -52,7 +53,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/create-store",
-        element: <CreateStore />,
+        element: <StoreForm />,
+      },
+      {
+        path: "/update-store/:storeId",
+        element: <StoreForm isUpdateMode />,
       },
       {
         path: "/all-stores",
@@ -61,6 +66,10 @@ export const router = createBrowserRouter([
       {
         path: "/orders",
         element: <Orders />,
+      },
+      {
+        path: "/seo-meta",
+        element: <AddSeo />,
       },
       {
         path: "/orders/:orderId",

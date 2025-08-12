@@ -1,29 +1,33 @@
 import { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import toast from "react-hot-toast";
-import { BsInfoCircle } from "react-icons/bs";
 import { AuthContext } from "../../../Providers/AuthProvider";
-import ImageField from "../../../components/admin/ImageField/ImageField";
-import Spinner from "../../../components/admin/loaders/Spinner";
+import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
+import PageHeading from "../PageHeading/PageHeading";
+import { BsInfoCircle } from "react-icons/bs";
+import useGetQuery from "../../../hooks/queries/useGetQuery";
 import usePostMutation from "../../../hooks/mutations/usePostMutation";
+import toast from "react-hot-toast";
+import ImageField from "../ImageField/ImageField";
 import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
-import useGetQuery from "../../../hooks/queries/useGetQuery";
-import ActionBtn from "../../../components/admin/buttons/ActionBtn";
-import themes from "../../../data/adminData/themes";
+import FormInput from "../FormInput";
 import productTypes from "../../../data/adminData/productTypes";
-import PageHeading from "../../../components/admin/PageHeading/PageHeading";
-import FormInput from "../../../components/admin/FormInput";
+import Spinner from "../loaders/Spinner";
+import themes from "../../../data/adminData/themes";
+import ActionBtn from "../buttons/ActionBtn";
 
-export default function CreateStore() {
+export default function StoreForm({ isUpdateMode = false }) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { storeId } = useParams();
   const { user } = useContext(AuthContext);
+
   const [selectedImages, setSelectedImages] = useState({
     logo: null,
     favicon: null,
   });
+
   const [formData, setFormData] = useState({
     storeName: "",
     storeEmail: "",
@@ -42,6 +46,39 @@ export default function CreateStore() {
     currencySymbol: "",
     timezone: "",
   });
+
+  // Fetch existing store data for update mode
+  const { data: storeData, isLoading: isStoreLoading } =
+    useGetStorePreference(storeId);
+
+  // update from data in update store info route
+  useEffect(() => {
+    if (isUpdateMode && storeData) {
+      setFormData({
+        storeName: storeData.storeName || "",
+        storeEmail: storeData.storeEmail || "",
+        storePhone: storeData.storePhone || "",
+        storeTelephone: storeData.storeTelephone || "",
+        storeAddress: storeData.storeAddress || "",
+        storeFacebookLink: storeData.storeFacebookLink || "",
+        storeTwitterLink: storeData.storeTwitterLink || "",
+        storeInstagramLink: storeData.storeInstagramLink || "",
+        storeYoutubeLink: storeData.storeYoutubeLink || "",
+        storeTheme: parseInt(storeData.storeTheme) || 1,
+        productType: storeData.productType || "",
+        country: storeData.country || "",
+        currencyName: storeData.currencyName || "",
+        currencyCode: storeData.currencyCode || "",
+        currencySymbol: storeData.currencySymbol || "",
+        timezone: storeData.timezone || "",
+      });
+
+      setSelectedImages({
+        logo: storeData.storeLogo || null,
+        favicon: storeData.storeFavicon || null,
+      });
+    }
+  }, [isUpdateMode, storeData]);
 
   const isDisabled =
     !selectedImages.logo ||
@@ -129,7 +166,9 @@ export default function CreateStore() {
 
   return (
     <section className="p-5">
-      <PageHeading heading="Create New Store" />
+      <PageHeading
+        heading={isUpdateMode ? "Update Store Info" : "Create New Store"}
+      />
       <div className="mt-8 flex items-center justify-end gap-1 text-xs font-medium text-red-600/80">
         <BsInfoCircle className="size-4" />
         <p>* Required fields</p>
@@ -412,7 +451,7 @@ export default function CreateStore() {
           </Link>
 
           <ActionBtn type="submit" loading={isPending} disabled={isDisabled}>
-            Create New Store
+            {isUpdateMode ? "Update Store Info" : "Create New Store"}
           </ActionBtn>
         </div>
       </form>
