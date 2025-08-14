@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import { useSearchParams } from "react-router";
 import useGetStores from "../../../hooks/stores/useGetStores";
@@ -6,10 +6,18 @@ import { BsInfoCircle, BsShop } from "react-icons/bs";
 import ActionBtn from "../../../components/admin/buttons/ActionBtn";
 import toast from "react-hot-toast";
 import FormInput from "../../../components/admin/FormInput";
+import usePostMutation from "../../../hooks/mutations/usePostMutation";
+import useAuth from "../../../hooks/auth/useAuth";
+import useGetAllMeta from "../../../hooks/meta/getAllMeta";
+import useUpdateMutation from "../../../hooks/mutations/useUpdateMutation";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function AddSeo() {
+  const queryClient = useQueryClient();
   // fetch all stores
   const { data: stores } = useGetStores();
+  const { user } = useAuth();
+
   const [searchParams, setSearchParams] = useSearchParams();
   const storeId = searchParams.get("storeId") || "";
 
@@ -18,11 +26,32 @@ export default function AddSeo() {
     storeName: "",
   });
   const [formData, setFormData] = useState({
+    metaId: "",
     metaTitle: "",
     metaDescription: "",
   });
 
+  const { data: metaData, isLoading } = useGetAllMeta(storeId);
+
   const isDisabled = !formData.metaTitle || !formData.metaDescription;
+  const isUpdate =
+    metaData?.data?.length > 0
+      ? metaData.data[0].Title && metaData.data[0].Description
+        ? true
+        : false
+      : false;
+
+  // set formData with default meta data if already added
+  useEffect(() => {
+    if (!isLoading && metaData?.data?.length > 0) {
+      const firstMeta = metaData.data[0];
+      setFormData({
+        metaId: firstMeta.id,
+        metaTitle: firstMeta.Title,
+        metaDescription: firstMeta.Description,
+      });
+    }
+  }, [isLoading, metaData]);
 
   // Handle input change
   const handleChange = (e) => {
@@ -48,7 +77,27 @@ export default function AddSeo() {
       storeId: newStoreId,
       storeName: selectedOption.text,
     });
+
+    setFormData({
+      metaId: "",
+      metaTitle: "",
+      metaDescription: "",
+    });
   };
+
+  // add seo post hook
+  const { mutate, isPending } = usePostMutation({
+    endpoint: `/meta/create/${storeId}`,
+    token: user?.token,
+    clientId: user?.data?.clientid,
+  });
+
+  // update seo
+  const { mutate: updateMeta, isPending: isUpdatePending } = useUpdateMutation({
+    endpoint: `/meta/update/${formData.metaId}`,
+    token: user?.token,
+    clientId: user?.data?.clientid,
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -57,7 +106,33 @@ export default function AddSeo() {
       return toast.error("Please fill in all required fields");
     }
 
-    console.log(formData);
+    if (!isUpdate) {
+      mutate(formData, {
+        onSuccess: (data) => {
+          toast.success(data?.message);
+          queryClient.invalidateQueries(["storeMeta", storeId]);
+        },
+
+        onError: (error) => {
+          toast.error(error?.message || "Something went wrong!");
+          console.error(error);
+        },
+      });
+
+      return;
+    }
+
+    updateMeta(formData, {
+      onSuccess: (data) => {
+        toast.success(data?.message);
+        queryClient.invalidateQueries(["storeMeta", storeId]);
+      },
+
+      onError: (error) => {
+        toast.error(error?.message || "Something went wrong!");
+        console.error(error);
+      },
+    });
   };
 
   return (
@@ -191,8 +266,12 @@ export default function AddSeo() {
                 Cancel
               </button>
 
-              <ActionBtn type="submit" disabled={isDisabled}>
-                Add SEO & Meta Tags
+              <ActionBtn
+                type="submit"
+                disabled={isDisabled || isPending || isUpdatePending}
+                loading={isPending || isUpdatePending}
+              >
+                {isUpdate ? "Update SEO & Meta Tags" : "Add SEO & Meta Tags"}
               </ActionBtn>
             </div>
           </form>

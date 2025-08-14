@@ -16,6 +16,7 @@ import productTypes from "../../../data/adminData/productTypes";
 import Spinner from "../loaders/Spinner";
 import themes from "../../../data/adminData/themes";
 import ActionBtn from "../buttons/ActionBtn";
+import useUpdateMutation from "../../../hooks/mutations/useUpdateMutation";
 
 export default function StoreForm({ isUpdateMode = false }) {
   const queryClient = useQueryClient();
@@ -125,6 +126,14 @@ export default function StoreForm({ isUpdateMode = false }) {
     clientId: user?.data?.clientid,
   });
 
+  // store update data
+  const { mutate: storeUpdateMutation, isPending: isStoreUpdatePending } =
+    useUpdateMutation({
+      endpoint: `/store/main/update/${storeId}`,
+      token: user?.token,
+      clientId: user?.data?.clientid,
+    });
+
   // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -135,7 +144,7 @@ export default function StoreForm({ isUpdateMode = false }) {
   const handleCreateStore = (e) => {
     e.preventDefault();
 
-    if (!selectedImages.logo || !selectedImages.favicon) {
+    if (!isUpdateMode && (!selectedImages.logo || !selectedImages.favicon)) {
       return toast.error("Please select Logo & Favicon");
     }
 
@@ -147,12 +156,31 @@ export default function StoreForm({ isUpdateMode = false }) {
 
     const formDataObj = new FormData();
     formDataObj.append("storeData", JSON.stringify(storeData));
-    formDataObj.append("storeLogo", selectedImages.logo);
-    formDataObj.append("storeFavicon", selectedImages.favicon);
+    if (selectedImages.logo || selectedImages.favicon) {
+      formDataObj.append("storeLogo", selectedImages.logo);
+      formDataObj.append("storeFavicon", selectedImages.favicon);
+    }
 
-    mutate(formDataObj, {
+    if (!isUpdateMode) {
+      mutate(formDataObj, {
+        onSuccess: () => {
+          toast.success("Store created successfully!");
+          queryClient.invalidateQueries(["stores", user?.data?.clientid]);
+          navigate("/all-stores");
+        },
+
+        onError: (error) => {
+          toast.error(error?.message || "Something went wrong!");
+          console.error(error);
+        },
+      });
+
+      return;
+    }
+
+    storeUpdateMutation(formDataObj, {
       onSuccess: () => {
-        toast.success("Store created successfully!");
+        toast.success("Store updated successfully!");
         queryClient.invalidateQueries(["stores", user?.data?.clientid]);
         navigate("/all-stores");
       },
@@ -450,7 +478,13 @@ export default function StoreForm({ isUpdateMode = false }) {
             Cancel
           </Link>
 
-          <ActionBtn type="submit" loading={isPending} disabled={isDisabled}>
+          <ActionBtn
+            type="submit"
+            loading={isPending || isStoreUpdatePending || isStoreLoading}
+            disabled={
+              isDisabled || isStoreUpdatePending || isPending || isStoreLoading
+            }
+          >
             {isUpdateMode ? "Update Store Info" : "Create New Store"}
           </ActionBtn>
         </div>

@@ -1,30 +1,30 @@
 export const customerCare = [
   {
     title: "Help Center",
-    path: "/",
+    path: "/help-center",
   },
   {
     title: "How to Buy",
-    path: "/",
+    path: "/buying-guide",
   },
   {
     title: "Returns & Refunds",
-    path: "/",
+    path: "/returns-refunds",
   },
   {
     title: "Contact Us",
-    path: "/",
+    path: "/contact-us",
   },
   {
     title: "Terms & Conditions",
-    path: "/",
+    path: "/terms-conditions",
   },
   {
     title: "Become a Reseller",
-    path: "/",
+    path: "/reseller-guide",
   },
   {
     title: "Blogs",
-    path: "blogs",
+    path: "/blogs",
   },
 ];
