@@ -65,7 +65,11 @@ export default function Home() {
               <StoreCard key={store?.storeId} storeData={store} />
             ))}
 
-          {storeCount < storeLimit ? <CreateStoreCard /> : <StoreLimitCard />}
+          {storeCount < storeLimit ? (
+            <CreateStoreCard />
+          ) : (
+            <StoreLimitCard createdStore={stores?.data?.length} />
+          )}
         </div>
       </div>
 

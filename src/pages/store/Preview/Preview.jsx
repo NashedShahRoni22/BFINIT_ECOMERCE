@@ -6,6 +6,10 @@ import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
 import { componentsData } from "../../../data/adminData/componentsData";
 import useGetProductsByStoreId from "../../../hooks/products/useGetProductsByStoreId";
 import { Helmet } from "react-helmet";
+import About from "../../../components/maria/About";
+import Services from "../../../components/maria/Services";
+import Testimonials from "../../../components/maria/Testimonials";
+import Contact from "../../../components/maria/Contact";
 
 export default function Preview() {
   const { setSelectedTheme } = useContext(ThemeContext);
@@ -68,6 +72,8 @@ export default function Preview() {
     );
   }
 
+  const mariasStore = storeId === "6893084dcf19613323046c70";
+
   return (
     <div>
       <Helmet>
@@ -83,6 +89,17 @@ export default function Preview() {
         </h2>
         {renderComponent("productStyle", previewData.productStyle)}
       </div>
+
+      {/* maris personalized components */}
+      {mariasStore && (
+        <>
+          <About />
+          <Services />
+          <Testimonials />
+          <Contact />
+        </>
+      )}
+
       {renderComponent("bannerStyle", previewData.bannerStyle)}
     </div>
   );

@@ -25,6 +25,6 @@ export const customerCare = [
   },
   {
     title: "Blogs",
-    path: "/blogs",
+    path: "blogs",
   },
 ];

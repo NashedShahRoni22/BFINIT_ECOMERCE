@@ -71,32 +71,31 @@ export default function ProductImgUpdate({
           id="images"
         />
 
-        {imagePreviews && imagePreviews.length > 0 ? (
+        {imagePreviews.length > 0 || selectedImages.length > 0 ? (
           <div className="flex w-full flex-wrap items-center gap-x-1.5 gap-y-2">
-            {/* uploaded images preview */}
-            {imagePreviews &&
-              imagePreviews.map((preview, i) => (
-                <div
-                  key={i}
-                  className="group relative size-16 overflow-hidden rounded"
-                >
-                  <img
-                    src={
-                      preview.startsWith("/uploads")
-                        ? `https://ecomback.bfinit.com${preview}`
-                        : preview
-                    }
-                    alt=""
-                    className="h-full w-full object-cover object-center"
+            {/* Server images */}
+            {imagePreviews.map((preview, i) => (
+              <div
+                key={`server-${i}`}
+                className="group relative size-16 overflow-hidden rounded"
+              >
+                <img
+                  src={
+                    preview.startsWith("/uploads")
+                      ? `https://ecomback.bfinit.com${preview}`
+                      : preview
+                  }
+                  alt=""
+                  className="h-full w-full object-cover object-center"
+                />
+                <div className="absolute top-0 left-0 flex h-full w-full translate-y-full items-center justify-center bg-black/70 transition-all duration-200 ease-in-out group-hover:translate-y-0">
+                  <RiDeleteBinLine
+                    onClick={() => handleImageRemove(i, preview)}
+                    className="cursor-pointer text-xl text-white transition-all duration-200 ease-in-out hover:text-red-400"
                   />
-                  <div className="absolute top-0 left-0 flex h-full w-full translate-y-full items-center justify-center bg-black/70 transition-all duration-200 ease-in-out group-hover:translate-y-0">
-                    <RiDeleteBinLine
-                      onClick={() => handleImageRemove(i, preview)}
-                      className="cursor-pointer text-xl text-white transition-all duration-200 ease-in-out hover:text-red-400"
-                    />
-                  </div>
                 </div>
-              ))}
+              </div>
+            ))}
 
             {/* current device upload image preview */}
             {selectedImages?.map((img, i) => (

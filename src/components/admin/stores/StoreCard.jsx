@@ -1,51 +1,58 @@
 import { Link } from "react-router";
-import { LuExternalLink, LuPanelsTopLeft, LuStore } from "react-icons/lu";
+import { LuEye, LuPanelsTopLeft, LuStore } from "react-icons/lu";
 
 export default function StoreCard({ storeData }) {
   const { storeId, storeName, storeLogo } = storeData;
 
   return (
-    <div className="group flex w-full flex-col overflow-hidden rounded border border-neutral-200">
+    <div className="flex w-full flex-col overflow-hidden rounded-lg border border-neutral-200">
       {/* Header with store logo and info */}
-      <div className="relative bg-blue-50 py-2.5 text-center">
-        {/* Store Logo */}
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-white p-2 shadow-sm">
-          <img
-            src={`https://ecomback.bfinit.com${storeLogo}`}
-            alt={storeName}
-            className="h-full w-full object-contain"
-          />
+      <div className="relative p-6">
+        <div className="flex flex-col items-center">
+          <div className="mb-3 flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl bg-white ring-1 ring-slate-200">
+            <img
+              src={`https://ecomback.bfinit.com/${storeLogo}`}
+              alt={storeName}
+              className="h-12 w-12 object-contain"
+            />
+          </div>
+
+          <h3 className="max-w-full truncate text-lg font-semibold text-slate-900">
+            {storeName}
+          </h3>
         </div>
-
-        {/* Store Name */}
-        <h3 className="mb-2 text-xl font-semibold text-gray-900">
-          {storeName}
-        </h3>
-
-        {/* Preview Link */}
-        <Link
-          to={`/preview/${storeId}`}
-          className="absolute top-4 right-4 p-2 text-gray-400 transition-all duration-200 ease-linear hover:text-gray-600 active:scale-95"
-        >
-          <LuExternalLink />
-        </Link>
       </div>
 
-      {/* Action Buttons */}
-      <div className="mt-6 flex flex-col gap-2.5 px-4">
+      {/* Action Buttons Section */}
+      <div className="flex flex-col gap-3 p-4">
+        {/* Primary Action - Layout Customization */}
         <Link
           to={`/customize-store/${storeId}`}
-          className="bg-dashboard-primary hover:bg-dashboard-primary-hover flex w-full items-center justify-center gap-1 rounded px-4 py-1.5 text-white transition-all duration-200 ease-linear active:scale-95"
+          className="flex w-full items-center justify-center gap-2 rounded-md bg-gradient-to-r from-gray-700 to-gray-800 px-3 py-2 text-xs font-medium text-white shadow-sm transition-all duration-200 ease-linear hover:from-gray-800 hover:to-gray-900 hover:shadow-md active:scale-[0.98]"
         >
-          <LuPanelsTopLeft /> Layout
+          <LuPanelsTopLeft className="h-4 w-4" />
+          Layout Customization
         </Link>
-        <Link
-          to={`/update-store/${storeId}`}
-          className="flex w-full items-center justify-center gap-1 rounded bg-neutral-200 px-4 py-1.5 text-neutral-600 transition-all duration-200 ease-linear hover:bg-neutral-300 hover:text-neutral-800 active:scale-95"
-        >
-          <LuStore />
-          Settings
-        </Link>
+
+        {/* Secondary Actions Row */}
+        <div className="grid grid-cols-2 gap-2">
+          <Link
+            to={`/update-store/${storeId}`}
+            className="flex items-center justify-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 active:scale-[0.98]"
+          >
+            <LuStore className="size-3.5" />
+            Settings
+          </Link>
+
+          <Link
+            to={`/preview/${storeId}`}
+            target="_blank"
+            className="flex items-center justify-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 active:scale-[0.98]"
+          >
+            <LuEye className="size-3.5" />
+            Preview
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -1,29 +1,44 @@
 import { Link } from "react-router";
-import { LuStore } from "react-icons/lu";
+import { LuPlus, LuStore } from "react-icons/lu";
 
 export default function CreateStoreCard() {
   return (
-    <Link
-      to="/create-store"
-      className="group hover:border-dashboard-primary relative block min-h-[250px] w-full rounded border border-dashed border-neutral-200 bg-white p-4 transition-all duration-200 hover:bg-[#f5f8fc] md:w-[250px]"
-    >
-      {/* Plus icon with animated circle */}
-      <div className="flex h-[180px] flex-col items-center justify-center">
-        <div className="relative">
-          <div className="absolute inset-0 z-0 scale-0 rounded-full bg-[#E0EAF5] transition-all duration-300 group-hover:scale-200" />
-          <LuStore className="group-hover:text-dashboard-primary relative z-10 text-5xl text-gray-500 transition-all duration-200" />
+    <div className="group flex w-full flex-col overflow-hidden rounded-lg border border-dashed border-neutral-200">
+      {/* Header Section - Same structure as store card */}
+      <div className="relative p-6">
+        <div className="flex flex-col items-center">
+          {/* Icon container - same size as store logo */}
+          <div className="mb-3 flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl bg-gray-50 ring-1 ring-slate-200">
+            <div className="relative">
+              <LuStore className="group-hover:text-dashboard-primary h-8 w-8 text-gray-400 transition-all duration-200 ease-linear" />
+              <LuPlus className="absolute -right-1 -bottom-1 h-4 w-4 rounded-full bg-gray-600 p-0.5 text-white" />
+            </div>
+          </div>
+
+          <h3 className="text-lg font-semibold text-slate-900">
+            Create New Store
+          </h3>
         </div>
       </div>
 
-      {/* Text with subtle hover effect */}
-      <div className="text-center">
-        <h5 className="group-hover:text-dashboard-primary text-sm font-medium text-gray-700 transition-colors duration-200">
-          Create New Store
-        </h5>
-        <p className="mt-1 text-xs text-gray-500">
-          Set up your online store in minutes
-        </p>
+      {/* Action Section - Same structure as store card */}
+      <div className="flex flex-col gap-3 p-4">
+        {/* Primary Action Button - Same styling */}
+        <Link
+          to="/create-store"
+          className="flex w-full items-center justify-center gap-2 rounded-md bg-gradient-to-r from-gray-700 to-gray-800 px-3 py-2 text-xs font-medium text-white shadow-sm transition-all duration-200 ease-linear hover:from-gray-800 hover:to-gray-900 hover:shadow-md active:scale-[0.98]"
+        >
+          <LuPlus className="h-4 w-4" />
+          Get Started
+        </Link>
+
+        {/* Info text - replaces secondary buttons */}
+        <div className="rounded-md bg-gray-50 px-0.5 py-2 text-center">
+          <p className="text-xs text-gray-600">
+            Set up your online store in minutes
+          </p>
+        </div>
       </div>
-    </Link>
+    </div>
   );
 }
