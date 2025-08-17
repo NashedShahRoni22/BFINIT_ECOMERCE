@@ -11,7 +11,8 @@ const AddImages = ({
   // Add New Image
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    let totalSize = selectedImages.reduce((acc, img) => acc + img.size, 0); // Get current total size
+    e.target.value = "";
+    let totalSize = selectedImages.reduce((acc, img) => acc + img.size, 0);
 
     const newImages = [];
     const newPreviews = [];
@@ -33,7 +34,10 @@ const AddImages = ({
 
   // Delete image
   const handleImageRemove = (index) => {
+    URL.revokeObjectURL(imagePreviews[index]);
+
     setImagePreviews((prevImages) => prevImages.filter((_, i) => i !== index));
+    setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
 
   return (

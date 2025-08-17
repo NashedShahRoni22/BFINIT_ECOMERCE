@@ -47,6 +47,7 @@ export default function ImageField({
               </label>
 
               <button
+                type="button"
                 onClick={handleRemoveImg}
                 className="flex min-w-[140px] items-center justify-center gap-2 rounded-lg bg-white/90 px-4 py-2.5 text-sm font-medium text-gray-800 shadow-sm transition-all hover:bg-white hover:text-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
                 aria-label={`Remove ${label}`}

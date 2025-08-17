@@ -31,11 +31,39 @@ export default function UpdateModal({ isOpen, close, item, selectedStore }) {
     setImgPreview(file);
   };
 
+  // Reset state when modal opens
   useEffect(() => {
     if (isOpen) {
       setNewName(item.name);
+      setImgPreview(null);
     }
   }, [isOpen, item.name]);
+
+  // Reset state when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setNewName("");
+      setImgPreview(null);
+      // Reset file input
+      if (imgRef.current) {
+        imgRef.current.value = "";
+      }
+    }
+  }, [isOpen]);
+
+  const hasTextChanges = newName !== item.name;
+  const hasImageChanges = !!imgPreview;
+  const hasValidText = newName.trim() !== "" && newName === newName.trim();
+
+  // Enhanced close function to ensure state reset
+  const handleClose = () => {
+    setNewName("");
+    setImgPreview(null);
+    if (imgRef.current) {
+      imgRef.current.value = "";
+    }
+    close();
+  };
 
   // handle category update
   const handleSubmit = async (e) => {
@@ -50,11 +78,11 @@ export default function UpdateModal({ isOpen, close, item, selectedStore }) {
     mutate(updateCategoryData, {
       onSuccess: () => {
         queryClient.invalidateQueries(["categories", selectedStore?.storeId]);
-        toast.success("Categroy name updated!");
-        close();
+        toast.success("Category name updated!");
+        handleClose();
       },
       onError: () => {
-        close();
+        handleClose();
         toast.error("Something went wrong!");
       },
     });
@@ -65,7 +93,7 @@ export default function UpdateModal({ isOpen, close, item, selectedStore }) {
       open={isOpen}
       as="div"
       className="relative z-10 focus:outline-none"
-      onClose={close}
+      onClose={handleClose}
     >
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto bg-black/25 backdrop-blur-sm">
         <form
@@ -146,18 +174,20 @@ export default function UpdateModal({ isOpen, close, item, selectedStore }) {
             <div className="mt-6 flex items-center justify-end gap-3">
               <button
                 type="button"
-                onClick={close}
+                onClick={handleClose}
                 className="cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold text-neutral-600 transition-all duration-200 ease-in-out hover:bg-neutral-100 focus:outline-none"
               >
                 Cancel
               </button>
               <button
                 className={`flex min-w-20 items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 ease-in-out focus:outline-none ${
-                  newName === item.name && !imgPreview
+                  !hasValidText || (!hasTextChanges && !hasImageChanges)
                     ? "cursor-not-allowed bg-neutral-100 text-neutral-400"
                     : "bg-dashboard-primary hover:bg-dashboard-primary/90 cursor-pointer text-white"
                 }`}
-                disabled={newName === item.name && !imgPreview}
+                disabled={
+                  !hasValidText || (!hasTextChanges && !hasImageChanges)
+                }
                 type="submit"
               >
                 {isPending ? <Spinner /> : "Update"}

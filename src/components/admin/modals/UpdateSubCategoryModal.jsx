@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import Spinner from "../loaders/Spinner";
@@ -15,8 +16,16 @@ export default function UpdateSubCategoryModal({
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
-  // check modal submit btn
-  const isDisabled = updatedName === subCategory;
+  // Initialize the input with current subcategory name on mount
+  useEffect(() => {
+    setUpdatedName(subCategory);
+  }, [subCategory, setUpdatedName]);
+
+  // Enhanced validation logic
+  const trimmedName = updatedName.trim();
+  const hasValidText = trimmedName !== "" && updatedName === trimmedName;
+  const hasTextChanges = updatedName !== subCategory;
+  const isDisabled = !hasValidText || !hasTextChanges;
 
   // custom update hooks
   const { mutate, isPending } = useUpdateMutation({
@@ -25,24 +34,36 @@ export default function UpdateSubCategoryModal({
     clientId: user?.data?.clientid,
   });
 
+  // Enhanced close function to reset state
+  const handleClose = () => {
+    setUpdatedName("");
+    close();
+  };
+
   // submit updated sub-category name
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // Additional validation before submission
+    if (!hasValidText) {
+      toast.error("Sub-category name cannot be empty or have extra spaces!");
+      return;
+    }
+
     const payload = {
       oldSubcategory: subCategory,
-      newSubcategory: updatedName,
+      newSubcategory: trimmedName,
     };
 
     mutate(payload, {
       onSuccess: () => {
         toast.success("Sub-Category updated!");
-        close();
+        handleClose();
         queryClient.invalidateQueries(["subCategories", storeId, categoryId]);
       },
       onError: () => {
         toast.error("Something went wrong!");
-        close();
+        handleClose();
       },
     });
   };
@@ -71,13 +92,22 @@ export default function UpdateSubCategoryModal({
             onChange={(e) => setUpdatedName(e.target.value)}
             className="focus:border-dashboard-primary focus:ring-dashboard-primary/20 w-full rounded-lg border border-neutral-200 bg-white px-4 py-2.5 text-sm text-neutral-800 transition-all duration-200 outline-none focus:ring-2"
           />
+
+          {/* Optional: Show validation errors */}
+          {updatedName && !hasValidText && (
+            <p className="text-xs text-red-500">
+              {trimmedName === ""
+                ? "Name cannot be empty"
+                : "Remove extra spaces from the beginning or end"}
+            </p>
+          )}
         </div>
 
         <div className="flex items-center justify-end gap-3">
           <button
             className="cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold text-neutral-600 transition-all duration-200 ease-in-out hover:bg-neutral-100 focus:outline-none"
             type="button"
-            onClick={close}
+            onClick={handleClose}
           >
             Cancel
           </button>
