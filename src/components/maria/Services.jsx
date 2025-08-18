@@ -50,10 +50,10 @@ export default function Services() {
   return (
     <div className="mx-5 py-10 md:container md:mx-auto md:py-20">
       <div className="mb-16 text-center">
-        <div className="text-primary ring-primary/20 inline-flex items-center gap-1 rounded-full bg-[#FFF8F5] px-3 py-0.5 text-xs font-semibold tracking-wide uppercase ring-1">
+        <div className="inline-flex items-center gap-1 rounded-full bg-[#FFF8F5] px-3 py-0.5 text-xs font-semibold tracking-wide text-[#122842] uppercase ring-1 ring-[#122842]/20">
           Our Services
         </div>
-        <h2 className="text-primary font-playfair mt-6 text-4xl leading-tight font-bold tracking-tight md:text-5xl">
+        <h2 className="font-playfair mt-6 text-4xl leading-tight font-bold tracking-tight text-[#122842] md:text-5xl">
           What We Do
         </h2>
       </div>
@@ -64,17 +64,17 @@ export default function Services() {
             key={index}
             className="group rounded-2xl bg-white p-8 shadow-sm transition-shadow duration-200 ease-linear hover:shadow-md"
           >
-            <div className="bg-custom-blue/10 text-primary mb-6 flex h-16 w-16 items-center justify-center rounded-2xl">
+            <div className="bg-custom-blue/10 mb-6 flex h-16 w-16 items-center justify-center rounded-2xl text-[#122842]">
               <div className="transition-transform duration-200 ease-in-out group-hover:scale-110">
                 {service.icon}
               </div>
             </div>
-            <h3 className="text-primary mb-4 text-xl font-semibold text-balance">
+            <h3 className="mb-4 text-xl font-semibold text-balance text-[#122842]">
               {service.title}
             </h3>
-            {/*  <p className="leading-relaxed text-gray-600">
-                {service.description}
-              </p> */}
+            <p className="leading-relaxed text-gray-600">
+              {service.description}
+            </p>
           </div>
         ))}
       </div>

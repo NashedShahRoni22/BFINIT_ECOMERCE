@@ -25,10 +25,10 @@ export default function Testimonials() {
   return (
     <div className="mx-5 py-10 md:container md:mx-auto md:py-20">
       <div className="mb-16 text-center">
-        <div className="text-primary ring-primary/20 inline-flex items-center gap-1 rounded-full bg-[#FFF8F5] px-3 py-0.5 text-xs font-semibold tracking-wide uppercase ring-1">
+        <div className="inline-flex items-center gap-1 rounded-full bg-[#FFF8F5] px-3 py-0.5 text-xs font-semibold tracking-wide text-[#122842] uppercase ring-1 ring-[#122842]/20">
           Client Testimonials
         </div>
-        <h2 className="text-primary font-playfair mt-6 text-4xl leading-tight font-bold tracking-tight md:text-5xl">
+        <h2 className="font-playfair mt-6 text-4xl leading-tight font-bold tracking-tight text-[#122842] md:text-5xl">
           Stories Of Success
         </h2>
         <p className="mx-auto mt-4 max-w-3xl text-xl text-balance text-gray-600">

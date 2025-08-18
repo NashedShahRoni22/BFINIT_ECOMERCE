@@ -14,7 +14,11 @@ export default function Blog() {
   });
 
   return (
-    <section className="mx-5 min-h-[calc(100vh-124px)] py-10 md:container md:mx-auto md:py-20">
+    <section className="mx-5 min-h-[calc(100vh-124px)] py-10 md:container md:mx-auto md:py-16">
+      <h1 className="font-merriweather mb-10 text-center text-xl font-medium md:text-3xl">
+        Our Blogs
+      </h1>
+
       {/* loading skeleton */}
       {isLoading && (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

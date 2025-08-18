@@ -11,20 +11,18 @@ export default function BlogDetails() {
   });
 
   return (
-    <section className="mx-5 min-h-[calc(100vh-124px)] py-10 md:container md:mx-auto md:py-20">
+    <section
+      id="preview"
+      className="mx-5 min-h-[calc(100vh-124px)] py-10 md:container md:mx-auto md:py-20"
+    >
       {isLoading ? (
         <div className="flex min-h-[calc(100vh-124px)] items-center justify-center">
           <ImSpinner className="text-accent size-10 animate-spin" />
         </div>
       ) : (
         <div className="mx-auto max-w-4xl">
-          {/* Blog Title */}
-          <h1 className="text-3xl font-bold md:text-4xl lg:text-5xl">
-            {blogDetails?.data?.blogName}
-          </h1>
-
           {/* Featured Image */}
-          <div className="mt-8 overflow-hidden rounded-lg">
+          <div className="overflow-hidden rounded-lg">
             <img
               src={
                 blogDetails &&
@@ -37,12 +35,18 @@ export default function BlogDetails() {
             />
           </div>
 
+          {/* Blog Title */}
+          <h1 className="mt-8 text-3xl font-bold md:text-4xl lg:text-5xl">
+            {blogDetails?.data?.blogName}
+          </h1>
+
           {/* Blog Content */}
           <div
+            id="preview"
             dangerouslySetInnerHTML={{
               __html: blogDetails?.data?.blogDescription,
             }}
-            className="mt-12"
+            className="mt-6"
           />
 
           {/* Back Button */}

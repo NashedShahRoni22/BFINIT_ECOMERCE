@@ -53,6 +53,16 @@ export default function AddProduct() {
     description: "",
   });
 
+  const isDisabled =
+    !formData.name ||
+    !formData.category.id ||
+    !formData.subCategory ||
+    !formData.originalPrice ||
+    !formData.discountPrice ||
+    !formData.quantity ||
+    !formData.shippingCharge ||
+    !formData.description;
+
   // reset form on submit function
   const resetForm = () => {
     setFormData({
@@ -215,7 +225,6 @@ export default function AddProduct() {
       },
       onError: () => {
         toast.error("Something went wrong!");
-        resetForm();
       },
     });
   };
@@ -521,9 +530,9 @@ export default function AddProduct() {
             {/* submit button */}
             <div className="col-span-12 mt-12 mb-5 flex items-center justify-center">
               <button
-                className="bg-dashboard-primary/90 hover:bg-dashboard-primary flex min-h-8 min-w-[164px] cursor-pointer items-center justify-center rounded px-4 py-1 text-white transition duration-200 ease-in-out"
+                className={`flex min-h-8 min-w-[164px] items-center justify-center rounded px-4 py-1 text-white transition duration-200 ease-in-out ${isDisabled ? "bg-dashboard-primary/50 cursor-default" : "bg-dashboard-primary hover:bg-dashboard-primary cursor-pointer active:scale-[0.98]"}`}
                 type="submit"
-                disabled={isPending}
+                disabled={isDisabled || isPending}
               >
                 {isPending && !isError ? <Spinner /> : " Add New Product"}
               </button>

@@ -4,10 +4,10 @@ export default function Contact() {
   return (
     <div className="mx-5 py-10 md:container md:mx-auto md:py-20">
       <div className="mb-16 text-center">
-        <div className="text-primary ring-primary/20 inline-flex items-center gap-1 rounded-full bg-[#FFF8F5] px-3 py-0.5 text-xs font-semibold tracking-wide uppercase ring-1">
+        <div className="inline-flex items-center gap-1 rounded-full bg-[#FFF8F5] px-3 py-0.5 text-xs font-semibold tracking-wide text-[#122842] uppercase ring-1 ring-[#122842]/20">
           Let’s Connect
         </div>
-        <h2 className="text-primary font-playfair mt-6 text-4xl leading-tight font-bold tracking-tight md:text-5xl">
+        <h2 className="font-playfair mt-6 text-4xl leading-tight font-bold tracking-tight text-[#122842] md:text-5xl">
           Get in Touch
         </h2>
         <p className="mx-auto mt-4 max-w-3xl text-xl text-balance text-gray-600">
@@ -21,7 +21,7 @@ export default function Contact() {
             <LuPhone className="h-5 w-5 text-blue-600" />
           </div>
           <div className="text-left">
-            <p className="text-primary font-semibold">Phone</p>
+            <p className="font-semibold text-[#122842]">Phone</p>
             <p className="text-gray-600">
               <a href="tel:+15551234567" className="hover:underline">
                 (555) 123-4567
@@ -35,7 +35,7 @@ export default function Contact() {
             <LuMail className="h-5 w-5 text-green-600" />
           </div>
           <div className="text-left">
-            <p className="text-primary font-semibold">Email</p>
+            <p className="font-semibold text-[#122842]">Email</p>
             <p className="text-gray-600">
               <a
                 href="mailto:maria@bookkeepersatwork.com"
@@ -52,7 +52,7 @@ export default function Contact() {
             <LuMapPin className="h-5 w-5 text-purple-600" />
           </div>
           <div className="text-left">
-            <p className="text-primary font-semibold">Location</p>
+            <p className="font-semibold text-[#122842]">Location</p>
             <p className="text-gray-600">New York, NY</p>
           </div>
         </div>

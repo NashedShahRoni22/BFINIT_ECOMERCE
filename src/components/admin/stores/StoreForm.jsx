@@ -110,13 +110,15 @@ export default function StoreForm({ isUpdateMode = false }) {
 
   // update formData state based on selected country
   useEffect(() => {
-    setFormData((prev) => ({
-      ...prev,
-      currencyName: country?.currency_name,
-      currencyCode: country?.currency_code,
-      currencySymbol: country?.currency_symbol,
-      timezone: country?.timezone,
-    }));
+    if (country) {
+      setFormData((prev) => ({
+        ...prev,
+        currencyName: country?.currency_name,
+        currencyCode: country?.currency_code,
+        currencySymbol: country?.currency_symbol,
+        timezone: country?.timezone,
+      }));
+    }
   }, [country]);
 
   // store create post api hooks

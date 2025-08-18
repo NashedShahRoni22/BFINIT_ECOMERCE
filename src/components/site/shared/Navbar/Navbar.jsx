@@ -23,6 +23,8 @@ export default function Navbar() {
     setShowMenu(showMenu ? false : true);
   };
 
+  const mariasStore = storeId === "6893084dcf19613323046c70";
+
   return (
     <nav className="w-full">
       <div className="bg-primary text-on-primary py-4">
@@ -40,12 +42,21 @@ export default function Navbar() {
             className="font-merriweather text-accent text-2xl font-semibold italic"
           >
             <div className="max-w-[200px]">
-              <img
-                src={`https://ecomback.bfinit.com${storePreference?.storeLogo}`}
-                alt="brand logo"
-                loading="lazy"
-                className="h-10 w-auto object-contain md:h-12"
-              />
+              {mariasStore ? (
+                <img
+                  src={`https://ecomback.bfinit.com${storePreference?.storeLogo}`}
+                  alt="brand logo"
+                  loading="lazy"
+                  className="h-10 w-auto rounded-full object-cover md:h-12"
+                />
+              ) : (
+                <img
+                  src={`https://ecomback.bfinit.com${storePreference?.storeLogo}`}
+                  alt="brand logo"
+                  loading="lazy"
+                  className="h-10 w-auto object-contain md:h-12"
+                />
+              )}
             </div>
           </Link>
 
@@ -91,7 +102,9 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu */}
-      {showMenu && <MobileNav />}
+      {showMenu && (
+        <MobileNav storeId={storeId} handleShowMenu={handleShowMenu} />
+      )}
     </nav>
   );
 }

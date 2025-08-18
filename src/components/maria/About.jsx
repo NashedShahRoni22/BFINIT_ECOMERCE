@@ -59,12 +59,12 @@ export default function About() {
 
       <div className="w-full md:w-1/2">
         {/* Enhanced label */}
-        <div className="text-primary ring-primary/20 inline-flex items-center gap-1 rounded-full bg-[#FFF8F5] px-3 py-0.5 text-xs font-semibold tracking-wide uppercase ring-1">
+        <div className="inline-flex items-center gap-1 rounded-full bg-[#FFF8F5] px-3 py-0.5 text-xs font-semibold tracking-wide text-[#122842] uppercase ring-1 ring-[#122842]/20">
           Meet Maria
         </div>
 
         {/* Enhanced heading typography */}
-        <h2 className="text-primary font-playfair mt-6 text-4xl leading-tight font-bold tracking-tight md:text-5xl">
+        <h2 className="font-playfair mt-6 text-4xl leading-tight font-bold tracking-tight text-[#122842] md:text-5xl">
           30+ Years of <br /> Professional Excellence
         </h2>
 
