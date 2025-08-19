@@ -18,14 +18,6 @@ export default function Footer() {
     enabled: !!storeId,
   });
 
-  const {
-    storeName,
-    storeTwitterLink,
-    storeInstagramLink,
-    storeYoutubeLink,
-    storeFacebookLink,
-  } = storePreferenceData;
-
   return (
     <footer className="bg-primary text-on-primary py-12">
       <div className="container mx-auto px-4 md:px-6">
@@ -55,19 +47,22 @@ export default function Footer() {
             </h3>
 
             <div className="flex items-center gap-5">
-              <Link to={storeFacebookLink} target="_blank">
+              <Link to={storePreferenceData?.storeFacebookLink} target="_blank">
                 <img src={fbIcon} alt="social links" className="size-8" />
               </Link>
 
-              <Link to={storeInstagramLink} target="_blank">
+              <Link
+                to={storePreferenceData?.storeInstagramLink}
+                target="_blank"
+              >
                 <img src={igIcon} alt="social links" className="size-8" />
               </Link>
 
-              <Link to={storeTwitterLink} target="_blank">
+              <Link to={storePreferenceData?.storeTwitterLink} target="_blank">
                 <img src={xIcon} alt="social links" className="size-8" />
               </Link>
 
-              <Link to={storeYoutubeLink} target="_blank">
+              <Link to={storePreferenceData?.storeYoutubeLink} target="_blank">
                 <img src={ytIcon} alt="social links" className="size-8" />
               </Link>
             </div>
@@ -76,7 +71,8 @@ export default function Footer() {
 
         {/* Copyright Section */}
         <p className="mb-3 flex items-center justify-center gap-2 border-t border-gray-700 pt-8 text-sm text-gray-400 md:mb-0">
-          <LuCopyright /> {currentYear} {storeName}. All rights reserved.
+          <LuCopyright /> {currentYear} {storePreferenceData?.storeName}. All
+          rights reserved.
         </p>
       </div>
     </footer>
