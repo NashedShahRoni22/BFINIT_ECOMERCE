@@ -29,6 +29,8 @@ import Blog from "../pages/store/Blog/Blog";
 import BlogDetails from "../pages/store/BlogDetails/BlogDetails";
 import StoreForm from "../components/admin/stores/StoreForm";
 import AddSeo from "../pages/admin/AddSeo/AddSeo";
+import Contact from "../pages/store/Contact/Contact";
+import ComingSoon from "../pages/store/ComingSoon/ComingSoon";
 
 export const router = createBrowserRouter([
   {
@@ -165,6 +167,14 @@ export const router = createBrowserRouter([
       {
         path: "blogs/:blogId",
         element: <BlogDetails />,
+      },
+      {
+        path: "contact",
+        element: <Contact />,
+      },
+      {
+        path: "coming-soon",
+        element: <ComingSoon />,
       },
     ],
   },

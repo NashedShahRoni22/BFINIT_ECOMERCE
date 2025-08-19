@@ -4,11 +4,15 @@ import useAuth from "../hooks/auth/useAuth";
 import useGetQuery from "../hooks/queries/useGetQuery";
 import { componentsData } from "../data/adminData/componentsData";
 import WebsiteSkeleton from "../components/admin/loaders/WebasiteSkeleton";
+import useGetAllMeta from "../hooks/meta/getAllMeta";
 
 export default function PreviewLayout() {
   const { user } = useAuth();
   const { storeId } = useParams();
   const [previewData, setPreviewData] = useState([]);
+
+  // fetch meta description
+  const { data: metaData } = useGetAllMeta(storeId);
 
   // fetch store preference
   const { data: storePreferenceData, isLoading } = useGetQuery({
@@ -17,6 +21,32 @@ export default function PreviewLayout() {
     queryKey: ["storePreference", storeId],
     enabled: !!storeId && !!user?.token,
   });
+
+  // Update website title, meta description and favicon
+  useEffect(() => {
+    const metaDescription = document.querySelector("meta[name='description']");
+
+    // update title and meta description
+    if (isLoading) {
+      document.title = "Loading...";
+    } else if (metaData?.data?.length > 0) {
+      document.title = metaData?.data[0]?.Title;
+
+      if (metaDescription) {
+        metaDescription.setAttribute("content", metaData?.data[0]?.Description);
+      }
+    } else {
+      document.title = storePreferenceData?.storeName;
+    }
+
+    // Update favicon
+    if (storePreferenceData?.storeFavicon) {
+      const faviconLink = document.querySelector("link[rel='icon']");
+      if (faviconLink) {
+        faviconLink.href = `https://ecomback.bfinit.com${storePreferenceData.storeFavicon}`;
+      }
+    }
+  }, [isLoading, storePreferenceData, metaData]);
 
   // set database saved components to previewData and savedComponents
   useEffect(() => {

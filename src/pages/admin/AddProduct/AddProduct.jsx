@@ -60,7 +60,6 @@ export default function AddProduct() {
     !formData.originalPrice ||
     !formData.discountPrice ||
     !formData.quantity ||
-    !formData.shippingCharge ||
     !formData.description;
 
   // reset form on submit function
@@ -197,12 +196,14 @@ export default function AddProduct() {
       productPrice: formData.originalPrice,
       discountPrice: formData.discountPrice,
       productQuantity: formData.quantity,
-      shippingCharges: formData.shippingCharge,
       productStatus: formData.status === "yes" ? true : false,
       bestSelling: formData.bestSelling === "yes" ? true : false,
       flashSale: formData.flashSell === "yes" ? true : false,
       newArraivals: formData.new === "yes" ? true : false,
       productDescription: formData.description,
+      ...(formData.shippingCharge && {
+        shippingCharges: formData.shippingCharge,
+      }),
     };
 
     const payload = new FormData();

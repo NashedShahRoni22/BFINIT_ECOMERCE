@@ -1,6 +1,6 @@
 import { useParams } from "react-router";
 import ProductCardSkeletonGrid from "../skeleton/ProductCardSkeletonGrid";
-import ProductCard from "../shared/ProductCard";
+import ProductCard from "../cards/ProductCard";
 import EmptyState from "../EmptyState";
 import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
 

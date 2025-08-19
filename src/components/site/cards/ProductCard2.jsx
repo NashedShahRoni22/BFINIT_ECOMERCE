@@ -11,17 +11,17 @@ export default function ProductCard2({ product, storeId, currencySymbol }) {
 
   return (
     <div className="group flex flex-col">
-      <div className="relative overflow-hidden rounded border border-neutral-100 p-1.5">
+      <div className="relative overflow-hidden rounded border border-neutral-100">
         <div className="w-full overflow-hidden">
           <Link
             to={`/preview/${storeId}/products/${product.productId}`}
-            className="flex h-44 w-full items-center justify-center"
+            className="h-44 w-full"
           >
             <img
               src={`https://ecomback.bfinit.com${productImage}`}
               alt={productName}
               loading="lazy"
-              className="max-h-full max-w-full object-contain transition-all duration-200 ease-linear group-hover:scale-105"
+              className="h-full w-full object-cover transition-all duration-200 ease-linear group-hover:scale-105"
             />
           </Link>
         </div>
@@ -56,7 +56,7 @@ export default function ProductCard2({ product, storeId, currencySymbol }) {
           )}
         </div> */}
 
-        <p className="hover:text-accent mt-2 mb-0.5 line-clamp-2 text-lg font-bold transition-all duration-200 ease-in-out">
+        <p className="hover:text-accent mt-2 mb-0.5 line-clamp-2 w-fit text-lg font-bold transition-all duration-200 ease-in-out">
           {productName}
         </p>
 

@@ -9,37 +9,17 @@ import About from "../../../components/maria/About";
 import Services from "../../../components/maria/Services";
 import Testimonials from "../../../components/maria/Testimonials";
 import Contact from "../../../components/maria/Contact";
-import useGetAllMeta from "../../../hooks/meta/getAllMeta";
 
 export default function Preview() {
   const { setSelectedTheme } = useContext(ThemeContext);
   const { storeId } = useParams();
   const [previewData, setPreviewData] = useState([]);
 
-  // fetch meta description
-  const { data: metaData } = useGetAllMeta(storeId);
   // fetch store preference
   const { data: storePreferenceData, isLoading } =
     useGetStorePreference(storeId);
   // fetch all products by selected storeId
   const { data: products } = useGetProductsByStoreId(storeId);
-
-  // Set document title
-  useEffect(() => {
-    const metaDescription = document.querySelector("meta[name='description']");
-
-    if (isLoading) {
-      document.title = "Loading...";
-    } else if (metaData?.data?.length > 0) {
-      document.title = metaData?.data[0]?.Title;
-
-      if (metaDescription) {
-        metaDescription.setAttribute("content", metaData?.data[0]?.Description);
-      }
-    } else {
-      storePreferenceData?.storeName;
-    }
-  }, [isLoading, storePreferenceData, metaData]);
 
   // set database saved components to previewData and savedComponents
   useEffect(() => {

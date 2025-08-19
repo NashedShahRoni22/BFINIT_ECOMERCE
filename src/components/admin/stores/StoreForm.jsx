@@ -487,7 +487,7 @@ export default function StoreForm({ isUpdateMode = false }) {
               isDisabled || isStoreUpdatePending || isPending || isStoreLoading
             }
           >
-            {isUpdateMode ? "Update Store Info" : "Create New Store"}
+            {isUpdateMode ? "Update" : "Create"}
           </ActionBtn>
         </div>
       </form>

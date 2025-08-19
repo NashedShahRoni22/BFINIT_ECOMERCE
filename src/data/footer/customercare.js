@@ -1,27 +1,23 @@
 export const customerCare = [
   {
     title: "Help Center",
-    path: "/help-center",
+    path: "coming-soon",
   },
   {
     title: "How to Buy",
-    path: "/buying-guide",
+    path: "coming-soon",
   },
   {
     title: "Returns & Refunds",
-    path: "/returns-refunds",
+    path: "coming-soon",
   },
   {
     title: "Contact Us",
-    path: "/contact-us",
+    path: "contact",
   },
   {
     title: "Terms & Conditions",
-    path: "/terms-conditions",
-  },
-  {
-    title: "Become a Reseller",
-    path: "/reseller-guide",
+    path: "coming-soon",
   },
   {
     title: "Blogs",
