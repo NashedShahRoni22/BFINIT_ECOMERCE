@@ -7,6 +7,7 @@ import {
   MdLibraryBooks,
   MdPayment,
   MdOutlineBuild,
+  MdSupportAgent,
 } from "react-icons/md";
 
 export const sideNavLinks = [
@@ -81,5 +82,31 @@ export const sideNavLinks = [
     icon: MdPayment,
     name: "Payments",
     url: "/payments",
+  },
+  {
+    icon: MdSupportAgent, // or MdSupport, MdHelp
+    name: "Support",
+    subCategories: [
+      {
+        name: "Help Center",
+        url: "/support/help-center",
+        icon: BsArrow90DegDown,
+      },
+      {
+        name: "Returns & Refunds",
+        url: "/support/returns-refunds",
+        icon: BsArrow90DegDown,
+      },
+      {
+        name: "Terms & Conditions",
+        url: "/support/terms-conditions",
+        icon: BsArrow90DegDown,
+      },
+      {
+        name: "How to Buy",
+        url: "/support/how-to-buy",
+        icon: BsArrow90DegDown,
+      },
+    ],
   },
 ];

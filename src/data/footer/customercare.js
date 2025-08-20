@@ -1,15 +1,15 @@
 export const customerCare = [
   {
     title: "Help Center",
-    path: "coming-soon",
+    path: "help-center",
   },
   {
     title: "How to Buy",
-    path: "coming-soon",
+    path: "how-to-buy",
   },
   {
     title: "Returns & Refunds",
-    path: "coming-soon",
+    path: "returns-refunds",
   },
   {
     title: "Contact Us",
@@ -17,7 +17,7 @@ export const customerCare = [
   },
   {
     title: "Terms & Conditions",
-    path: "coming-soon",
+    path: "terms-conditions",
   },
   {
     title: "Blogs",

@@ -31,6 +31,14 @@ import StoreForm from "../components/admin/stores/StoreForm";
 import AddSeo from "../pages/admin/AddSeo/AddSeo";
 import Contact from "../pages/store/Contact/Contact";
 import ComingSoon from "../pages/store/ComingSoon/ComingSoon";
+import ReturnPolicy from "../pages/admin/support/ReturnPolicy/ReturnPolicy";
+import TermsConditions from "../pages/admin/support/TermsConditions/TermsConditions";
+import BuyingGuide from "../pages/admin/support/BuyingGuide/BuyingGuide";
+import AddHelpCenter from "../pages/admin/support/HelpCenter/AddHelpCenter";
+import HelpCenter from "../pages/store/HelpCenter/HelpCenter";
+import ReturnPolicyPreview from "../pages/store/ReturnPolicyPreview/ReturnPolicyPreview";
+import TermsPreview from "../pages/store/TermsPreview/TermsPreview";
+import BuyGuidePreview from "../pages/store/BuyGuidePreview/BuyGuidePreview";
 
 export const router = createBrowserRouter([
   {
@@ -41,6 +49,7 @@ export const router = createBrowserRouter([
     path: "*",
     element: <NotFound />,
   },
+  // admin routes
   {
     path: "/",
     element: (
@@ -117,8 +126,25 @@ export const router = createBrowserRouter([
         path: "/payments",
         element: <Payments />,
       },
+      {
+        path: "/support/help-center",
+        element: <AddHelpCenter />,
+      },
+      {
+        path: "/support/returns-refunds",
+        element: <ReturnPolicy />,
+      },
+      {
+        path: "/support/terms-conditions",
+        element: <TermsConditions />,
+      },
+      {
+        path: "/support/how-to-buy",
+        element: <BuyingGuide />,
+      },
     ],
   },
+  // store customize
   {
     path: "/customize-store/:storeId",
     element: (
@@ -171,6 +197,22 @@ export const router = createBrowserRouter([
       {
         path: "contact",
         element: <Contact />,
+      },
+      {
+        path: "help-center",
+        element: <HelpCenter />,
+      },
+      {
+        path: "returns-refunds",
+        element: <ReturnPolicyPreview />,
+      },
+      {
+        path: "terms-conditions",
+        element: <TermsPreview />,
+      },
+      {
+        path: "how-to-buy",
+        element: <BuyGuidePreview />,
       },
       {
         path: "coming-soon",

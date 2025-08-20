@@ -35,6 +35,7 @@ export default function Contact() {
   const [invalidMessage, setInvalidMessage] = useState(false);
   const [invalidKey, setInvalidKey] = useState(false);
   const [forbiddenWords, setForbiddenWords] = useState([]);
+  const currentYear = new Date().getFullYear();
 
   useEffect(() => {
     fetchForbiddenWords();
@@ -340,6 +341,30 @@ export default function Contact() {
           {/* Captcha */}
           <Captcha onCaptchaGenerated={setCaptchaAnswer} />
 
+          <div>
+            <label className="mb-2 block text-sm font-medium text-gray-700">
+              Enter Captcha
+            </label>
+            <input
+              type="text"
+              name="captchaInput"
+              value={formData.captchaInput}
+              onChange={handleChange}
+              className="focus:border-accent w-full rounded-lg border px-4 py-3 transition-colors outline-none"
+              placeholder="Enter captcha"
+            />
+          </div>
+
+          {invalidCaptcha && (
+            <p className="text-red-500">Invalid Captcha! Please try again.</p>
+          )}
+          {invalidMessage && (
+            <p className="text-red-500">
+              Your message contains forbidden words.
+            </p>
+          )}
+          {invalidKey && <p className="text-red-500">Invalid API Key.</p>}
+
           {/* Submit Button */}
           <button
             type="button"
@@ -409,7 +434,8 @@ export default function Contact() {
         {/* Footer */}
         <div className="mt-8 border-t border-gray-200 pt-6">
           <p className="flex items-center justify-center gap-1 text-xs">
-            <LuCopyright /> 2024 BFIN. BITSS by BFIN. All rights reserved.
+            <LuCopyright /> {currentYear} BFIN. BITSS by BFIN. All rights
+            reserved.
           </p>
           <div className="mt-2.5 flex flex-col items-center justify-center gap-2.5">
             <img src={bitssLogo} alt="" loading="lazy" />

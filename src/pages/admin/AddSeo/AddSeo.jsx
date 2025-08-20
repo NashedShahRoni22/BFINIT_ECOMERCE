@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import { useSearchParams } from "react-router";
 import useGetStores from "../../../hooks/stores/useGetStores";
-import { BsInfoCircle, BsShop } from "react-icons/bs";
+import { BsInfoCircle } from "react-icons/bs";
 import ActionBtn from "../../../components/admin/buttons/ActionBtn";
 import toast from "react-hot-toast";
 import FormInput from "../../../components/admin/FormInput";
@@ -11,6 +11,7 @@ import useAuth from "../../../hooks/auth/useAuth";
 import useGetAllMeta from "../../../hooks/meta/getAllMeta";
 import useUpdateMutation from "../../../hooks/mutations/useUpdateMutation";
 import { useQueryClient } from "@tanstack/react-query";
+import EmptyState from "../../../components/admin/EmptyState";
 
 export default function AddSeo() {
   const queryClient = useQueryClient();
@@ -277,15 +278,7 @@ export default function AddSeo() {
           </form>
         </>
       ) : (
-        <div className="mt-8 flex flex-col items-center justify-center rounded-lg border-gray-300 bg-gray-50 p-12 text-center">
-          <BsShop className="mx-auto size-12 text-gray-400" />
-          <h3 className="mt-4 text-lg font-medium text-gray-900">
-            No store selected
-          </h3>
-          <p className="mt-2 text-gray-500">
-            Please select a store to add or update meta tags.
-          </p>
-        </div>
+        <EmptyState description="Please select a store to add or update meta tags." />
       )}
     </section>
   );
