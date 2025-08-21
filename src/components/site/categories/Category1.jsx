@@ -8,7 +8,7 @@ export default function Category1() {
   const { data: categories } = useGetCategories(storeId);
 
   return (
-    <section className="mx-5 py-10 md:container md:mx-auto md:py-20">
+    <section className="px-5 py-10 md:container md:mx-auto md:py-20">
       <h2 className="font-merriweather text-center text-xl font-medium md:text-3xl">
         Product Category
       </h2>

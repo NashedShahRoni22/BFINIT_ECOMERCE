@@ -6,7 +6,7 @@ export default function Category2() {
   const { data: categories } = useGetCategories(storeId);
 
   return (
-    <section className="font-merriweather mx-5 py-10 md:container md:mx-auto md:py-20">
+    <section className="font-merriweather px-5 py-10 md:container md:mx-auto md:py-20">
       <h2 className="text-center text-xl font-medium md:text-3xl">
         Browse Our Category
       </h2>

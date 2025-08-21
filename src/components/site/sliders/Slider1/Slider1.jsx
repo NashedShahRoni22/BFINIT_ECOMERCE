@@ -175,14 +175,14 @@ export default function Slider1() {
   // Show skeleton while loading
   if (isSliderLoading || !isDataLoaded) {
     return (
-      <section className="mx-5 py-5 md:container md:mx-auto">
+      <section className="px-5 py-5 md:container md:mx-auto">
         <SliderSkeleton />
       </section>
     );
   }
 
   return (
-    <section className="mx-5 py-5 md:container md:mx-auto">
+    <section className="px-5 py-5 md:container md:mx-auto">
       {/* Slider edit button and customization for admin */}
       {showSlideEdit && isCustomize && (
         <div className="relative w-full overflow-hidden rounded-lg border border-dashed border-neutral-200 p-4">

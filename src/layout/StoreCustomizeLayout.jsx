@@ -129,7 +129,7 @@ export default function StoreCustomizeLayout() {
           {renderComponent("sliderStyle", selectedComponents.sliderStyle)}
           {renderComponent("categoryStyle", selectedComponents.categoryStyle)}
           {renderComponent("highlightStyle", selectedComponents.highlightStyle)}
-          <section className="font-roboto mx-5 py-10 md:container md:mx-auto md:py-20">
+          <section className="font-roboto px-5 py-10 md:container md:mx-auto md:py-20">
             <h2 className="font-merriweather mb-10 text-center text-xl font-medium md:text-3xl">
               Featured Products
             </h2>

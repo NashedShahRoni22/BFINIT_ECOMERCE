@@ -20,7 +20,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-primary text-on-primary py-12">
-      <div className="container mx-auto px-4 md:px-6">
+      <div className="container mx-auto px-5">
         <div className="mb-10 grid grid-cols-1 gap-10 md:grid-cols-2">
           {/* Customer Care Section */}
           <div>

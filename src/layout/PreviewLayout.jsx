@@ -3,7 +3,6 @@ import { Outlet, ScrollRestoration, useParams } from "react-router";
 import useAuth from "../hooks/auth/useAuth";
 import useGetQuery from "../hooks/queries/useGetQuery";
 import { componentsData } from "../data/adminData/componentsData";
-import WebsiteSkeleton from "../components/admin/loaders/WebasiteSkeleton";
 import useGetAllMeta from "../hooks/meta/getAllMeta";
 
 export default function PreviewLayout() {
@@ -69,10 +68,6 @@ export default function PreviewLayout() {
     const Component = componentsData[category]?.[value];
     return Component ? <Component /> : null;
   };
-
-  if (isLoading) {
-    return <WebsiteSkeleton />;
-  }
 
   return (
     <>

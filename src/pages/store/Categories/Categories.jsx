@@ -50,7 +50,7 @@ export default function Categories() {
   };
 
   return (
-    <div className="font-roboto mx-5 h-full min-h-[calc(100vh-124px)] py-10 md:container md:mx-auto md:py-16">
+    <div className="font-roboto h-full min-h-[calc(100vh-124px)] px-5 py-10 md:container md:mx-auto">
       <h1 className="font-merriweather mb-10 text-center text-xl font-medium md:text-3xl">
         Explore{" "}
         {decodeURIComponent(subCategoryName ? subCategoryName : categoryName)}

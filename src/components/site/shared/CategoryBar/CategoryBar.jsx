@@ -27,8 +27,8 @@ export default function CategoryBar() {
     };
   };
   return (
-    <div className="sticky -top-0.5 left-0 z-50 bg-white shadow-sm">
-      <div className="mx-5 hidden flex-wrap gap-x-4 md:container md:mx-auto md:flex">
+    <div className="sticky -top-0.5 left-0 z-50 hidden bg-white shadow-sm md:block">
+      <div className="flex-wrap gap-x-4 px-5 md:container md:mx-auto md:flex">
         {categories &&
           categories?.data?.length > 0 &&
           categories?.data?.map((category) => (

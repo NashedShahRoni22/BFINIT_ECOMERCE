@@ -13,7 +13,7 @@ export default function BlogDetails() {
   return (
     <section
       id="preview"
-      className="mx-5 min-h-[calc(100vh-124px)] py-10 md:container md:mx-auto md:py-20"
+      className="min-h-[calc(100vh-124px)] px-5 py-10 md:container md:mx-auto md:py-20"
     >
       {isLoading ? (
         <div className="flex min-h-[calc(100vh-124px)] items-center justify-center">

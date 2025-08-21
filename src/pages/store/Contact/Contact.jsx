@@ -161,7 +161,7 @@ export default function Contact() {
   };
 
   return (
-    <section className="mx-5 grid min-h-[calc(100vh-124px)] grid-cols-1 gap-8 py-10 md:container md:mx-auto md:grid-cols-2 md:py-16">
+    <section className="grid min-h-[calc(100vh-124px)] grid-cols-1 gap-8 px-5 py-10 md:container md:mx-auto md:grid-cols-2 md:py-16">
       {/* contact info side */}
       <div>
         <h5 className="font-bold md:text-2xl">Contact Us</h5>

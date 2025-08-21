@@ -39,6 +39,7 @@ import HelpCenter from "../pages/store/HelpCenter/HelpCenter";
 import ReturnPolicyPreview from "../pages/store/ReturnPolicyPreview/ReturnPolicyPreview";
 import TermsPreview from "../pages/store/TermsPreview/TermsPreview";
 import BuyGuidePreview from "../pages/store/BuyGuidePreview/BuyGuidePreview";
+import ProductSearchPage from "../pages/store/ProductSearchPage/ProductSearchPage";
 
 export const router = createBrowserRouter([
   {
@@ -181,6 +182,10 @@ export const router = createBrowserRouter([
       {
         path: "products/categories/:categoryName",
         element: <Categories />,
+      },
+      {
+        path: "products/search/:keyword",
+        element: <ProductSearchPage />,
       },
       {
         path: "order-success",
