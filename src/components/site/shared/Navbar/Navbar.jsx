@@ -17,6 +17,7 @@ export default function Navbar() {
   const [showSearch, setShowSearch] = useState(false);
   const [keyword, setKeyword] = useState("");
   const searchKeyword = keyword.trim().replace(/\s+/g, " ").toLowerCase();
+  const isMariaStore = storeId === "6893084dcf19613323046c70";
 
   // store preference
   const { data: storePreference } = useGetStorePreference(storeId);
@@ -70,7 +71,7 @@ export default function Navbar() {
                 src={`https://ecomback.bfinit.com${storePreference?.storeLogo}`}
                 alt="brand logo"
                 loading="lazy"
-                className="h-10 w-auto object-contain md:h-12"
+                className={`h-10 w-auto md:h-12 ${isMariaStore && "rounded-full"}`}
               />
             </div>
           </Link>
@@ -192,7 +193,10 @@ export default function Navbar() {
             </Link>
 
             {/* Mobile Menu Toggler */}
-            <button onClick={handleShowMenu} className="text-lg md:text-2xl">
+            <button
+              onClick={handleShowMenu}
+              className="text-lg md:hidden md:text-2xl"
+            >
               {showMenu ? <LuX /> : <LuMenu />}
             </button>
 

@@ -1,8 +1,10 @@
 import { Link } from "react-router";
 import useCart from "../../../hooks/cart/useCart";
+import { generateDiscountPercentage } from "../../../utils/site/generateDiscountPercentage";
 
 export default function ProductCard({ product, currencySymbol, storeId }) {
-  const { productName, productImage, productDiscountPrice } = product;
+  const { productName, productImage, productPrice, productDiscountPrice } =
+    product;
 
   const { handleAddToCart } = useCart();
 
@@ -30,6 +32,14 @@ export default function ProductCard({ product, currencySymbol, storeId }) {
           <span className="text-xl font-bold">
             {currencySymbol}
             {productDiscountPrice.$numberDecimal}
+          </span>
+          <span className="text-xs text-gray-500">
+            -
+            {generateDiscountPercentage(
+              productPrice.$numberDecimal,
+              productDiscountPrice.$numberDecimal,
+            )}
+            %
           </span>
         </div>
       </Link>

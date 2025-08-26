@@ -4,11 +4,18 @@ import { ThemeContext } from "../../../Providers/ThemeProvider";
 import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
 import { componentsData } from "../../../data/adminData/componentsData";
 import useGetProductsByStoreId from "../../../hooks/products/useGetProductsByStoreId";
+import Hero from "../../../components/maria/Hero";
+import Features from "../../../components/maria/Features";
+import Pricing from "../../../components/maria/Pricing";
+import Testimonials from "../../../components/maria/Testimonials";
+import OmadaHrPayroll from "../../../components/maria/OmadaHrPayroll";
 
 export default function Preview() {
   const { setSelectedTheme } = useContext(ThemeContext);
   const { storeId } = useParams();
   const [previewData, setPreviewData] = useState([]);
+
+  const isMariaStore = storeId === "6893084dcf19613323046c70";
 
   // fetch store preference
   const { data: storePreferenceData, isLoading: storePreferenceLoading } =
@@ -49,15 +56,38 @@ export default function Preview() {
     <div>
       {!storePreferenceLoading && !productsLoading && (
         <>
-          {renderComponent("sliderStyle", previewData.sliderStyle)}
+          {isMariaStore ? (
+            <>
+              <Hero />
+              <OmadaHrPayroll />
+              <div
+                id="pricing"
+                className="font-roboto px-5 py-10 md:container md:mx-auto md:py-16"
+              >
+                <h2 className="text-primary font-playfair text-center text-4xl font-bold">
+                  Featured Products
+                </h2>
+                <p className="mx-auto mt-4 w-full max-w-2xl text-center text-pretty text-[#4B5563]">
+                  Choose the plan that fits your business needs. All plans
+                  include core payroll processing and tax filing.
+                </p>
+                {renderComponent("productStyle", previewData.productStyle)}
+              </div>
+              <Features />
+            </>
+          ) : (
+            renderComponent("sliderStyle", previewData.sliderStyle)
+          )}
           {renderComponent("categoryStyle", previewData.categoryStyle)}
           {renderComponent("highlightStyle", previewData.highlightStyle)}
-          <div className="font-roboto px-5 py-10 md:container md:mx-auto md:py-20">
-            <h2 className="font-merriweather mb-10 text-center text-xl font-medium md:text-3xl">
-              Featured Products
-            </h2>
-            {renderComponent("productStyle", previewData.productStyle)}
-          </div>
+          {!isMariaStore && (
+            <div className="font-roboto px-5 py-10 md:container md:mx-auto md:py-16">
+              <h2 className="font-merriweather mb-10 text-center text-xl font-medium md:text-3xl">
+                Featured Products
+              </h2>
+              {renderComponent("productStyle", previewData.productStyle)}
+            </div>
+          )}
           {renderComponent("bannerStyle", previewData.bannerStyle)}
         </>
       )}

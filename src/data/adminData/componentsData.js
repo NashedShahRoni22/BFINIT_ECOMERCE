@@ -12,6 +12,7 @@ import Product2 from "../../components/site/products/Product2";
 import Product3 from "../../components/site/products/Product3";
 import Footer1 from "../../components/site/shared/Footer/Footer";
 import CategoryBar from "../../components/site/shared/CategoryBar/CategoryBar";
+import Hero from "../../components/maria/Hero";
 
 export const componentsData = {
   navbarStyle: {
@@ -24,6 +25,9 @@ export const componentsData = {
     slider1: Slider1,
     slider2: Slider2,
     slider3: Slider3,
+  },
+  heroStyle: {
+    hero1: Hero,
   },
   categoryStyle: {
     category1: Category1,
