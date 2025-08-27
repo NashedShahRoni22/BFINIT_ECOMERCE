@@ -21,7 +21,7 @@ export default function Navbar() {
 
   // store preference
   const { data: storePreference } = useGetStorePreference(storeId);
-  const debouncedValue = useDebounce(searchKeyword, 500);
+  const debouncedValue = useDebounce(searchKeyword, 1000);
 
   const { data: searchedProducts } = useGetQuery({
     endpoint: `/product/by-keyword/?storeId=${storeId}&keyword=${debouncedValue}`,
@@ -108,7 +108,7 @@ export default function Navbar() {
                 </form>
 
                 {/* searched list */}
-                {debouncedValue && (
+                {debouncedValue && showSearch && (
                   <div className="overflow-hidden px-4">
                     <div className="absolute top-16 left-0 z-[100] mt-2 w-full overflow-hidden rounded-md bg-white shadow-lg md:top-full">
                       {searchedProducts?.data?.length > 0 ? (
@@ -117,11 +117,13 @@ export default function Navbar() {
                             <li
                               key={product.productId}
                               className="flex cursor-pointer items-center gap-3 p-3 hover:bg-gray-100"
-                              onClick={() =>
+                              onClick={() => {
                                 navigate(
-                                  `/preview/${storeId}/product/${product.productId}`,
-                                )
-                              }
+                                  `/preview/${storeId}/products/${product.productId}`,
+                                );
+                                setShowSearch(false);
+                                setKeyword("");
+                              }}
                             >
                               {/* Product Image */}
                               <img
@@ -132,7 +134,7 @@ export default function Navbar() {
 
                               {/* Product Info */}
                               <div className="flex-1">
-                                <p className="text-sm font-medium text-gray-900">
+                                <p className="line-clamp-2 text-sm font-medium text-gray-900">
                                   {product.productName}
                                 </p>
                                 <p className="text-xs text-gray-500">
@@ -188,9 +190,9 @@ export default function Navbar() {
               </div>
             </Link>
 
-            <Link className={`${showSearch && "hidden md:block"}`}>
+            {/* <Link className={`${showSearch && "hidden md:block"}`}>
               <LuUserRound to="login" className="text-lg md:text-2xl" />
-            </Link>
+            </Link> */}
 
             {/* Mobile Menu Toggler */}
             <button

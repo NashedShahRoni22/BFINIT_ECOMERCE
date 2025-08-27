@@ -59,7 +59,6 @@ export default function Preview() {
           {isMariaStore ? (
             <>
               <Hero />
-              <OmadaHrPayroll />
               <div
                 id="pricing"
                 className="font-roboto px-5 py-10 md:container md:mx-auto md:py-16"
@@ -73,6 +72,7 @@ export default function Preview() {
                 </p>
                 {renderComponent("productStyle", previewData.productStyle)}
               </div>
+              <OmadaHrPayroll />
               <Features />
             </>
           ) : (

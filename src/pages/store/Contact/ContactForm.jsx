@@ -221,70 +221,18 @@ export default function ContactForm() {
               </div>
             </div>
 
-            {/* Phone and Country Row */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-sm font-medium text-gray-700">
-                  Phone Number *
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="focus:border-accent focus:ring-accent/20 w-full rounded-lg border border-gray-300 px-4 py-3 transition-all duration-200 outline-none focus:ring-2"
-                  placeholder="Enter your phone number"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-gray-700">
-                  Country *
-                </label>
-                <select
-                  value={formData.country}
-                  onChange={(value) =>
-                    setFormData({ ...formData, country: value })
-                  }
-                  className="focus:border-accent focus:ring-accent/20 w-full rounded-lg border border-gray-300 px-4 py-3 transition-all duration-200 outline-none focus:ring-2"
-                >
-                  <option value="">Select your country</option>
-                  {countries?.map((country, i) => (
-                    <option key={i} value={country}>
-                      {country}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* Skype ID */}
+            {/* Phone Row */}
             <div>
               <label className="mb-2 block text-sm font-medium text-gray-700">
-                Skype ID (Optional)
+                Phone Number *
               </label>
               <input
-                type="text"
-                name="skypeId"
-                value={formData.skypeId}
+                type="tel"
+                name="phone"
+                value={formData.phone}
                 onChange={handleChange}
                 className="focus:border-accent focus:ring-accent/20 w-full rounded-lg border border-gray-300 px-4 py-3 transition-all duration-200 outline-none focus:ring-2"
-                placeholder="Enter your Skype ID"
-              />
-            </div>
-
-            {/* Subject */}
-            <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
-                Subject *
-              </label>
-              <input
-                type="text"
-                name="subject"
-                value={formData.subject}
-                onChange={handleChange}
-                className="focus:border-accent focus:ring-accent/20 w-full rounded-lg border border-gray-300 px-4 py-3 transition-all duration-200 outline-none focus:ring-2"
-                placeholder="Enter the subject of your inquiry"
+                placeholder="Enter your phone number"
               />
             </div>
 

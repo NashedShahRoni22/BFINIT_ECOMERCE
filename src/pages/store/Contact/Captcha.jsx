@@ -17,7 +17,7 @@ const Captcha = ({ onCaptchaGenerated }) => {
     canvas.height = 40;
 
     // Set the background color to green
-    context.fillStyle = "blue";
+    context.fillStyle = "black";
     context.fillRect(0, 0, canvas.width, canvas.height);
 
     context.font = "16px Arial";
