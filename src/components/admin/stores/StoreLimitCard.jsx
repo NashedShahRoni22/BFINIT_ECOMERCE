@@ -6,26 +6,26 @@ export default function StoreLimitCard({ createdStore }) {
   const { user } = useAuth();
 
   return (
-    <div className="flex w-full flex-col overflow-hidden rounded-lg border border-neutral-200">
+    <div className="flex w-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white p-4">
       {/* Header Section - Same structure as other cards */}
-      <div className="relative p-6">
-        <div className="flex flex-col items-center">
+      <div className="relative flex-1">
+        <div className="flex gap-4">
           {/* Icon container - same size as store logo */}
-          <div className="mb-3 flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl bg-red-50 ring-1 ring-red-200">
+          <div className="mb-3 flex h-12 w-12 items-center justify-center overflow-hidden rounded-md bg-red-50 ring-1 ring-red-200">
             <div className="relative">
-              <LuLock className="h-8 w-8 text-red-400" />
+              <LuLock className="h-6 w-6 text-red-400" />
               <LuCircleAlert className="absolute -right-1 -bottom-1 h-4 w-4 rounded-full bg-red-500 p-0.5 text-white" />
             </div>
           </div>
 
-          <h3 className="text-lg font-semibold text-slate-900">
+          <h3 className="text-sm font-medium text-gray-900">
             Store Limit Reached
           </h3>
         </div>
       </div>
 
       {/* Action Section - Same structure as other cards */}
-      <div className="flex flex-col gap-3 p-4">
+      <div className="flex flex-col gap-3">
         {/* Primary Action Button - Same styling */}
         <Link
           to="https://bfinit.com/contact"

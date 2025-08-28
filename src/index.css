@@ -19,6 +19,20 @@
   --font-roboto: Roboto, serif;
 }
 
+@layer utilities {
+  .custom-scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .custom-scrollbar-hide {
+    scrollbar-width: none;
+  }
+
+  .custom-scrollbar-hide {
+    -ms-overflow-style: none;
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }

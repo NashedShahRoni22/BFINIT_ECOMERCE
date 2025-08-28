@@ -1,111 +1,129 @@
-import { BsArrow90DegDown } from "react-icons/bs";
 import {
-  MdOutlineHome,
-  MdStorefront,
-  MdShoppingCart,
-  MdCategory,
-  MdLibraryBooks,
-  MdPayment,
-  MdOutlineBuild,
-  MdSupportAgent,
-} from "react-icons/md";
+  CircleQuestionMark,
+  CornerDownRight,
+  CreditCard,
+  Globe,
+  House,
+  Newspaper,
+  Package,
+  Search,
+  ShoppingBag,
+  ShoppingCart,
+} from "lucide-react";
 
 export const sideNavLinks = [
   {
-    icon: MdOutlineHome,
-    name: "Home",
-    url: "/",
-  },
-  {
-    icon: MdStorefront,
-    name: "Stores",
-    url: "/all-stores",
-  },
-  {
-    icon: MdCategory,
-    name: "Products",
-    subCategories: [
+    groupName: "main",
+    links: [
       {
-        name: "Category",
-        url: "/products/category",
-        icon: BsArrow90DegDown,
+        icon: House,
+        name: "Home",
+        url: "/",
       },
       {
-        name: "Sub Category",
-        url: "/products/sub-category",
-        icon: BsArrow90DegDown,
+        icon: ShoppingBag,
+        name: "Stores",
+        url: "/all-stores",
       },
       {
-        name: "Brands",
-        url: "/products/brands",
-        icon: BsArrow90DegDown,
+        icon: Package,
+        name: "Products",
+        subCategories: [
+          {
+            name: "Category",
+            url: "/products/category",
+            icon: CornerDownRight,
+          },
+          {
+            name: "Sub Category",
+            url: "/products/sub-category",
+            icon: CornerDownRight,
+          },
+          {
+            name: "Brands",
+            url: "/products/brands",
+            icon: CornerDownRight,
+          },
+          {
+            name: "Add Product",
+            url: "/products/add-product",
+            icon: CornerDownRight,
+          },
+          {
+            name: "Manage Product",
+            url: "/products/manage-product",
+            icon: CornerDownRight,
+          },
+        ],
       },
       {
-        name: "Add Product",
-        url: "/products/add-product",
-        icon: BsArrow90DegDown,
-      },
-      {
-        name: "Manage Product",
-        url: "/products/manage-product",
-        icon: BsArrow90DegDown,
-      },
-    ],
-  },
-  {
-    icon: MdShoppingCart,
-    name: "Orders",
-    url: "/orders",
-  },
-  {
-    icon: MdOutlineBuild,
-    name: "SEO & Meta",
-    url: "/seo-meta",
-  },
-  {
-    icon: MdLibraryBooks,
-    name: "Blogs",
-    subCategories: [
-      {
-        name: "Add Blog",
-        url: "/blogs/add",
-        icon: BsArrow90DegDown,
-      },
-      {
-        name: "Manage Blog",
-        url: "/blogs/manage",
-        icon: BsArrow90DegDown,
+        icon: ShoppingCart,
+        name: "Orders",
+        url: "/orders",
       },
     ],
   },
+
   {
-    icon: MdPayment,
-    name: "Payments",
-    url: "/payments",
+    groupName: "marketing",
+    links: [
+      {
+        icon: Search,
+        name: "SEO & Meta",
+        url: "/seo-meta",
+      },
+      {
+        icon: Newspaper,
+        name: "Blogs",
+        subCategories: [
+          {
+            name: "Add Blog",
+            url: "/blogs/add",
+            icon: CornerDownRight,
+          },
+          {
+            name: "Manage Blog",
+            url: "/blogs/manage",
+            icon: CornerDownRight,
+          },
+        ],
+      },
+    ],
   },
+
   {
-    icon: MdSupportAgent, // or MdSupport, MdHelp
-    name: "Support",
-    subCategories: [
+    groupName: "settings",
+    links: [
       {
-        name: "Help Center",
-        url: "/support/help-center",
-        icon: BsArrow90DegDown,
+        icon: CreditCard,
+        name: "Payments",
+        url: "/payments",
       },
       {
-        name: "Returns & Refunds",
-        url: "/support/returns-refunds",
-        icon: BsArrow90DegDown,
-      },
-      {
-        name: "Terms & Conditions",
-        url: "/support/terms-conditions",
-        icon: BsArrow90DegDown,
-      },
-      {
-        name: "How to Buy",
-        url: "/support/how-to-buy",
-        icon: BsArrow90DegDown,
+        icon: CircleQuestionMark,
+        name: "Support",
+        subCategories: [
+          {
+            name: "Help Center",
+            url: "/support/help-center",
+            icon: CornerDownRight,
+          },
+          {
+            name: "Returns & Refunds",
+            url: "/support/returns-refunds",
+            icon: CornerDownRight,
+          },
+          {
+            name: "Terms & Conditions",
+            url: "/support/terms-conditions",
+            icon: CornerDownRight,
+          },
+          {
+            name: "How to Buy",
+            url: "/support/how-to-buy",
+            icon: CornerDownRight,
+          },
+        ],
       },
     ],
   },

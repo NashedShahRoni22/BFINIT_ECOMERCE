@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import { LuChevronDown } from "react-icons/lu";
 import { sideNavLinks } from "../../../data/adminData/sideNavLinks";
 import useAuth from "../../../hooks/auth/useAuth";
 import bookIcon from "../../../assets/icons/book.png";
+import { ChevronDown } from "lucide-react";
 
 export default function SideNav({ showSideNav, setShowSideNav }) {
   const { user } = useAuth();
+  const location = useLocation();
   const [openDropdown, setOpenDropdown] = useState("");
   const [showGuide, setShowGuide] = useState(true);
 
@@ -21,9 +22,15 @@ export default function SideNav({ showSideNav, setShowSideNav }) {
     }
   }, [user?.data?.clientid]);
 
-  // Handle click to toggle dropdown visibility
-  const toggleDropdown = (index) => {
-    setOpenDropdown(openDropdown === index ? "" : index);
+  // handle dropdown toggle on click
+  const toggleDropdown = (groupIndex, linkIndex) => {
+    const dropdownKey = `${groupIndex}-${linkIndex}`;
+
+    if (openDropdown === dropdownKey) {
+      setOpenDropdown(null);
+    } else {
+      setOpenDropdown(dropdownKey);
+    }
   };
 
   // handle guide close
@@ -35,56 +42,99 @@ export default function SideNav({ showSideNav, setShowSideNav }) {
     );
   };
 
+  const isLinkActive = (url) => {
+    return location.pathname === url;
+  };
+
+  const isDropdownActive = (subCategories) => {
+    return subCategories?.some((subItem) => location.pathname === subItem.url);
+  };
+
   return (
     <aside
-      className={`absolute z-10 flex h-[calc(100dvh-55px)] flex-col gap-10 overflow-y-auto bg-neutral-100 text-sm transition-all duration-300 ease-in-out md:px-4 md:py-2 lg:static lg:w-1/6 lg:min-w-[231px] lg:translate-x-0 ${showSideNav ? "w-1/2 translate-x-0 md:w-1/3" : "-translate-x-[1000%]"}`}
+      className={`custom-scrollbar-hide absolute z-10 flex h-[calc(100dvh-55px)] flex-col gap-10 overflow-y-auto bg-white p-2 text-sm transition-all duration-300 ease-in-out lg:static lg:w-1/6 lg:min-w-[231px] lg:translate-x-0 ${showSideNav ? "w-1/2 translate-x-0 md:w-1/3" : "-translate-x-[1000%]"}`}
     >
       <nav className="flex flex-1 flex-col gap-1.5">
-        {sideNavLinks.map((link, i) => (
-          <div key={i}>
-            {/* Products dropdown with nested subcategories */}
-            {link.subCategories ? (
-              <div>
-                <button
-                  className="group flex w-full cursor-pointer items-center justify-between gap-1 rounded-md px-4 py-2 capitalize transition-all duration-200 ease-in-out hover:bg-white"
-                  onClick={() => toggleDropdown(i)}
-                >
-                  <div className="flex gap-1">
-                    <link.icon className="text-dashboard-primary text-2xl" />
-                    {link.name}
-                  </div>
-                  <LuChevronDown className="text-dashboard-primary text-lg" />
-                </button>
+        {sideNavLinks.map((group, groupIndex) => (
+          <div key={groupIndex}>
+            <p className="my-2.5 px-4 text-[10px] font-medium tracking-wider text-[#9CA3AF] uppercase">
+              {group.groupName}
+            </p>
 
-                {/* Dropdown list */}
-                <div
-                  className={`mt-2 grid overflow-hidden pl-4 transition-all duration-300 ease-in-out ${openDropdown === i ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
-                >
-                  <div className="overflow-hidden">
-                    {link.subCategories.map((subLink, j) => (
-                      <Link
-                        key={j}
-                        to={subLink.url}
-                        onClick={() => setShowSideNav(false)}
-                        className="flex gap-1.5 rounded-md px-4 py-2 capitalize transition-all duration-200 ease-in-out hover:bg-white"
-                      >
-                        <subLink.icon className="text-dashboard-primary -rotate-90 transform text-xl" />
-                        {subLink.name}
-                      </Link>
-                    ))}
+            <div className="space-y-0.5">
+              {group.links.map((navMenuItem, linkIndex) =>
+                navMenuItem.subCategories ? (
+                  <div key={linkIndex}>
+                    <button
+                      onClick={() => toggleDropdown(groupIndex, linkIndex)}
+                      className={`flex w-full cursor-pointer items-center justify-between rounded-md px-4 py-2 transition-all duration-200 ease-linear ${isDropdownActive(navMenuItem.subCategories) ? "text-dashboard-primary bg-[#EFF6FF]" : "hover:bg-[#F4F5F9]"}`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <navMenuItem.icon
+                          size={18}
+                          className={`shrink-0 ${isDropdownActive(navMenuItem.subCategories) ? "text-dashboard-primary" : "text-[#6B7280]"}`}
+                        />
+                        <span
+                          className={`text-xs font-medium ${isDropdownActive(navMenuItem.subCategories) ? "text-dashboard-primary" : "text-[#4B5563]"}`}
+                        >
+                          {navMenuItem.name}
+                        </span>
+                      </div>
+
+                      <ChevronDown
+                        size={16}
+                        className={`shrink-0 text-[#6B7280] transition-transform duration-200 ease-linear ${openDropdown === `${groupIndex}-${linkIndex}` ? "rotate-180" : "rotate-0"} ${isDropdownActive(navMenuItem.subCategories) ? "text-dashboard-primary" : "text-[#6B7280]"}`}
+                      />
+                    </button>
+
+                    {/* Subcategories dropdown */}
+                    <div
+                      className={`mt-1 ml-4 grid overflow-hidden border-l border-[#E5E7EB] pl-4 opacity-100 transition-all duration-200 ease-linear ${openDropdown === `${groupIndex}-${linkIndex}` ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
+                    >
+                      <div className="min-h-0 space-y-0.5">
+                        {navMenuItem.subCategories.map((subItem, subIndex) => (
+                          <Link
+                            key={subIndex}
+                            to={subItem.url}
+                            className={`flex items-center gap-2 overflow-hidden rounded-md py-1.5 transition-colors duration-200 ease-linear md:px-3 ${
+                              isLinkActive(subItem.url)
+                                ? "text-dashboard-primary"
+                                : "text-[#6B7280] hover:bg-[#F4F5F9]"
+                            }`}
+                          >
+                            <subItem.icon
+                              size={14}
+                              className={`shrink-0 ${isLinkActive(subItem.url) ? "text-dashboard-primary" : "text-[#9CA3AF]"}`}
+                            />
+                            <span
+                              className={`text-xs ${isLinkActive(subItem.url) ? "text-dashboard-primary font-medium" : "text-[#4B5563]"}`}
+                            >
+                              {subItem.name}
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ) : (
-              <Link
-                to={link.url}
-                onClick={() => setShowSideNav(false)}
-                className="group flex gap-1 rounded-md px-4 py-2 capitalize transition-all duration-200 ease-in-out hover:bg-white"
-              >
-                <link.icon className="text-dashboard-primary text-2xl" />
-                {link.name}
-              </Link>
-            )}
+                ) : (
+                  <Link
+                    key={linkIndex}
+                    to={navMenuItem.url}
+                    className={`flex items-center gap-3 rounded-md px-4 py-2 transition-all duration-200 ease-linear ${isLinkActive(navMenuItem.url) ? "bg-[#EFF6FF]" : "hover:bg-[#F4F5F9]"}`}
+                  >
+                    <navMenuItem.icon
+                      size={18}
+                      className={`shrink-0 ${isLinkActive(navMenuItem.url) ? "text-dashboard-primary" : "text-[#6B7280]"}`}
+                    />
+                    <span
+                      className={`text-xs font-medium ${isLinkActive(navMenuItem.url) ? "text-dashboard-primary" : "text-[#4B5563]"}`}
+                    >
+                      {navMenuItem.name}
+                    </span>
+                  </Link>
+                ),
+              )}
+            </div>
           </div>
         ))}
       </nav>

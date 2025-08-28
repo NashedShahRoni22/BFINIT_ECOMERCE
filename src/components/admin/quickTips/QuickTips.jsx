@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaMinus, FaPlusSquare } from "react-icons/fa";
+import { ChevronDown } from "lucide-react";
 import { ecommerceTips } from "../../../data/adminData/ecomerceTips";
 
 export default function QuickTips() {
@@ -7,42 +7,38 @@ export default function QuickTips() {
     id: null,
     state: false,
   });
+
+  // toggle function
+  const toggleTip = (index) => {
+    setShow((prev) => ({
+      id: prev.id === index ? null : index,
+      state: prev.id === index ? false : true,
+    }));
+  };
+
   return (
-    <div className="grid gap-4">
+    <div className="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white">
       {ecommerceTips.map((tip, index) => (
         <div
           key={index}
-          className="border-dashboard-primary min-w-full border-b !p-4"
+          className="min-w-full border-b border-gray-200 p-4 pt-0 text-gray-800 last:border-0 hover:bg-gray-50"
         >
-          <div className="flex items-center justify-between">
-            <h5 className="!my-2.5 w-5/6 font-semibold">{tip.question}</h5>
-            <div>
-              {show.id === index && show.state ? (
-                <FaMinus
-                  onClick={() => {
-                    setShow({
-                      id: null,
-                      state: false,
-                    });
-                  }}
-                  className="text-dashboard-primary cursor-pointer text-2xl"
-                />
-              ) : (
-                <FaPlusSquare
-                  onClick={() => {
-                    setShow({
-                      id: index,
-                      state: true,
-                    });
-                  }}
-                  className="text-dashboard-primary cursor-pointer text-2xl"
-                />
-              )}
-            </div>
+          <button
+            onClick={() => toggleTip(index)}
+            className="flex w-full cursor-pointer items-center justify-between py-4"
+          >
+            <h3 className="text-sm font-medium">{tip.question}</h3>
+            <ChevronDown
+              size={14}
+              className={`transition-transform duration-200 ease-linear ${show.id === index && show.state && "rotate-180"}`}
+            />
+          </button>
+
+          <div
+            className={`grid overflow-hidden opacity-100 transition-all duration-200 ease-linear ${show.id === index && show.state ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+          >
+            <p className="overflow-hidden text-sm">{tip.answer}</p>
           </div>
-          {show.id === index && show.state && (
-            <p className="text-gray-600">{tip.answer}</p>
-          )}
         </div>
       ))}
     </div>

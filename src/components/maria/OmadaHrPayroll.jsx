@@ -3,7 +3,7 @@ import { FaRegCircleCheck } from "react-icons/fa6";
 import omadaHrImg from "../../assets/maria/hr-payroll-hero-2.jpg";
 
 const omadaHrFeat = [
-  "Omada HR Payroll manage employees salaries, wages, bonuses",
+  "ACOR Payroll manage employees salaries, wages, bonuses",
   "Runs Unlimited Payslips effectively",
   "Manages employee Time management",
   "Manages employee Holiday management",
@@ -25,7 +25,7 @@ export default function OmadaHrPayroll() {
       <div className="flex justify-center lg:w-1/2">
         <img
           src={omadaHrImg}
-          alt="omada hr payroll dashboard"
+          alt="acor payroll dashboard"
           loading="lazy"
           className="h-[390px] w-full rounded-xl object-cover lg:h-auto"
         />
@@ -34,7 +34,7 @@ export default function OmadaHrPayroll() {
         <h2 className="text-primary font-playfair text-4xl font-bold">
           Empower your workflow with{" "}
           <span className="text-primary underline underline-offset-[14px]">
-            Omada HR Payroll
+            Acor Payroll
           </span>
         </h2>
         <ul className="my-10">

@@ -3,26 +3,26 @@ import { LuPlus, LuStore } from "react-icons/lu";
 
 export default function CreateStoreCard() {
   return (
-    <div className="group flex w-full flex-col overflow-hidden rounded-lg border border-dashed border-neutral-200">
+    <div className="group flex w-full flex-col overflow-hidden rounded-lg border border-dashed border-gray-200 bg-white p-4">
       {/* Header Section - Same structure as store card */}
-      <div className="relative p-6">
-        <div className="flex flex-col items-center">
+      <div className="relative flex-1">
+        <div className="flex gap-4">
           {/* Icon container - same size as store logo */}
-          <div className="mb-3 flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl bg-gray-50 ring-1 ring-slate-200">
+          <div className="mb-3 flex h-12 w-12 items-center justify-center overflow-hidden rounded-md bg-gray-50 ring-1 ring-slate-200">
             <div className="relative">
-              <LuStore className="group-hover:text-dashboard-primary h-8 w-8 text-gray-400 transition-all duration-200 ease-linear" />
+              <LuStore className="group-hover:text-dashboard-primary h-6 w-6 text-gray-400 transition-all duration-200 ease-linear" />
               <LuPlus className="absolute -right-1 -bottom-1 h-4 w-4 rounded-full bg-gray-600 p-0.5 text-white" />
             </div>
           </div>
 
-          <h3 className="text-lg font-semibold text-slate-900">
+          <h3 className="text-sm font-medium text-gray-900">
             Create New Store
           </h3>
         </div>
       </div>
 
       {/* Action Section - Same structure as store card */}
-      <div className="flex flex-col gap-3 p-4">
+      <div className="flex flex-col gap-3">
         {/* Primary Action Button - Same styling */}
         <Link
           to="/create-store"

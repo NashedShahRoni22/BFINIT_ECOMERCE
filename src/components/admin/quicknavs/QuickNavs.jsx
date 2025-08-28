@@ -3,15 +3,15 @@ import { Link } from "react-router";
 
 export default function QuickNavs() {
   return (
-    <div className="flex flex-wrap gap-4">
+    <div className="mt-4 grid w-full max-w-xl grid-cols-3 gap-4">
       {quickNavigationLinks.map((quickNav, index) => (
         <Link
           key={index}
           to={quickNav.url}
-          className="flex size-[120px] flex-col items-center justify-center gap-2.5 rounded p-2 shadow"
+          className="flex flex-col items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white py-5"
         >
-          <quickNav.icon className="text-dashboard-primary text-4xl" />
-          <p className="text-sm">{quickNav.name}</p>
+          <quickNav.icon size={24} className="text-dashboard-primary" />
+          <p className="text-sm font-medium">{quickNav.name}</p>
         </Link>
       ))}
     </div>
