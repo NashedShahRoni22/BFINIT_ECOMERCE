@@ -222,7 +222,7 @@ export default function AddProduct() {
           selectedStore?.storeId,
           user?.token,
         ]);
-        navigate("/products/manage-product");
+        navigate("/products/inventory");
       },
       onError: () => {
         toast.error("Something went wrong!");

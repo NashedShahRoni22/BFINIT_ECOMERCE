@@ -50,8 +50,8 @@ export const sideNavLinks = [
             icon: CornerDownRight,
           },
           {
-            name: "Manage Product",
-            url: "/products/manage-product",
+            name: "Inventory",
+            url: "/products/inventory",
             icon: CornerDownRight,
           },
         ],

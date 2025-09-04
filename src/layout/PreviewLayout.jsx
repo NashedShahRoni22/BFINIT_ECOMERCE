@@ -4,6 +4,7 @@ import useAuth from "../hooks/auth/useAuth";
 import useGetQuery from "../hooks/queries/useGetQuery";
 import { componentsData } from "../data/adminData/componentsData";
 import useGetAllMeta from "../hooks/meta/getAllMeta";
+import { CustomerProvider } from "../Providers/CustomerProvider";
 
 export default function PreviewLayout() {
   const { user } = useAuth();
@@ -70,12 +71,12 @@ export default function PreviewLayout() {
   };
 
   return (
-    <>
+    <CustomerProvider>
       <ScrollRestoration />
       {renderComponent("navbarStyle", previewData.navbarStyle)}
       {renderComponent("categoryBarStyle", previewData.categoryBarStyle)}
       <Outlet />
       {renderComponent("footerStyle", previewData.footerStyle)}
-    </>
+    </CustomerProvider>
   );
 }

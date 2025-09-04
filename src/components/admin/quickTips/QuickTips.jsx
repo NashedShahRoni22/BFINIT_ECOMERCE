@@ -21,7 +21,7 @@ export default function QuickTips() {
       {ecommerceTips.map((tip, index) => (
         <div
           key={index}
-          className="min-w-full border-b border-gray-200 p-4 pt-0 text-gray-800 last:border-0 hover:bg-gray-50"
+          className="min-w-full border-b border-gray-200 px-4 last:border-0 hover:bg-gray-50"
         >
           <button
             onClick={() => toggleTip(index)}
@@ -35,7 +35,7 @@ export default function QuickTips() {
           </button>
 
           <div
-            className={`grid overflow-hidden opacity-100 transition-all duration-200 ease-linear ${show.id === index && show.state ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+            className={`grid overflow-hidden opacity-100 transition-all duration-200 ease-linear ${show.id === index && show.state ? "grid-rows-[1fr] pb-4" : "grid-rows-[0fr]"}`}
           >
             <p className="overflow-hidden text-sm">{tip.answer}</p>
           </div>

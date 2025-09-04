@@ -40,6 +40,8 @@ import ReturnPolicyPreview from "../pages/store/ReturnPolicyPreview/ReturnPolicy
 import TermsPreview from "../pages/store/TermsPreview/TermsPreview";
 import BuyGuidePreview from "../pages/store/BuyGuidePreview/BuyGuidePreview";
 import ProductSearchPage from "../pages/store/ProductSearchPage/ProductSearchPage";
+import EcommerceLogin from "../pages/store/UserLogin/UserLogin";
+import EcommerceSignup from "../pages/store/UserSignup/UserSignup";
 
 export const router = createBrowserRouter([
   {
@@ -108,7 +110,7 @@ export const router = createBrowserRouter([
         element: <Brands />,
       },
       {
-        path: "/products/manage-product",
+        path: "/products/inventory",
         element: <ManageProduct />,
       },
       {
@@ -222,6 +224,14 @@ export const router = createBrowserRouter([
       {
         path: "coming-soon",
         element: <ComingSoon />,
+      },
+      {
+        path: "login",
+        element: <EcommerceLogin />,
+      },
+      {
+        path: "signup",
+        element: <EcommerceSignup />,
       },
     ],
   },

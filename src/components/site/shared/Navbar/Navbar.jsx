@@ -190,9 +190,9 @@ export default function Navbar() {
               </div>
             </Link>
 
-            {/* <Link className={`${showSearch && "hidden md:block"}`}>
+            <Link to="login" className={`${showSearch && "hidden md:block"}`}>
               <LuUserRound to="login" className="text-lg md:text-2xl" />
-            </Link> */}
+            </Link>
 
             {/* Mobile Menu Toggler */}
             <button
