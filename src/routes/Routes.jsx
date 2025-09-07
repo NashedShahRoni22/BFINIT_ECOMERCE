@@ -42,6 +42,8 @@ import BuyGuidePreview from "../pages/store/BuyGuidePreview/BuyGuidePreview";
 import ProductSearchPage from "../pages/store/ProductSearchPage/ProductSearchPage";
 import EcommerceLogin from "../pages/store/UserLogin/UserLogin";
 import EcommerceSignup from "../pages/store/UserSignup/UserSignup";
+import CustomerPanelLayout from "../layout/CustomerPanelLayout";
+import CustomerProfile from "../pages/store/CustomerProfile/CustomerProfile";
 
 export const router = createBrowserRouter([
   {
@@ -232,6 +234,20 @@ export const router = createBrowserRouter([
       {
         path: "signup",
         element: <EcommerceSignup />,
+      },
+      {
+        path: "account",
+        element: <CustomerPanelLayout />,
+        children: [
+          {
+            index: true,
+            element: <CustomerProfile />,
+          },
+          {
+            path: "orders",
+            element: <h1>Order details will be here</h1>,
+          },
+        ],
       },
     ],
   },

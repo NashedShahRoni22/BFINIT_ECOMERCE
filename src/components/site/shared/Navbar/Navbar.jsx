@@ -8,11 +8,14 @@ import useCart from "../../../../hooks/cart/useCart";
 import useGetStorePreference from "../../../../hooks/stores/useGetStorePreference";
 import useDebounce from "../../../../hooks/debounce/useDebounce";
 import useGetQuery from "../../../../hooks/queries/useGetQuery";
+import useCustomer from "../../../../hooks/auth/useCustomer";
 
 export default function Navbar() {
   const { storeId } = useParams();
   const navigate = useNavigate();
+  const { customer } = useCustomer();
   const { cartItems } = useCart();
+
   const [showMenu, setShowMenu] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [keyword, setKeyword] = useState("");
@@ -190,7 +193,10 @@ export default function Navbar() {
               </div>
             </Link>
 
-            <Link to="login" className={`${showSearch && "hidden md:block"}`}>
+            <Link
+              to={`/preview/${storeId}/${customer?.token ? "account" : "login"}`}
+              className={`${showSearch && "hidden md:block"}`}
+            >
               <LuUserRound to="login" className="text-lg md:text-2xl" />
             </Link>
 
