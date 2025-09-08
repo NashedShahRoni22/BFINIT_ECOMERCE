@@ -1,6 +1,10 @@
 import { createContext, useEffect, useState } from "react";
 
-export const CustomerContext = createContext(null);
+export const CustomerContext = createContext({
+  customer: null,
+  handleSetCustomer: () => {},
+  handleLogout: () => {},
+});
 
 export const CustomerProvider = ({ children }) => {
   const [customer, setCustomer] = useState(null);

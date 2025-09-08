@@ -44,6 +44,7 @@ import EcommerceLogin from "../pages/store/UserLogin/UserLogin";
 import EcommerceSignup from "../pages/store/UserSignup/UserSignup";
 import CustomerPanelLayout from "../layout/CustomerPanelLayout";
 import CustomerProfile from "../pages/store/CustomerProfile/CustomerProfile";
+import CustomerOrders from "../pages/store/CustomerOrders/CustomerOrders";
 
 export const router = createBrowserRouter([
   {
@@ -245,7 +246,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "orders",
-            element: <h1>Order details will be here</h1>,
+            element: <CustomerOrders />,
           },
         ],
       },
