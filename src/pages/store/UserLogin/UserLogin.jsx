@@ -25,7 +25,9 @@ const EcommerceLogin = () => {
   });
 
   // form submit handler
-  const handleSubmit = async () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
     if (!email || !password) {
       return toast.error("Email & Password is required!");
     }
@@ -71,7 +73,7 @@ const EcommerceLogin = () => {
             </p>
           </div>
 
-          <form className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email Field */}
             <div>
               <label
@@ -138,7 +140,6 @@ const EcommerceLogin = () => {
             {/* Login Button */}
             <button
               type="submit"
-              onClick={handleSubmit}
               disabled={isPending}
               className={`bg-accent flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors ${isPending ? "cursor-not-allowed opacity-75" : "cursor-pointer hover:opacity-90"}`}
             >
