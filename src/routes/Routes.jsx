@@ -45,6 +45,7 @@ import EcommerceSignup from "../pages/store/UserSignup/UserSignup";
 import CustomerPanelLayout from "../layout/CustomerPanelLayout";
 import CustomerProfile from "../pages/store/CustomerProfile/CustomerProfile";
 import CustomerOrders from "../pages/store/CustomerOrders/CustomerOrders";
+import NewAddProduct from "../pages/admin/NewAddProduct/NewAddProduct";
 
 export const router = createBrowserRouter([
   {
@@ -98,7 +99,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/products/add-product",
-        element: <AddProduct />,
+        element: <NewAddProduct />,
       },
       {
         path: "/products/category",
