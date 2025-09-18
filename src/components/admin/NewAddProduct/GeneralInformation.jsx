@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,24 +17,41 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ChevronUp } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 export default function GeneralInformation({ form }) {
+  const [isOpen, setIsOpen] = useState(true);
+
   return (
-    <div className="rounded-lg border bg-white p-6">
+    <Collapsible
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      className="rounded-lg border bg-white p-6"
+    >
       {/* header */}
-      <div className="mb-6 flex items-center justify-between">
+      <div className="flex items-center justify-between">
         <h2 className="text-lg">General Information</h2>
-        <Button
-          variant="secondary"
-          size="icon"
-          className="size-7 cursor-pointer"
-        >
-          <ChevronUp />
-        </Button>
+        {/* section collapse toggle button */}
+        <CollapsibleTrigger aschild>
+          <Button
+            type="button"
+            variant="secondary"
+            size="icon"
+            className="size-7 cursor-pointer"
+          >
+            <ChevronUp
+              className={`transition-transform duration-200 ease-linear ${isOpen ? "rotate-0" : "rotate-180"}`}
+            />
+          </Button>
+        </CollapsibleTrigger>
       </div>
 
-      <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
+      {/* main form content like input field, select and text area */}
+      <CollapsibleContent className="mt-6 grid grid-cols-1 items-start gap-6 md:grid-cols-2">
         {/* product name */}
         <FormField
           control={form.control}
@@ -42,7 +61,12 @@ export default function GeneralInformation({ form }) {
             <FormItem>
               <FormLabel>Product Name *</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="Product Name" {...field} />
+                <Input
+                  type="text"
+                  placeholder="Product Name"
+                  {...field}
+                  className="shadow-none"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -58,7 +82,7 @@ export default function GeneralInformation({ form }) {
               <FormLabel>Brand</FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full shadow-none">
                     <SelectValue placeholder="Select Brand" />
                   </SelectTrigger>
                   <SelectContent>
@@ -83,7 +107,7 @@ export default function GeneralInformation({ form }) {
               <FormLabel>Category *</FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full shadow-none">
                     <SelectValue placeholder="Select Category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -107,7 +131,7 @@ export default function GeneralInformation({ form }) {
               <FormLabel>Subcategory</FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full shadow-none">
                     <SelectValue placeholder="Select subcategory" />
                   </SelectTrigger>
                   <SelectContent>
@@ -134,6 +158,7 @@ export default function GeneralInformation({ form }) {
                   <Textarea
                     placeholder="Write a short description of the product"
                     {...field}
+                    className="shadow-none"
                   />
                 </FormControl>
                 <FormMessage />
@@ -141,7 +166,7 @@ export default function GeneralInformation({ form }) {
             )}
           />
         </div>
-      </div>
-    </div>
+      </CollapsibleContent>
+    </Collapsible>
   );
 }
