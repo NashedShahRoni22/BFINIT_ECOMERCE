@@ -25,7 +25,7 @@ export default function ThumbnailImage({ form }) {
 
     // Validate file size
     if (file.size > maxFileSize) {
-      toast.error("File size must be less than 2MB");
+      toast.error("File size must be less than 500KB");
       return;
     }
 
@@ -89,12 +89,12 @@ export default function ThumbnailImage({ form }) {
                     <button
                       type="button"
                       onClick={() => removeImage(field.onChange, field.value)}
-                      className="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-600"
+                      className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-600"
                     >
-                      <X className="h-4 w-4" />
+                      <X className="h-3 w-3" />
                     </button>
                   </div>
-                  <div className="mt-2 text-center text-sm text-gray-600">
+                  <div className="mt-2 text-center text-xs text-gray-600">
                     Thumbnail Image
                   </div>
                 </div>
@@ -111,14 +111,14 @@ export default function ThumbnailImage({ form }) {
                   onDragLeave={handleDragLeave}
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <Upload className="h-6 w-6 text-gray-400" />
-                  <div className="mt-1.5 text-center text-sm text-gray-500">
+                  <Upload className="h-5 w-5 text-gray-400" />
+                  <div className="mt-1.5 text-center text-xs text-gray-500">
                     <div>Drag & Drop your thumbnail image here or</div>
                     <Button
                       type="button"
                       variant="secondary"
                       size="sm"
-                      className="mt-3 cursor-pointer"
+                      className="mt-3 cursor-pointer text-xs"
                       onClick={(e) => {
                         e.stopPropagation();
                         fileInputRef.current?.click();
@@ -140,7 +140,7 @@ export default function ThumbnailImage({ form }) {
               />
             </div>
           </FormControl>
-          <FormMessage />
+          <FormMessage className="text-xs" />
         </FormItem>
       )}
     />

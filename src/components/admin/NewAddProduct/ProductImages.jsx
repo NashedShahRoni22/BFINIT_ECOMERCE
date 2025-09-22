@@ -16,21 +16,21 @@ export default function ProductImages({ form }) {
     <Collapsible
       open={isOpen}
       onOpenChange={setIsOpen}
-      className="rounded-lg border bg-white p-6"
+      className="rounded-lg border bg-white p-8"
     >
       {/* header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg">Product Images</h2>
+        <h2 className="text-sm font-semibold text-gray-900">Product Images</h2>
         {/* section collapse toggle button */}
-        <CollapsibleTrigger aschild className="mt-6">
+        <CollapsibleTrigger aschild>
           <Button
             type="button"
             variant="secondary"
             size="icon"
-            className="size-7 cursor-pointer"
+            className="size-6 cursor-pointer text-xs"
           >
             <ChevronUp
-              className={`transition-transform duration-200 ease-linear ${isOpen ? "rotate-0" : "rotate-180"}`}
+              className={`h-3 w-3 transition-transform duration-200 ease-linear ${isOpen ? "rotate-0" : "rotate-180"}`}
             />
           </Button>
         </CollapsibleTrigger>

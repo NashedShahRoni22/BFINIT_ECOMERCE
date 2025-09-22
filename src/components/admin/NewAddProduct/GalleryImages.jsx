@@ -124,7 +124,7 @@ export default function GalleryImages({ form }) {
           onDragOver={onDragOver}
           onDragLeave={onDragLeave}
         >
-          <Plus className="h-5 w-5" />
+          <Plus className="h-4 w-4" />
         </div>
       );
     }
@@ -145,9 +145,9 @@ export default function GalleryImages({ form }) {
           <button
             type="button"
             onClick={() => onRemove(index)}
-            className="absolute top-1 right-1 z-50 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-600"
+            className="absolute top-1 right-1 z-50 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-600"
           >
-            <X className="h-3 w-3" />
+            <X className="h-2.5 w-2.5" />
           </button>
         </div>
       </div>
@@ -198,7 +198,7 @@ export default function GalleryImages({ form }) {
                   })}
                 </div>
 
-                <div className="mt-4 flex flex-wrap items-center justify-between text-sm text-gray-500">
+                <div className="mt-4 flex flex-wrap items-center justify-between text-xs text-gray-500">
                   <div>
                     Upload up to {maxImages} gallery images (max 300KB each)
                   </div>
@@ -220,7 +220,7 @@ export default function GalleryImages({ form }) {
                 />
               </div>
             </FormControl>
-            <FormMessage />
+            <FormMessage className="text-xs" />
           </FormItem>
         );
       }}
