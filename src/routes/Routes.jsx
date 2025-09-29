@@ -46,6 +46,7 @@ import CustomerPanelLayout from "../layout/CustomerPanelLayout";
 import CustomerProfile from "../pages/store/CustomerProfile/CustomerProfile";
 import CustomerOrders from "../pages/store/CustomerOrders/CustomerOrders";
 import NewAddProduct from "../pages/admin/NewAddProduct/NewAddProduct";
+import Domains from "@/pages/admin/Domains/Domains";
 
 export const router = createBrowserRouter([
   {
@@ -99,6 +100,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/products/add-product",
+        element: <AddProduct />,
+      },
+      // TODO: replace old add product with this new add product
+      {
+        path: "/products/new-add-product",
         element: <NewAddProduct />,
       },
       {
@@ -128,6 +134,10 @@ export const router = createBrowserRouter([
       {
         path: "/blogs/add",
         element: <AddBlog />,
+      },
+      {
+        path: "/domains",
+        element: <Domains />,
       },
       {
         path: "/payments",

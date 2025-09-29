@@ -95,6 +95,11 @@ export const sideNavLinks = [
     groupName: "settings",
     links: [
       {
+        icon: Globe,
+        name: "Domains",
+        url: "/domains",
+      },
+      {
         icon: CreditCard,
         name: "Payments",
         url: "/payments",
