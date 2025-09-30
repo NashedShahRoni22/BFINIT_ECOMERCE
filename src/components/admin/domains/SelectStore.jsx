@@ -17,7 +17,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Store, Info } from "lucide-react";
 import useGetStores from "@/hooks/stores/useGetStores";
 
-export default function SelectStore({ form }) {
+export default function SelectStore({ form, storeId }) {
   // fetch all stores
   const { data, isLoading } = useGetStores();
 
@@ -91,14 +91,16 @@ export default function SelectStore({ form }) {
       />
 
       {/* Info Alert */}
-      <Alert className="mt-4 border-blue-200 bg-blue-50/50">
-        <Info className="h-4 w-4 text-blue-600" />
-        <AlertDescription className="text-xs text-blue-900/90">
-          <span className="font-medium">Store Selection Required.</span> Please
-          select a store to configure its domain settings. Each store can have
-          its own custom domain.
-        </AlertDescription>
-      </Alert>
+      {!storeId && (
+        <Alert className="mt-4 border-blue-200 bg-blue-50/50">
+          <Info className="h-4 w-4 text-blue-600" />
+          <AlertDescription className="text-xs text-blue-900/90">
+            <span className="font-medium">Store Selection Required.</span>{" "}
+            Please select a store to configure its domain settings. Each store
+            can have its own custom domain.
+          </AlertDescription>
+        </Alert>
+      )}
     </div>
   );
 }
