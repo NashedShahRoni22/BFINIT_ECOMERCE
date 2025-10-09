@@ -122,23 +122,25 @@ export default function Domains() {
           </Button>
 
           {/* optional submit button for custom domain */}
-          {storeId && form.watch("domainOwnership") !== "need-domain" && (
-            <div className="flex flex-col-reverse gap-4 lg:flex-row">
-              <Button variant="outline" size="lg" className="cursor-pointer">
-                Save as Draft
-              </Button>
+          {storeId &&
+            data?.data?.isActive &&
+            form.watch("domainOwnership") !== "need-domain" && (
+              <div className="flex flex-col-reverse gap-4 lg:flex-row">
+                <Button variant="outline" size="lg" className="cursor-pointer">
+                  Save as Draft
+                </Button>
 
-              <Button type="submit" size="lg" className="cursor-pointer">
-                {isDomainIntegrated
-                  ? isUpdating
-                    ? "Updating..."
-                    : "Update Domain"
-                  : isSubmitting
-                    ? "Connecting..."
-                    : "Connect Domain"}
-              </Button>
-            </div>
-          )}
+                <Button type="submit" size="lg" className="cursor-pointer">
+                  {isDomainIntegrated
+                    ? isUpdating
+                      ? "Updating..."
+                      : "Update Domain"
+                    : isSubmitting
+                      ? "Connecting..."
+                      : "Connect Domain"}
+                </Button>
+              </div>
+            )}
         </div>
       </form>
     </Form>

@@ -17,60 +17,61 @@ export default function DNSConfiguration({ data }) {
   };
 
   return (
-    <>
-      <hr className="my-6" />
-
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        {/* dns header */}
-        <div className="mb-5 flex items-start justify-between">
-          <div className="space-y-1">
-            <h2 className="text-base">DNS Configuration</h2>
-            <p className="text-muted-foreground text-sm">
-              Add these records to your domain&apos;s DNS settings. You&apos;ll
-              need to add these records in your domain registrar&apos;s control
-              panel
-            </p>
-          </div>
-
-          <CollapsibleTrigger asChild>
-            <Button
-              type="button"
-              variant="secondary"
-              size="icon"
-              className="shrink-0 hover:cursor-pointer"
-            >
-              <ChevronUp
-                className={`h-5 w-5 transition-transform duration-200 ${
-                  isOpen ? "rotate-0" : "rotate-180"
-                }`}
-              />
-            </Button>
-          </CollapsibleTrigger>
+    <Collapsible
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      className="bg-card rounded-lg border p-6"
+    >
+      {/* dns header */}
+      <div className="flex items-start justify-between">
+        <div>
+          <h3 className="text-lg font-semibold">DNS Configuration</h3>
+          <p className="text-muted-foreground mt-1 text-sm">
+            Add these records to your domain&apos;s DNS settings. You&apos;ll
+            need to add these records in your domain registrar&apos;s control
+            panel
+          </p>
         </div>
 
-        <CollapsibleContent>
-          {/* time warning */}
-          <div className="bg-muted flex items-start gap-2 rounded-[10px] border px-4 py-3">
-            <Clock className="text-muted-foreground mt-0.5 size-5" />
-            <div className="space-y-0.5">
-              <p className="text-muted-foreground text-sm font-semibold">
-                DNS Propagation Time
-              </p>
-              <p className="text-muted-foreground text-sm">
-                DNS changes can take up to 48 hours to propagate worldwide, but
-                typically complete within 1-4 hours
-              </p>
-            </div>
+        <CollapsibleTrigger asChild>
+          <Button
+            type="button"
+            variant="secondary"
+            size="icon"
+            className="shrink-0 hover:cursor-pointer"
+          >
+            <ChevronUp
+              className={`h-5 w-5 transition-transform duration-200 ${
+                isOpen ? "rotate-0" : "rotate-180"
+              }`}
+            />
+          </Button>
+        </CollapsibleTrigger>
+      </div>
+
+      <CollapsibleContent className="mt-5">
+        {/* time warning */}
+        <div className="bg-muted flex items-start gap-2 rounded-[10px] border px-4 py-3">
+          <Clock className="text-muted-foreground mt-0.5 size-5" />
+          <div className="space-y-0.5">
+            <p className="text-muted-foreground text-sm font-semibold">
+              DNS Propagation Time
+            </p>
+            <p className="text-muted-foreground text-sm">
+              DNS changes can take up to 48 hours to propagate worldwide, but
+              typically complete within 1-4 hours
+            </p>
           </div>
+        </div>
 
-          {/* required records */}
-          <div className="mt-5">
-            <h2 className="text-muted-foreground text-base">
-              Required DNS Records
-            </h2>
+        {/* required records */}
+        <div className="mt-5">
+          <h2 className="text-muted-foreground text-base">
+            Required DNS Records
+          </h2>
 
-            {/* A RECORD */}
-            <div className="mt-5 rounded-[10px] border p-6">
+          {/* A RECORD */}
+          {/* <div className="mt-5 rounded-[10px] border p-6">
               <h4 className="font-medium">Record 1: A Record</h4>
               <p className="text-muted-foreground mt-1 text-sm">
                 Points your domain to our server
@@ -84,7 +85,7 @@ export default function DNSConfiguration({ data }) {
                   </div>
                 </div>
 
-                {/* <div className="space-y-1.5">
+                <div className="space-y-1.5">
                   <p className="text-sm">HOST/NAME</p>
                   <div className="flex items-center gap-2">
                     <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
@@ -93,7 +94,7 @@ export default function DNSConfiguration({ data }) {
                     <Clipboard size={18} className="cursor-pointer" />
                   </div>
                   <p className="text-sm">Use &apos;@&apos; for root domain</p>
-                </div> */}
+                </div>
 
                 <div className="space-y-1.5">
                   <p className="text-sm">VALUE/POINTS TO</p>
@@ -126,24 +127,24 @@ export default function DNSConfiguration({ data }) {
                   <p className="text-sm">Can be automatic</p>
                 </div>
               </div>
-            </div>
+            </div> */}
 
-            {/* CNAME Record */}
-            <div className="mt-5 rounded-[10px] border p-6">
-              <h4 className="font-medium">Record 2: CNAME Record</h4>
-              <p className="text-muted-foreground mt-1 text-sm">
-                Connects your www subdomain
-              </p>
+          {/* CNAME Record */}
+          <div className="mt-5 rounded-[10px] border p-6">
+            <h4 className="font-medium">Record 1: CNAME Record</h4>
+            <p className="text-muted-foreground mt-1 text-sm">
+              Connects your www subdomain
+            </p>
 
-              <div className="text-muted-foreground mt-3 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-                <div className="space-y-1.5">
-                  <p className="text-sm">Type</p>
-                  <div className="bg-muted rounded border px-2 py-0.5 text-sm text-gray-900">
-                    CNAME
-                  </div>
+            <div className="text-muted-foreground mt-3 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+              <div className="space-y-1.5">
+                <p className="text-sm">Type</p>
+                <div className="bg-muted rounded border px-2 py-0.5 text-sm text-gray-900">
+                  CNAME
                 </div>
+              </div>
 
-                {/* <div className="space-y-1.5">
+              {/* <div className="space-y-1.5">
                   <p className="text-sm">HOST/NAME</p>
                   <div className="flex items-center gap-2">
                     <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
@@ -154,22 +155,22 @@ export default function DNSConfiguration({ data }) {
                   <p className="text-sm">Enables www.yourdomain.com</p>
                 </div> */}
 
-                <div className="space-y-1.5">
-                  <p className="text-sm">VALUE/POINTS TO</p>
-                  <div className="flex items-center gap-2">
-                    <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
-                      {data?.dnsData?.cName}
-                    </p>
-                    <Clipboard
-                      size={18}
-                      className="cursor-pointer"
-                      onClick={() => handleTextCopy(data?.dnsData?.cName)}
-                    />
-                  </div>
-                  <p className="text-sm">Points to Bfinit hosting</p>
+              <div className="space-y-1.5">
+                <p className="text-sm">VALUE/POINTS TO</p>
+                <div className="flex items-center gap-2">
+                  <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
+                    {data?.dnsData?.cName}
+                  </p>
+                  <Clipboard
+                    size={18}
+                    className="cursor-pointer"
+                    onClick={() => handleTextCopy(data?.dnsData?.cName)}
+                  />
                 </div>
+                <p className="text-sm">Points to Bfinit hosting</p>
+              </div>
 
-                <div className="space-y-1.5">
+              {/* <div className="space-y-1.5">
                   <p className="text-sm">TTL</p>
                   <div className="flex items-center gap-2">
                     <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
@@ -183,12 +184,12 @@ export default function DNSConfiguration({ data }) {
                   </div>
 
                   <p className="text-sm">Can be automatic</p>
-                </div>
-              </div>
+                </div> */}
             </div>
+          </div>
 
-            {/* Name Servers */}
-            <div className="mt-5 rounded-[10px] border p-6">
+          {/* Name Servers */}
+          {/* <div className="mt-5 rounded-[10px] border p-6">
               <h4 className="font-medium">Record 3: Name Servers</h4>
               <p className="text-muted-foreground mt-1 text-sm">
                 Here is your name servers
@@ -211,10 +212,10 @@ export default function DNSConfiguration({ data }) {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
 
-            {/* TXT Record */}
-            {/* <div className="mt-5 rounded-[10px] border p-6">
+          {/* TXT Record */}
+          {/* <div className="mt-5 rounded-[10px] border p-6">
               <h4 className="font-medium">Record 3: TXT Record</h4>
               <p className="text-muted-foreground mt-1 text-sm">
                 Verifies domain ownership
@@ -261,9 +262,8 @@ export default function DNSConfiguration({ data }) {
                 </div>
               </div>
             </div> */}
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
-    </>
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
   );
 }

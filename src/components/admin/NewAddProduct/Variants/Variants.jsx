@@ -6,22 +6,27 @@ import {
 } from "@/components/ui/collapsible";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, AlertCircle } from "lucide-react";
 import AttributeCard from "./AttributeCard";
 import AllVariantsTable from "./AllVariantsTable";
 
 export default function Variants({ form }) {
   const [isOpen, setIsOpen] = useState(false);
   const [attributes, setAttributes] = useState([]);
+  const [useDefaultPricing, setUseDefaultPricing] = useState(true);
+
+  // Get error state from form
+  const variantError = form.formState.errors.variants;
 
   // Watch form values and update them when attributes change
   useEffect(() => {
     // Update form with current variants data
     form.setValue("variants", {
       enabled: isOpen,
+      useDefaultPricing,
       attributes: attributes,
     });
-  }, [attributes, isOpen, form]);
+  }, [attributes, isOpen, useDefaultPricing, form]);
 
   // Get all variants from attributes values
   const getAllVariants = () => {
@@ -49,6 +54,10 @@ export default function Variants({ form }) {
       required: false,
     };
     setAttributes([...attributes, newAttribute]);
+    // Clear error when user starts adding attributes
+    if (variantError) {
+      form.clearErrors("variants");
+    }
   };
 
   // Delete attribute
@@ -61,6 +70,10 @@ export default function Variants({ form }) {
     setAttributes(
       attributes.map((attr) => (attr.id === id ? { ...attr, name } : attr)),
     );
+    // Clear error when user starts filling data
+    if (variantError) {
+      form.clearErrors("variants");
+    }
   };
 
   // Add values from input (pipe separated) - now creates value objects
@@ -104,6 +117,11 @@ export default function Variants({ form }) {
           : attr,
       ),
     );
+
+    // Clear error when user adds values
+    if (variantError) {
+      form.clearErrors("variants");
+    }
   };
 
   // Remove single value object
@@ -233,6 +251,14 @@ export default function Variants({ form }) {
           </Button>
         </div>
 
+        {/* Error Message Display */}
+        {variantError && (
+          <div className="mt-4 flex items-start gap-2 rounded-md border border-red-200 bg-red-50 p-3">
+            <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-red-600" />
+            <p className="text-xs text-red-600">{variantError.message}</p>
+          </div>
+        )}
+
         {/* Render all attributes */}
         <div className="mt-4 space-y-4">
           {attributes.map((attribute) => (
@@ -248,7 +274,7 @@ export default function Variants({ form }) {
           ))}
         </div>
 
-        {attributes.length === 0 && (
+        {attributes.length === 0 && !variantError && (
           <div className="mt-4 py-8 text-center text-xs text-gray-500">
             <p>No variant attributes added yet.</p>
           </div>
@@ -262,6 +288,8 @@ export default function Variants({ form }) {
             deleteVariant={deleteVariant}
             onImageUpload={handleVariantImageUpload}
             form={form}
+            useDefaultPricing={useDefaultPricing}
+            setUseDefaultPricing={setUseDefaultPricing}
           />
         )}
       </CollapsibleContent>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -19,8 +19,9 @@ export default function AllVariantsTable({
   deleteVariant,
   onImageUpload,
   form,
+  useDefaultPricing,
+  setUseDefaultPricing,
 }) {
-  const [useDefaultPricing, setUseDefaultPricing] = useState(true);
   const fileInputRefs = useRef({});
 
   // Watch form values for main product pricing
@@ -147,7 +148,7 @@ export default function AllVariantsTable({
                 SKU
               </TableHead>
               <TableHead className="text-xs font-medium text-gray-700">
-                PRICE
+                PRICE <span className="text-destructive">*</span>
               </TableHead>
               <TableHead className="text-xs font-medium text-gray-700">
                 DISCOUNT PRICE
