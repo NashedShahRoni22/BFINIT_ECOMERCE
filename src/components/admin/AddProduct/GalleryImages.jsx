@@ -4,6 +4,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import toast from "react-hot-toast";
@@ -169,8 +170,22 @@ export default function GalleryImages({ form }) {
 
         return (
           <FormItem>
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <FormLabel className="text-xs font-medium text-gray-700">
+                  Gallery Images
+                </FormLabel>
+                <p className="mt-1.5 text-xs text-gray-500">
+                  Upload up to {maxImages} images (PNG, JPG • max 300KB each)
+                </p>
+              </div>
+              <div className="text-xs font-medium text-gray-600">
+                {currentImages.length}/{maxImages} uploaded
+              </div>
+            </div>
+
             <FormControl>
-              <div>
+              <div className="mt-4">
                 <div className="grid grid-cols-2 gap-6 md:grid-cols-3 xl:grid-cols-4">
                   {Array.from({ length: totalSlots }).map((_, index) => {
                     const image = currentImages[index];
@@ -196,15 +211,6 @@ export default function GalleryImages({ form }) {
                       />
                     );
                   })}
-                </div>
-
-                <div className="mt-4 flex flex-wrap items-center justify-between text-xs text-gray-500">
-                  <div>
-                    Upload up to {maxImages} gallery images (max 300KB each)
-                  </div>
-                  <div>
-                    {currentImages.length}/{maxImages} uploaded
-                  </div>
                 </div>
 
                 {/* Hidden input for general file upload */}

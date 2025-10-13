@@ -38,6 +38,34 @@
 
 html {
   scroll-behavior: smooth;
+  overflow: hidden;
+}
+
+/* SunEditor rounded border styling */
+.sun-editor {
+  border-radius: 0.5rem !important; /* 8px - matches Tailwind's rounded-lg */
+  border: 1px solid rgb(209 213 219) !important; /* gray-300 */
+}
+
+.sun-editor:focus-within {
+  outline: none;
+}
+
+/* Round the toolbar */
+.sun-editor .se-toolbar {
+  border-radius: 0.5rem 0.5rem 0 0 !important;
+  border-bottom: 1px solid rgb(229 231 235) !important; /* gray-200 */
+}
+
+/* Round the editing area */
+.sun-editor .se-wrapper {
+  border-radius: 0 0 0.5rem 0.5rem !important;
+}
+
+/* Match textarea styling */
+.sun-editor .se-wrapper .se-wrapper-inner {
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.25rem;
 }
 
 /* content support css  */

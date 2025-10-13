@@ -130,36 +130,33 @@ export default function DomainField({ form, isDomainIntegrated, data }) {
           </div>
         )}
 
-        {/* Domain Name Input - Only show when active */}
-        {isActive && (
-          <FormField
-            control={form.control}
-            name="domain"
-            rules={{
-              required: "Domain name is required",
-              pattern: {
-                value:
-                  /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$/,
-                message: "Please enter a valid domain name",
-              },
-            }}
-            render={({ field }) => (
-              <FormItem className="mt-6">
-                <FormLabel>
-                  Domain Name <span className="text-destructive">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input placeholder="example.com" {...field} />
-                </FormControl>
-                <FormDescription>
-                  Enter your root domain without &apos;www&apos; or
-                  &apos;https://&apos; (e.g., example.com)
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
+        {/* Domain Name Input */}
+        <FormField
+          control={form.control}
+          name="domain"
+          rules={{
+            required: "Domain name is required",
+            pattern: {
+              value: /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$/,
+              message: "Please enter a valid domain name",
+            },
+          }}
+          render={({ field }) => (
+            <FormItem className="mt-6">
+              <FormLabel>
+                Domain Name <span className="text-destructive">*</span>
+              </FormLabel>
+              <FormControl>
+                <Input placeholder="example.com" {...field} />
+              </FormControl>
+              <FormDescription>
+                Enter your root domain without &apos;www&apos; or
+                &apos;https://&apos; (e.g., example.com)
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         {/* Helper message when inactive and trying to edit */}
         {isDomainIntegrated && !isActive && (

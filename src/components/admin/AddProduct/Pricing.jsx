@@ -33,7 +33,7 @@ export default function Pricing({ form }) {
         </div>
 
         {/* section collapse toggle button */}
-        <CollapsibleTrigger aschild>
+        <CollapsibleTrigger asChild>
           <Button
             type="button"
             variant="secondary"
@@ -77,7 +77,7 @@ export default function Pricing({ form }) {
                 <FormMessage className="text-xs" />
               ) : (
                 <p className="text-xs text-gray-500">
-                  The selling price customers will pay
+                  The price customers will pay
                 </p>
               )}
             </FormItem>
@@ -88,29 +88,60 @@ export default function Pricing({ form }) {
         <FormField
           control={form.control}
           name="discount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-xs font-medium text-gray-700">
-                Compare at Price
-              </FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <p className="absolute top-1/2 left-2 -translate-y-1/2 text-sm text-gray-500">
-                    $
+          rules={{
+            validate: (value) => {
+              if (!value) return true; // Optional field
+              const price = parseFloat(form.getValues("price"));
+              const comparePrice = parseFloat(value);
+
+              if (comparePrice && comparePrice <= price) {
+                return "Compare at price must be higher than selling price";
+              }
+              return true;
+            },
+          }}
+          render={({ field, fieldState }) => {
+            const price = form.watch("price");
+            const compareAtPrice = field.value;
+            const showWarning =
+              compareAtPrice && parseFloat(compareAtPrice) <= parseFloat(price);
+
+            return (
+              <FormItem>
+                <FormLabel className="text-xs font-medium text-gray-700">
+                  Compare at Price
+                </FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <p className="absolute top-1/2 left-2 -translate-y-1/2 text-sm text-gray-500">
+                      $
+                    </p>
+                    <Input
+                      {...field}
+                      type="number"
+                      placeholder="0.00"
+                      className={`pl-7 text-xs shadow-none ${showWarning ? "border-amber-500" : ""}`}
+                    />
+                  </div>
+                </FormControl>
+
+                {/* Show either error, warning, or help text */}
+                {fieldState.error ? (
+                  <FormMessage className="text-xs" />
+                ) : showWarning ? (
+                  <p className="text-xs text-amber-600">
+                    Compare at price should be higher than selling price ($
+                    {price}) to show a discount
                   </p>
-                  <Input
-                    {...field}
-                    type="number"
-                    placeholder="0.00"
-                    className="pl-7 text-xs shadow-none"
-                  />
-                </div>
-              </FormControl>
-              <p className="text-xs text-gray-500">
-                Show original price for discount display (optional)
-              </p>
-            </FormItem>
-          )}
+                ) : (
+                  <p className="text-xs text-gray-500">
+                    Original price for discount display (optional, must be
+                    higher than price)
+                  </p>
+                )}
+              </FormItem>
+            );
+          }}
         />
 
         {/* per item cost */}

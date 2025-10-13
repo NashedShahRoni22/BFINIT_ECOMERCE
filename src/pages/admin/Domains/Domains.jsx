@@ -97,7 +97,14 @@ export default function Domains() {
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        <SelectStore form={form} storeId={storeId} />
+        <SelectStore
+          form={form}
+          storeId={storeId}
+          title="Select Your Store"
+          description="Choose which store to configure domain settings for"
+          placeholder="Select a store"
+          alertMessage="Each store can have its own custom domain"
+        />
 
         {storeId && !isDomainIntegrated && <DomainOwnership form={form} />}
 
@@ -122,25 +129,23 @@ export default function Domains() {
           </Button>
 
           {/* optional submit button for custom domain */}
-          {storeId &&
-            data?.data?.isActive &&
-            form.watch("domainOwnership") !== "need-domain" && (
-              <div className="flex flex-col-reverse gap-4 lg:flex-row">
-                <Button variant="outline" size="lg" className="cursor-pointer">
-                  Save as Draft
-                </Button>
+          {storeId && form.watch("domainOwnership") !== "need-domain" && (
+            <div className="flex flex-col-reverse gap-4 lg:flex-row">
+              <Button variant="outline" size="lg" className="cursor-pointer">
+                Save as Draft
+              </Button>
 
-                <Button type="submit" size="lg" className="cursor-pointer">
-                  {isDomainIntegrated
-                    ? isUpdating
-                      ? "Updating..."
-                      : "Update Domain"
-                    : isSubmitting
-                      ? "Connecting..."
-                      : "Connect Domain"}
-                </Button>
-              </div>
-            )}
+              <Button type="submit" size="lg" className="cursor-pointer">
+                {isDomainIntegrated
+                  ? isUpdating
+                    ? "Updating..."
+                    : "Update Domain"
+                  : isSubmitting
+                    ? "Connecting..."
+                    : "Connect Domain"}
+              </Button>
+            </div>
+          )}
         </div>
       </form>
     </Form>

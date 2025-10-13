@@ -5,6 +5,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import toast from "react-hot-toast";
@@ -75,8 +76,15 @@ export default function ThumbnailImage({ form }) {
       rules={{ required: "Thumbnail image is required" }}
       render={({ field }) => (
         <FormItem>
+          <div>
+            <FormLabel className="text-xs font-medium text-gray-700">
+              Thumbnail Image *
+            </FormLabel>
+            <p className="mt-1.5 text-xs text-gray-500">PNG, JPG • max 500KB</p>
+          </div>
+
           <FormControl>
-            <div className="relative">
+            <div className="relative mt-4">
               {field.value ? (
                 // Show uploaded image
                 <div className="group relative">
@@ -93,9 +101,6 @@ export default function ThumbnailImage({ form }) {
                     >
                       <X className="h-3 w-3" />
                     </button>
-                  </div>
-                  <div className="mt-2 text-center text-xs text-gray-600">
-                    Thumbnail Image
                   </div>
                 </div>
               ) : (
@@ -126,7 +131,6 @@ export default function ThumbnailImage({ form }) {
                     >
                       Browse Files
                     </Button>
-                    <div className="mt-4 text-xs">PNG, JPG up to 500KB</div>
                   </div>
                 </div>
               )}

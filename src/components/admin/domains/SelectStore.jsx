@@ -1,9 +1,7 @@
 import {
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import {
@@ -17,7 +15,15 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Store, Info } from "lucide-react";
 import useGetStores from "@/hooks/stores/useGetStores";
 
-export default function SelectStore({ form, storeId }) {
+export default function SelectStore({
+  form,
+  storeId,
+  title,
+  description,
+  placeholder = "Select a store",
+  alertMessage,
+  showHeader = true,
+}) {
   // fetch all stores
   const { data, isLoading } = useGetStores();
 
@@ -27,12 +33,14 @@ export default function SelectStore({ form, storeId }) {
   return (
     <div className="bg-card rounded-lg border p-6">
       {/* Header Section */}
-      <div className="mb-5 space-y-1">
-        <h2 className="text-base font-semibold">Select Your Store</h2>
-        <p className="text-muted-foreground text-sm">
-          Choose which store you want to connect a custom domain to
-        </p>
-      </div>
+      {showHeader && (title || description) && (
+        <div className="mb-5 space-y-1">
+          {title && <h2 className="text-base font-semibold">{title}</h2>}
+          {description && (
+            <p className="text-muted-foreground text-sm">{description}</p>
+          )}
+        </div>
+      )}
 
       {/* Form Field */}
       <FormField
@@ -41,9 +49,6 @@ export default function SelectStore({ form, storeId }) {
         rules={{ required: "Please select a store" }}
         render={({ field }) => (
           <FormItem className="space-y-2">
-            <FormLabel className="text-sm font-medium">
-              Store Selection <span className="text-destructive">*</span>
-            </FormLabel>
             <Select
               onValueChange={field.onChange}
               defaultValue={field.value}
@@ -57,7 +62,7 @@ export default function SelectStore({ form, storeId }) {
                       <span className="text-sm">Loading stores...</span>
                     </div>
                   ) : (
-                    <SelectValue placeholder="Choose a store to connect domain" />
+                    <SelectValue placeholder={placeholder} />
                   )}
                 </SelectTrigger>
               </FormControl>
@@ -82,22 +87,17 @@ export default function SelectStore({ form, storeId }) {
                 )}
               </SelectContent>
             </Select>
-            <FormDescription className="text-muted-foreground text-xs">
-              Select the store you want to configure domain settings for
-            </FormDescription>
             <FormMessage />
           </FormItem>
         )}
       />
 
       {/* Info Alert */}
-      {!storeId && (
+      {!storeId && alertMessage && (
         <Alert className="mt-4 border-blue-200 bg-blue-50/50">
           <Info className="h-4 w-4 text-blue-600" />
           <AlertDescription className="text-xs text-blue-900/90">
-            <span className="font-medium">Store Selection Required.</span>{" "}
-            Please select a store to configure its domain settings. Each store
-            can have its own custom domain.
+            {alertMessage}
           </AlertDescription>
         </Alert>
       )}

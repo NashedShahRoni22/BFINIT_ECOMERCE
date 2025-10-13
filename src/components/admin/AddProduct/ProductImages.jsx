@@ -20,9 +20,17 @@ export default function ProductImages({ form }) {
     >
       {/* header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-gray-900">Product Images</h2>
+        <div>
+          <h2 className="text-sm font-semibold text-gray-900">
+            Product Images
+          </h2>
+          <p className="mt-1 text-xs text-gray-600">
+            Upload high-quality images to showcase your product (recommended:
+            1000x1000px minimum)
+          </p>
+        </div>
         {/* section collapse toggle button */}
-        <CollapsibleTrigger aschild>
+        <CollapsibleTrigger asChild>
           <Button
             type="button"
             variant="secondary"

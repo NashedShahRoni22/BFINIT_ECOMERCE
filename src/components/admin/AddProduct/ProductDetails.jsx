@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/collapsible";
 import SunEditor from "suneditor-react";
 
-export default function GeneralInformation({ form }) {
+export default function ProductDetails({ form }) {
   const [isOpen, setIsOpen] = useState(true);
   const [tagInput, setTagInput] = useState("");
   const sunEditorRef = useRef();
@@ -72,11 +72,18 @@ export default function GeneralInformation({ form }) {
     >
       {/* header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-gray-900">
-          General Information
-        </h2>
+        <div>
+          <h2 className="text-sm font-semibold text-gray-900">
+            Product Details
+          </h2>
+          <p className="mt-1 text-xs text-gray-600">
+            Enter the basic information about your product including name,
+            description and category
+          </p>
+        </div>
+
         {/* section collapse toggle button */}
-        <CollapsibleTrigger aschild>
+        <CollapsibleTrigger asChild>
           <Button
             type="button"
             variant="secondary"
@@ -246,7 +253,7 @@ export default function GeneralInformation({ form }) {
                     )}
                     {/* Tag input */}
                     <Input
-                      placeholder="Add tags..."
+                      placeholder="Add tags (separate with | for multiple)"
                       value={tagInput}
                       onChange={(e) => setTagInput(e.target.value)}
                       onKeyPress={(e) => handleTagKeyPress(e, field)}
