@@ -18,24 +18,25 @@ export default function LimitedStock({ form }) {
       name="limited_stock"
       render={({ field }) => (
         <FormItem>
-          <div className="rounded-lg border p-4 text-xs text-gray-700">
-            <div className="flex items-start gap-2 font-medium">
-              <div className="bg-secondary rounded p-1">
-                <Package2 size={14} />
+          <div className="rounded-lg border p-4">
+            <div className="flex items-start gap-3">
+              <div className="bg-secondary rounded p-1.5">
+                <Package2 size={16} />
               </div>
-              <div>
-                <p>Limited Stock</p>
-                <p className="mt-0.5 text-xs font-normal">
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-900">
+                  Limited Stock
+                </p>
+                <p className="mt-0.5 text-sm text-gray-600">
                   Shows scarcity to encourage quick purchasing decisions when
                   inventory is running low.
                 </p>
               </div>
             </div>
-
             <div className="mt-4 flex w-full items-center justify-between">
               <FormLabel
                 htmlFor="limited_stock"
-                className="text-xs font-medium"
+                className="text-sm font-medium text-gray-700"
               >
                 Enable Limited Stock badge
               </FormLabel>
@@ -48,14 +49,13 @@ export default function LimitedStock({ form }) {
                 />
               </FormControl>
             </div>
-
             {isLimitedStockEnabled && (
               <FormField
                 control={form.control}
                 name="limited_stock_threshold"
                 render={({ field }) => (
                   <FormItem className="mt-4 border-t pt-4">
-                    <FormLabel className="text-xs font-medium">
+                    <FormLabel className="text-sm font-medium text-gray-700">
                       Show when stock is below
                     </FormLabel>
                     <FormControl>
@@ -63,7 +63,7 @@ export default function LimitedStock({ form }) {
                         type="number"
                         placeholder="e.g., 10"
                         {...field}
-                        className="text-xs shadow-none"
+                        className="shadow-none"
                       />
                     </FormControl>
                     <FormMessage className="text-xs" />

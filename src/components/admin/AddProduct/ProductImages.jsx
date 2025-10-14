@@ -19,12 +19,12 @@ export default function ProductImages({ form }) {
       className="rounded-lg border bg-white p-8"
     >
       {/* header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between">
         <div>
           <h2 className="text-sm font-semibold text-gray-900">
             Product Images
           </h2>
-          <p className="mt-1 text-xs text-gray-600">
+          <p className="mt-1 text-sm text-gray-500">
             Upload high-quality images to showcase your product (recommended:
             1000x1000px minimum)
           </p>

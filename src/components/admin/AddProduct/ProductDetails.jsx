@@ -71,12 +71,12 @@ export default function ProductDetails({ form }) {
       className="rounded-lg border bg-white p-8"
     >
       {/* header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between">
         <div>
           <h2 className="text-sm font-semibold text-gray-900">
             Product Details
           </h2>
-          <p className="mt-1 text-xs text-gray-600">
+          <p className="mt-1 text-sm text-gray-500">
             Enter the basic information about your product including name,
             description and category
           </p>
@@ -106,48 +106,16 @@ export default function ProductDetails({ form }) {
           rules={{ required: "Product name is required" }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-xs font-medium text-gray-700">
-                Product Name *
+              <FormLabel className="text-sm font-medium text-gray-700">
+                Product Name <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
                 <Input
                   type="text"
                   placeholder="Product Name"
                   {...field}
-                  className="text-xs shadow-none"
+                  className="shadow-none"
                 />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
-
-        {/* brand selector */}
-        <FormField
-          control={form.control}
-          name="brand"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-xs font-medium text-gray-700">
-                Brand
-              </FormLabel>
-              <FormControl>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-full text-xs shadow-none">
-                    <SelectValue placeholder="Select Brand" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="apple" className="text-xs">
-                      Apple
-                    </SelectItem>
-                    <SelectItem value="samsung" className="text-xs">
-                      Samsung
-                    </SelectItem>
-                    <SelectItem value="google" className="text-xs">
-                      Google
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
               </FormControl>
               <FormMessage className="text-xs" />
             </FormItem>
@@ -161,22 +129,22 @@ export default function ProductDetails({ form }) {
           rules={{ required: "Category is required" }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-xs font-medium text-gray-700">
-                Category *
+              <FormLabel className="text-sm font-medium text-gray-700">
+                Category <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-full text-xs shadow-none">
+                  <SelectTrigger className="w-full shadow-none">
                     <SelectValue placeholder="Select Category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="mobile" className="text-xs">
+                    <SelectItem value="mobile" className="text-sm">
                       Mobile
                     </SelectItem>
-                    <SelectItem value="laptop" className="text-xs">
+                    <SelectItem value="laptop" className="text-sm">
                       Laptop
                     </SelectItem>
-                    <SelectItem value="airplane" className="text-xs">
+                    <SelectItem value="airplane" className="text-sm">
                       Airplane
                     </SelectItem>
                   </SelectContent>
@@ -193,23 +161,55 @@ export default function ProductDetails({ form }) {
           name="subcategory"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-xs font-medium text-gray-700">
+              <FormLabel className="text-sm font-medium text-gray-700">
                 Subcategory
               </FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-full text-xs shadow-none">
-                    <SelectValue placeholder="Select subcategory" />
+                  <SelectTrigger className="w-full shadow-none">
+                    <SelectValue placeholder="Select Subcategory" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="featured" className="text-xs">
+                    <SelectItem value="featured" className="text-sm">
                       Featured
                     </SelectItem>
-                    <SelectItem value="android" className="text-xs">
+                    <SelectItem value="android" className="text-sm">
                       Android
                     </SelectItem>
-                    <SelectItem value="ios" className="text-xs">
+                    <SelectItem value="ios" className="text-sm">
                       iOS
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
+
+        {/* brand selector */}
+        <FormField
+          control={form.control}
+          name="brand"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm font-medium text-gray-700">
+                Brand
+              </FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger className="w-full shadow-none">
+                    <SelectValue placeholder="Select Brand" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="apple" className="text-sm">
+                      Apple
+                    </SelectItem>
+                    <SelectItem value="samsung" className="text-sm">
+                      Samsung
+                    </SelectItem>
+                    <SelectItem value="google" className="text-sm">
+                      Google
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -226,7 +226,7 @@ export default function ProductDetails({ form }) {
             name="tags"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs font-medium text-gray-700">
+                <FormLabel className="text-sm font-medium text-gray-700">
                   Product Tags
                 </FormLabel>
                 <FormControl>
@@ -253,15 +253,12 @@ export default function ProductDetails({ form }) {
                     )}
                     {/* Tag input */}
                     <Input
-                      placeholder="Add tags (separate with | for multiple)"
+                      placeholder="Type tags and press Enter (use | for multiple, e.g. mobile | camera)"
                       value={tagInput}
                       onChange={(e) => setTagInput(e.target.value)}
                       onKeyPress={(e) => handleTagKeyPress(e, field)}
-                      className="text-xs shadow-none"
+                      className="shadow-none"
                     />
-                    <p className="text-xs text-gray-500">
-                      Press Enter to add tags
-                    </p>
                   </div>
                 </FormControl>
                 <FormMessage className="text-xs" />
@@ -283,7 +280,7 @@ export default function ProductDetails({ form }) {
             }}
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs font-medium text-gray-700">
+                <FormLabel className="text-sm font-medium text-gray-700">
                   Short Description
                 </FormLabel>
                 <FormControl>
@@ -292,7 +289,7 @@ export default function ProductDetails({ form }) {
                     rows={3}
                     maxLength={150}
                     placeholder="Write a short description of the product (150 characters max)"
-                    className="text-xs shadow-none"
+                    className="shadow-none"
                   />
                 </FormControl>
                 <div className="mt-1.5 flex items-center justify-end">
@@ -313,7 +310,7 @@ export default function ProductDetails({ form }) {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs font-medium text-gray-700">
+                <FormLabel className="text-sm font-medium text-gray-700">
                   Description
                 </FormLabel>
                 <FormControl>

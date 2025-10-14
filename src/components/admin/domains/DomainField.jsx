@@ -69,12 +69,12 @@ export default function DomainField({ form, isDomainIntegrated, data }) {
       <div className="bg-card rounded-lg border p-6">
         <div className="flex items-start justify-between">
           <div>
-            <h3 className="text-lg font-semibold">
+            <h3 className="text-sm font-semibold text-gray-900">
               {isDomainIntegrated
                 ? "Update Your Domain"
                 : "Connect Your Domain"}
             </h3>
-            <p className="text-muted-foreground mt-1 text-sm">
+            <p className="mt-1 text-sm text-gray-500">
               {isDomainIntegrated
                 ? "Update your domain details or configure DNS records"
                 : "Enter your domain details and configure DNS records to complete the integration"}

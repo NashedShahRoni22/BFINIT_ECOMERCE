@@ -44,23 +44,25 @@ export default function FlashSale({ form }) {
       name="flash_sale"
       render={({ field }) => (
         <FormItem>
-          <div className="rounded-lg border p-4 text-xs text-gray-700">
-            <div className="flex items-start gap-2 font-medium">
-              <div className="bg-secondary rounded p-1">
-                <Zap size={14} />
+          <div className="rounded-lg border p-4">
+            <div className="flex items-start gap-3">
+              <div className="bg-secondary rounded p-1.5">
+                <Zap size={16} />
               </div>
-              <div>
-                <p>Flash Sale</p>
-                <p className="mt-0.5 text-xs font-normal">
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-900">Flash Sale</p>
+                <p className="mt-0.5 text-sm text-gray-600">
                   Creates urgency with limited-time offer badge. Requires
                   <span className="font-medium"> Compare at Price</span> to be
                   set.
                 </p>
               </div>
             </div>
-
             <div className="mt-4 flex w-full items-center justify-between">
-              <FormLabel htmlFor="flash_sale" className="text-xs font-medium">
+              <FormLabel
+                htmlFor="flash_sale"
+                className="text-sm font-medium text-gray-700"
+              >
                 Enable Flash Sale Badge
               </FormLabel>
               <FormControl>
@@ -73,30 +75,28 @@ export default function FlashSale({ form }) {
                 />
               </FormControl>
             </div>
-
             {/* Show additional fields when enabled */}
             {isFlashSaleEnabled && hasValidPrices && (
               <div className="mt-4 space-y-4 border-t pt-4">
                 {/* Flash Sale Percentage Display */}
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium">
+                  <span className="text-sm font-medium text-gray-700">
                     Flash Sale Percentage
                   </span>
-                  <span className="text-xs font-semibold text-red-600">
+                  <span className="text-sm font-semibold text-red-600">
                     {discountPercentage}% OFF
                   </span>
                 </div>
                 <p className="text-xs text-gray-500">
                   Automatically calculated from Price and Compare at Price
                 </p>
-
                 {/* Sale End Date */}
                 <FormField
                   control={form.control}
                   name="flash_sale_end_date"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-xs font-medium">
+                      <FormLabel className="text-sm font-medium text-gray-700">
                         Sale End Date
                       </FormLabel>
                       <FormControl>
@@ -104,14 +104,13 @@ export default function FlashSale({ form }) {
                           type="datetime-local"
                           {...field}
                           value={field.value || ""}
-                          className="text-xs shadow-none"
+                          className="shadow-none"
                         />
                       </FormControl>
                       <FormMessage className="text-xs" />
                     </FormItem>
                   )}
                 />
-
                 {/* Show Countdown Timer Toggle */}
                 <FormField
                   control={form.control}
@@ -119,7 +118,7 @@ export default function FlashSale({ form }) {
                   render={({ field }) => (
                     <FormItem>
                       <div className="flex items-center justify-between">
-                        <FormLabel className="text-xs font-medium">
+                        <FormLabel className="text-sm font-medium text-gray-700">
                           Show countdown timer
                         </FormLabel>
                         <FormControl>

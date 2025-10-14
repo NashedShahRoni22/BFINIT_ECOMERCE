@@ -24,10 +24,10 @@ export default function Pricing({ form }) {
       className="rounded-lg border bg-white p-8"
     >
       {/* header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between">
         <div>
           <h2 className="text-sm font-semibold text-gray-900">Pricing</h2>
-          <p className="mt-1 text-xs text-gray-600">
+          <p className="mt-1 text-sm text-gray-500">
             Set product pricing, compare prices and cost calculations
           </p>
         </div>
@@ -56,8 +56,8 @@ export default function Pricing({ form }) {
           rules={{ required: "Price is required" }}
           render={({ field, fieldState }) => (
             <FormItem>
-              <FormLabel className="text-xs font-medium text-gray-700">
-                Price *
+              <FormLabel className="text-sm font-medium text-gray-700">
+                Price <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
                 <div className="relative">
@@ -68,7 +68,7 @@ export default function Pricing({ form }) {
                     {...field}
                     type="number"
                     placeholder="0.00"
-                    className="pl-7 text-xs shadow-none"
+                    className="pl-7 shadow-none"
                   />
                 </div>
               </FormControl>
@@ -108,7 +108,7 @@ export default function Pricing({ form }) {
 
             return (
               <FormItem>
-                <FormLabel className="text-xs font-medium text-gray-700">
+                <FormLabel className="text-sm font-medium text-gray-700">
                   Compare at Price
                 </FormLabel>
                 <FormControl>
@@ -120,7 +120,7 @@ export default function Pricing({ form }) {
                       {...field}
                       type="number"
                       placeholder="0.00"
-                      className={`pl-7 text-xs shadow-none ${showWarning ? "border-amber-500" : ""}`}
+                      className={`pl-7 shadow-none ${showWarning ? "border-amber-500" : ""}`}
                     />
                   </div>
                 </FormControl>
@@ -150,7 +150,7 @@ export default function Pricing({ form }) {
           name="cost"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-xs font-medium text-gray-700">
+              <FormLabel className="text-sm font-medium text-gray-700">
                 Cost per Item
               </FormLabel>
               <FormControl>
@@ -162,7 +162,7 @@ export default function Pricing({ form }) {
                     {...field}
                     type="number"
                     placeholder="0.00"
-                    className="pl-7 text-xs shadow-none"
+                    className="pl-7 shadow-none"
                   />
                 </div>
               </FormControl>
@@ -181,7 +181,7 @@ export default function Pricing({ form }) {
             name="tax"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs font-medium text-gray-700">
+                <FormLabel className="text-sm font-medium text-gray-700">
                   Tax
                 </FormLabel>
                 <FormControl>
@@ -194,7 +194,7 @@ export default function Pricing({ form }) {
                     />
                     <Label
                       htmlFor="tax"
-                      className="cursor-pointer text-xs text-gray-500"
+                      className="cursor-pointer text-sm text-gray-600"
                     >
                       Charge tax on this product
                     </Label>

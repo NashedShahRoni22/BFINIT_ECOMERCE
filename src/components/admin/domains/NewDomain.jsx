@@ -6,7 +6,6 @@ import {
   Plug,
   ShieldCheck,
 } from "lucide-react";
-import { LuGlobe } from "react-icons/lu";
 import { Link } from "react-router";
 
 const domainFeatures = [
@@ -21,10 +20,10 @@ export default function NewDomain() {
     <div className="bg-card rounded-lg border p-6">
       {/* Header Section */}
       <div className="mb-5 space-y-1">
-        <h2 className="flex items-center gap-1.5 text-base font-semibold">
-          <LuGlobe /> Get Your Custom Domain
+        <h2 className="text-sm font-semibold text-gray-900">
+          Get Your Custom Domain
         </h2>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm text-gray-500">
           Purchase a professional domain name for your store from our trusted
           partners
         </p>

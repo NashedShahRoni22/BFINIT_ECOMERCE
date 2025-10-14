@@ -77,12 +77,11 @@ export default function ThumbnailImage({ form }) {
       render={({ field }) => (
         <FormItem>
           <div>
-            <FormLabel className="text-xs font-medium text-gray-700">
-              Thumbnail Image *
+            <FormLabel className="text-sm font-medium text-gray-700">
+              Thumbnail Image <span className="text-destructive">*</span>
             </FormLabel>
             <p className="mt-1.5 text-xs text-gray-500">PNG, JPG • max 500KB</p>
           </div>
-
           <FormControl>
             <div className="relative mt-4">
               {field.value ? (
@@ -116,14 +115,14 @@ export default function ThumbnailImage({ form }) {
                   onDragLeave={handleDragLeave}
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <Upload className="h-5 w-5 text-gray-400" />
-                  <div className="mt-1.5 text-center text-xs text-gray-500">
+                  <Upload className="h-6 w-6 text-gray-400" />
+                  <div className="mt-2 text-center text-sm text-gray-600">
                     <div>Drag & Drop your thumbnail image here or</div>
                     <Button
                       type="button"
                       variant="secondary"
                       size="sm"
-                      className="mt-3 cursor-pointer text-xs"
+                      className="mt-3 cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
                         fileInputRef.current?.click();
@@ -134,7 +133,6 @@ export default function ThumbnailImage({ form }) {
                   </div>
                 </div>
               )}
-
               <input
                 ref={fileInputRef}
                 type="file"

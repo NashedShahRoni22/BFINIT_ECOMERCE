@@ -2,6 +2,7 @@ import DomainField from "@/components/admin/domains/DomainField";
 import DomainOwnership from "@/components/admin/domains/DomainOwnership";
 import NewDomain from "@/components/admin/domains/NewDomain";
 import SelectStore from "@/components/admin/domains/SelectStore";
+import DomainSkeleton from "@/components/site/skeleton/DomainSkeleton";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import useAuth from "@/hooks/auth/useAuth";
@@ -32,7 +33,7 @@ export default function Domains() {
   const isFetchEnabled = !!storeId && !!user?.token && !!user?.data?.clientid;
 
   // Fetch domain data is domain added or not
-  const { data } = useGetQuery({
+  const { data, isLoading } = useGetQuery({
     endpoint: `/publish/status/${storeId}`,
     token: user?.token,
     clientId: user?.data?.clientid,
@@ -103,24 +104,30 @@ export default function Domains() {
           title="Select Your Store"
           description="Choose which store to configure domain settings for"
           placeholder="Select a store"
-          alertMessage="Each store can have its own custom domain"
         />
 
-        {storeId && !isDomainIntegrated && <DomainOwnership form={form} />}
+        {isLoading ? (
+          <DomainSkeleton />
+        ) : (
+          <>
+            {storeId && !isDomainIntegrated && <DomainOwnership form={form} />}
 
-        {/* Conditional Domain field Rendering based on selection */}
-        {storeId && form.watch("domainOwnership") === "need-domain" && (
-          <NewDomain />
+            {/* Conditional Domain field Rendering based on selection */}
+            {storeId && form.watch("domainOwnership") === "need-domain" && (
+              <NewDomain />
+            )}
+
+            {storeId && form.watch("domainOwnership") === "has-domain" && (
+              <DomainField
+                form={form}
+                isDomainIntegrated={isDomainIntegrated}
+                data={data?.data}
+              />
+            )}
+          </>
         )}
 
-        {storeId && form.watch("domainOwnership") === "has-domain" && (
-          <DomainField
-            form={form}
-            isDomainIntegrated={isDomainIntegrated}
-            data={data?.data}
-          />
-        )}
-
+        {/* bottom buttons */}
         <div className="flex flex-col-reverse gap-4 lg:flex-row lg:justify-between">
           <Button variant="outline" size="lg" asChild>
             <Link to="/">
@@ -129,23 +136,25 @@ export default function Domains() {
           </Button>
 
           {/* optional submit button for custom domain */}
-          {storeId && form.watch("domainOwnership") !== "need-domain" && (
-            <div className="flex flex-col-reverse gap-4 lg:flex-row">
-              <Button variant="outline" size="lg" className="cursor-pointer">
-                Save as Draft
-              </Button>
+          {!isLoading &&
+            storeId &&
+            form.watch("domainOwnership") !== "need-domain" && (
+              <div className="flex flex-col-reverse gap-4 lg:flex-row">
+                <Button variant="outline" size="lg" className="cursor-pointer">
+                  Save as Draft
+                </Button>
 
-              <Button type="submit" size="lg" className="cursor-pointer">
-                {isDomainIntegrated
-                  ? isUpdating
-                    ? "Updating..."
-                    : "Update Domain"
-                  : isSubmitting
-                    ? "Connecting..."
-                    : "Connect Domain"}
-              </Button>
-            </div>
-          )}
+                <Button type="submit" size="lg" className="cursor-pointer">
+                  {isDomainIntegrated
+                    ? isUpdating
+                      ? "Updating..."
+                      : "Update Domain"
+                    : isSubmitting
+                      ? "Connecting..."
+                      : "Connect Domain"}
+                </Button>
+              </div>
+            )}
         </div>
       </form>
     </Form>

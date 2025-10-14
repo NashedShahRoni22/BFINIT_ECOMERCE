@@ -34,10 +34,12 @@ export default function SelectStore({
     <div className="bg-card rounded-lg border p-6">
       {/* Header Section */}
       {showHeader && (title || description) && (
-        <div className="mb-5 space-y-1">
-          {title && <h2 className="text-base font-semibold">{title}</h2>}
+        <div className="mb-5">
+          {title && (
+            <h2 className="text-sm font-semibold text-gray-900">{title}</h2>
+          )}
           {description && (
-            <p className="text-muted-foreground text-sm">{description}</p>
+            <p className="mt-1 text-sm text-gray-500">{description}</p>
           )}
         </div>
       )}
@@ -54,7 +56,7 @@ export default function SelectStore({
               defaultValue={field.value}
               disabled={isLoading || !hasStores}
             >
-              <FormControl>
+              <FormControl className="shadow-none">
                 <SelectTrigger className="w-full">
                   {isLoading ? (
                     <div className="text-muted-foreground flex items-center gap-2">

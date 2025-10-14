@@ -99,19 +99,19 @@ export default function AllVariantsTable({
   return (
     <div className="mt-8">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-xs font-medium text-gray-900">
+        <h3 className="text-sm font-medium text-gray-700">
           Generated Variants ({getAllVariants().length})
         </h3>
 
         {/* Pricing Toggle */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <Switch
             checked={useDefaultPricing}
             onCheckedChange={handlePricingToggle}
             className="cursor-pointer"
           />
           <Label
-            className="cursor-pointer text-xs"
+            className="cursor-pointer text-sm font-medium text-gray-700"
             onClick={() => handlePricingToggle(!useDefaultPricing)}
           >
             {useDefaultPricing ? "Default Pricing" : "Custom Pricing"}
@@ -121,7 +121,7 @@ export default function AllVariantsTable({
 
       {/* Info message about current pricing mode */}
       <div className="mb-4 rounded-lg border border-gray-200 bg-gray-50 p-3">
-        <p className="text-xs text-gray-700">
+        <p className="text-sm text-gray-700">
           {useDefaultPricing ? (
             <>
               Using main product price (
@@ -141,25 +141,25 @@ export default function AllVariantsTable({
         <Table>
           <TableHeader>
             <TableRow className="bg-[#F9FAFB]">
-              <TableHead className="text-xs font-medium text-gray-700">
+              <TableHead className="text-sm font-medium text-gray-700">
                 Variant
               </TableHead>
-              <TableHead className="text-xs font-medium text-gray-700">
+              <TableHead className="text-sm font-medium text-gray-700">
                 SKU
               </TableHead>
-              <TableHead className="text-xs font-medium text-gray-700">
+              <TableHead className="text-sm font-medium text-gray-700">
                 PRICE <span className="text-destructive">*</span>
               </TableHead>
-              <TableHead className="text-xs font-medium text-gray-700">
+              <TableHead className="text-sm font-medium text-gray-700">
                 DISCOUNT PRICE
               </TableHead>
-              <TableHead className="text-xs font-medium text-gray-700">
+              <TableHead className="text-sm font-medium text-gray-700">
                 STOCK
               </TableHead>
-              <TableHead className="text-xs font-medium text-gray-700">
+              <TableHead className="text-sm font-medium text-gray-700">
                 STATUS
               </TableHead>
-              <TableHead className="text-xs font-medium text-gray-700">
+              <TableHead className="text-sm font-medium text-gray-700">
                 Action
               </TableHead>
             </TableRow>
@@ -175,7 +175,7 @@ export default function AllVariantsTable({
                         <img
                           src={variant.imageUrl}
                           alt={variant.name}
-                          className="h-11 w-11 rounded-md object-cover"
+                          className="h-12 w-12 rounded-md object-cover"
                         />
                         <div className="absolute inset-0 flex items-center justify-center rounded-md bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
                           <Button
@@ -187,18 +187,18 @@ export default function AllVariantsTable({
                                 variant.id,
                               )
                             }
-                            className="h-5 w-5 text-white hover:bg-white/20 hover:text-white"
+                            className="h-6 w-6 text-white hover:bg-white/20 hover:text-white"
                           >
-                            <X className="h-3 w-3" />
+                            <X className="h-4 w-4" />
                           </Button>
                         </div>
                       </div>
                     ) : (
                       <div
-                        className="hover:border-dashboard-primary group flex size-11 cursor-pointer items-center justify-center rounded-md border border-dashed transition-all duration-200 ease-linear"
+                        className="hover:border-dashboard-primary group flex size-12 cursor-pointer items-center justify-center rounded-md border border-dashed transition-all duration-200 ease-linear"
                         onClick={() => triggerFileInput(variant.id)}
                       >
-                        <ImagePlus className="group-hover:text-dashboard-primary h-4 w-4 text-neutral-400 transition-all duration-200 ease-linear" />
+                        <ImagePlus className="group-hover:text-dashboard-primary h-5 w-5 text-neutral-400 transition-all duration-200 ease-linear" />
                       </div>
                     )}
 
@@ -215,10 +215,10 @@ export default function AllVariantsTable({
                   </div>
 
                   <div>
-                    <p className="text-xs font-medium text-gray-900">
+                    <p className="text-sm font-medium text-gray-900">
                       {variant.name}
                     </p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-sm text-gray-500">
                       {variant.attributeName}
                     </p>
                   </div>
@@ -236,13 +236,13 @@ export default function AllVariantsTable({
                       )
                     }
                     placeholder="SKU"
-                    className="w-24 text-xs"
+                    className="w-24 shadow-none"
                   />
                 </TableCell>
 
                 <TableCell>
                   <div className="flex items-center gap-1">
-                    <span className="text-xs text-gray-600">$</span>
+                    <span className="text-sm text-gray-600">$</span>
                     <Input
                       type="number"
                       value={variant.price}
@@ -255,7 +255,7 @@ export default function AllVariantsTable({
                         )
                       }
                       placeholder="0.00"
-                      className="w-20 text-xs"
+                      className="w-20 shadow-none"
                       disabled={useDefaultPricing}
                       title={
                         useDefaultPricing
@@ -268,7 +268,7 @@ export default function AllVariantsTable({
 
                 <TableCell>
                   <div className="flex items-center gap-1">
-                    <span className="text-xs text-gray-600">$</span>
+                    <span className="text-sm text-gray-600">$</span>
                     <Input
                       type="number"
                       value={variant.discountPrice}
@@ -281,7 +281,7 @@ export default function AllVariantsTable({
                         )
                       }
                       placeholder="0.00"
-                      className="w-20 text-xs"
+                      className="w-20 shadow-none"
                       disabled={useDefaultPricing}
                       title={
                         useDefaultPricing
@@ -305,7 +305,7 @@ export default function AllVariantsTable({
                       )
                     }
                     placeholder="0"
-                    className="w-16 text-xs"
+                    className="w-16 shadow-none"
                   />
                 </TableCell>
 
@@ -332,7 +332,7 @@ export default function AllVariantsTable({
                     }
                     className="text-red-500 hover:bg-red-50 hover:text-red-700"
                   >
-                    <Trash className="h-3 w-3" />
+                    <Trash className="h-4 w-4" />
                   </Button>
                 </TableCell>
               </TableRow>

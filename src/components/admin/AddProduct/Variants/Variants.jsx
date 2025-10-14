@@ -217,13 +217,13 @@ export default function Variants({ form }) {
           <h2 className="text-sm font-semibold text-gray-900">
             Product Variants
           </h2>
-          <p className="mt-1 text-xs text-gray-600">
+          <p className="mt-1 text-sm text-gray-500">
             Create different options like size, color, or material
           </p>
         </div>
         {/* section collapse toggle button */}
         <div className="flex items-center justify-end gap-2.5">
-          <p className="text-xs text-gray-600">Enable Variants</p>
+          <p className="text-sm font-medium text-gray-700">Enable Variants</p>
           <CollapsibleTrigger asChild>
             <Switch
               checked={isOpen}
@@ -237,16 +237,16 @@ export default function Variants({ form }) {
       <CollapsibleContent className="mt-6">
         {/* add variant heading */}
         <div className="flex w-full items-center justify-between">
-          <h3 className="text-xs font-medium text-gray-900">
+          <h3 className="text-sm font-medium text-gray-700">
             Variant Attributes
           </h3>
           <Button
             type="button"
             size="sm"
             onClick={addAttribute}
-            className="cursor-pointer gap-2 text-xs"
+            className="cursor-pointer gap-2"
           >
-            <Plus className="h-3 w-3" />
+            <Plus className="h-4 w-4" />
             Add Attribute
           </Button>
         </div>
@@ -255,12 +255,12 @@ export default function Variants({ form }) {
         {variantError && (
           <div className="mt-4 flex items-start gap-2 rounded-md border border-red-200 bg-red-50 p-3">
             <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-red-600" />
-            <p className="text-xs text-red-600">{variantError.message}</p>
+            <p className="text-sm text-red-600">{variantError.message}</p>
           </div>
         )}
 
         {/* Render all attributes */}
-        <div className="mt-4 space-y-4">
+        <div className="mt-6 space-y-4">
           {attributes.map((attribute) => (
             <AttributeCard
               key={attribute.id}
@@ -275,7 +275,7 @@ export default function Variants({ form }) {
         </div>
 
         {attributes.length === 0 && !variantError && (
-          <div className="mt-4 py-8 text-center text-xs text-gray-500">
+          <div className="mt-6 py-8 text-center text-sm text-gray-500">
             <p>No variant attributes added yet.</p>
           </div>
         )}

@@ -118,14 +118,16 @@ export default function GalleryImages({ form }) {
       return (
         <div
           className={`relative flex aspect-square h-32 shrink-0 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-gray-500 transition-colors duration-200 ease-linear hover:border-gray-400 ${
-            dragOverIndex === index ? "border-blue-500 bg-blue-50" : ""
+            dragOverIndex === index
+              ? "scale-[1.02] border-blue-400 bg-blue-50/50"
+              : "border-gray-300"
           }`}
           onClick={onUpload}
           onDrop={onDrop}
           onDragOver={onDragOver}
           onDragLeave={onDragLeave}
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-5 w-5" />
         </div>
       );
     }
@@ -146,9 +148,9 @@ export default function GalleryImages({ form }) {
           <button
             type="button"
             onClick={() => onRemove(index)}
-            className="absolute top-1 right-1 z-50 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-600"
+            className="absolute top-1.5 right-1.5 z-50 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-600"
           >
-            <X className="h-2.5 w-2.5" />
+            <X className="h-3 w-3" />
           </button>
         </div>
       </div>
@@ -162,35 +164,31 @@ export default function GalleryImages({ form }) {
       render={({ field }) => {
         const currentImages = field.value || [];
         const canAddMore = currentImages.length < maxImages;
-
         // Create slots: all existing images + one empty slot if we can add more
         const totalSlots = canAddMore
           ? currentImages.length + 1
           : currentImages.length;
-
         return (
           <FormItem>
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1">
-                <FormLabel className="text-xs font-medium text-gray-700">
+                <FormLabel className="text-sm font-medium text-gray-700">
                   Gallery Images
                 </FormLabel>
                 <p className="mt-1.5 text-xs text-gray-500">
                   Upload up to {maxImages} images (PNG, JPG • max 300KB each)
                 </p>
               </div>
-              <div className="text-xs font-medium text-gray-600">
+              <div className="text-sm font-medium text-gray-600">
                 {currentImages.length}/{maxImages} uploaded
               </div>
             </div>
-
             <FormControl>
               <div className="mt-4">
                 <div className="grid grid-cols-2 gap-6 md:grid-cols-3 xl:grid-cols-4">
                   {Array.from({ length: totalSlots }).map((_, index) => {
                     const image = currentImages[index];
                     const isEmpty = !image;
-
                     return (
                       <ImageSlot
                         key={index}
@@ -212,7 +210,6 @@ export default function GalleryImages({ form }) {
                     );
                   })}
                 </div>
-
                 {/* Hidden input for general file upload */}
                 <input
                   ref={fileInputRef}

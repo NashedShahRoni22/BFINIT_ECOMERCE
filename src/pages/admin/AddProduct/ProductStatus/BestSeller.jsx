@@ -18,22 +18,24 @@ export default function BestSeller({ form }) {
       name="best_seller"
       render={({ field }) => (
         <FormItem>
-          <div className="rounded-lg border p-4 text-xs text-gray-700">
-            <div className="flex items-start gap-2 font-medium">
-              <div className="bg-secondary rounded p-1">
-                <Crown size={14} />
+          <div className="rounded-lg border p-4">
+            <div className="flex items-start gap-3">
+              <div className="bg-secondary rounded p-1.5">
+                <Crown size={16} />
               </div>
-              <div>
-                <p>Bestseller</p>
-                <p className="mt-0.5 text-xs font-normal">
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-900">Bestseller</p>
+                <p className="mt-0.5 text-sm text-gray-600">
                   Showcases popular products based on sales volume to build
                   social proof and trust.
                 </p>
               </div>
             </div>
-
             <div className="mt-4 flex w-full items-center justify-between">
-              <FormLabel htmlFor="best_seller" className="text-xs font-medium">
+              <FormLabel
+                htmlFor="best_seller"
+                className="text-sm font-medium text-gray-700"
+              >
                 Enable Bestseller badge
               </FormLabel>
               <FormControl>
@@ -45,14 +47,13 @@ export default function BestSeller({ form }) {
                 />
               </FormControl>
             </div>
-
             {isBestSellerEnabled && (
               <FormField
                 control={form.control}
                 name="best_seller_threshold"
                 render={({ field }) => (
                   <FormItem className="mt-4 border-t pt-4">
-                    <FormLabel className="text-xs font-medium">
+                    <FormLabel className="text-sm font-medium text-gray-700">
                       Show when stock is below
                     </FormLabel>
                     <FormControl>
@@ -60,7 +61,7 @@ export default function BestSeller({ form }) {
                         type="number"
                         placeholder="e.g., 50"
                         {...field}
-                        className="text-xs shadow-none"
+                        className="shadow-none"
                       />
                     </FormControl>
                     <FormMessage className="text-xs" />

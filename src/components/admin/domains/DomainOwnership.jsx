@@ -12,8 +12,10 @@ const DomainOwnership = ({ form }) => {
     <div className="bg-card rounded-lg border p-6">
       {/* Header Section */}
       <div className="mb-5 space-y-1">
-        <h2 className="text-base font-semibold">Domain Ownership Check</h2>
-        <p className="text-muted-foreground text-sm">
+        <h2 className="text-sm font-semibold text-gray-900">
+          Domain Ownership Check
+        </h2>
+        <p className="text-sm text-gray-500">
           Tell us about your domain situation so we can guide you through the
           right process
         </p>

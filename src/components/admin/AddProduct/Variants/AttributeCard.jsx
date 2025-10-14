@@ -41,7 +41,7 @@ export default function AttributeCard({
   return (
     <div className="rounded-lg border bg-[#F9FAFB] p-4">
       {/* attribute name */}
-      <div className="mb-3 flex w-full items-center justify-between">
+      <div className="mb-4 flex w-full items-center justify-between">
         {isEditingName ? (
           <Input
             value={nameValue}
@@ -49,17 +49,17 @@ export default function AttributeCard({
             onKeyPress={handleNameSubmit}
             onBlur={handleNameSubmit}
             placeholder="Enter attribute name (e.g., Color, Size)"
-            className="rounded border border-gray-200 bg-white px-2 py-1 text-xs font-medium"
+            className="rounded border border-gray-200 bg-white px-3 py-2 text-sm font-medium shadow-none"
             autoFocus
           />
         ) : (
           <div className="flex items-center gap-2">
-            <p className="text-xs font-medium">{nameValue}</p>
+            <p className="text-sm font-medium text-gray-700">{nameValue}</p>
             <Button
               size="sm"
               variant="ghost"
               onClick={() => setIsEditingName(true)}
-              className="h-auto p-1 text-xs text-gray-500 hover:text-gray-700"
+              className="h-auto p-1 text-sm text-gray-500 hover:text-gray-700"
             >
               Edit
             </Button>
@@ -69,19 +69,19 @@ export default function AttributeCard({
           size="icon"
           variant="ghost"
           onClick={onDelete}
-          className="size-7 text-red-500 hover:bg-red-50 hover:text-red-700"
+          className="size-8 text-red-500 hover:bg-red-50 hover:text-red-700"
         >
-          <Trash className="h-3 w-3" />
+          <Trash className="h-4 w-4" />
         </Button>
       </div>
 
       {/* rendered variant values */}
       {attribute.values.length > 0 && (
-        <div className="mb-3">
+        <div className="mb-4">
           <ul className="flex flex-wrap items-center gap-2">
             {attribute.values.map((value) => (
               <li key={value.id} className="group relative">
-                <div className="flex items-center gap-1 rounded-md border bg-white px-2 py-1 text-xs">
+                <div className="flex items-center gap-1 rounded-md border bg-white px-2.5 py-1.5 text-sm">
                   <span>{value.name}</span>
 
                   <button
@@ -89,7 +89,7 @@ export default function AttributeCard({
                     onClick={() => onRemoveValue(value.id)}
                     className="rounded-full p-0.5 text-red-500 hover:bg-red-50"
                   >
-                    <X className="h-3.5 w-3.5" />
+                    <X className="h-4 w-4" />
                   </button>
                 </div>
               </li>
@@ -99,7 +99,7 @@ export default function AttributeCard({
       )}
 
       {/* add attribute value input field */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <div className="flex flex-1 gap-2">
           <Input
             type="text"
@@ -112,14 +112,13 @@ export default function AttributeCard({
               }
             }}
             placeholder="Add values (separate with | for multiple)"
-            className="border-gray-200 bg-white text-xs shadow-none"
+            className="border-gray-200 bg-white shadow-none"
           />
           <Button
             onClick={handleAddValues}
             disabled={!inputValue.trim()}
             size="sm"
             variant="outline"
-            className="text-xs"
           >
             Add
           </Button>
@@ -134,7 +133,7 @@ export default function AttributeCard({
           />
           <Label
             htmlFor={`required-${attribute.id}`}
-            className="cursor-pointer text-xs"
+            className="cursor-pointer text-sm font-medium text-gray-700"
           >
             Required
           </Label>
