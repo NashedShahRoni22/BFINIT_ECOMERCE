@@ -143,7 +143,7 @@ export default function DomainField({ form, isDomainIntegrated, data }) {
           }}
           render={({ field }) => (
             <FormItem className="mt-6">
-              <FormLabel>
+              <FormLabel className="text-gray-700">
                 Domain Name <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>

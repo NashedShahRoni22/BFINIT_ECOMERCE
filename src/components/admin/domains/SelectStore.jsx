@@ -39,7 +39,9 @@ export default function SelectStore({
             <h2 className="text-sm font-semibold text-gray-900">{title}</h2>
           )}
           {description && (
-            <p className="mt-1 text-sm text-gray-500">{description}</p>
+            <p className="mt-1 text-xs text-gray-500 md:text-sm">
+              {description}
+            </p>
           )}
         </div>
       )}

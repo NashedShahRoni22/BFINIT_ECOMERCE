@@ -6,7 +6,7 @@ import useAuth from "../../../hooks/auth/useAuth";
 import bookIcon from "../../../assets/icons/book.png";
 import { ChevronDown } from "lucide-react";
 
-export default function SideNav({ showSideNav, setShowSideNav }) {
+export default function SideNav({ showSideNav, toggleSideNav }) {
   const { user } = useAuth();
   const location = useLocation();
   const [openDropdown, setOpenDropdown] = useState("");
@@ -52,7 +52,9 @@ export default function SideNav({ showSideNav, setShowSideNav }) {
 
   return (
     <aside
-      className={`custom-scrollbar-hide absolute z-10 flex h-[calc(100dvh-55px)] flex-col gap-10 overflow-y-auto bg-white p-2 text-sm transition-all duration-300 ease-in-out lg:static lg:w-1/6 lg:min-w-[231px] lg:translate-x-0 ${showSideNav ? "w-1/2 translate-x-0 md:w-1/3" : "-translate-x-[1000%]"}`}
+      className={`custom-scrollbar-hide fixed top-[55px] left-0 z-10 flex h-[calc(100dvh-55px)] flex-col gap-10 overflow-y-auto bg-white p-2 text-sm transition-all duration-300 ease-in-out lg:static lg:w-1/6 lg:min-w-[231px] lg:translate-x-0 ${
+        showSideNav ? "w-1/2 translate-x-0 md:w-1/3" : "-translate-x-full"
+      }`}
     >
       <nav className="flex flex-1 flex-col gap-1.5">
         {sideNavLinks.map((group, groupIndex) => (
@@ -95,6 +97,7 @@ export default function SideNav({ showSideNav, setShowSideNav }) {
                         {navMenuItem.subCategories.map((subItem, subIndex) => (
                           <Link
                             key={subIndex}
+                            onClick={toggleSideNav}
                             to={subItem.url}
                             className={`flex items-center gap-2 overflow-hidden rounded-md py-1.5 transition-colors duration-200 ease-linear md:px-3 ${
                               isLinkActive(subItem.url)
@@ -119,6 +122,7 @@ export default function SideNav({ showSideNav, setShowSideNav }) {
                 ) : (
                   <Link
                     key={linkIndex}
+                    onClick={toggleSideNav}
                     to={navMenuItem.url}
                     className={`flex items-center gap-3 rounded-md px-4 py-2 transition-all duration-200 ease-linear ${isLinkActive(navMenuItem.url) ? "bg-[#EFF6FF]" : "hover:bg-[#F4F5F9]"}`}
                   >
@@ -169,7 +173,7 @@ export default function SideNav({ showSideNav, setShowSideNav }) {
               href="https://ecomback.bfinit.com/uploads/ecom/guide/BFINIT%20E-Commerce%20Guide.pdf"
               download
               target="_blanck"
-              onClick={() => setShowSideNav(false)}
+              onClick={toggleSideNav}
               className="mt-3 inline-block w-full cursor-pointer rounded-full bg-gray-900 py-1.5 text-center text-xs text-white transition-all duration-200 ease-linear hover:bg-gray-800 active:scale-95"
             >
               Get Help Guide

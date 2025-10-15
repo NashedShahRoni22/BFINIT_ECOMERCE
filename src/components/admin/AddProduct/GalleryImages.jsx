@@ -117,7 +117,7 @@ export default function GalleryImages({ form }) {
     if (isEmpty) {
       return (
         <div
-          className={`relative flex aspect-square h-32 shrink-0 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-gray-500 transition-colors duration-200 ease-linear hover:border-gray-400 ${
+          className={`relative flex aspect-square w-full shrink-0 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-4 text-gray-500 transition-colors duration-200 ease-linear hover:border-gray-400 md:p-6 ${
             dragOverIndex === index
               ? "scale-[1.02] border-blue-400 bg-blue-50/50"
               : "border-gray-300"
@@ -127,7 +127,7 @@ export default function GalleryImages({ form }) {
           onDragOver={onDragOver}
           onDragLeave={onDragLeave}
         >
-          <Plus className="h-5 w-5" />
+          <Plus className="h-6 w-6 md:h-5 md:w-5" />
         </div>
       );
     }
@@ -139,7 +139,7 @@ export default function GalleryImages({ form }) {
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
       >
-        <div className="relative aspect-square h-32 overflow-hidden rounded-lg border-2 border-gray-200 bg-white">
+        <div className="relative aspect-square w-full overflow-hidden rounded-lg border-2 border-gray-200 bg-white">
           <img
             src={image.preview}
             alt={image.name}
@@ -148,9 +148,9 @@ export default function GalleryImages({ form }) {
           <button
             type="button"
             onClick={() => onRemove(index)}
-            className="absolute top-1.5 right-1.5 z-50 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-600"
+            className="absolute top-1.5 right-1.5 z-50 flex size-8 touch-manipulation items-center justify-center rounded-full bg-red-500 text-white opacity-100 transition-opacity hover:bg-red-600 md:size-6 md:opacity-0 md:group-hover:opacity-100"
           >
-            <X className="h-3 w-3" />
+            <X className="h-4 w-4 md:h-3 md:w-3" />
           </button>
         </div>
       </div>
@@ -169,8 +169,8 @@ export default function GalleryImages({ form }) {
           ? currentImages.length + 1
           : currentImages.length;
         return (
-          <FormItem>
-            <div className="flex items-start justify-between gap-4">
+          <FormItem className="w-full">
+            <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between md:gap-4">
               <div className="flex-1">
                 <FormLabel className="text-sm font-medium text-gray-700">
                   Gallery Images
@@ -179,13 +179,13 @@ export default function GalleryImages({ form }) {
                   Upload up to {maxImages} images (PNG, JPG • max 300KB each)
                 </p>
               </div>
-              <div className="text-sm font-medium text-gray-600">
+              <div className="text-xs font-medium text-gray-600 tabular-nums md:text-sm">
                 {currentImages.length}/{maxImages} uploaded
               </div>
             </div>
             <FormControl>
               <div className="mt-4">
-                <div className="grid grid-cols-2 gap-6 md:grid-cols-3 xl:grid-cols-4">
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-6 xl:grid-cols-4">
                   {Array.from({ length: totalSlots }).map((_, index) => {
                     const image = currentImages[index];
                     const isEmpty = !image;

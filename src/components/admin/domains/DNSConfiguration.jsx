@@ -41,10 +41,10 @@ export default function DNSConfiguration({ data }) {
             type="button"
             variant="secondary"
             size="icon"
-            className="size-6 cursor-pointer text-xs"
+            className="size-8 shrink-0 cursor-pointer md:size-6"
           >
             <ChevronUp
-              className={`h-3 w-3 transition-transform duration-200 ease-linear ${isOpen ? "rotate-0" : "rotate-180"}`}
+              className={`h-4 w-4 transition-transform duration-200 ease-linear md:h-3 md:w-3 ${isOpen ? "rotate-0" : "rotate-180"}`}
             />
           </Button>
         </CollapsibleTrigger>
@@ -53,7 +53,7 @@ export default function DNSConfiguration({ data }) {
       <CollapsibleContent className="mt-5">
         {/* time warning */}
         <div className="flex items-start gap-2 rounded-[10px] border border-slate-200 bg-slate-50 px-4 py-3">
-          <Clock className="mt-0.5 size-5 text-slate-600" />
+          <Clock className="mt-0.5 size-5 shrink-0 text-slate-600" />
           <div className="space-y-0.5">
             <p className="text-sm font-semibold text-slate-900">
               DNS Propagation Time
@@ -163,7 +163,7 @@ export default function DNSConfiguration({ data }) {
                   VALUE/POINTS TO
                 </p>
                 <div className="flex items-center gap-2">
-                  <p className="bg-muted rounded border px-2 py-0.5 text-sm text-gray-900">
+                  <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
                     {data?.dnsData?.cName}
                   </p>
                   <Clipboard

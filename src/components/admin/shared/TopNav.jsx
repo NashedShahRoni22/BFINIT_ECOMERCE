@@ -1,61 +1,39 @@
 import { Link } from "react-router";
-import { Popover, PopoverButton, PopoverGroup } from "@headlessui/react";
-import {
-  MdOutlineClose,
-  MdOutlineMenu,
-  MdOutlineNotifications,
-} from "react-icons/md";
-import logo from "../../../assets/logo/bfinit.png";
-import AdminDropdown from "../dropdowns/AdminDropdown";
+import { Menu, X } from "lucide-react";
 import NotificationDropdown from "../dropdowns/NotificationDropdown";
+import AdminDropdown from "../dropdowns/AdminDropdown";
+import logo from "../../../assets/logo/bfinit.png";
 
 export default function TopNav({ showSideNav, setShowSideNav }) {
   return (
-    <nav className="font-inter flex items-center justify-between border-b border-neutral-100 px-5 py-2">
+    <nav className="font-inter fixed top-0 z-50 flex w-full items-center justify-between border-b border-neutral-100 bg-white px-3 py-2 sm:px-5 sm:py-1.5">
       {/* mobile sidebar toggle */}
       <button
         onClick={() => setShowSideNav((prev) => !prev)}
-        className="cursor-pointer lg:hidden"
+        className="cursor-pointer rounded-md p-1.5 transition-colors hover:bg-neutral-50 lg:hidden"
+        aria-label="Toggle sidebar"
       >
-        {showSideNav ? (
-          <MdOutlineClose className="text-2xl" />
-        ) : (
-          <MdOutlineMenu className="text-2xl" />
-        )}
+        {showSideNav ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </button>
 
       {/* logo */}
       <Link to="/" className="hidden lg:block">
-        <img src={logo} alt="bfinint logo" className="w-24" />
+        <img src={logo} alt="bfinit logo" className="w-20 py-1" />
+      </Link>
+
+      {/* mobile logo */}
+      <Link to="/" className="lg:hidden">
+        <img src={logo} alt="bfinit logo" className="w-16" />
       </Link>
 
       {/* notification & admin profile */}
-      <PopoverGroup className="flex items-center justify-center gap-4">
+      <div className="flex items-center justify-center gap-2 sm:gap-3">
         {/* notification */}
-        <Popover className="group">
-          <PopoverButton className="cursor-pointer rounded-lg border border-transparent p-1.5 transition-all duration-200 ease-linear outline-none group-data-[open]:border-neutral-100 group-data-[open]:bg-neutral-50 hover:border-neutral-100 hover:bg-neutral-50">
-            <MdOutlineNotifications className="text-xl" />
-          </PopoverButton>
-
-          <NotificationDropdown />
-        </Popover>
+        <NotificationDropdown />
 
         {/* admin profile */}
-        <Popover className="group">
-          {({ close }) => (
-            <>
-              <PopoverButton className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-transparent p-1.5 transition-all duration-200 ease-linear outline-none group-data-[open]:border-neutral-100 group-data-[open]:bg-neutral-50 hover:border-neutral-100 hover:bg-neutral-50">
-                <div className="bg-dashboard-primary flex size-6 items-center justify-center rounded-lg p-0.5 text-xs font-medium text-white">
-                  MS
-                </div>
-                <p className="text-sm">My Store</p>
-              </PopoverButton>
-
-              <AdminDropdown close={close} />
-            </>
-          )}
-        </Popover>
-      </PopoverGroup>
+        <AdminDropdown />
+      </div>
     </nav>
   );
 }

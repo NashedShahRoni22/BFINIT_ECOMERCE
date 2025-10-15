@@ -209,21 +209,23 @@ export default function Variants({ form }) {
     <Collapsible
       open={isOpen}
       onOpenChange={setIsOpen}
-      className="rounded-lg border bg-white p-8"
+      className="rounded-lg border bg-white p-4 md:p-6"
     >
       {/* header */}
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
           <h2 className="text-sm font-semibold text-gray-900">
             Product Variants
           </h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-xs text-gray-500 md:text-sm">
             Create different options like size, color, or material
           </p>
         </div>
         {/* section collapse toggle button */}
-        <div className="flex items-center justify-end gap-2.5">
-          <p className="text-sm font-medium text-gray-700">Enable Variants</p>
+        <div className="flex shrink-0 items-center justify-end gap-2.5">
+          <p className="hidden text-sm font-medium text-gray-700 md:block">
+            Enable Variants
+          </p>
           <CollapsibleTrigger asChild>
             <Switch
               checked={isOpen}
@@ -234,9 +236,9 @@ export default function Variants({ form }) {
       </div>
 
       {/* main variant adding content */}
-      <CollapsibleContent className="mt-6">
+      <CollapsibleContent className="mt-4 md:mt-6">
         {/* add variant heading */}
-        <div className="flex w-full items-center justify-between">
+        <div className="flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <h3 className="text-sm font-medium text-gray-700">
             Variant Attributes
           </h3>
@@ -244,7 +246,7 @@ export default function Variants({ form }) {
             type="button"
             size="sm"
             onClick={addAttribute}
-            className="cursor-pointer gap-2"
+            className="w-full cursor-pointer gap-2 md:w-auto"
           >
             <Plus className="h-4 w-4" />
             Add Attribute
@@ -255,12 +257,14 @@ export default function Variants({ form }) {
         {variantError && (
           <div className="mt-4 flex items-start gap-2 rounded-md border border-red-200 bg-red-50 p-3">
             <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-red-600" />
-            <p className="text-sm text-red-600">{variantError.message}</p>
+            <p className="text-xs text-red-600 md:text-sm">
+              {variantError.message}
+            </p>
           </div>
         )}
 
         {/* Render all attributes */}
-        <div className="mt-6 space-y-4">
+        <div className="mt-4 space-y-4 md:mt-6">
           {attributes.map((attribute) => (
             <AttributeCard
               key={attribute.id}
@@ -275,7 +279,7 @@ export default function Variants({ form }) {
         </div>
 
         {attributes.length === 0 && !variantError && (
-          <div className="mt-6 py-8 text-center text-sm text-gray-500">
+          <div className="mt-4 py-6 text-center text-xs text-gray-500 md:mt-6 md:py-8 md:text-sm">
             <p>No variant attributes added yet.</p>
           </div>
         )}

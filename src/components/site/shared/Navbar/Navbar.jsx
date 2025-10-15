@@ -34,7 +34,7 @@ export default function Navbar() {
 
   // handle mobile hamburger menu
   const handleShowMenu = () => {
-    setShowMenu(showMenu ? false : true);
+    setShowMenu((prev) => !prev);
   };
 
   // handle see more products

@@ -46,24 +46,24 @@ export default function FlashSale({ form }) {
         <FormItem>
           <div className="rounded-lg border p-4">
             <div className="flex items-start gap-3">
-              <div className="bg-secondary rounded p-1.5">
+              <div className="bg-secondary shrink-0 rounded p-1.5">
                 <Zap size={16} />
               </div>
-              <div className="flex-1">
+              <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-gray-900">Flash Sale</p>
-                <p className="mt-0.5 text-sm text-gray-600">
+                <p className="mt-0.5 text-xs text-gray-600 md:text-sm">
                   Creates urgency with limited-time offer badge. Requires
                   <span className="font-medium"> Compare at Price</span> to be
                   set.
                 </p>
               </div>
             </div>
-            <div className="mt-4 flex w-full items-center justify-between">
+            <div className="mt-4 flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <FormLabel
                 htmlFor="flash_sale"
                 className="text-sm font-medium text-gray-700"
               >
-                Enable Flash Sale Badge
+                Enable Flash Sale badge
               </FormLabel>
               <FormControl>
                 <Switch
@@ -79,7 +79,7 @@ export default function FlashSale({ form }) {
             {isFlashSaleEnabled && hasValidPrices && (
               <div className="mt-4 space-y-4 border-t pt-4">
                 {/* Flash Sale Percentage Display */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                   <span className="text-sm font-medium text-gray-700">
                     Flash Sale Percentage
                   </span>
@@ -117,7 +117,7 @@ export default function FlashSale({ form }) {
                   name="flash_sale_show_countdown"
                   render={({ field }) => (
                     <FormItem>
-                      <div className="flex items-center justify-between">
+                      <div className="flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
                         <FormLabel className="text-sm font-medium text-gray-700">
                           Show countdown timer
                         </FormLabel>

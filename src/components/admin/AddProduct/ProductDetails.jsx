@@ -68,15 +68,15 @@ export default function ProductDetails({ form }) {
     <Collapsible
       open={isOpen}
       onOpenChange={setIsOpen}
-      className="rounded-lg border bg-white p-8"
+      className="rounded-lg border bg-white p-4 md:p-6"
     >
       {/* header */}
-      <div className="flex items-start justify-between">
-        <div>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
           <h2 className="text-sm font-semibold text-gray-900">
             Product Details
           </h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-xs text-gray-500 md:text-sm">
             Enter the basic information about your product including name,
             description and category
           </p>
@@ -88,17 +88,17 @@ export default function ProductDetails({ form }) {
             type="button"
             variant="secondary"
             size="icon"
-            className="size-6 cursor-pointer text-xs"
+            className="size-8 shrink-0 cursor-pointer md:size-6"
           >
             <ChevronUp
-              className={`h-3 w-3 transition-transform duration-200 ease-linear ${isOpen ? "rotate-0" : "rotate-180"}`}
+              className={`h-4 w-4 transition-transform duration-200 ease-linear md:h-3 md:w-3 ${isOpen ? "rotate-0" : "rotate-180"}`}
             />
           </Button>
         </CollapsibleTrigger>
       </div>
 
       {/* main form content like input field, select and text area */}
-      <CollapsibleContent className="mt-6 grid grid-cols-1 items-start gap-6 md:grid-cols-2">
+      <CollapsibleContent className="mt-4 grid grid-cols-1 items-start gap-4 md:mt-6 md:grid-cols-2 md:gap-6">
         {/* product name */}
         <FormField
           control={form.control}
@@ -114,7 +114,7 @@ export default function ProductDetails({ form }) {
                   type="text"
                   placeholder="Product Name"
                   {...field}
-                  className="shadow-none"
+                  className="h-11 shadow-none"
                 />
               </FormControl>
               <FormMessage className="text-xs" />
@@ -134,7 +134,7 @@ export default function ProductDetails({ form }) {
               </FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-full shadow-none">
+                  <SelectTrigger className="h-11 w-full shadow-none">
                     <SelectValue placeholder="Select Category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -166,7 +166,7 @@ export default function ProductDetails({ form }) {
               </FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-full shadow-none">
+                  <SelectTrigger className="h-11 w-full shadow-none">
                     <SelectValue placeholder="Select Subcategory" />
                   </SelectTrigger>
                   <SelectContent>
@@ -198,7 +198,7 @@ export default function ProductDetails({ form }) {
               </FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-full shadow-none">
+                  <SelectTrigger className="h-11 w-full shadow-none">
                     <SelectValue placeholder="Select Brand" />
                   </SelectTrigger>
                   <SelectContent>
@@ -233,17 +233,17 @@ export default function ProductDetails({ form }) {
                   <div className="space-y-2">
                     {/* Display existing tags */}
                     {getTagsArray(field.value).length > 0 && (
-                      <div className="flex flex-wrap gap-2 rounded-md border bg-gray-50 p-2">
+                      <div className="flex flex-wrap gap-2 rounded-md border bg-gray-50 p-2.5">
                         {getTagsArray(field.value).map((tag, index) => (
                           <span
                             key={index}
-                            className="inline-flex items-center gap-1 rounded-md border bg-white px-2 py-1 text-xs"
+                            className="inline-flex items-center gap-1.5 rounded-md border bg-white px-2.5 py-1.5 text-xs"
                           >
                             {tag}
                             <button
                               type="button"
                               onClick={() => removeTag(tag, field)}
-                              className="rounded-full p-0.5 text-red-500 hover:bg-red-50"
+                              className="touch-manipulation rounded-full p-0.5 text-red-500 hover:bg-red-50"
                             >
                               <X className="h-3.5 w-3.5" />
                             </button>
@@ -253,11 +253,11 @@ export default function ProductDetails({ form }) {
                     )}
                     {/* Tag input */}
                     <Input
-                      placeholder="Type tags and press Enter (use | for multiple, e.g. mobile | camera)"
+                      placeholder="Type tags and press Enter"
                       value={tagInput}
                       onChange={(e) => setTagInput(e.target.value)}
                       onKeyPress={(e) => handleTagKeyPress(e, field)}
-                      className="shadow-none"
+                      className="h-11 shadow-none"
                     />
                   </div>
                 </FormControl>
@@ -288,13 +288,13 @@ export default function ProductDetails({ form }) {
                     {...field}
                     rows={3}
                     maxLength={150}
-                    placeholder="Write a short description of the product (150 characters max)"
-                    className="shadow-none"
+                    placeholder="Write a short description (150 characters max)"
+                    className="resize-none shadow-none"
                   />
                 </FormControl>
-                <div className="mt-1.5 flex items-center justify-end">
-                  <FormMessage className="text-xs" />
-                  <p className="text-xs text-gray-500">
+                <div className="mt-1.5 flex items-center justify-between gap-2">
+                  <FormMessage className="flex-1 text-xs" />
+                  <p className="shrink-0 text-xs text-gray-500 tabular-nums">
                     {field.value ? field.value.length : 0}/150
                   </p>
                 </div>

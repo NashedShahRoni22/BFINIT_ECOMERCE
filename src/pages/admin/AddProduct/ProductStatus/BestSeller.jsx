@@ -20,18 +20,18 @@ export default function BestSeller({ form }) {
         <FormItem>
           <div className="rounded-lg border p-4">
             <div className="flex items-start gap-3">
-              <div className="bg-secondary rounded p-1.5">
+              <div className="bg-secondary shrink-0 rounded p-1.5">
                 <Crown size={16} />
               </div>
-              <div className="flex-1">
+              <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-gray-900">Bestseller</p>
-                <p className="mt-0.5 text-sm text-gray-600">
+                <p className="mt-0.5 text-xs text-gray-600 md:text-sm">
                   Showcases popular products based on sales volume to build
                   social proof and trust.
                 </p>
               </div>
             </div>
-            <div className="mt-4 flex w-full items-center justify-between">
+            <div className="mt-4 flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <FormLabel
                 htmlFor="best_seller"
                 className="text-sm font-medium text-gray-700"

@@ -75,7 +75,7 @@ export default function ThumbnailImage({ form }) {
       name="thumbnail"
       rules={{ required: "Thumbnail image is required" }}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="w-full">
           <div>
             <FormLabel className="text-sm font-medium text-gray-700">
               Thumbnail Image <span className="text-destructive">*</span>
@@ -87,7 +87,7 @@ export default function ThumbnailImage({ form }) {
               {field.value ? (
                 // Show uploaded image
                 <div className="group relative">
-                  <div className="relative aspect-square h-72 shrink-0 overflow-hidden rounded-lg border-2 border-gray-200 bg-white">
+                  <div className="relative mx-auto aspect-square w-full max-w-xs shrink-0 overflow-hidden rounded-lg border-2 border-gray-200 bg-white md:h-72 md:max-w-none">
                     <img
                       src={field.value.preview}
                       alt={field.value.name}
@@ -96,16 +96,16 @@ export default function ThumbnailImage({ form }) {
                     <button
                       type="button"
                       onClick={() => removeImage(field.onChange, field.value)}
-                      className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-600"
+                      className="absolute top-2 right-2 flex size-8 touch-manipulation items-center justify-center rounded-full bg-red-500 text-white opacity-100 transition-opacity hover:bg-red-600 md:size-6 md:opacity-0 md:group-hover:opacity-100"
                     >
-                      <X className="h-3 w-3" />
+                      <X className="h-4 w-4 md:h-3 md:w-3" />
                     </button>
                   </div>
                 </div>
               ) : (
                 // Show upload area
                 <div
-                  className={`relative flex aspect-square h-72 shrink-0 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 transition-colors duration-200 ease-linear hover:border-gray-400 ${
+                  className={`relative mx-auto flex aspect-square w-full max-w-xs shrink-0 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-4 transition-colors duration-200 ease-linear hover:border-gray-400 md:h-72 md:max-w-none md:p-6 ${
                     dragActive
                       ? "border-blue-500 bg-blue-50"
                       : "border-gray-300"
@@ -115,14 +115,14 @@ export default function ThumbnailImage({ form }) {
                   onDragLeave={handleDragLeave}
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <Upload className="h-6 w-6 text-gray-400" />
-                  <div className="mt-2 text-center text-sm text-gray-600">
+                  <Upload className="h-8 w-8 text-gray-400 md:h-6 md:w-6" />
+                  <div className="mt-2 text-center text-xs text-gray-600 md:text-sm">
                     <div>Drag & Drop your thumbnail image here or</div>
                     <Button
                       type="button"
                       variant="secondary"
                       size="sm"
-                      className="mt-3 cursor-pointer"
+                      className="mt-3 h-9 cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
                         fileInputRef.current?.click();

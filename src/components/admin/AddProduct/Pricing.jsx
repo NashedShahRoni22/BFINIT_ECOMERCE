@@ -21,13 +21,13 @@ export default function Pricing({ form }) {
     <Collapsible
       open={isOpen}
       onOpenChange={setIsOpen}
-      className="rounded-lg border bg-white p-8"
+      className="rounded-lg border bg-white p-4 md:p-6"
     >
       {/* header */}
-      <div className="flex items-start justify-between">
-        <div>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
           <h2 className="text-sm font-semibold text-gray-900">Pricing</h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-xs text-gray-500 md:text-sm">
             Set product pricing, compare prices and cost calculations
           </p>
         </div>
@@ -38,17 +38,17 @@ export default function Pricing({ form }) {
             type="button"
             variant="secondary"
             size="icon"
-            className="size-6 cursor-pointer text-xs"
+            className="size-8 shrink-0 cursor-pointer md:size-6"
           >
             <ChevronUp
-              className={`h-3 w-3 transition-transform duration-200 ease-linear ${isOpen ? "rotate-0" : "rotate-180"}`}
+              className={`h-4 w-4 transition-transform duration-200 ease-linear md:h-3 md:w-3 ${isOpen ? "rotate-0" : "rotate-180"}`}
             />
           </Button>
         </CollapsibleTrigger>
       </div>
 
       {/* main pricing input field */}
-      <CollapsibleContent className="mt-6 grid grid-cols-2 gap-6">
+      <CollapsibleContent className="mt-4 grid grid-cols-1 gap-4 md:mt-6 md:grid-cols-2 md:gap-6">
         {/* price */}
         <FormField
           control={form.control}
@@ -61,14 +61,14 @@ export default function Pricing({ form }) {
               </FormLabel>
               <FormControl>
                 <div className="relative">
-                  <p className="absolute top-1/2 left-2 -translate-y-1/2 text-sm text-gray-500">
+                  <p className="absolute top-1/2 left-3 -translate-y-1/2 text-sm text-gray-500">
                     $
                   </p>
                   <Input
                     {...field}
                     type="number"
                     placeholder="0.00"
-                    className="pl-7 shadow-none"
+                    className="h-11 pl-7 shadow-none"
                   />
                 </div>
               </FormControl>
@@ -113,14 +113,14 @@ export default function Pricing({ form }) {
                 </FormLabel>
                 <FormControl>
                   <div className="relative">
-                    <p className="absolute top-1/2 left-2 -translate-y-1/2 text-sm text-gray-500">
+                    <p className="absolute top-1/2 left-3 -translate-y-1/2 text-sm text-gray-500">
                       $
                     </p>
                     <Input
                       {...field}
                       type="number"
                       placeholder="0.00"
-                      className={`pl-7 shadow-none ${showWarning ? "border-amber-500" : ""}`}
+                      className={`h-11 pl-7 shadow-none ${showWarning ? "border-amber-500" : ""}`}
                     />
                   </div>
                 </FormControl>
@@ -155,14 +155,14 @@ export default function Pricing({ form }) {
               </FormLabel>
               <FormControl>
                 <div className="relative">
-                  <p className="absolute top-1/2 left-2 -translate-y-1/2 text-sm text-gray-500">
+                  <p className="absolute top-1/2 left-3 -translate-y-1/2 text-sm text-gray-500">
                     $
                   </p>
                   <Input
                     {...field}
                     type="number"
                     placeholder="0.00"
-                    className="pl-7 shadow-none"
+                    className="h-11 pl-7 shadow-none"
                   />
                 </div>
               </FormControl>
@@ -185,12 +185,12 @@ export default function Pricing({ form }) {
                   Tax
                 </FormLabel>
                 <FormControl>
-                  <div className="flex items-center gap-2">
+                  <div className="flex min-h-[44px] items-center gap-3">
                     <Checkbox
                       id="tax"
                       checked={field.value || false}
                       onCheckedChange={(checked) => field.onChange(checked)}
-                      className="cursor-pointer"
+                      className="size-5 cursor-pointer"
                     />
                     <Label
                       htmlFor="tax"
