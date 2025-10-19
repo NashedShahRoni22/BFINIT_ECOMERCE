@@ -1,16 +1,35 @@
+import { Link } from "react-router";
 import { useForm } from "react-hook-form";
+import { ChevronDownIcon, ChevronLeft, Package, SlashIcon } from "lucide-react";
 import { Form } from "@/components/ui/form";
 import ProductDetails from "@/components/admin/AddProduct/ProductDetails";
 import ProductImages from "@/components/admin/AddProduct/ProductImages";
 import Variants from "@/components/admin/AddProduct/Variants/Variants";
 import { Button } from "@/components/ui/button";
 import Pricing from "@/components/admin/AddProduct/Pricing";
-import SelectStore from "@/components/admin/domains/SelectStore";
-import { Link } from "react-router";
-import { ChevronLeft } from "lucide-react";
+import EmptyStoreState from "@/components/admin/shared/EmptyStoreState";
+import useSelectedStore from "@/hooks/stores/useSelectedStore";
 import ProductStatus from "./ProductStatus";
 
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import PageHeader from "@/components/admin/shared/PageHeader";
+
 export default function AddProduct() {
+  const { selectedStore } = useSelectedStore();
+
   const form = useForm({
     defaultValues: {
       name: "",
@@ -36,8 +55,8 @@ export default function AddProduct() {
     },
   });
 
-  const { handleSubmit, watch } = form;
-  const storeId = watch("storeId");
+  const { handleSubmit } = form;
+  const storeId = selectedStore?.storeId;
 
   const onSubmit = (data) => {
     // Clear any previous variant errors
@@ -131,19 +150,64 @@ export default function AddProduct() {
     console.log(data);
   };
 
+  if (!selectedStore) {
+    return (
+      <EmptyStoreState description="Select a store to start adding products." />
+    );
+  }
+
   return (
-    <section>
+    <section className="space-y-6">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <SlashIcon />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
+                Products
+                <ChevronDownIcon />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center">
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/products/category">Category</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/products/sub-category">Sub Category</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/products/brands">Brands</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/products/inventory">Inventory</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <SlashIcon />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbPage>Add Product</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
+      {/* Page Header */}
+      <PageHeader
+        icon={Package}
+        title="Add Product"
+        description="Create a new product for"
+      />
+
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <SelectStore
-            form={form}
-            storeId={storeId}
-            title="Select Your Store"
-            description="Choose which store to add this product to"
-            placeholder="Select a store"
-            showHeader={true}
-          />
-
           {/* If store is selected then show the fields of add product */}
           {storeId && (
             <>

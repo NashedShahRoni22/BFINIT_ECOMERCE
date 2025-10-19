@@ -9,6 +9,7 @@ import CategoryProvider from "./Providers/CategoryProvider.jsx";
 import ThemeProvider from "./Providers/ThemeProvider.jsx";
 import AuthProvider from "./Providers/AuthProvider.jsx";
 import "./index.css";
+import StoreProvider from "./Providers/StoreProvider.jsx";
 
 const queryClient = new QueryClient();
 
@@ -16,13 +17,15 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <CategoryProvider>
-          <CartProvider>
-            <ThemeProvider>
-              <RouterProvider router={router} />
-            </ThemeProvider>
-          </CartProvider>
-        </CategoryProvider>
+        <StoreProvider>
+          <CategoryProvider>
+            <CartProvider>
+              <ThemeProvider>
+                <RouterProvider router={router} />
+              </ThemeProvider>
+            </CartProvider>
+          </CategoryProvider>
+        </StoreProvider>
       </AuthProvider>
       <Toaster position="top-center" />
     </QueryClientProvider>

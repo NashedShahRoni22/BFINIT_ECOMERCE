@@ -4,13 +4,35 @@ import { IoIosCloseCircleOutline } from "react-icons/io";
 import { sideNavLinks } from "../../../data/adminData/sideNavLinks";
 import useAuth from "../../../hooks/auth/useAuth";
 import bookIcon from "../../../assets/icons/book.png";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Store, LogOut, UserCircle, FileDown } from "lucide-react";
+import useGetQuery from "../../../hooks/queries/useGetQuery";
+import useGetStores from "@/hooks/stores/useGetStores";
+import useSelectedStore from "@/hooks/stores/useSelectedStore";
+import { adminDropdownLinks } from "../../../data/adminData/adminDropdownLinks";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
 
 export default function SideNav({ showSideNav, toggleSideNav }) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const location = useLocation();
   const [openDropdown, setOpenDropdown] = useState("");
   const [showGuide, setShowGuide] = useState(true);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showStoreMenu, setShowStoreMenu] = useState(false);
+
+  // Fetch client info
+  const { data: clientInfo } = useGetQuery({
+    endpoint: `/clients/${user?.data?.clientid}`,
+    token: user?.token,
+    clientId: user?.data?.clientid,
+    queryKey: ["clientInfo", user?.data?.clientid],
+    enabled: !!user?.data?.clientid && !!user?.token,
+  });
+
+  // Fetch stores
+  const { data: stores } = useGetStores();
+  const { selectedStore, handleSetStore } = useSelectedStore();
 
   // check if user previously hide e-com guide download button
   useEffect(() => {
@@ -42,6 +64,12 @@ export default function SideNav({ showSideNav, toggleSideNav }) {
     );
   };
 
+  const handleLogOut = () => {
+    localStorage.removeItem("authInfo");
+    toast.success("Logged out successfully");
+    navigate("/login");
+  };
+
   const isLinkActive = (url) => {
     return location.pathname === url;
   };
@@ -50,12 +78,186 @@ export default function SideNav({ showSideNav, toggleSideNav }) {
     return subCategories?.some((subItem) => location.pathname === subItem.url);
   };
 
+  const handleStoreSwitch = (store) => {
+    handleSetStore(store);
+    setShowStoreMenu(false);
+  };
+
   return (
     <aside
-      className={`custom-scrollbar-hide fixed top-[55px] left-0 z-10 flex h-[calc(100dvh-55px)] flex-col gap-10 overflow-y-auto bg-white p-2 text-sm transition-all duration-300 ease-in-out lg:static lg:w-1/6 lg:min-w-[231px] lg:translate-x-0 ${
-        showSideNav ? "w-1/2 translate-x-0 md:w-1/3" : "-translate-x-full"
+      className={`custom-scrollbar-hide fixed top-[55px] left-0 z-10 flex h-[calc(100dvh-55px)] flex-col gap-4 overflow-y-auto bg-white p-2 text-sm transition-all duration-300 ease-in-out lg:static lg:w-1/6 lg:min-w-[231px] lg:translate-x-0 ${
+        showSideNav ? "w-4/5 translate-x-0 md:w-1/3" : "-translate-x-full"
       }`}
     >
+      {/* Mobile Only: User Profile & Store Switcher */}
+      <div className="space-y-2 lg:hidden">
+        {/* User Profile Dropdown - IMPROVED */}
+        <div className="border-b border-slate-200 pb-2">
+          <button
+            onClick={() => setShowUserMenu(!showUserMenu)}
+            className="flex w-full items-center justify-between rounded-lg p-2.5 transition-colors hover:bg-slate-50"
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="bg-dashboard-primary flex h-9 w-9 items-center justify-center rounded-full text-[11px] font-semibold text-white">
+                {clientInfo?.data?.clientFname?.[0]}
+                {clientInfo?.data?.clientLname?.[0]}
+              </div>
+              <div className="flex flex-col items-start">
+                <span className="text-xs leading-tight font-semibold text-slate-900">
+                  {clientInfo?.data?.clientFname}{" "}
+                  {clientInfo?.data?.clientLname}
+                </span>
+                <span className="text-[11px] leading-tight text-slate-500">
+                  {clientInfo?.data?.clientEmail}
+                </span>
+              </div>
+            </div>
+            <ChevronDown
+              size={14}
+              className={`flex-shrink-0 text-slate-500 transition-transform duration-200 ${
+                showUserMenu ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+
+          {/* User Menu Items - IMPROVED */}
+          {showUserMenu && (
+            <div className="mt-1.5 space-y-0.5 px-1">
+              <Link
+                to="/accounts"
+                onClick={toggleSideNav}
+                className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50"
+              >
+                <UserCircle className="h-4 w-4 text-slate-600" />
+                <span>My Profile</span>
+              </Link>
+
+              {adminDropdownLinks.map((link, i) => (
+                <Link
+                  key={i}
+                  to={link.url}
+                  onClick={toggleSideNav}
+                  className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50"
+                >
+                  <link.icon className="h-4 w-4 text-slate-600" />
+                  <span className="capitalize">{link.name}</span>
+                </Link>
+              ))}
+
+              <a
+                href="https://ecomback.bfinit.com/uploads/ecom/guide/BFINIT%20E-Commerce%20Guide.pdf"
+                download
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={toggleSideNav}
+                className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50"
+              >
+                <FileDown className="h-4 w-4 text-slate-600" />
+                <span>Get Help Guide</span>
+              </a>
+
+              <div className="mt-0.5 border-t border-slate-200 pt-0.5">
+                <button
+                  onClick={handleLogOut}
+                  className="flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium text-red-600 transition-colors hover:bg-red-50"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Log Out</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Store Switcher Dropdown - IMPROVED */}
+        <div className="border-b border-slate-200 pb-2">
+          <button
+            onClick={() => setShowStoreMenu(!showStoreMenu)}
+            className="flex w-full items-center justify-between rounded-lg p-2.5 transition-colors hover:bg-slate-50"
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white">
+                <Store className="h-4 w-4 text-slate-600" />
+              </div>
+              <div className="flex flex-col items-start">
+                <span className="text-[10px] leading-tight font-medium tracking-wide text-slate-500 uppercase">
+                  Current Store
+                </span>
+                <span className="text-xs leading-tight font-semibold text-slate-900">
+                  {selectedStore?.storeName || "Select store"}
+                </span>
+              </div>
+            </div>
+            <ChevronDown
+              size={14}
+              className={`flex-shrink-0 text-slate-500 transition-transform duration-200 ${
+                showStoreMenu ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+
+          {/* Store Menu Items - IMPROVED */}
+          {showStoreMenu && (
+            <div className="mt-1.5 max-h-[280px] space-y-0.5 overflow-y-auto px-1">
+              {stores && stores?.data?.length > 0 ? (
+                <>
+                  {stores?.data?.map((store) => (
+                    <button
+                      key={store?.storeId}
+                      onClick={() => handleStoreSwitch(store)}
+                      className={`flex w-full items-center gap-2.5 rounded-md p-2 text-left transition-colors ${
+                        selectedStore?.storeId === store?.storeId
+                          ? "bg-blue-50"
+                          : "hover:bg-slate-50"
+                      }`}
+                    >
+                      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-slate-100">
+                        <Store className="h-4 w-4 text-slate-600" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5">
+                          <span className="truncate text-xs leading-tight font-medium text-slate-900">
+                            {store?.storeName}
+                          </span>
+                          {selectedStore?.storeId === store?.storeId && (
+                            <div className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-600" />
+                          )}
+                        </div>
+                        {store?.storeDomain && (
+                          <span className="mt-0.5 block truncate text-[11px] leading-tight text-slate-500">
+                            {store.storeDomain}
+                          </span>
+                        )}
+                      </div>
+                    </button>
+                  ))}
+                </>
+              ) : (
+                <div className="py-8 text-center">
+                  <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-slate-100">
+                    <Store className="h-5 w-5 text-slate-400" />
+                  </div>
+                  <p className="text-xs font-semibold text-slate-900">
+                    No stores yet
+                  </p>
+                  <p className="mt-1 text-[11px] leading-relaxed text-slate-500">
+                    Create your first store to start
+                  </p>
+                  <Link
+                    to="/stores/create"
+                    onClick={toggleSideNav}
+                    className="bg-dashboard-primary mt-3 inline-block rounded-md px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-blue-700"
+                  >
+                    Create Store
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Navigation Links */}
       <nav className="flex flex-1 flex-col gap-1.5">
         {sideNavLinks.map((group, groupIndex) => (
           <div key={groupIndex}>

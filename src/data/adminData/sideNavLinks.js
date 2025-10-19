@@ -96,7 +96,7 @@ export const sideNavLinks = [
     links: [
       {
         icon: Globe,
-        name: "Domains",
+        name: "Domain",
         url: "/domains",
       },
       {

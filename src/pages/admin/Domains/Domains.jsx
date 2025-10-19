@@ -1,7 +1,6 @@
 import DomainField from "@/components/admin/domains/DomainField";
 import DomainOwnership from "@/components/admin/domains/DomainOwnership";
 import NewDomain from "@/components/admin/domains/NewDomain";
-import SelectStore from "@/components/admin/domains/SelectStore";
 import DomainSkeleton from "@/components/site/skeleton/DomainSkeleton";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -9,15 +8,28 @@ import useAuth from "@/hooks/auth/useAuth";
 import usePostMutation from "@/hooks/mutations/usePostMutation";
 import useUpdateMutation from "@/hooks/mutations/useUpdateMutation";
 import useGetQuery from "@/hooks/queries/useGetQuery";
+import useSelectedStore from "@/hooks/stores/useSelectedStore";
 import { useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Globe, SlashIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router";
+import EmptyStoreState from "@/components/admin/shared/EmptyStoreState";
+import PageHeader from "@/components/admin/shared/PageHeader";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 export default function Domains() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const { selectedStore } = useSelectedStore();
 
   const form = useForm({
     defaultValues: {
@@ -26,8 +38,15 @@ export default function Domains() {
     mode: "onChange",
   });
 
-  const { handleSubmit, watch } = form;
-  const storeId = watch("storeId");
+  const { handleSubmit, setValue } = form;
+  const storeId = selectedStore?.storeId;
+
+  // Auto-set storeId when selectedStore changes
+  useEffect(() => {
+    if (storeId) {
+      setValue("storeId", storeId);
+    }
+  }, [storeId, setValue]);
 
   // Query get api fetch conditions
   const isFetchEnabled = !!storeId && !!user?.token && !!user?.data?.clientid;
@@ -95,56 +114,88 @@ export default function Domains() {
     });
   };
 
+  // Show empty state if no store selected
+  if (!selectedStore) {
+    return (
+      <EmptyStoreState description="Select a store to manage your domain settings." />
+    );
+  }
+
   return (
-    <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        <SelectStore
-          form={form}
-          storeId={storeId}
-          title="Select Your Store"
-          description="Choose which store to configure domain settings for"
-          placeholder="Select a store"
-        />
+    <div className="space-y-6">
+      {/* Breadcrumb Navigation */}
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link to="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <SlashIcon />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbPage>Domain</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
-        {isLoading ? (
-          <DomainSkeleton />
-        ) : (
-          <>
-            {storeId && !isDomainIntegrated && <DomainOwnership form={form} />}
+      {/* Page Header */}
+      <PageHeader
+        icon={Globe}
+        title="Domain Settings"
+        description="Configure a custom domain for"
+      />
 
-            {/* Conditional Domain field Rendering based on selection */}
-            {storeId && form.watch("domainOwnership") === "need-domain" && (
-              <NewDomain />
-            )}
+      {/* Main Form */}
+      <Form {...form}>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {isLoading ? (
+            <DomainSkeleton />
+          ) : (
+            <>
+              {!isDomainIntegrated && <DomainOwnership form={form} />}
 
-            {storeId && form.watch("domainOwnership") === "has-domain" && (
-              <DomainField
-                form={form}
-                isDomainIntegrated={isDomainIntegrated}
-                data={data?.data}
-              />
-            )}
-          </>
-        )}
+              {/* Conditional Domain field Rendering based on selection */}
+              {form.watch("domainOwnership") === "need-domain" && <NewDomain />}
 
-        {/* bottom buttons */}
-        <div className="flex flex-col-reverse gap-4 lg:flex-row lg:justify-between">
-          <Button variant="outline" size="lg" asChild>
-            <Link to="/">
-              <ChevronLeft /> Back to stores
-            </Link>
-          </Button>
+              {form.watch("domainOwnership") === "has-domain" && (
+                <DomainField
+                  form={form}
+                  isDomainIntegrated={isDomainIntegrated}
+                  data={data?.data}
+                />
+              )}
+            </>
+          )}
 
-          {/* optional submit button for custom domain */}
-          {!isLoading &&
-            storeId &&
-            form.watch("domainOwnership") !== "need-domain" && (
+          {/* Bottom buttons */}
+          <div className="flex flex-col-reverse gap-4 border-t border-slate-200 pt-6 lg:flex-row lg:justify-between">
+            <Button variant="outline" size="lg" asChild>
+              <Link to="/">
+                <ChevronLeft className="mr-2 h-4 w-4" />
+                Back to Dashboard
+              </Link>
+            </Button>
+
+            {/* Submit button for custom domain */}
+            {!isLoading && form.watch("domainOwnership") !== "need-domain" && (
               <div className="flex flex-col-reverse gap-4 lg:flex-row">
-                <Button variant="outline" size="lg" className="cursor-pointer">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="cursor-pointer"
+                  type="button"
+                >
                   Save as Draft
                 </Button>
 
-                <Button type="submit" size="lg" className="cursor-pointer">
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="cursor-pointer"
+                  disabled={isSubmitting || isUpdating}
+                >
                   {isDomainIntegrated
                     ? isUpdating
                       ? "Updating..."
@@ -155,8 +206,9 @@ export default function Domains() {
                 </Button>
               </div>
             )}
-        </div>
-      </form>
-    </Form>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
 }

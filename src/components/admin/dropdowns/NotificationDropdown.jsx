@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 export default function NotificationDropdown() {
   const notifications = Array.from({ length: 5 }, (_, i) => ({
@@ -19,11 +20,11 @@ export default function NotificationDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="relative cursor-pointer rounded-md border border-transparent p-1.5 transition-all duration-200 ease-linear outline-none hover:border-neutral-100 hover:bg-neutral-50 focus:border-neutral-100 focus:bg-neutral-50">
-          <Bell className="h-[18px] w-[18px]" />
+        <Button variant="ghost" size="sm" className="relative cursor-pointer">
+          <Bell />
           {/* Unread badge */}
-          <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
-        </button>
+          <span className="absolute top-1 right-2.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
+        </Button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-[320px] p-0" sideOffset={8}>

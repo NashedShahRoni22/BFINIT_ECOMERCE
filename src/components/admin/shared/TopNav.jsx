@@ -3,6 +3,7 @@ import { Menu, X } from "lucide-react";
 import NotificationDropdown from "../dropdowns/NotificationDropdown";
 import AdminDropdown from "../dropdowns/AdminDropdown";
 import logo from "../../../assets/logo/bfinit.png";
+import TopNavStoreSelect from "../dropdowns/TopNavStoreSelect";
 
 export default function TopNav({ showSideNav, setShowSideNav }) {
   return (
@@ -16,10 +17,16 @@ export default function TopNav({ showSideNav, setShowSideNav }) {
         {showSideNav ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </button>
 
-      {/* logo */}
-      <Link to="/" className="hidden lg:block">
-        <img src={logo} alt="bfinit logo" className="w-20 py-1" />
-      </Link>
+      <>
+        {/* logo */}
+        <Link to="/" className="hidden lg:block">
+          <img src={logo} alt="bfinit logo" className="w-20 py-1" />
+        </Link>
+
+        <div className="hidden md:inline-block">
+          <TopNavStoreSelect />
+        </div>
+      </>
 
       {/* mobile logo */}
       <Link to="/" className="lg:hidden">
@@ -27,12 +34,14 @@ export default function TopNav({ showSideNav, setShowSideNav }) {
       </Link>
 
       {/* notification & admin profile */}
-      <div className="flex items-center justify-center gap-2 sm:gap-3">
+      <div className="flex items-center justify-center gap-2.5 sm:gap-4">
         {/* notification */}
         <NotificationDropdown />
 
         {/* admin profile */}
-        <AdminDropdown />
+        <div className="hidden md:inline-block">
+          <AdminDropdown />
+        </div>
       </div>
     </nav>
   );
