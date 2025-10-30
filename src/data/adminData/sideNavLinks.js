@@ -7,7 +7,7 @@ import {
   Newspaper,
   Package,
   Search,
-  ShoppingBag,
+  Palette,
   ShoppingCart,
 } from "lucide-react";
 
@@ -21,9 +21,9 @@ export const sideNavLinks = [
         url: "/",
       },
       {
-        icon: ShoppingBag,
-        name: "Stores",
-        url: "/all-stores",
+        icon: Palette,
+        name: "Themes",
+        url: "/themes",
       },
       {
         icon: Package,

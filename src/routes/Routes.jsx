@@ -46,6 +46,8 @@ import CustomerPanelLayout from "../layout/CustomerPanelLayout";
 import CustomerProfile from "../pages/store/CustomerProfile/CustomerProfile";
 import CustomerOrders from "../pages/store/CustomerOrders/CustomerOrders";
 import Domains from "@/pages/admin/Domains/Domains";
+import Themes from "@/pages/admin/Themes/Themes";
+import ThemeCustomize from "@/layout/ThemeCustomize";
 
 export const router = createBrowserRouter([
   {
@@ -77,9 +79,14 @@ export const router = createBrowserRouter([
         path: "/update-store/:storeId",
         element: <StoreForm isUpdateMode />,
       },
+      // TODO: remove this component and page as it got replaced by themes
       {
         path: "/all-stores",
         element: <Stores />,
+      },
+      {
+        path: "/themes",
+        element: <Themes />,
       },
       {
         path: "/orders",
@@ -155,12 +162,20 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  // store customize
+  // TODO: remove this old store customize layout
   {
     path: "/customize-store/:storeId",
     element: (
       <PrivateRoute>
         <StoreCustomizeLayout />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/store/:storeId/themes/:themesId/editor",
+    element: (
+      <PrivateRoute>
+        <ThemeCustomize />
       </PrivateRoute>
     ),
   },

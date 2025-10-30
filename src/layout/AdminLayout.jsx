@@ -23,7 +23,7 @@ export default function AdminLayout() {
   }, [showSideNav]);
 
   return (
-    <div className="h-[100dvh] w-full overflow-hidden">
+    <div className="font-inter h-[100dvh] w-full overflow-hidden">
       {/* Fixed Top Bar */}
       <TopNav showSideNav={showSideNav} setShowSideNav={setShowSideNav} />
 
