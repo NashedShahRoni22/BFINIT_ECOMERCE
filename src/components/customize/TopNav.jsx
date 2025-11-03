@@ -1,9 +1,16 @@
-import { Eye, LogOut, Monitor, Save, Smartphone } from "lucide-react";
+import { useNavigate } from "react-router";
+import { LogOut, Monitor, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function TopNav({ handleExit }) {
+export default function TopNav({ onSave }) {
+  const navigate = useNavigate();
+
+  const handleExit = () => {
+    navigate("/themes");
+  };
+
   return (
-    <nav className="flex items-center justify-between border-b px-5 py-2.5">
+    <nav className="bg-background flex items-center justify-between border-b px-5 py-2.5">
       {/* Left: Store Identity */}
       <div className="flex items-center gap-3">
         <h1 className="text-foreground text-base font-semibold">My Store</h1>
@@ -16,7 +23,7 @@ export default function TopNav({ handleExit }) {
         <Button
           size="sm"
           variant="ghost"
-          className="data-[active=true]:bg-background h-8 w-8 p-0 data-[active=true]:shadow-sm"
+          className="data-[active=true]:bg-background h-8 w-8 p-0 hover:cursor-pointer data-[active=true]:shadow-sm"
           data-active="true"
           title="Desktop view"
         >
@@ -25,7 +32,7 @@ export default function TopNav({ handleExit }) {
         <Button
           size="sm"
           variant="ghost"
-          className="data-[active=true]:bg-background h-8 w-8 p-0 data-[active=true]:shadow-sm"
+          className="data-[active=true]:bg-background h-8 w-8 p-0 hover:cursor-pointer data-[active=true]:shadow-sm"
           title="Mobile view"
         >
           <Smartphone className="h-4 w-4" />
@@ -37,15 +44,17 @@ export default function TopNav({ handleExit }) {
         <Button
           size="sm"
           variant="outline"
-          className="gap-2 text-sm font-medium"
+          className="cursor-pointer text-sm font-medium"
         >
-          <Eye className="h-4 w-4" />
           Preview
         </Button>
 
-        <Button size="sm" className="gap-2 text-sm font-medium">
-          <Save className="h-4 w-4" />
-          Save Changes
+        <Button
+          onClick={onSave}
+          size="sm"
+          className="cursor-pointer text-sm font-medium"
+        >
+          Save
         </Button>
 
         <div className="bg-border mx-1 h-6 w-px" />
@@ -54,7 +63,7 @@ export default function TopNav({ handleExit }) {
           onClick={handleExit}
           size="icon"
           variant="ghost"
-          className="text-muted-foreground hover:text-destructive h-9 w-9"
+          className="text-muted-foreground hover:text-destructive h-9 w-9 cursor-pointer"
           title="Exit editor"
         >
           <LogOut className="h-4 w-4" />
