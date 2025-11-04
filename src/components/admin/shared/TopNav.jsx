@@ -2,8 +2,8 @@ import { Link } from "react-router";
 import { Menu, X } from "lucide-react";
 import NotificationDropdown from "../dropdowns/NotificationDropdown";
 import AdminDropdown from "../dropdowns/AdminDropdown";
-import logo from "../../../assets/logo/bfinit.png";
 import TopNavStoreSelect from "../dropdowns/TopNavStoreSelect";
+import logo from "../../../assets/logo/bfinit.png";
 
 export default function TopNav({ showSideNav, setShowSideNav }) {
   return (

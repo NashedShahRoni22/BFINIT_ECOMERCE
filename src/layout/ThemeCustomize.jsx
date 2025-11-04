@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TopNav from "@/components/customize/TopNav";
 import ContentEditorPanel from "@/components/customize/ContentEditor/ContentEditorPanel";
 import Preview from "@/components/customize/Preview";
@@ -72,6 +72,15 @@ export default function ThemeCustomize() {
     footer: [],
   });
   const [activeSection, setActiveSection] = useState(null);
+
+  useEffect(() => {
+    const previewData = localStorage.getItem("preview");
+
+    if (previewData) {
+      const parsed = JSON.parse(previewData);
+      setSections(parsed.sections);
+    }
+  }, []);
 
   const handleToggleVisibility = (sectionId) => {
     setSections((prev) => {
@@ -151,18 +160,12 @@ export default function ThemeCustomize() {
       pageId: `page-${Date.now()}`,
       pageName: "Home Page",
       sections: sections,
-      metadata: {
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        version: "1.0",
-      },
     };
 
-    console.log("=== PAGE CONFIGURATION ===");
-    console.log("Page ID:", pageConfig.pageId);
-    console.log("Page Name:", pageConfig.pageName);
-    console.log("Full Config:", pageConfig);
-    console.log("JSON String:", JSON.stringify(pageConfig, null, 2));
+    // TODO: remove this ls after api integration for preview
+    localStorage.setItem("preview", JSON.stringify(pageConfig));
+
+    console.log(pageConfig);
   };
 
   const handleReorderSections = (category, activeId, overId) => {

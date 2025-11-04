@@ -40,7 +40,7 @@ export default function Themes() {
       />
 
       <ThemeOverview />
-      <ThemeLibrary />
+      {/* <ThemeLibrary /> */}
     </section>
   );
 }

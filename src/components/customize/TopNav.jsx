@@ -1,9 +1,16 @@
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { LogOut, Monitor, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function TopNav({ onSave }) {
   const navigate = useNavigate();
+  const { storeId, themesId } = useParams();
+
+  // Handle Preview
+  const handlePreveiw = () => {
+    onSave();
+    navigate(`/store/${storeId}/themes/${themesId}/preview`);
+  };
 
   const handleExit = () => {
     navigate("/themes");
@@ -42,6 +49,7 @@ export default function TopNav({ onSave }) {
       {/* Right: Actions */}
       <div className="flex items-center gap-2">
         <Button
+          onClick={handlePreveiw}
           size="sm"
           variant="outline"
           className="cursor-pointer text-sm font-medium"

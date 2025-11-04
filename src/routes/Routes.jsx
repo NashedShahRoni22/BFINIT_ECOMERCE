@@ -48,6 +48,7 @@ import CustomerOrders from "../pages/store/CustomerOrders/CustomerOrders";
 import Domains from "@/pages/admin/Domains/Domains";
 import Themes from "@/pages/admin/Themes/Themes";
 import ThemeCustomize from "@/layout/ThemeCustomize";
+import LiveView from "@/pages/LiveView/LiveView";
 
 export const router = createBrowserRouter([
   {
@@ -178,6 +179,11 @@ export const router = createBrowserRouter([
         <ThemeCustomize />
       </PrivateRoute>
     ),
+  },
+  // New Preview Routes
+  {
+    path: "/store/:storeId/themes/:themesId/preview",
+    element: <LiveView />,
   },
   // preview routes
   {

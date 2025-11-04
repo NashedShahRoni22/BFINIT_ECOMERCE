@@ -1,6 +1,6 @@
 import { componentMap } from "@/config/componentMap";
 
-export default function Preview({ sections }) {
+export default function Preview({ sections, liveView }) {
   const renderSection = (section) => {
     if (!section.visible) return null;
 
@@ -21,7 +21,9 @@ export default function Preview({ sections }) {
   };
 
   return (
-    <div className="bg-background custom-scrollbar m-2 h-[calc(100dvh-79px)] w-full overflow-y-auto rounded-md">
+    <div
+      className={`bg-background custom-scrollbar w-full overflow-y-auto rounded-md ${liveView ? "h-full" : "m-2 h-[calc(100dvh-79px)]"}`}
+    >
       {/* Render Header Sections */}
       {sections.header?.map(renderSection)}
 
