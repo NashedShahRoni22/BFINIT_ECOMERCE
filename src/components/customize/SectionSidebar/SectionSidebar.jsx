@@ -51,14 +51,16 @@ export default function SectionSidebar({
 
     return (
       <div className="space-y-2">
-        <h3 className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+        <h3 className="text-muted-foreground px-0.5 text-[11px] font-semibold tracking-wider uppercase">
           {title}
         </h3>
         <div className="space-y-1.5">
           {categorySections.length === 0 ? (
-            <p className="text-muted-foreground py-2 text-center text-xs">
-              No {category} {category === "body" ? "sections" : "section"}
-            </p>
+            <div className="bg-muted/30 rounded-lg border border-dashed px-4 py-5">
+              <p className="text-muted-foreground text-center text-[11px]">
+                No {category} {category === "body" ? "sections" : "section"}
+              </p>
+            </div>
           ) : (
             <DndContext
               sensors={sensors}
@@ -90,15 +92,16 @@ export default function SectionSidebar({
     <>
       <aside className="flex h-[calc(100vh-63px)] w-full max-w-64 flex-col border-r bg-white">
         {/* Header */}
-        <div className="border-b px-4 py-3">
+        <div className="bg-card border-b px-4 py-2.5">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold">Sections</h2>
+            <h2 className="text-foreground text-xs font-semibold">Sections</h2>
             <Button
               onClick={() => setIsModalOpen(true)}
               variant="ghost"
               size="sm"
+              className="h-7 gap-1 text-xs"
             >
-              <Plus /> Add
+              <Plus size={14} /> Add
             </Button>
           </div>
         </div>

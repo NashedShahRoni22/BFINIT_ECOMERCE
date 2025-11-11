@@ -6,7 +6,7 @@ export default function EmptyStoreState({
   title = "No store selected",
   description,
   backTo = "/",
-  backLabel = "Back to Dashboard",
+  backLabel = "Back to Home",
 }) {
   return (
     <div className="flex min-h-[calc(100vh-200px)] items-center justify-center px-4">

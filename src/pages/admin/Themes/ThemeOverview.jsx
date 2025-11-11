@@ -1,45 +1,103 @@
 import { Link } from "react-router";
+import {
+  ExternalLink,
+  Palette,
+  Smartphone,
+  Zap,
+  Clock,
+  GitBranch,
+  UserRound,
+  SlidersHorizontal,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Settings2, ExternalLink } from "lucide-react";
-import themeImg from "@/assets/placeholder/preview.webp";
 import useSelectedStore from "@/hooks/stores/useSelectedStore";
+import themeImg from "@/assets/themes/theme.jpg";
 
 export default function ThemeOverview() {
   const { selectedStore } = useSelectedStore();
 
+  console.log(selectedStore.storeId);
+
   return (
-    <div className="grid grid-cols-12 gap-6 rounded-lg border bg-white p-6">
-      {/* Theme preview */}
-      <div className="col-span-8">
-        <div className="overflow-hidden rounded-lg border">
-          <img
-            src={themeImg}
-            alt="Modern Minimal Theme Preview"
-            className="w-full"
-          />
-        </div>
+    <div className="grid grid-cols-2 gap-8 rounded-lg border bg-white p-6">
+      {/* Image container */}
+      <div className="flex items-center justify-center">
+        <img
+          src={themeImg}
+          alt="Modern Minimal theme preview"
+          loading="lazy"
+          className="w-full rounded-lg shadow-sm"
+        />
       </div>
 
-      {/* Details */}
-      <div className="col-span-4 flex flex-col">
-        <h2 className="text-xl font-semibold">Modern Minimal</h2>
-        <p className="mt-1 text-sm text-gray-500">
-          Last modified: January 25, 2025
-        </p>
+      {/* Theme info container */}
+      <div className="flex flex-col gap-4">
+        {/* Header with badge */}
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-2.5 py-0.5 text-[11px] font-medium text-green-700">
+            <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
+            Active
+          </div>
+          <h2 className="text-foreground text-xl font-semibold">
+            Modern Minimal
+          </h2>
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            Clean, minimalist design perfect for fashion, lifestyle, and modern
+            brands. Features responsive layout and fast loading times.
+          </p>
+        </div>
 
-        <div className="mt-6 space-y-2">
-          <Button asChild className="w-full">
-            <Link
-              to={`/store/${selectedStore?.storeId}/themes/wsia2w782/editor`}
-            >
-              <Settings2 className="mr-2 h-4 w-4" />
+        {/* Feature badges */}
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="bg-secondary inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium">
+            <Palette size={13} className="text-muted-foreground" />
+            <span>Default</span>
+          </div>
+          <div className="bg-secondary inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium">
+            <Smartphone size={13} className="text-muted-foreground" />
+            <span>Responsive</span>
+          </div>
+          <div className="bg-secondary inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium">
+            <Zap size={13} className="text-muted-foreground" />
+            <span>Fast Loading</span>
+          </div>
+        </div>
+
+        {/* Metadata */}
+        <div className="text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-2">
+          <div className="inline-flex items-center gap-1.5 text-xs">
+            <Clock size={13} />
+            <span>Modified 2 days ago</span>
+          </div>
+          <div className="inline-flex items-center gap-1.5 text-xs">
+            <GitBranch size={13} />
+            <span>Version 2.1.0</span>
+          </div>
+          <div className="inline-flex items-center gap-1.5 text-xs">
+            <UserRound size={13} />
+            <span>By BFINIT</span>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center gap-3 pt-2">
+          <Button size="sm" className="h-8 gap-1.5 text-xs font-medium" asChild>
+            <Link to={`/store/${selectedStore.storeId}/themes/themesId/editor`}>
+              <SlidersHorizontal size={14} />
               Customize Theme
             </Link>
           </Button>
 
-          <Button asChild variant="outline" className="w-full">
-            <Link to="/preview" target="_blank">
-              <ExternalLink className="mr-2 h-4 w-4" />
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-8 gap-1.5 text-xs font-medium"
+            asChild
+          >
+            <Link
+              to={`/store/${selectedStore.storeId}/themes/themesId/preview`}
+            >
+              <ExternalLink size={14} />
               View Store
             </Link>
           </Button>

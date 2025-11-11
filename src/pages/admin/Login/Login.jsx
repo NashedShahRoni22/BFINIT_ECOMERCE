@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
-import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
+import { Eye, EyeClosed } from "lucide-react";
+import toast from "react-hot-toast";
 import { AuthContext } from "../../../Providers/AuthProvider";
 import usePostMutation from "../../../hooks/mutations/usePostMutation";
-import toast from "react-hot-toast";
 import Spinner from "../../../components/admin/loaders/Spinner";
 import bfinitLogo from "../../../assets/logo/bfinit.png";
 
@@ -103,13 +103,9 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setShowPass((prev) => !prev)}
-                  className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer bg-white text-gray-400 hover:text-gray-500"
+                  className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer bg-transparent text-gray-400 hover:text-gray-500"
                 >
-                  {showPass ? (
-                    <MdOutlineVisibility className="h-5 w-5" />
-                  ) : (
-                    <MdOutlineVisibilityOff className="h-5 w-5" />
-                  )}
+                  {showPass ? <Eye size={20} /> : <EyeClosed size={20} />}
                 </button>
               </div>
             </div>
@@ -117,7 +113,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={isPending}
-              className={`flex w-full justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors ${!isPending ? "cursor-pointer hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" : "cursor-not-allowed opacity-70"}`}
+              className={`flex min-h-10 w-full justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors ${!isPending ? "cursor-pointer hover:bg-indigo-700" : "cursor-not-allowed opacity-70"}`}
             >
               {isPending ? <Spinner /> : "Sign in"}
             </button>

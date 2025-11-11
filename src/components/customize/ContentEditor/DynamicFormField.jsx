@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { Upload, X } from "lucide-react";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -10,8 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
 
 export default function DynamicFormField({ field, value, onChange }) {
   const [imagePreview, setImagePreview] = useState(value);
@@ -40,77 +40,107 @@ export default function DynamicFormField({ field, value, onChange }) {
   switch (field.type) {
     case "text":
       return (
-        <div className="space-y-1.5">
-          <Label htmlFor={field.key} className="text-xs font-medium">
+        <div className="space-y-2">
+          <Label
+            htmlFor={field.key}
+            className="text-foreground text-xs font-medium"
+          >
             {field.label}
           </Label>
+          {field.helpText && (
+            <p className="text-muted-foreground -mt-0.5 text-[11px] leading-relaxed">
+              {field.helpText}
+            </p>
+          )}
           <Input
             id={field.key}
             type="text"
             value={value || ""}
             onChange={(e) => onChange(e.target.value)}
             placeholder={field.placeholder}
+            className="h-9 text-sm"
           />
-          {field.helpText && (
-            <p className="text-muted-foreground text-xs">{field.helpText}</p>
-          )}
         </div>
       );
 
     case "textarea":
       return (
         <div className="space-y-2">
-          <Label htmlFor={field.key}>{field.label}</Label>
+          <Label
+            htmlFor={field.key}
+            className="text-foreground text-xs font-medium"
+          >
+            {field.label}
+          </Label>
+          {field.helpText && (
+            <p className="text-muted-foreground -mt-0.5 text-[11px] leading-relaxed">
+              {field.helpText}
+            </p>
+          )}
           <Textarea
             id={field.key}
             value={value || ""}
             onChange={(e) => onChange(e.target.value)}
             placeholder={field.placeholder}
             rows={field.rows || 3}
+            className="resize-none text-sm"
           />
-          {field.helpText && (
-            <p className="text-muted-foreground text-xs">{field.helpText}</p>
-          )}
         </div>
       );
 
     case "select":
       return (
         <div className="space-y-2">
-          <Label htmlFor={field.key}>{field.label}</Label>
+          <Label
+            htmlFor={field.key}
+            className="text-foreground text-xs font-medium"
+          >
+            {field.label}
+          </Label>
+          {field.helpText && (
+            <p className="text-muted-foreground -mt-0.5 text-[11px] leading-relaxed">
+              {field.helpText}
+            </p>
+          )}
           <Select value={value || ""} onValueChange={onChange}>
-            <SelectTrigger id={field.key}>
+            <SelectTrigger id={field.key} className="h-9 text-sm">
               <SelectValue placeholder="Select an option" />
             </SelectTrigger>
             <SelectContent>
               {field.options.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
+                <SelectItem
+                  key={option.value}
+                  value={option.value}
+                  className="text-sm"
+                >
                   {option.label}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
-          {field.helpText && (
-            <p className="text-muted-foreground text-xs">{field.helpText}</p>
-          )}
         </div>
       );
 
     case "checkbox":
       return (
-        <div className="flex items-start gap-3">
+        <div className="border-border bg-muted/20 flex items-start gap-3 rounded-lg border p-3">
           <Checkbox
             id={field.key}
             checked={value || false}
             onCheckedChange={onChange}
-            className="mt-1"
+            className="mt-0.5"
           />
           <div className="flex-1 space-y-1">
-            <Label htmlFor={field.key} className="cursor-pointer">
+            <Label
+              htmlFor={field.key}
+              className="cursor-pointer text-xs leading-none font-medium"
+            >
               {field.label}
             </Label>
             {field.helpText && (
-              <p className="text-muted-foreground text-xs">{field.helpText}</p>
+              <p className="text-muted-foreground text-[11px] leading-relaxed">
+                {field.helpText}
+              </p>
             )}
           </div>
         </div>
@@ -119,14 +149,21 @@ export default function DynamicFormField({ field, value, onChange }) {
     case "image":
       return (
         <div className="space-y-2">
-          <Label>{field.label}</Label>
+          <Label className="text-foreground text-xs font-medium">
+            {field.label}
+          </Label>
+          {field.helpText && (
+            <p className="text-muted-foreground -mt-0.5 text-[11px] leading-relaxed">
+              {field.helpText}
+            </p>
+          )}
           {imagePreview ? (
-            <div className="relative">
+            <div className="group relative">
               <div className="overflow-hidden rounded-lg border">
                 <img
                   src={imagePreview}
                   alt="Preview"
-                  className="h-40 w-full object-cover"
+                  className="h-32 w-full object-cover"
                 />
               </div>
               <Button
@@ -134,16 +171,18 @@ export default function DynamicFormField({ field, value, onChange }) {
                 variant="destructive"
                 size="icon"
                 onClick={removeImage}
-                className="absolute top-2 right-2 h-7 w-7"
+                className="absolute top-2 right-2 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
               >
-                <X size={14} />
+                <X size={12} />
               </Button>
             </div>
           ) : (
-            <label className="hover:bg-accent flex h-40 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed transition-colors hover:border-gray-400">
-              <Upload size={24} className="text-muted-foreground mb-2" />
-              <span className="text-sm font-medium">Upload Image</span>
-              <span className="text-muted-foreground mt-1 text-xs">
+            <label className="border-border bg-muted/20 hover:border-muted-foreground/40 hover:bg-muted/30 flex h-32 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed transition-colors">
+              <Upload size={18} className="text-muted-foreground mb-1.5" />
+              <span className="text-foreground text-xs font-medium">
+                Upload Image
+              </span>
+              <span className="text-muted-foreground mt-0.5 text-[11px]">
                 PNG, JPG up to 5MB
               </span>
               <input
@@ -153,9 +192,6 @@ export default function DynamicFormField({ field, value, onChange }) {
                 className="hidden"
               />
             </label>
-          )}
-          {field.helpText && (
-            <p className="text-muted-foreground text-xs">{field.helpText}</p>
           )}
         </div>
       );

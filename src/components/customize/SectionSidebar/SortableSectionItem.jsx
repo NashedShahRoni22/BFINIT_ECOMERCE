@@ -29,22 +29,22 @@ export default function SortableSectionItem({
       ref={setNodeRef}
       style={style}
       onClick={() => onSelect(section.id)}
-      className={`group flex w-full cursor-pointer items-center justify-between rounded-md border pr-2.5 transition-colors select-none ${
+      className={`group flex w-full cursor-pointer items-center justify-between rounded-md border transition-all select-none ${
         activeSection === section.id
-          ? "border-primary bg-gray-100"
-          : "border-gray-200 hover:bg-gray-50"
+          ? "border-accent-foreground/20 bg-accent"
+          : "border-border bg-card hover:bg-accent/50"
       }`}
     >
       <div className="flex flex-1 items-center">
         <div
           {...attributes}
           {...listeners}
-          className="active:text-primary text-muted-foreground h-full cursor-grab pr-1 pl-2.5 active:cursor-grabbing"
+          className="text-muted-foreground hover:text-foreground cursor-grab py-2 pr-2 pl-2.5 transition-colors active:cursor-grabbing"
         >
-          <GripVertical size={14} />
+          <GripVertical className="size-3.5" />
         </div>
         <span
-          className={`text-xs font-medium ${activeSection === section.id ? "text-primary" : "text-muted-foreground group-hover:text-primary"}`}
+          className={`text-xs font-medium ${activeSection === section.id ? "text-foreground" : "text-muted-foreground"}`}
         >
           {section.name}
         </span>
@@ -57,11 +57,11 @@ export default function SortableSectionItem({
         }}
         size="icon"
         variant="ghost"
-        className={
+        className={`mr-1 h-7 w-7 ${
           activeSection === section.id
-            ? "text-primary"
+            ? "text-foreground"
             : "text-muted-foreground"
-        }
+        }`}
       >
         {section.visible ? <Eye size={14} /> : <EyeOff size={14} />}
       </Button>

@@ -11,8 +11,19 @@ import {
 import PageHeader from "@/components/admin/shared/PageHeader";
 import ThemeOverview from "./ThemeOverview";
 import ThemeLibrary from "./ThemeLibrary";
+import useSelectedStore from "@/hooks/stores/useSelectedStore";
+import EmptyStoreState from "@/components/admin/shared/EmptyStoreState";
 
 export default function Themes() {
+  const { selectedStore } = useSelectedStore();
+
+  // Show empty state if no store selected
+  if (!selectedStore) {
+    return (
+      <EmptyStoreState description="Select a store to customize your themes." />
+    );
+  }
+
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
