@@ -2,13 +2,10 @@ import { useEffect, useState } from "react";
 import { Outlet, ScrollRestoration } from "react-router";
 import TopNav from "../components/admin/shared/TopNav";
 import SideNav from "../components/admin/shared/SideNav";
+import StoreSelectionModal from "@/components/admin/modals/StoreSelectionModal";
 
 export default function AdminLayout() {
   const [showSideNav, setShowSideNav] = useState(false);
-
-  const toggleSideNav = () => {
-    setShowSideNav((prev) => !prev);
-  };
 
   useEffect(() => {
     if (showSideNav) {
@@ -22,8 +19,15 @@ export default function AdminLayout() {
     };
   }, [showSideNav]);
 
+  const toggleSideNav = () => {
+    setShowSideNav((prev) => !prev);
+  };
+
   return (
     <div className="font-inter h-[100dvh] w-full overflow-hidden">
+      {/* Store Selection Modal */}
+      <StoreSelectionModal />
+
       {/* Fixed Top Bar */}
       <TopNav showSideNav={showSideNav} setShowSideNav={setShowSideNav} />
 

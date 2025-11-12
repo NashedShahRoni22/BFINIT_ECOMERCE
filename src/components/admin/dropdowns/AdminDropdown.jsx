@@ -19,10 +19,12 @@ import useGetQuery from "../../../hooks/queries/useGetQuery";
 import useAuth from "../../../hooks/auth/useAuth";
 import { adminDropdownLinks } from "../../../data/adminData/adminDropdownLinks";
 import { Button } from "@/components/ui/button";
+import useSelectedStore from "@/hooks/stores/useSelectedStore";
 
 export default function AdminDropdown() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { handleSetStore } = useSelectedStore();
 
   // fetch client info
   const { data: clientInfo } = useGetQuery({
@@ -35,6 +37,8 @@ export default function AdminDropdown() {
 
   const handleLogOut = () => {
     localStorage.removeItem("authInfo");
+    localStorage.removeItem("store");
+    handleSetStore(null);
     toast.success("Logged out successfully");
     navigate("/login");
   };
