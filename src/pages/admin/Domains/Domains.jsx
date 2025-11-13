@@ -15,7 +15,6 @@ import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router";
-import EmptyStoreState from "@/components/admin/shared/EmptyStoreState";
 import PageHeader from "@/components/admin/shared/PageHeader";
 import {
   Breadcrumb,
@@ -113,13 +112,6 @@ export default function Domains() {
       },
     });
   };
-
-  // Show empty state if no store selected
-  if (!selectedStore) {
-    return (
-      <EmptyStoreState description="Select a store to manage your domain settings." />
-    );
-  }
 
   return (
     <div className="space-y-6">

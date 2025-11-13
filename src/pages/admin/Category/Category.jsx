@@ -1,7 +1,7 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
+import { Link } from "react-router";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
-import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import ImageField from "../../../components/admin/ImageField/ImageField";
 import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
 import EditableListItem from "../../../components/admin/EditableListItem/EditableListItem";
@@ -11,59 +11,40 @@ import Spinner from "../../../components/admin/loaders/Spinner";
 import usePostMutation from "../../../hooks/mutations/usePostMutation";
 import useGetCategories from "../../../hooks/categories/useGetCategories";
 import { handleImgChange } from "../../../utils/admin/handleImgChange";
-import useGetStores from "../../../hooks/stores/useGetStores";
-import { useSearchParams } from "react-router";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { ChevronDownIcon, FolderPlus, SlashIcon } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import PageHeader from "@/components/admin/shared/PageHeader";
+import useSelectedStore from "@/hooks/stores/useSelectedStore";
 
 export default function Category() {
   const queryClient = useQueryClient();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const storeId = searchParams.get("storeId") || "";
   const { user } = useContext(AuthContext);
+  const { selectedStore } = useSelectedStore();
   const imageFieldRef = useRef(null);
   const [selectedImages, setSelectedImages] = useState({
     categoryIcon: null,
   });
   const [categoryName, setCategoryName] = useState("");
-  const [selectedStore, setSelectedStore] = useState({
-    storeId,
-    storeName: "",
-  });
 
-  // fetch stores
-  const { data: stores } = useGetStores();
   // fetch categories based on storeId
   const {
     data: categories,
     isLoading,
     isError,
   } = useGetCategories(selectedStore?.storeId);
-
-  // on component mount or page reload keep the store name
-  useEffect(() => {
-    if (stores && stores?.data?.length > 0) {
-      const foundStore = stores.data.find((store) => store.storeId === storeId);
-      if (foundStore) {
-        setSelectedStore({
-          storeId,
-          storeName: foundStore.storeName,
-        });
-      }
-    }
-  }, [stores, storeId]);
-
-  // store select dropdown
-  const handleStoreChange = (e) => {
-    const selectedIndex = e.target.selectedIndex;
-    const selectedOption = e.target.options[selectedIndex];
-    const newStoreId = e.target.value;
-
-    setSearchParams({ storeId: newStoreId });
-
-    setSelectedStore({
-      storeId: newStoreId,
-      storeName: selectedOption.text,
-    });
-  };
 
   // custom post hooks
   const { mutate, isPending } = usePostMutation({
@@ -106,47 +87,54 @@ export default function Category() {
   };
 
   return (
-    <section>
-      <PageHeading heading="Add New Category" />
+    <section className="space-y-6">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <SlashIcon />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
+                Products
+                <ChevronDownIcon />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center">
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/products/sub-category">Sub Category</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/products/brands">Brands</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/products/add-product">Add Product</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/products/inventory">Inventory</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <SlashIcon />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbPage>Category</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
-      {/* Store Selection */}
-      <div className="my-6 flex flex-wrap items-center justify-between">
-        {selectedStore.storeId ? (
-          <h3 className="text-lg font-semibold">
-            Manage categories of:{" "}
-            <span className="text-dashboard-primary">
-              {selectedStore.storeName}
-            </span>
-          </h3>
-        ) : (
-          <h3 className="text-lg font-semibold">
-            Select a store to add new category
-          </h3>
-        )}
-
-        <div className="relative">
-          <label htmlFor="storeSelect" className="sr-only">
-            Select Store
-          </label>
-          <select
-            id="storeSelect"
-            value={selectedStore.storeId}
-            onChange={handleStoreChange}
-            className="rounded-md border border-neutral-300 p-2 text-sm focus:outline-none"
-          >
-            <option value="" disabled>
-              Select Store
-            </option>
-            {stores &&
-              stores?.data?.length > 0 &&
-              stores?.data?.map((store) => (
-                <option key={store?.storeId} value={store?.storeId}>
-                  {store?.storeName}
-                </option>
-              ))}
-          </select>
-        </div>
-      </div>
+      {/* Page Header */}
+      <PageHeader
+        icon={FolderPlus}
+        title="Add Category"
+        description="Create and manage categories for"
+      />
 
       {selectedStore?.storeId && (
         <div className="mt-6 grid grid-cols-12 gap-y-12 lg:gap-x-12">

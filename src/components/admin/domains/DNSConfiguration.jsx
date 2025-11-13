@@ -72,91 +72,117 @@ export default function DNSConfiguration({ data }) {
           </h3>
 
           {/* A RECORD */}
-          {/* <div className="mt-5 rounded-[10px] border p-6">
-              <h4 className="font-medium">Record 1: A Record</h4>
-              <p className="text-muted-foreground mt-1 text-sm">
-                Points your domain to our server
-              </p>
-
-              <div className="text-muted-foreground mt-3 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-                <div className="space-y-1.5">
-                  <p className="text-sm">Type</p>
-                  <div className="bg-muted rounded border px-2 py-0.5 text-sm text-gray-900">
-                    A
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <p className="text-sm">HOST/NAME</p>
-                  <div className="flex items-center gap-2">
-                    <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
-                      @
-                    </p>
-                    <Clipboard size={18} className="cursor-pointer" />
-                  </div>
-                  <p className="text-sm">Use &apos;@&apos; for root domain</p>
-                </div>
-
-                <div className="space-y-1.5">
-                  <p className="text-sm">VALUE/POINTS TO</p>
-                  <div className="flex items-center gap-2">
-                    <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
-                      {data?.dnsData?.aRecord}
-                    </p>
-                    <Clipboard
-                      size={18}
-                      className="cursor-pointer"
-                      onClick={() => handleTextCopy(data?.dnsData?.aRecord)}
-                    />
-                  </div>
-                  <p className="text-sm">Bfinit&apos;s server IP</p>
-                </div>
-
-                <div className="space-y-1.5">
-                  <p className="text-sm">TTL</p>
-                  <div className="flex items-center gap-2">
-                    <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
-                      3600
-                    </p>
-                    <Clipboard
-                      size={18}
-                      className="cursor-pointer"
-                      onClick={() => handleTextCopy("3600")}
-                    />
-                  </div>
-
-                  <p className="text-sm">Can be automatic</p>
-                </div>
-              </div>
-            </div> */}
-
-          {/* CNAME Record */}
           <div className="mt-5 rounded-[10px] border p-6">
-            <h4 className="text-sm font-semibold">Record 1: CNAME Record</h4>
+            <h4 className="text-sm font-semibold">Record 1: A Record</h4>
             <p className="text-muted-foreground mt-1 text-sm">
-              Connects your www subdomain
+              Points your domain to our server
             </p>
 
             <div className="text-muted-foreground mt-3 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-              <div className="space-y-1.5">
+              {/* <div className="space-y-1.5">
                 <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
                   Type
                 </p>
                 <div className="bg-muted rounded border px-2 py-0.5 text-sm text-gray-900">
                   CNAME
                 </div>
+              </div> */}
+
+              <div className="space-y-1.5">
+                <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
+                  HOST/NAME
+                </p>
+                <div className="flex items-center gap-2">
+                  <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
+                    @
+                  </p>
+                  <Clipboard
+                    size={18}
+                    className="cursor-pointer"
+                    onClick={() => handleTextCopy("@")}
+                  />
+                </div>
+                <p className="text-xs font-medium text-gray-500 uppercase">
+                  Use &apos;@&apos; for root domain
+                </p>
               </div>
 
+              <div className="space-y-1.5">
+                <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
+                  VALUE/POINTS TO
+                </p>
+                <div className="flex items-center gap-2">
+                  <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
+                    {data?.dnsData?.aRecord}
+                  </p>
+                  <Clipboard
+                    size={18}
+                    className="cursor-pointer"
+                    onClick={() => handleTextCopy(data?.dnsData?.aRecord)}
+                  />
+                </div>
+                <p className="text-xs font-medium text-gray-500 uppercase">
+                  Bfinit&apos;s server IP
+                </p>
+              </div>
+
+              <div className="space-y-1.5">
+                <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
+                  TTL
+                </p>
+                <div className="flex items-center gap-2">
+                  <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
+                    3600
+                  </p>
+                  <Clipboard
+                    size={18}
+                    className="cursor-pointer"
+                    onClick={() => handleTextCopy("3600")}
+                  />
+                </div>
+
+                <p className="text-xs font-medium text-gray-500 uppercase">
+                  Can be automatic
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* CNAME Record */}
+          <div className="mt-5 rounded-[10px] border p-6">
+            <h4 className="text-sm font-semibold">Record 2: CNAME Record</h4>
+            <p className="text-muted-foreground mt-1 text-sm">
+              Connects your www subdomain
+            </p>
+
+            <div className="text-muted-foreground mt-3 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
               {/* <div className="space-y-1.5">
-                  <p className="text-sm">HOST/NAME</p>
-                  <div className="flex items-center gap-2">
-                    <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
-                      www
-                    </p>
-                    <Clipboard size={18} className="cursor-pointer" />
-                  </div>
-                  <p className="text-sm">Enables www.yourdomain.com</p>
-                </div> */}
+                <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
+                  Type
+                </p>
+                <div className="bg-muted rounded border px-2 py-0.5 text-sm text-gray-900">
+                  CNAME
+                </div>
+              </div> */}
+
+              <div className="space-y-1.5">
+                <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
+                  HOST/NAME
+                </p>
+                <div className="flex items-center gap-2">
+                  <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
+                    www
+                  </p>
+                  <Clipboard
+                    size={18}
+                    className="cursor-pointer"
+                    onClick={() => handleTextCopy("www")}
+                  />
+                </div>
+                <p className="text-xs font-medium text-gray-500 uppercase">
+                  Enables www.yourdomain.com
+                </p>
+              </div>
 
               <div className="space-y-1.5">
                 <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
@@ -177,21 +203,25 @@ export default function DNSConfiguration({ data }) {
                 </p>
               </div>
 
-              {/* <div className="space-y-1.5">
-                  <p className="text-sm">TTL</p>
-                  <div className="flex items-center gap-2">
-                    <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
-                      3600
-                    </p>
-                    <Clipboard
-                      size={18}
-                      className="cursor-pointer"
-                      onClick={() => handleTextCopy("3600")}
-                    />
-                  </div>
+              <div className="space-y-1.5">
+                <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
+                  TTL
+                </p>
+                <div className="flex items-center gap-2">
+                  <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
+                    Default
+                  </p>
+                  <Clipboard
+                    size={18}
+                    className="cursor-pointer"
+                    onClick={() => handleTextCopy("default")}
+                  />
+                </div>
 
-                  <p className="text-sm">Can be automatic</p>
-                </div> */}
+                <p className="text-xs font-medium text-gray-500 uppercase">
+                  Can be automatic
+                </p>
+              </div>
             </div>
           </div>
 
