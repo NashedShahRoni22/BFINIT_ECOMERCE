@@ -1,8 +1,5 @@
 import SunEditor from "suneditor-react";
 import EmptyState from "../../../../components/admin/EmptyState";
-import PageHeading from "../../../../components/admin/PageHeading/PageHeading";
-import StoreSelector from "../../../../components/admin/StoreSelector";
-import useStoreSelector from "../../../../hooks/stores/useStoreSelector";
 import { useEffect, useState } from "react";
 import useGetHelpContent from "../../../../hooks/support/useGetHelpContent";
 import useUpdateMutation from "../../../../hooks/mutations/useUpdateMutation";
@@ -10,13 +7,31 @@ import useAuth from "../../../../hooks/auth/useAuth";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import Spinner from "../../../../components/admin/loaders/Spinner";
+import useSelectedStore from "@/hooks/stores/useSelectedStore";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Link } from "react-router";
+import { ChevronDownIcon, CircleHelp, SlashIcon } from "lucide-react";
+import PageHeader from "@/components/admin/shared/PageHeader";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function AddHelpCenter() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const { stores, selectedStore, handleStoreChange } = useStoreSelector();
+  const { selectedStore } = useSelectedStore();
   const { data: helpContent, isLoading } = useGetHelpContent(
-    selectedStore.storeId,
+    selectedStore?.storeId,
   );
   const [content, setContent] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -41,7 +56,7 @@ export default function AddHelpCenter() {
   }, [selectedStore?.storeId, isLoading, helpContent?.data]);
 
   const { mutate, isPending } = useUpdateMutation({
-    endpoint: `/store/update/storehelp/${selectedStore.storeId}`,
+    endpoint: `/store/update/storehelp/${selectedStore?.storeId}`,
     token: user?.token,
     clientId: user?.data?.clientid,
   });
@@ -64,7 +79,7 @@ export default function AddHelpCenter() {
           helpContent?.data ? "Help center updated!" : "Help center created!",
         );
         setHasUnsavedChanges(false);
-        queryClient.invalidateQueries(["help", selectedStore.storeId]);
+        queryClient.invalidateQueries(["help", selectedStore?.storeId]);
       },
       onError: () => {
         toast.error("Something went wrong!");
@@ -79,17 +94,54 @@ export default function AddHelpCenter() {
     isPending;
 
   return (
-    <section>
-      <PageHeading heading="Add Help Center" />
-      <StoreSelector
-        stores={stores}
-        selectedStore={selectedStore}
-        onChange={handleStoreChange}
-        titleWhenSelected="Adding Help Center Article for:"
-        titleWhenEmpty="Select a Store to Manage Help Center"
+    <section className="space-y-6">
+      {/* Breadcrumb Navigation */}
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link to="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <SlashIcon />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
+                Support
+                <ChevronDownIcon />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center">
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/support/returns-refunds">Return & Refunds</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/support/terms-conditions">Terms & Conditions</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/support/how-to-buy">How to Buy</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <SlashIcon />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbPage>Help Center</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
+      {/* Page Header */}
+      <PageHeader
+        icon={CircleHelp}
+        title="Help Center Content"
+        description="Create and update help articles for"
       />
 
-      {selectedStore.storeId ? (
+      {selectedStore?.storeId ? (
         <div className="">
           <small className="mb-2 inline-block text-xs text-neutral-500">
             Write helpful content to assist your customers

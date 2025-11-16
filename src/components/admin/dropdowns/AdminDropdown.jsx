@@ -83,7 +83,7 @@ export default function AdminDropdown() {
             className="flex cursor-pointer items-center gap-2"
           >
             <UserCircle className="h-4 w-4" />
-            <span>Account Settings</span>
+            <span>Settings</span>
           </Link>
         </DropdownMenuItem>
 

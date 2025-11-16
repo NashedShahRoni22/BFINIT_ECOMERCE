@@ -8,23 +8,21 @@ export default function AdminLayout() {
   const [showSideNav, setShowSideNav] = useState(false);
 
   useEffect(() => {
-    if (showSideNav) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
 
     return () => {
+      document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
     };
-  }, [showSideNav]);
+  }, []);
 
   const toggleSideNav = () => {
     setShowSideNav((prev) => !prev);
   };
 
   return (
-    <div className="font-inter h-[100dvh] w-full overflow-hidden">
+    <div className="font-inter h-dvh w-full overflow-hidden">
       {/* Store Selection Modal */}
       <StoreSelectionModal />
 
@@ -32,7 +30,7 @@ export default function AdminLayout() {
       <TopNav showSideNav={showSideNav} setShowSideNav={setShowSideNav} />
 
       {/* Layout Body (Sidebar + Main Content) */}
-      <div className="flex h-[100dvh] pt-[55px]">
+      <div className="flex h-dvh pt-[55px]">
         {/* Sidebar */}
         <SideNav showSideNav={showSideNav} toggleSideNav={toggleSideNav} />
 

@@ -1,20 +1,44 @@
-import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import BlogForm from "../../../components/admin/BlogForm";
-import useStoreSelector from "../../../hooks/stores/useStoreSelector";
-import StoreSelector from "../../../components/admin/StoreSelector";
+import useSelectedStore from "@/hooks/stores/useSelectedStore";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Link } from "react-router";
+import { PenSquare, SlashIcon } from "lucide-react";
+import PageHeader from "@/components/admin/shared/PageHeader";
 
 export default function AddBlog() {
-  const { stores, selectedStore, handleStoreChange } = useStoreSelector();
+  const { selectedStore } = useSelectedStore();
 
   return (
-    <section>
-      <PageHeading heading="Add New Blog" />
-      <StoreSelector
-        stores={stores}
-        selectedStore={selectedStore}
-        onChange={handleStoreChange}
-        titleWhenSelected="Add New Blog to Store"
-        titleWhenEmpty="Select a Store to Add New Blog"
+    <section className="space-y-6">
+      {/* Breadcrumb Navigation */}
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link to="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <SlashIcon />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbPage>Add Blog</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
+      {/* Page Header */}
+      <PageHeader
+        icon={PenSquare}
+        title="Add Blog"
+        description="Create and publish blog content for"
       />
 
       {/* Blog form */}

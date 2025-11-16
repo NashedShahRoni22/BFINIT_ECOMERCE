@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import PageHeading from "../../../components/admin/PageHeading/PageHeading";
-import { useSearchParams } from "react-router";
-import useGetStores from "../../../hooks/stores/useGetStores";
+import { Link } from "react-router";
 import { BsInfoCircle } from "react-icons/bs";
 import ActionBtn from "../../../components/admin/buttons/ActionBtn";
 import toast from "react-hot-toast";
@@ -12,27 +10,30 @@ import useGetAllMeta from "../../../hooks/meta/getAllMeta";
 import useUpdateMutation from "../../../hooks/mutations/useUpdateMutation";
 import { useQueryClient } from "@tanstack/react-query";
 import EmptyState from "../../../components/admin/EmptyState";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Search, SlashIcon } from "lucide-react";
+import PageHeader from "@/components/admin/shared/PageHeader";
+import useSelectedStore from "@/hooks/stores/useSelectedStore";
 
 export default function AddSeo() {
   const queryClient = useQueryClient();
-  // fetch all stores
-  const { data: stores } = useGetStores();
   const { user } = useAuth();
+  const { selectedStore } = useSelectedStore();
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const storeId = searchParams.get("storeId") || "";
-
-  const [selectedStore, setSelectedStore] = useState({
-    storeId,
-    storeName: "",
-  });
   const [formData, setFormData] = useState({
     metaId: "",
     metaTitle: "",
     metaDescription: "",
   });
 
-  const { data: metaData, isLoading } = useGetAllMeta(storeId);
+  const { data: metaData, isLoading } = useGetAllMeta(selectedStore?.storeId);
 
   const isDisabled = !formData.metaTitle || !formData.metaDescription;
   const isUpdate =
@@ -66,29 +67,9 @@ export default function AddSeo() {
     setFormData((prev) => ({ ...prev, metaDescription: value }));
   };
 
-  // store select dropdown
-  const handleStoreChange = (e) => {
-    const selectedIndex = e.target.selectedIndex;
-    const selectedOption = e.target.options[selectedIndex];
-    const newStoreId = e.target.value;
-
-    setSearchParams({ storeId: newStoreId });
-
-    setSelectedStore({
-      storeId: newStoreId,
-      storeName: selectedOption.text,
-    });
-
-    setFormData({
-      metaId: "",
-      metaTitle: "",
-      metaDescription: "",
-    });
-  };
-
   // add seo post hook
   const { mutate, isPending } = usePostMutation({
-    endpoint: `/meta/create/${storeId}`,
+    endpoint: `/meta/create/${selectedStore?.storeId}`,
     token: user?.token,
     clientId: user?.data?.clientid,
   });
@@ -111,7 +92,7 @@ export default function AddSeo() {
       mutate(formData, {
         onSuccess: (data) => {
           toast.success(data?.message);
-          queryClient.invalidateQueries(["storeMeta", storeId]);
+          queryClient.invalidateQueries(["storeMeta", selectedStore?.storeId]);
         },
 
         onError: (error) => {
@@ -126,7 +107,7 @@ export default function AddSeo() {
     updateMeta(formData, {
       onSuccess: (data) => {
         toast.success(data?.message);
-        queryClient.invalidateQueries(["storeMeta", storeId]);
+        queryClient.invalidateQueries(["storeMeta", selectedStore?.storeId]);
       },
 
       onError: (error) => {
@@ -137,47 +118,32 @@ export default function AddSeo() {
   };
 
   return (
-    <section>
-      <PageHeading heading="Add SEO & Meta" />
+    <section className="space-y-6">
+      {/* Breadcrumb Navigation */}
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link to="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <SlashIcon />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbPage>SEO & Meta</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
-      {/* Store Selection */}
-      <div className="my-6 flex flex-wrap items-center justify-between">
-        {selectedStore.storeId ? (
-          <h3 className="text-lg font-semibold">
-            Configuring SEO & Meta for:{" "}
-            <span className="font-semibold">{selectedStore.storeName}</span>
-          </h3>
-        ) : (
-          <h3 className="text-lg font-semibold">
-            Select a Store to Manage SEO & Meta
-          </h3>
-        )}
+      {/* Page Header */}
+      <PageHeader
+        icon={Search}
+        title="SEO & Meta"
+        description="Manage SEO settings and meta tags for"
+      />
 
-        <div className="relative">
-          <label htmlFor="storeSelect" className="sr-only">
-            Select Store
-          </label>
-          <select
-            id="storeSelect"
-            value={selectedStore.storeId}
-            onChange={handleStoreChange}
-            className="rounded-md border border-neutral-300 p-2 text-sm focus:outline-none"
-          >
-            <option value="" disabled>
-              Select Store
-            </option>
-            {stores &&
-              stores?.data?.length > 0 &&
-              stores?.data?.map((store) => (
-                <option key={store?.storeId} value={store?.storeId}>
-                  {store?.storeName}
-                </option>
-              ))}
-          </select>
-        </div>
-      </div>
-
-      {selectedStore.storeId ? (
+      {selectedStore?.storeId ? (
         <>
           <div className="mt-8 flex items-center justify-end gap-1 text-xs font-medium text-red-600/80">
             <BsInfoCircle className="size-4" />

@@ -1,8 +1,5 @@
 import SunEditor from "suneditor-react";
 import EmptyState from "../../../../components/admin/EmptyState";
-import PageHeading from "../../../../components/admin/PageHeading/PageHeading";
-import StoreSelector from "../../../../components/admin/StoreSelector";
-import useStoreSelector from "../../../../hooks/stores/useStoreSelector";
 import { useEffect, useState } from "react";
 import useUpdateMutation from "../../../../hooks/mutations/useUpdateMutation";
 import useAuth from "../../../../hooks/auth/useAuth";
@@ -10,15 +7,33 @@ import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import Spinner from "../../../../components/admin/loaders/Spinner";
 import useGetQuery from "../../../../hooks/queries/useGetQuery";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Link } from "react-router";
+import { ChevronDownIcon, RotateCcw, SlashIcon } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import useSelectedStore from "@/hooks/stores/useSelectedStore";
+import PageHeader from "@/components/admin/shared/PageHeader";
 
 export default function ReturnPolicy() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const { stores, selectedStore, handleStoreChange } = useStoreSelector();
+  const { selectedStore } = useSelectedStore();
   const { data: returnPolicy, isLoading } = useGetQuery({
-    endpoint: `/store/return&refund/${selectedStore.storeId}`,
-    queryKey: ["/store/return&refund", selectedStore.storeId],
-    enabled: !!selectedStore.storeId,
+    endpoint: `/store/return&refund/${selectedStore?.storeId}`,
+    queryKey: ["/store/return&refund", selectedStore?.storeId],
+    enabled: !!selectedStore?.storeId,
   });
   const [content, setContent] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -43,7 +58,7 @@ export default function ReturnPolicy() {
   }, [selectedStore?.storeId, isLoading, returnPolicy?.data]);
 
   const { mutate, isPending } = useUpdateMutation({
-    endpoint: `/store/update/return&refund/${selectedStore.storeId}`,
+    endpoint: `/store/update/return&refund/${selectedStore?.storeId}`,
     token: user?.token,
     clientId: user?.data?.clientid,
   });
@@ -70,7 +85,7 @@ export default function ReturnPolicy() {
         setHasUnsavedChanges(false);
         queryClient.invalidateQueries([
           "/store/return&refund",
-          selectedStore.storeId,
+          selectedStore?.storeId,
         ]);
       },
       onError: () => {
@@ -86,17 +101,54 @@ export default function ReturnPolicy() {
     isPending;
 
   return (
-    <section>
-      <PageHeading heading="Add Return policy" />
-      <StoreSelector
-        stores={stores}
-        selectedStore={selectedStore}
-        onChange={handleStoreChange}
-        titleWhenSelected="Adding Return policy Article for:"
-        titleWhenEmpty="Select a Store to Manage Return policy"
+    <section className="space-y-6">
+      {/* Breadcrumb Navigation */}
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link to="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <SlashIcon />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
+                Support
+                <ChevronDownIcon />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center">
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/support/help-center">Help Center</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/support/terms-conditions">Terms & Conditions</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/support/how-to-buy">How to Buy</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <SlashIcon />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbPage>Return & Refunds</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
+      {/* Page Header */}
+      <PageHeader
+        icon={RotateCcw}
+        title="Return & Refunds"
+        description="Create and update return policy for"
       />
 
-      {selectedStore.storeId ? (
+      {selectedStore?.storeId ? (
         <div className="">
           <small className="mb-2 inline-block text-xs text-neutral-500">
             Write helpful content to assist your customers

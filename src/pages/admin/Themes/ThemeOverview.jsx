@@ -16,10 +16,8 @@ import themeImg from "@/assets/themes/theme.jpg";
 export default function ThemeOverview() {
   const { selectedStore } = useSelectedStore();
 
-  console.log(selectedStore.storeId);
-
   return (
-    <div className="grid grid-cols-2 gap-8 rounded-lg border bg-white p-6">
+    <div className="border-border bg-card grid grid-cols-2 gap-8 rounded-lg border p-6">
       {/* Image container */}
       <div className="flex items-center justify-center">
         <img
@@ -34,10 +32,18 @@ export default function ThemeOverview() {
       <div className="flex flex-col gap-4">
         {/* Header with badge */}
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-2.5 py-0.5 text-[11px] font-medium text-green-700">
-            <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
+          {/* Active badge */}
+          <div className="border-success/20 bg-success/10 text-success inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-medium">
+            <div className="bg-success h-1.5 w-1.5 rounded-full" />
             Active
           </div>
+
+          {/* Inactive badge */}
+          {/* <div className="border-muted bg-muted/50 text-muted-foreground inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-medium">
+            <div className="bg-muted-foreground h-1.5 w-1.5 rounded-full" />
+            Inactive
+          </div> */}
+
           <h2 className="text-foreground text-xl font-semibold">
             Modern Minimal
           </h2>
@@ -49,15 +55,15 @@ export default function ThemeOverview() {
 
         {/* Feature badges */}
         <div className="flex flex-wrap items-center gap-2">
-          <div className="bg-secondary inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium">
+          <div className="bg-secondary text-secondary-foreground inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium">
             <Palette size={13} className="text-muted-foreground" />
             <span>Default</span>
           </div>
-          <div className="bg-secondary inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium">
+          <div className="bg-secondary text-secondary-foreground inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium">
             <Smartphone size={13} className="text-muted-foreground" />
             <span>Responsive</span>
           </div>
-          <div className="bg-secondary inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium">
+          <div className="bg-secondary text-secondary-foreground inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium">
             <Zap size={13} className="text-muted-foreground" />
             <span>Fast Loading</span>
           </div>

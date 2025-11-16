@@ -1,24 +1,24 @@
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
-import toast from "react-hot-toast";
-import PageHeading from "../../../components/admin/PageHeading/PageHeading";
+import { Link } from "react-router";
 import OrderRow from "../../../components/admin/OrderRow/OrderRow";
 import useAuth from "../../../hooks/auth/useAuth";
-import useGetStores from "../../../hooks/stores/useGetStores";
 import useGetQuery from "../../../hooks/queries/useGetQuery";
 import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { ShoppingCart, SlashIcon } from "lucide-react";
+import PageHeader from "@/components/admin/shared/PageHeader";
+import useSelectedStore from "@/hooks/stores/useSelectedStore";
 
 export default function Orders() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const storeId = searchParams.get("storeId") || "";
   const { user } = useAuth();
-  const [selectedStore, setSelectedStore] = useState({
-    storeId,
-    storeName: "",
-  });
+  const { selectedStore } = useSelectedStore();
 
-  // fetch all stores
-  const { data: stores } = useGetStores();
   // fetch store preference
   const { data: storePreference } = useGetStorePreference(
     selectedStore?.storeId,
@@ -33,77 +33,31 @@ export default function Orders() {
     enabled: !!selectedStore?.storeId && !!user?.token,
   });
 
-  // store select dropdown
-  const handleStoreChange = (e) => {
-    const selectedIndex = e.target.selectedIndex;
-    const selectedOption = e.target.options[selectedIndex];
-    const newStoreId = e.target.value;
-
-    setSearchParams({ storeId: newStoreId });
-
-    setSelectedStore({
-      storeId: newStoreId,
-      storeName: selectedOption.text,
-    });
-  };
-
-  // keep the store name and id on component mount or reload on store select
-  useEffect(() => {
-    if (!storeId || !stores?.data) return;
-
-    const matchedStore = stores.data.find((store) => store.storeId === storeId);
-
-    if (!matchedStore) {
-      toast.error("Selected store not found");
-      setSearchParams({});
-      return;
-    }
-
-    setSelectedStore({
-      storeId,
-      storeName: matchedStore.storeName,
-    });
-  }, [storeId, stores?.data, setSearchParams]);
-
   return (
-    <section>
-      <PageHeading heading="Manage Orders" />
+    <section className="space-y-6">
+      {/* Breadcrumb Navigation */}
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link to="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <SlashIcon />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbPage>Orders</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
-      {/* Store Selection */}
-      <div className="my-6 flex flex-wrap items-center justify-between">
-        {selectedStore.storeId ? (
-          <h3 className="text-lg font-semibold">
-            Manage Orders of Store: {selectedStore.storeName}
-          </h3>
-        ) : (
-          <h3 className="text-lg font-semibold">
-            Select a Store to Manage Orders
-          </h3>
-        )}
-
-        <div className="relative">
-          <label htmlFor="storeSelect" className="sr-only">
-            Select Store
-          </label>
-          <select
-            id="storeSelect"
-            value={selectedStore.storeId}
-            onChange={handleStoreChange}
-            className="rounded-md border border-neutral-300 p-2 text-sm focus:outline-none"
-          >
-            <option value="" disabled>
-              Select Store
-            </option>
-            {stores &&
-              stores?.data?.length > 0 &&
-              stores?.data?.map((store) => (
-                <option key={store?.storeId} value={store?.storeId}>
-                  {store?.storeName}
-                </option>
-              ))}
-          </select>
-        </div>
-      </div>
+      {/* Page Header */}
+      <PageHeader
+        icon={ShoppingCart}
+        title="Orders"
+        description="View and manage customer orders for"
+      />
 
       {/* Responsive Table */}
       {orders && orders?.OrdersData?.length > 0 && (

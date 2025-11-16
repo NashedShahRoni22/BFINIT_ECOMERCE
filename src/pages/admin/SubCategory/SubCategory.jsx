@@ -1,15 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { MdOutlineClose } from "react-icons/md";
-import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import Spinner from "../../../components/admin/loaders/Spinner";
 import useAuth from "../../../hooks/auth/useAuth";
 import usePostMutation from "../../../hooks/mutations/usePostMutation";
 import useGetCategories from "../../../hooks/categories/useGetCategories";
 import useGetSubCategories from "../../../hooks/categories/subCategories/useGetSubCategories";
-import useGetStores from "../../../hooks/stores/useGetStores";
 import SubCategoryList from "../../../components/admin/SubCategoryList";
 import useSelectedStore from "@/hooks/stores/useSelectedStore";
 import { ChevronDownIcon, FolderTree, SlashIcon } from "lucide-react";
@@ -38,8 +36,6 @@ export default function SubCategory() {
   const [subCategoryInput, setSubCategoryInput] = useState("");
   const [subCategoires, setSubCategories] = useState([]);
 
-  // fetch stores
-  const { data: stores } = useGetStores();
   // fetch categories based on storeId
   const { data: categories } = useGetCategories(selectedStore?.storeId);
   // fetch sub-categories based on storeId & categoryId
@@ -154,7 +150,7 @@ export default function SubCategory() {
         description="Create and manage subcategories for"
       />
 
-      {selectedStore.storeId && (
+      {selectedStore?.storeId && (
         <div className="mt-6 grid grid-cols-12 gap-y-12 lg:gap-x-12">
           {/* Left Side: Add Sub-Category Form */}
           <div className="col-span-12 h-fit rounded border border-neutral-200 px-4 py-2 lg:col-span-4">

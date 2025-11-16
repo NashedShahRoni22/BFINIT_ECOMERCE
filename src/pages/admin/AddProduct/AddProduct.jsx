@@ -1,13 +1,17 @@
 import { Link } from "react-router";
 import { useForm } from "react-hook-form";
-import { ChevronDownIcon, ChevronLeft, Package, SlashIcon } from "lucide-react";
+import {
+  ChevronDownIcon,
+  ChevronLeft,
+  PackagePlus,
+  SlashIcon,
+} from "lucide-react";
 import { Form } from "@/components/ui/form";
 import ProductDetails from "@/components/admin/AddProduct/ProductDetails";
 import ProductImages from "@/components/admin/AddProduct/ProductImages";
 import Variants from "@/components/admin/AddProduct/Variants/Variants";
 import { Button } from "@/components/ui/button";
 import Pricing from "@/components/admin/AddProduct/Pricing";
-import EmptyStoreState from "@/components/admin/shared/EmptyStoreState";
 import useSelectedStore from "@/hooks/stores/useSelectedStore";
 import ProductStatus from "./ProductStatus";
 
@@ -150,14 +154,9 @@ export default function AddProduct() {
     console.log(data);
   };
 
-  if (!selectedStore) {
-    return (
-      <EmptyStoreState description="Select a store to start adding products." />
-    );
-  }
-
   return (
     <section className="space-y-6">
+      {/* Breadcrumb Navigation */}
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -201,7 +200,7 @@ export default function AddProduct() {
 
       {/* Page Header */}
       <PageHeader
-        icon={Package}
+        icon={PackagePlus}
         title="Add Product"
         description="Create a new product for"
       />

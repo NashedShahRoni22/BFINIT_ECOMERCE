@@ -1,6 +1,7 @@
 // Logout function (clears storage and redirects)
 export const logout = () => {
   localStorage.removeItem("authInfo");
+  localStorage.removeItem("store");
   window.location.href = "/login";
 };
 

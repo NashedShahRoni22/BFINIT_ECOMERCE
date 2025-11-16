@@ -5,14 +5,14 @@ export default function PageHeader({ icon: Icon, title, description }) {
 
   return (
     <div className="flex items-start gap-3">
-      <div className="flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-slate-50">
-        <Icon className="h-5 w-5 text-slate-500" />
+      <div className="border-border bg-muted flex h-10 w-10 items-center justify-center rounded-md border">
+        <Icon className="text-muted-foreground h-5 w-5" />
       </div>
       <div className="flex-1">
-        <h1 className="mb-1 text-lg font-semibold">{title}</h1>
-        <p className="text-sm text-slate-600">
+        <h1 className="text-foreground mb-1 text-lg font-semibold">{title}</h1>
+        <p className="text-muted-foreground text-sm">
           {description}{" "}
-          <span className="font-medium text-slate-900">
+          <span className="text-foreground font-medium">
             {selectedStore?.storeName}
           </span>
         </p>

@@ -1,53 +1,28 @@
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
-import PageHeading from "../../../components/admin/PageHeading/PageHeading";
+import { Link } from "react-router";
 import ProductRow from "../../../components/admin/ProductRow/ProductRow";
-import useGetStores from "../../../hooks/stores/useGetStores";
 import useGetProductsByStoreId from "../../../hooks/products/useGetProductsByStoreId";
-import toast from "react-hot-toast";
 import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
 import ManageProductCard from "../../../components/admin/Cards/ManageProductCard";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { ChevronDownIcon, Package, SlashIcon } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import PageHeader from "@/components/admin/shared/PageHeader";
+import useSelectedStore from "@/hooks/stores/useSelectedStore";
 
 export default function ManageProduct() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const storeId = searchParams.get("storeId") || "";
-  // fetch stores using custom hook
-  const { data: stores } = useGetStores();
-  const [selectedStore, setSelectedStore] = useState({
-    storeId,
-    storeName: "",
-  });
-
-  // store select dropdown
-  const handleStoreChange = (e) => {
-    const selectedIndex = e.target.selectedIndex;
-    const selectedOption = e.target.options[selectedIndex];
-    const newStoreId = e.target.value;
-
-    setSearchParams({ storeId: newStoreId });
-
-    setSelectedStore({
-      storeId: newStoreId,
-      storeName: selectedOption.text,
-    });
-  };
-
-  useEffect(() => {
-    if (!storeId || !stores?.data) return;
-
-    const matchedStore = stores.data.find((store) => store.storeId === storeId);
-
-    if (!matchedStore) {
-      toast.error("Selected store not found");
-      setSearchParams({});
-      return;
-    }
-
-    setSelectedStore({
-      storeId,
-      storeName: matchedStore.storeName,
-    });
-  }, [storeId, stores?.data, setSearchParams]);
+  const { selectedStore } = useSelectedStore();
 
   // fetch all products by selected storeId
   const { data: products } = useGetProductsByStoreId(selectedStore?.storeId);
@@ -57,48 +32,54 @@ export default function ManageProduct() {
   );
 
   return (
-    <section>
-      <PageHeading heading="Manage Product" />
+    <section className="space-y-6">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link to="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <SlashIcon />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
+                Products
+                <ChevronDownIcon />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center">
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/products/category">Category</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/products/sub-category">Sub Category</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/products/brands">Brands</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/products/add-product">Add Product</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <SlashIcon />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbPage>Inventory</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
-      {/* Store Selection */}
-      <div className="my-6 flex flex-wrap items-center justify-between gap-2">
-        {selectedStore.storeId ? (
-          <h3 className="text-lg font-semibold text-balance">
-            Managing{" "}
-            <span className="text-dashboard-primary">
-              {selectedStore.storeName}{" "}
-            </span>
-            Products
-          </h3>
-        ) : (
-          <h3 className="text-lg font-semibold">
-            Select a Store to Manage Product
-          </h3>
-        )}
-
-        <div className="relative">
-          <label htmlFor="storeSelect" className="sr-only">
-            Select Store
-          </label>
-          <select
-            id="storeSelect"
-            value={selectedStore.storeId}
-            onChange={handleStoreChange}
-            className="rounded-md border border-neutral-300 p-2 text-sm focus:outline-none"
-          >
-            <option value="" disabled>
-              Select Store
-            </option>
-            {stores &&
-              stores?.data?.length > 0 &&
-              stores?.data?.map((store) => (
-                <option key={store?.storeId} value={store?.storeId}>
-                  {store?.storeName}
-                </option>
-              ))}
-          </select>
-        </div>
-      </div>
+      {/* Page Header */}
+      <PageHeader
+        icon={Package}
+        title="Inventory Management"
+        description="Track and manage stock levels for"
+      />
 
       {products && (
         <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">

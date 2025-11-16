@@ -1,74 +1,50 @@
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
+import { useState } from "react";
+import { Link } from "react-router";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import BtnSubmit from "../../../components/admin/buttons/BtnSubmit";
 import ImageField from "../../../components/admin/ImageField/ImageField";
-import PageHeading from "../../../components/admin/PageHeading/PageHeading";
 import useAuth from "../../../hooks/auth/useAuth";
 import usePostMutation from "../../../hooks/mutations/usePostMutation";
-import useGetStores from "../../../hooks/stores/useGetStores";
 import useGetBrands from "../../../hooks/brands/useGetBrands";
 import { handleImgChange } from "../../../utils/admin/handleImgChange";
 import { handleRemoveImg } from "../../../utils/admin/handleRemoveImg";
 import BrandList from "../../../components/admin/BrandList";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { ChevronDownIcon, SlashIcon, Tag } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import PageHeader from "@/components/admin/shared/PageHeader";
+import useSelectedStore from "@/hooks/stores/useSelectedStore";
 
 export default function Brands() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const storeId = searchParams.get("storeId") || "";
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const { selectedStore } = useSelectedStore();
   const [selectedImages, setSelectedImages] = useState({
     brandIcon: null,
   });
-  const [selectedStore, setSelectedStore] = useState({
-    storeId,
-    storeName: "",
-  });
-
-  // fetch all stores list
-  const { data: stores } = useGetStores();
 
   // fetch all brands
-  const { data: brands } = useGetBrands(selectedStore.storeId);
+  const { data: brands } = useGetBrands(selectedStore?.storeId);
 
   // custom hook to crete new brand
   const { mutate, isPending } = usePostMutation({
-    endpoint: `/brand/create/${selectedStore.storeId}`,
+    endpoint: `/brand/create/${selectedStore?.storeId}`,
     token: user?.token,
     clientId: user?.data?.clientid,
   });
-
-  // store select dropdown
-  const handleStoreChange = (e) => {
-    const selectedIndex = e.target.selectedIndex;
-    const selectedOption = e.target.options[selectedIndex];
-    const newStoreId = e.target.value;
-
-    setSearchParams({ storeId: newStoreId });
-
-    setSelectedStore({
-      storeId: newStoreId,
-      storeName: selectedOption.text,
-    });
-  };
-
-  useEffect(() => {
-    if (!storeId || !stores?.data) return;
-
-    const matchedStore = stores.data.find((store) => store.storeId === storeId);
-
-    if (!matchedStore) {
-      toast.error("Selected store not found");
-      setSearchParams({});
-      return;
-    }
-
-    setSelectedStore({
-      storeId,
-      storeName: matchedStore.storeName,
-    });
-  }, [storeId, stores?.data, setSearchParams]);
 
   // form submit
   const handleFormSubmit = (e) => {
@@ -84,7 +60,7 @@ export default function Brands() {
         toast.success("New brand created!");
         setSelectedImages({ brandIcon: null });
         form.reset();
-        queryClient.invalidateQueries(["brands", selectedStore.storeId]);
+        queryClient.invalidateQueries(["brands", selectedStore?.storeId]);
       },
       onError: () => {
         toast.success("Something went wrong!");
@@ -95,49 +71,56 @@ export default function Brands() {
   };
 
   return (
-    <section>
-      <PageHeading heading="Create & Manage Brands" />
+    <section className="space-y-6">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link to="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <SlashIcon />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
+                Products
+                <ChevronDownIcon />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center">
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/products/category">Category</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/products/sub-category">Sub Category</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/products/add-product">Add Product</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/products/inventory">Inventory</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <SlashIcon />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbPage>Brands</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
-      {/* Store Selection */}
-      <div className="my-6 flex flex-wrap items-center justify-between">
-        {selectedStore.storeId ? (
-          <h3 className="text-lg font-semibold">
-            Managing brands for:{" "}
-            <span className="text-dashboard-primary">
-              {selectedStore.storeName}
-            </span>
-          </h3>
-        ) : (
-          <h3 className="text-lg font-semibold">
-            Select a store to view and manage its brands
-          </h3>
-        )}
+      {/* Page Header */}
+      <PageHeader
+        icon={Tag}
+        title="Add Brand"
+        description="Create and manage brands for"
+      />
 
-        <div className="relative">
-          <label htmlFor="storeSelect" className="sr-only">
-            Select Store
-          </label>
-          <select
-            id="storeSelect"
-            value={selectedStore.storeId}
-            onChange={handleStoreChange}
-            className="rounded-md border border-neutral-300 p-2 text-sm focus:outline-none"
-          >
-            <option value="" disabled>
-              Select Store
-            </option>
-            {stores &&
-              stores?.data?.length > 0 &&
-              stores?.data?.map((store) => (
-                <option key={store?.storeId} value={store?.storeId}>
-                  {store?.storeName}
-                </option>
-              ))}
-          </select>
-        </div>
-      </div>
-
-      {selectedStore.storeId && (
+      {selectedStore?.storeId && (
         <div className="mt-6 grid grid-cols-12 gap-y-12 lg:gap-x-12">
           {/* image & category name field container */}
           <form

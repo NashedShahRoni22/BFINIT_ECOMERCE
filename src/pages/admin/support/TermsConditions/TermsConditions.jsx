@@ -1,8 +1,5 @@
 import SunEditor from "suneditor-react";
 import EmptyState from "../../../../components/admin/EmptyState";
-import PageHeading from "../../../../components/admin/PageHeading/PageHeading";
-import StoreSelector from "../../../../components/admin/StoreSelector";
-import useStoreSelector from "../../../../hooks/stores/useStoreSelector";
 import { useEffect, useState } from "react";
 import useUpdateMutation from "../../../../hooks/mutations/useUpdateMutation";
 import useAuth from "../../../../hooks/auth/useAuth";
@@ -10,15 +7,33 @@ import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import Spinner from "../../../../components/admin/loaders/Spinner";
 import useGetQuery from "../../../../hooks/queries/useGetQuery";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Link } from "react-router";
+import { ChevronDownIcon, FileText, SlashIcon } from "lucide-react";
+import useSelectedStore from "@/hooks/stores/useSelectedStore";
+import PageHeader from "@/components/admin/shared/PageHeader";
 
 export default function TermsConditions() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const { stores, selectedStore, handleStoreChange } = useStoreSelector();
+  const { selectedStore } = useSelectedStore();
   const { data: termsConditions, isLoading } = useGetQuery({
-    endpoint: `/store/storeterms/${selectedStore.storeId}`,
-    queryKey: ["/store/storeterms", selectedStore.storeId],
-    enabled: !!selectedStore.storeId,
+    endpoint: `/store/storeterms/${selectedStore?.storeId}`,
+    queryKey: ["/store/storeterms", selectedStore?.storeId],
+    enabled: !!selectedStore?.storeId,
   });
   const [content, setContent] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -43,7 +58,7 @@ export default function TermsConditions() {
   }, [selectedStore?.storeId, isLoading, termsConditions?.data]);
 
   const { mutate, isPending } = useUpdateMutation({
-    endpoint: `/store/update/storeterms/${selectedStore.storeId}`,
+    endpoint: `/store/update/storeterms/${selectedStore?.storeId}`,
     token: user?.token,
     clientId: user?.data?.clientid,
   });
@@ -70,7 +85,7 @@ export default function TermsConditions() {
         setHasUnsavedChanges(false);
         queryClient.invalidateQueries([
           "/store/storeterms",
-          selectedStore.storeId,
+          selectedStore?.storeId,
         ]);
       },
       onError: () => {
@@ -86,17 +101,54 @@ export default function TermsConditions() {
     isPending;
 
   return (
-    <section>
-      <PageHeading heading="Add Terms & Conditions" />
-      <StoreSelector
-        stores={stores}
-        selectedStore={selectedStore}
-        onChange={handleStoreChange}
-        titleWhenSelected="Adding Terms & Conditions Article for:"
-        titleWhenEmpty="Select a Store to Manage Terms & Conditions"
+    <section className="space-y-6">
+      {/* Breadcrumb Navigation */}
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link to="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <SlashIcon />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
+                Support
+                <ChevronDownIcon />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center">
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/support/help-center">Help Center</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/support/returns-refunds">Return & Refunds</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/support/how-to-buy">How to Buy</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <SlashIcon />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbPage>Terms & Conditions</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
+      {/* Page Header */}
+      <PageHeader
+        icon={FileText}
+        title="Terms & Conditions"
+        description="Create and update terms of service for"
       />
 
-      {selectedStore.storeId ? (
+      {selectedStore?.storeId ? (
         <div className="">
           <small className="mb-2 inline-block text-xs text-neutral-500">
             Write helpful content to assist your customers
