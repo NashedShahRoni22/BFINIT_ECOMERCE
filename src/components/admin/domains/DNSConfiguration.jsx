@@ -1,34 +1,23 @@
 import { Button } from "@/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { ChevronUp, Clipboard, Clock } from "lucide-react";
-import { useState } from "react";
+import { BookOpen, Clipboard, Clock, Info } from "lucide-react";
 import toast from "react-hot-toast";
+import { Link } from "react-router";
 
 export default function DNSConfiguration({ data }) {
-  const [isOpen, setIsOpen] = useState(false);
-
   const handleTextCopy = (text) => {
     navigator.clipboard.writeText(text);
-    toast.success("Text copided!");
+    toast.success("Text copied!");
   };
 
   return (
-    <Collapsible
-      open={isOpen}
-      onOpenChange={setIsOpen}
-      className="bg-card rounded-lg border p-6"
-    >
+    <div className="border-border bg-card rounded-lg border p-6">
       {/* dns header */}
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-sm font-semibold text-gray-900">
+          <h3 className="text-foreground text-base font-semibold">
             DNS Configuration
           </h3>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="text-muted-foreground mt-1.5 text-sm">
             Add these records to your domain&apos;s DNS settings. You&apos;ll
             need to add these records in your domain registrar&apos;s control
             panel
@@ -36,29 +25,24 @@ export default function DNSConfiguration({ data }) {
         </div>
 
         {/* section collapse toggle button */}
-        <CollapsibleTrigger asChild>
-          <Button
-            type="button"
-            variant="secondary"
-            size="icon"
-            className="size-8 shrink-0 cursor-pointer md:size-6"
-          >
-            <ChevronUp
-              className={`h-4 w-4 transition-transform duration-200 ease-linear md:h-3 md:w-3 ${isOpen ? "rotate-0" : "rotate-180"}`}
-            />
-          </Button>
-        </CollapsibleTrigger>
+        <Button variant="outline" size="sm" className="shrink-0" asChild>
+          <Link to="/help/domain-setup">
+            <BookOpen className="h-4 w-4" />
+            Setup Guide
+          </Link>
+        </Button>
       </div>
 
-      <CollapsibleContent className="mt-5">
+      {/* content */}
+      <div className="mt-6 space-y-6">
         {/* time warning */}
-        <div className="flex items-start gap-2 rounded-[10px] border border-slate-200 bg-slate-50 px-4 py-3">
-          <Clock className="mt-0.5 size-5 shrink-0 text-slate-600" />
-          <div className="space-y-0.5">
-            <p className="text-sm font-semibold text-slate-900">
+        <div className="border-warning/20 bg-warning/10 flex items-start gap-3 rounded-lg border px-4 py-3">
+          <Clock className="text-warning mt-0.5 h-5 w-5 shrink-0" />
+          <div className="space-y-1">
+            <p className="text-foreground text-sm font-semibold">
               DNS Propagation Time
             </p>
-            <p className="text-sm text-slate-700">
+            <p className="text-muted-foreground text-sm">
               DNS changes can take up to 48 hours to propagate worldwide, but
               typically complete within 1-4 hours
             </p>
@@ -66,82 +50,86 @@ export default function DNSConfiguration({ data }) {
         </div>
 
         {/* required records */}
-        <div className="mt-5">
-          <h3 className="text-sm font-semibold text-gray-900">
+        <div className="space-y-4">
+          <h3 className="text-foreground text-sm font-semibold">
             Required DNS Records
           </h3>
 
           {/* A RECORD */}
-          <div className="mt-5 rounded-[10px] border p-6">
-            <h4 className="text-sm font-semibold">Record 1: A Record</h4>
+          <div className="border-border bg-card rounded-lg border p-5">
+            <h4 className="text-foreground text-sm font-semibold">
+              Record 1: A Record
+            </h4>
             <p className="text-muted-foreground mt-1 text-sm">
               Points your domain to our server
             </p>
 
-            <div className="text-muted-foreground mt-3 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-              {/* <div className="space-y-1.5">
-                <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
-                  Type
-                </p>
-                <div className="bg-muted rounded border px-2 py-0.5 text-sm text-gray-900">
-                  CNAME
-                </div>
-              </div> */}
-
-              <div className="space-y-1.5">
-                <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
+            <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
                   HOST/NAME
                 </p>
                 <div className="flex items-center gap-2">
-                  <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
+                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-sm">
                     @
-                  </p>
-                  <Clipboard
-                    size={18}
-                    className="cursor-pointer"
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 shrink-0"
                     onClick={() => handleTextCopy("@")}
-                  />
+                  >
+                    <Clipboard className="h-4 w-4" />
+                  </Button>
                 </div>
-                <p className="text-xs font-medium text-gray-500 uppercase">
+                <p className="text-muted-foreground text-xs">
                   Use &apos;@&apos; for root domain
                 </p>
               </div>
 
-              <div className="space-y-1.5">
-                <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
                   VALUE/POINTS TO
                 </p>
                 <div className="flex items-center gap-2">
-                  <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
+                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-sm">
                     {data?.dnsData?.aRecord}
-                  </p>
-                  <Clipboard
-                    size={18}
-                    className="cursor-pointer"
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 shrink-0"
                     onClick={() => handleTextCopy(data?.dnsData?.aRecord)}
-                  />
+                  >
+                    <Clipboard className="h-4 w-4" />
+                  </Button>
                 </div>
-                <p className="text-xs font-medium text-gray-500 uppercase">
+                <p className="text-muted-foreground text-xs">
                   Bfinit&apos;s server IP
                 </p>
               </div>
 
-              <div className="space-y-1.5">
-                <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
                   TTL
                 </p>
                 <div className="flex items-center gap-2">
-                  <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
+                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-sm">
                     3600
-                  </p>
-                  <Clipboard
-                    size={18}
-                    className="cursor-pointer"
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 shrink-0"
                     onClick={() => handleTextCopy("3600")}
-                  />
+                  >
+                    <Clipboard className="h-4 w-4" />
+                  </Button>
                 </div>
-
-                <p className="text-xs font-medium text-gray-500 uppercase">
+                <p className="text-muted-foreground text-xs">
                   Can be automatic
                 </p>
               </div>
@@ -149,158 +137,142 @@ export default function DNSConfiguration({ data }) {
           </div>
 
           {/* CNAME Record */}
-          <div className="mt-5 rounded-[10px] border p-6">
-            <h4 className="text-sm font-semibold">Record 2: CNAME Record</h4>
+          <div className="border-border bg-card rounded-lg border p-5">
+            <h4 className="text-foreground text-sm font-semibold">
+              Record 2: CNAME Record
+            </h4>
             <p className="text-muted-foreground mt-1 text-sm">
               Connects your www subdomain
             </p>
 
-            <div className="text-muted-foreground mt-3 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-              {/* <div className="space-y-1.5">
-                <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
-                  Type
-                </p>
-                <div className="bg-muted rounded border px-2 py-0.5 text-sm text-gray-900">
-                  CNAME
-                </div>
-              </div> */}
-
-              <div className="space-y-1.5">
-                <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
+            <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
                   HOST/NAME
                 </p>
                 <div className="flex items-center gap-2">
-                  <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
+                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-sm">
                     www
-                  </p>
-                  <Clipboard
-                    size={18}
-                    className="cursor-pointer"
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 shrink-0"
                     onClick={() => handleTextCopy("www")}
-                  />
+                  >
+                    <Clipboard className="h-4 w-4" />
+                  </Button>
                 </div>
-                <p className="text-xs font-medium text-gray-500 uppercase">
+                <p className="text-muted-foreground text-xs">
                   Enables www.yourdomain.com
                 </p>
               </div>
 
-              <div className="space-y-1.5">
-                <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
                   VALUE/POINTS TO
                 </p>
                 <div className="flex items-center gap-2">
-                  <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
+                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-sm">
                     {data?.dnsData?.cName}
-                  </p>
-                  <Clipboard
-                    size={18}
-                    className="cursor-pointer"
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 shrink-0"
                     onClick={() => handleTextCopy(data?.dnsData?.cName)}
-                  />
+                  >
+                    <Clipboard className="h-4 w-4" />
+                  </Button>
                 </div>
-                <p className="text-xs font-medium text-gray-500 uppercase">
+                <p className="text-muted-foreground text-xs">
                   Points to Bfinit hosting
                 </p>
               </div>
 
-              <div className="space-y-1.5">
-                <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
                   TTL
                 </p>
                 <div className="flex items-center gap-2">
-                  <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
+                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-sm">
                     Default
-                  </p>
-                  <Clipboard
-                    size={18}
-                    className="cursor-pointer"
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 shrink-0"
                     onClick={() => handleTextCopy("default")}
-                  />
+                  >
+                    <Clipboard className="h-4 w-4" />
+                  </Button>
                 </div>
-
-                <p className="text-xs font-medium text-gray-500 uppercase">
+                <p className="text-muted-foreground text-xs">
                   Can be automatic
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Name Servers */}
-          {/* <div className="mt-5 rounded-[10px] border p-6">
-              <h4 className="font-medium">Record 3: Name Servers</h4>
-              <p className="text-muted-foreground mt-1 text-sm">
-                Here is your name servers
-              </p>
-
-              <div className="text-muted-foreground mt-3 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-                {data?.dnsData?.nameServers?.map((server, i) => (
-                  <div key={i} className="space-y-1.5">
-                    <p className="text-sm">Name Server {i + 1}</p>
-                    <div className="flex items-center gap-2">
-                      <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
-                        {server}
-                      </p>
-                      <Clipboard
-                        size={18}
-                        className="cursor-pointer transition-colors hover:text-gray-900"
-                        onClick={() => handleTextCopy(server)}
-                      />
-                    </div>
-                  </div>
-                ))}
+          {/* Help Banner */}
+          <div className="border-border bg-muted/50 flex items-start gap-3 rounded-lg border p-4">
+            <Info className="text-muted-foreground mt-0.5 h-5 w-5 shrink-0" />
+            <div className="flex-1 space-y-3">
+              <div>
+                <p className="text-foreground text-sm font-semibold">
+                  Need help adding these DNS records?
+                </p>
+                <p className="text-muted-foreground mt-1 text-sm">
+                  We&apos;ve created step-by-step guides for popular domain
+                  providers to help you connect your domain.
+                </p>
               </div>
-            </div> */}
 
-          {/* TXT Record */}
-          {/* <div className="mt-5 rounded-[10px] border p-6">
-              <h4 className="font-medium">Record 3: TXT Record</h4>
-              <p className="text-muted-foreground mt-1 text-sm">
-                Verifies domain ownership
-              </p>
-
-              <div className="text-muted-foreground mt-3 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-                <div className="space-y-1.5">
-                  <p className="text-sm">Type</p>
-                  <p className="bg-muted rounded border px-2 py-0.5 text-sm text-gray-900">
-                    TXT
-                  </p>
-                </div>
-
-                <div className="space-y-1.5">
-                  <p className="text-sm">HOST/NAME</p>
-                  <div className="flex items-center gap-2">
-                    <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
-                      @
-                    </p>
-                    <Clipboard size={18} className="cursor-pointer" />
-                  </div>
-                  <p className="text-sm">Root domain verification</p>
-                </div>
-
-                <div className="space-y-1.5">
-                  <p className="text-sm">VALUE/TEXT</p>
-                  <div className="flex items-center gap-2">
-                    <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
-                      bfinit-verification=bf789xyz456
-                    </p>
-                    <Clipboard size={18} className="cursor-pointer" />
-                  </div>
-                  <p className="text-sm">Unique verification code</p>
-                </div>
-
-                <div className="space-y-1.5">
-                  <p className="text-sm">TTL</p>
-                  <div className="flex items-center gap-2">
-                    <p className="bg-muted w-full rounded border px-2 py-0.5 text-sm text-gray-900">
-                      3600
-                    </p>
-                    <Clipboard size={18} className="cursor-pointer" />
-                  </div>
-                </div>
+              {/* Provider Quick Links */}
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="text-primary hover:text-primary/80 h-auto p-0"
+                  asChild
+                >
+                  <Link to="/help/domain-setup">Complete Setup Guide →</Link>
+                </Button>
+                {/* <span className="text-muted-foreground">|</span>
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="text-primary hover:text-primary/80 h-auto p-0"
+                  asChild
+                >
+                  <Link to="/help/domain-setup/godaddy">GoDaddy</Link>
+                </Button>
+                <span className="text-muted-foreground">|</span>
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="text-primary hover:text-primary/80 h-auto p-0"
+                  asChild
+                >
+                  <Link to="/help/domain-setup/namecheap">Namecheap</Link>
+                </Button>
+                <span className="text-muted-foreground">|</span>
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="text-primary hover:text-primary/80 h-auto p-0"
+                  asChild
+                >
+                  <Link to="/help/domain-setup/cloudflare">Cloudflare</Link>
+                </Button> */}
               </div>
-            </div> */}
+            </div>
+          </div>
         </div>
-      </CollapsibleContent>
-    </Collapsible>
+      </div>
+    </div>
   );
 }

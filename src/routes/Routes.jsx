@@ -49,6 +49,8 @@ import Domains from "@/pages/admin/Domains/Domains";
 import Themes from "@/pages/admin/Themes/Themes";
 import ThemeCustomize from "@/layout/ThemeCustomize";
 import LiveView from "@/pages/LiveView/LiveView";
+import DomainIntegrationHelp from "@/pages/Help-Guieds/Domain/DomainIntegrationGuide";
+import DomainIntegrationGuide from "@/pages/Help-Guieds/Domain/DomainIntegrationGuide";
 
 export const router = createBrowserRouter([
   {
@@ -162,6 +164,11 @@ export const router = createBrowserRouter([
         element: <BuyingGuide />,
       },
     ],
+  },
+  // ==> Help Guides <==
+  {
+    path: "/help/domain-setup",
+    element: <DomainIntegrationGuide />,
   },
   // TODO: remove this old store customize layout
   {
