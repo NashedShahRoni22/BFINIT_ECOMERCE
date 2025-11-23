@@ -77,10 +77,12 @@ export default function ThumbnailImage({ form }) {
       render={({ field }) => (
         <FormItem className="w-full">
           <div>
-            <FormLabel className="text-sm font-medium text-gray-700">
+            <FormLabel>
               Thumbnail Image <span className="text-destructive">*</span>
             </FormLabel>
-            <p className="mt-1.5 text-xs text-gray-500">PNG, JPG • max 500KB</p>
+            <p className="text-muted-foreground mt-1.5 text-xs">
+              PNG, JPG • max 500KB
+            </p>
           </div>
           <FormControl>
             <div className="relative mt-4">
@@ -115,14 +117,14 @@ export default function ThumbnailImage({ form }) {
                   onDragLeave={handleDragLeave}
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <Upload className="h-8 w-8 text-gray-400 md:h-6 md:w-6" />
-                  <div className="mt-2 text-center text-xs text-gray-600 md:text-sm">
+                  <Upload size={18} className="text-muted-foreground" />
+                  <div className="text-muted-foreground mt-2 text-center text-xs">
                     <div>Drag & Drop your thumbnail image here or</div>
                     <Button
                       type="button"
                       variant="secondary"
                       size="sm"
-                      className="mt-3 h-9 cursor-pointer"
+                      className="mt-3"
                       onClick={(e) => {
                         e.stopPropagation();
                         fileInputRef.current?.click();

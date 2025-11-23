@@ -18,59 +18,53 @@ export default function BestSeller({ form }) {
       name="best_seller"
       render={({ field }) => (
         <FormItem>
-          <div className="rounded-lg border p-4">
+          <div className="bg-card rounded-lg border p-5">
+            {/* Header */}
             <div className="flex items-start gap-3">
-              <div className="bg-secondary shrink-0 rounded p-1.5">
-                <Crown size={16} />
+              <div className="bg-muted flex h-8 w-8 shrink-0 items-center justify-center rounded-md">
+                <Crown className="text-muted-foreground h-4 w-4" />
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-gray-900">Bestseller</p>
-                <p className="mt-0.5 text-xs text-gray-600 md:text-sm">
+              <div className="min-w-0 flex-1 space-y-0.5">
+                <h4 className="text-xs font-semibold">Bestseller</h4>
+                <p className="text-muted-foreground text-xs">
                   Showcases popular products based on sales volume to build
                   social proof and trust.
                 </p>
               </div>
             </div>
-            <div className="mt-4 flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <FormLabel
-                htmlFor="best_seller"
-                className="text-sm font-medium text-gray-700"
-              >
+
+            {/* Toggle */}
+            <div className="mt-4 flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-between">
+              <FormLabel htmlFor="best_seller">
                 Enable Bestseller badge
               </FormLabel>
               <FormControl>
                 <Switch
                   id="best_seller"
-                  className="cursor-pointer"
                   checked={field.value}
                   onCheckedChange={field.onChange}
                 />
               </FormControl>
             </div>
+
+            {/* Expanded content when enabled */}
             {isBestSellerEnabled && (
               <FormField
                 control={form.control}
                 name="best_seller_threshold"
                 render={({ field }) => (
-                  <FormItem className="mt-4 border-t pt-4">
-                    <FormLabel className="text-sm font-medium text-gray-700">
-                      Show when stock is below
-                    </FormLabel>
+                  <FormItem className="mt-5 border-t pt-5">
+                    <FormLabel>Show when stock is below</FormLabel>
                     <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="e.g., 50"
-                        {...field}
-                        className="shadow-none"
-                      />
+                      <Input type="number" placeholder="e.g., 50" {...field} />
                     </FormControl>
-                    <FormMessage className="text-xs" />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
             )}
           </div>
-          <FormMessage className="text-xs" />
+          <FormMessage />
         </FormItem>
       )}
     />

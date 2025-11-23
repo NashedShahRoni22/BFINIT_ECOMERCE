@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronUp } from "lucide-react";
 import ThumbnailImage from "./ThumbnailImage";
 import GalleryImages from "./GalleryImages";
+import SectionHeader from "../SectionHeader";
 
 export default function ProductImages({ form }) {
   const [isOpen, setIsOpen] = useState(true);
@@ -16,19 +17,16 @@ export default function ProductImages({ form }) {
     <Collapsible
       open={isOpen}
       onOpenChange={setIsOpen}
-      className="rounded-lg border bg-white p-4 md:p-6"
+      className="bg-card rounded-lg border p-5"
     >
       {/* header */}
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <h2 className="text-sm font-semibold text-gray-900">
-            Product Images
-          </h2>
-          <p className="mt-1 text-xs text-gray-500 md:text-sm">
-            Upload high-quality images to showcase your product (recommended:
-            1000x1000px minimum)
-          </p>
-        </div>
+        <SectionHeader
+          title="Product Images"
+          description="Upload high-quality images to showcase your product (recommended:
+            1000x1000px minimum)"
+        />
+
         {/* section collapse toggle button */}
         <CollapsibleTrigger asChild>
           <Button

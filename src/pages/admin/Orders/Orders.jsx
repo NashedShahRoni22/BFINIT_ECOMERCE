@@ -1,19 +1,16 @@
-import { Link } from "react-router";
 import OrderRow from "../../../components/admin/OrderRow/OrderRow";
 import useAuth from "../../../hooks/auth/useAuth";
 import useGetQuery from "../../../hooks/queries/useGetQuery";
 import useGetStorePreference from "../../../hooks/stores/useGetStorePreference";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { ShoppingCart, SlashIcon } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import PageHeader from "@/components/admin/shared/PageHeader";
 import useSelectedStore from "@/hooks/stores/useSelectedStore";
+import { DynamicBreadcrumb } from "@/components/admin/DynamicBreadcrumb";
+
+const ORDERS_BREADCRUMB_ITEMS = [
+  { label: "Home", href: "/" },
+  { label: "Orders" },
+];
 
 export default function Orders() {
   const { user } = useAuth();
@@ -36,21 +33,7 @@ export default function Orders() {
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator>
-            <SlashIcon />
-          </BreadcrumbSeparator>
-          <BreadcrumbItem>
-            <BreadcrumbPage>Orders</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+      <DynamicBreadcrumb items={ORDERS_BREADCRUMB_ITEMS} />
 
       {/* Page Header */}
       <PageHeader

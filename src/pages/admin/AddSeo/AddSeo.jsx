@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
 import { BsInfoCircle } from "react-icons/bs";
 import ActionBtn from "../../../components/admin/buttons/ActionBtn";
 import toast from "react-hot-toast";
@@ -10,17 +9,15 @@ import useGetAllMeta from "../../../hooks/meta/getAllMeta";
 import useUpdateMutation from "../../../hooks/mutations/useUpdateMutation";
 import { useQueryClient } from "@tanstack/react-query";
 import EmptyState from "../../../components/admin/EmptyState";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Search, SlashIcon } from "lucide-react";
+import { Search } from "lucide-react";
 import PageHeader from "@/components/admin/shared/PageHeader";
 import useSelectedStore from "@/hooks/stores/useSelectedStore";
+import { DynamicBreadcrumb } from "@/components/admin/DynamicBreadcrumb";
+
+const SEO_BREADCRUMB_ITEMS = [
+  { label: "Home", href: "/" },
+  { label: "SEO & Meta" },
+];
 
 export default function AddSeo() {
   const queryClient = useQueryClient();
@@ -120,21 +117,7 @@ export default function AddSeo() {
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator>
-            <SlashIcon />
-          </BreadcrumbSeparator>
-          <BreadcrumbItem>
-            <BreadcrumbPage>SEO & Meta</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+      <DynamicBreadcrumb items={SEO_BREADCRUMB_ITEMS} />
 
       {/* Page Header */}
       <PageHeader

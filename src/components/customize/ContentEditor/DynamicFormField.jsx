@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import ProductSourceField from "./ProductSourceField";
 
 export default function DynamicFormField({ field, value, onChange }) {
   const [imagePreview, setImagePreview] = useState(value);
@@ -194,6 +195,15 @@ export default function DynamicFormField({ field, value, onChange }) {
             </label>
           )}
         </div>
+      );
+
+    case "product-source":
+      return (
+        <ProductSourceField
+          field={field}
+          value={value || { type: "badge", value: "featured" }}
+          onChange={onChange}
+        />
       );
 
     default:

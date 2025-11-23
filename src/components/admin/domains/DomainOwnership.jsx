@@ -9,13 +9,13 @@ import {
 
 const DomainOwnership = ({ form }) => {
   return (
-    <div className="bg-card rounded-lg border p-6">
+    <div className="bg-card rounded-lg border p-5">
       {/* Header Section */}
-      <div className="mb-5 space-y-1">
-        <h2 className="text-sm font-semibold text-gray-900">
+      <div className="mb-5 space-y-0.5">
+        <h3 className="text-foreground text-sm font-semibold">
           Domain Ownership Check
-        </h2>
-        <p className="text-sm text-gray-500">
+        </h3>
+        <p className="text-muted-foreground text-xs">
           Tell us about your domain situation so we can guide you through the
           right process
         </p>
@@ -40,10 +40,10 @@ const DomainOwnership = ({ form }) => {
                   />
                   <Label
                     htmlFor="has-domain"
-                    className="w-full cursor-pointer flex-col items-start gap-1.5"
+                    className="w-full cursor-pointer flex-col items-start gap-1 text-xs"
                   >
                     <p>Yes, I have a domain</p>
-                    <p className="text-muted-foreground text-sm">
+                    <p className="text-muted-foreground font-normal">
                       I already own a domain and want to connect it to my store
                     </p>
                   </Label>
@@ -56,10 +56,10 @@ const DomainOwnership = ({ form }) => {
                   />
                   <Label
                     htmlFor="need-domain"
-                    className="w-full cursor-pointer flex-col items-start gap-1.5"
+                    className="w-full cursor-pointer flex-col items-start gap-1 text-xs"
                   >
                     <p>No, I need to buy one</p>
-                    <p className="text-muted-foreground text-sm">
+                    <p className="text-muted-foreground font-normal">
                       Help me purchase a domain from trusted registrars
                     </p>
                   </Label>

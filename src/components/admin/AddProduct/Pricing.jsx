@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+import { ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
@@ -11,26 +13,32 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CollapsibleTrigger } from "@radix-ui/react-collapsible";
-import { ChevronUp } from "lucide-react";
-import { useState } from "react";
+import SectionHeader from "../SectionHeader";
 
 export default function Pricing({ form }) {
+  const prefixRef = useRef(null);
+
   const [isOpen, setIsOpen] = useState(true);
+  const [prefixWidth, setPrefixWidth] = useState(0);
+
+  useEffect(() => {
+    if (prefixRef.current) {
+      setPrefixWidth(prefixRef.current.offsetWidth);
+    }
+  }, []);
 
   return (
     <Collapsible
       open={isOpen}
       onOpenChange={setIsOpen}
-      className="rounded-lg border bg-white p-4 md:p-6"
+      className="bg-card rounded-lg border p-5"
     >
       {/* header */}
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <h2 className="text-sm font-semibold text-gray-900">Pricing</h2>
-          <p className="mt-1 text-xs text-gray-500 md:text-sm">
-            Set product pricing, compare prices and cost calculations
-          </p>
-        </div>
+        <SectionHeader
+          title="Pricing"
+          description="Set product pricing, compare prices and cost calculations"
+        />
 
         {/* section collapse toggle button */}
         <CollapsibleTrigger asChild>
@@ -56,19 +64,22 @@ export default function Pricing({ form }) {
           rules={{ required: "Price is required" }}
           render={({ field, fieldState }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium text-gray-700">
+              <FormLabel>
                 Price <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
-                <div className="relative">
-                  <p className="absolute top-1/2 left-3 -translate-y-1/2 text-sm text-gray-500">
+                <div className="relative flex items-center">
+                  <span
+                    ref={prefixRef}
+                    className="text-muted-foreground pointer-events-none absolute left-3 text-sm"
+                  >
                     $
-                  </p>
+                  </span>
                   <Input
                     {...field}
                     type="number"
                     placeholder="0.00"
-                    className="h-11 pl-7 shadow-none"
+                    style={{ paddingLeft: `${prefixWidth + 20}px` }}
                   />
                 </div>
               </FormControl>
@@ -76,7 +87,7 @@ export default function Pricing({ form }) {
               {fieldState.error ? (
                 <FormMessage className="text-xs" />
               ) : (
-                <p className="text-xs text-gray-500">
+                <p className="text-muted-foreground text-xs">
                   The price customers will pay
                 </p>
               )}
@@ -108,19 +119,18 @@ export default function Pricing({ form }) {
 
             return (
               <FormItem>
-                <FormLabel className="text-sm font-medium text-gray-700">
-                  Compare at Price
-                </FormLabel>
+                <FormLabel>Compare at Price</FormLabel>
                 <FormControl>
-                  <div className="relative">
-                    <p className="absolute top-1/2 left-3 -translate-y-1/2 text-sm text-gray-500">
+                  <div className="relative flex items-center">
+                    <span className="text-muted-foreground absolute left-3 text-sm">
                       $
-                    </p>
+                    </span>
                     <Input
                       {...field}
                       type="number"
                       placeholder="0.00"
-                      className={`h-11 pl-7 shadow-none ${showWarning ? "border-amber-500" : ""}`}
+                      className={`${showWarning ? "border-warning" : ""}`}
+                      style={{ paddingLeft: `${prefixWidth + 20}px` }}
                     />
                   </div>
                 </FormControl>
@@ -129,12 +139,12 @@ export default function Pricing({ form }) {
                 {fieldState.error ? (
                   <FormMessage className="text-xs" />
                 ) : showWarning ? (
-                  <p className="text-xs text-amber-600">
+                  <p className="text-warning text-xs">
                     Compare at price should be higher than selling price ($
                     {price}) to show a discount
                   </p>
                 ) : (
-                  <p className="text-xs text-gray-500">
+                  <p className="text-muted-foreground text-xs">
                     Original price for discount display (optional, must be
                     higher than price)
                   </p>
@@ -150,23 +160,21 @@ export default function Pricing({ form }) {
           name="cost"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium text-gray-700">
-                Cost per Item
-              </FormLabel>
+              <FormLabel>Cost per Item</FormLabel>
               <FormControl>
-                <div className="relative">
-                  <p className="absolute top-1/2 left-3 -translate-y-1/2 text-sm text-gray-500">
+                <div className="relative flex items-center">
+                  <p className="text-muted-foreground absolute left-3 text-sm">
                     $
                   </p>
                   <Input
                     {...field}
                     type="number"
                     placeholder="0.00"
-                    className="h-11 pl-7 shadow-none"
+                    style={{ paddingLeft: `${prefixWidth + 20}px` }}
                   />
                 </div>
               </FormControl>
-              <p className="text-xs text-gray-500">
+              <p className="text-muted-foreground text-xs">
                 Your cost to acquire/produce this item (for profit calculations,
                 not shown to customers)
               </p>
@@ -181,20 +189,18 @@ export default function Pricing({ form }) {
             name="tax"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-medium text-gray-700">
-                  Tax
-                </FormLabel>
+                <FormLabel>Tax</FormLabel>
                 <FormControl>
-                  <div className="flex min-h-[44px] items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <Checkbox
                       id="tax"
                       checked={field.value || false}
                       onCheckedChange={(checked) => field.onChange(checked)}
-                      className="size-5 cursor-pointer"
+                      className="size-4 cursor-pointer"
                     />
                     <Label
                       htmlFor="tax"
-                      className="cursor-pointer text-sm text-gray-600"
+                      className="text-muted-foreground font-normal"
                     >
                       Charge tax on this product
                     </Label>

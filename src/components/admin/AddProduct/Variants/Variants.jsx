@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, AlertCircle } from "lucide-react";
 import AttributeCard from "./AttributeCard";
 import AllVariantsTable from "./AllVariantsTable";
+import SectionHeader from "../../SectionHeader";
 
 export default function Variants({ form }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -209,62 +210,53 @@ export default function Variants({ form }) {
     <Collapsible
       open={isOpen}
       onOpenChange={setIsOpen}
-      className="rounded-lg border bg-white p-4 md:p-6"
+      className="bg-card rounded-lg border p-5"
     >
-      {/* header */}
+      {/* Header */}
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <h2 className="text-sm font-semibold text-gray-900">
-            Product Variants
-          </h2>
-          <p className="mt-1 text-xs text-gray-500 md:text-sm">
-            Create different options like size, color, or material
-          </p>
-        </div>
-        {/* section collapse toggle button */}
-        <div className="flex shrink-0 items-center justify-end gap-2.5">
-          <p className="hidden text-sm font-medium text-gray-700 md:block">
-            Enable Variants
-          </p>
+        <SectionHeader
+          title="Product Variants"
+          description="Create different options like size, color, or material"
+        />
+
+        {/* Section collapse toggle button */}
+        <div className="flex shrink-0 items-center justify-end gap-2">
+          <span className="text-muted-foreground text-xs">
+            {isOpen ? "Enabled" : "Enable variants"}
+          </span>
+
           <CollapsibleTrigger asChild>
             <Switch
               checked={isOpen}
-              className={`cursor-pointer ${isOpen ? "bg-dashboard-primary" : "bg-neutral-300"}`}
+              className={`${isOpen ? "bg-primary" : "bg-input"}`}
             />
           </CollapsibleTrigger>
         </div>
       </div>
 
-      {/* main variant adding content */}
-      <CollapsibleContent className="mt-4 md:mt-6">
-        {/* add variant heading */}
+      {/* Main variant adding content */}
+      <CollapsibleContent className="mt-5">
+        {/* Add variant heading */}
         <div className="flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <h3 className="text-sm font-medium text-gray-700">
+          <h3 className="text-foreground text-xs font-semibold">
             Variant Attributes
           </h3>
-          <Button
-            type="button"
-            size="sm"
-            onClick={addAttribute}
-            className="w-full cursor-pointer gap-2 md:w-auto"
-          >
-            <Plus className="h-4 w-4" />
+          <Button type="button" size="sm" onClick={addAttribute}>
+            <Plus />
             Add Attribute
           </Button>
         </div>
 
         {/* Error Message Display */}
         {variantError && (
-          <div className="mt-4 flex items-start gap-2 rounded-md border border-red-200 bg-red-50 p-3">
-            <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-red-600" />
-            <p className="text-xs text-red-600 md:text-sm">
-              {variantError.message}
-            </p>
+          <div className="mt-4 flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3">
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-600" />
+            <p className="text-xs text-red-600">{variantError.message}</p>
           </div>
         )}
 
         {/* Render all attributes */}
-        <div className="mt-4 space-y-4 md:mt-6">
+        <div className="mt-4 space-y-4">
           {attributes.map((attribute) => (
             <AttributeCard
               key={attribute.id}
@@ -279,8 +271,10 @@ export default function Variants({ form }) {
         </div>
 
         {attributes.length === 0 && !variantError && (
-          <div className="mt-4 py-6 text-center text-xs text-gray-500 md:mt-6 md:py-8 md:text-sm">
-            <p>No variant attributes added yet.</p>
+          <div className="mt-4 py-8 text-center">
+            <p className="text-muted-foreground text-xs">
+              No variant attributes added yet.
+            </p>
           </div>
         )}
 

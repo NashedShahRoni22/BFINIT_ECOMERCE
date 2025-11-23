@@ -39,9 +39,9 @@ export default function AttributeCard({
   };
 
   return (
-    <div className="rounded-lg border bg-[#F9FAFB] p-3 md:p-4">
-      {/* attribute name */}
-      <div className="mb-3 flex w-full items-center justify-between gap-2 md:mb-4">
+    <div className="rounded-lg border p-4">
+      {/* Attribute name */}
+      <div className="mb-4 flex w-full items-center justify-between gap-2">
         {isEditingName ? (
           <Input
             value={nameValue}
@@ -49,19 +49,19 @@ export default function AttributeCard({
             onKeyPress={handleNameSubmit}
             onBlur={handleNameSubmit}
             placeholder="Enter attribute name (e.g., Color, Size)"
-            className="rounded border border-gray-200 bg-white px-3 py-2 text-sm font-medium shadow-none"
+            className="text-xs font-medium"
             autoFocus
           />
         ) : (
           <div className="flex min-w-0 flex-1 items-center gap-2">
-            <p className="truncate text-sm font-medium text-gray-700">
+            <p className="text-foreground truncate text-xs font-medium">
               {nameValue}
             </p>
             <Button
               size="sm"
               variant="ghost"
               onClick={() => setIsEditingName(true)}
-              className="h-auto shrink-0 p-1 text-xs text-gray-500 hover:text-gray-700 md:text-sm"
+              className="text-muted-foreground hover:text-foreground h-auto shrink-0 p-1 text-xs"
             >
               Edit
             </Button>
@@ -71,19 +71,19 @@ export default function AttributeCard({
           size="icon"
           variant="ghost"
           onClick={onDelete}
-          className="size-7 shrink-0 text-red-500 hover:bg-red-50 hover:text-red-700 md:size-8"
+          className="size-8 shrink-0 text-red-500 hover:bg-red-50 hover:text-red-700"
         >
-          <Trash className="h-3.5 w-3.5 md:h-4 md:w-4" />
+          <Trash className="h-4 w-4" />
         </Button>
       </div>
 
-      {/* rendered variant values */}
+      {/* Rendered variant values */}
       {attribute.values.length > 0 && (
-        <div className="mb-3 md:mb-4">
+        <div className="mb-4">
           <ul className="flex flex-wrap items-center gap-2">
             {attribute.values.map((value) => (
               <li key={value.id} className="group relative">
-                <div className="flex items-center gap-1 rounded-md border bg-white px-2 py-1 text-xs md:px-2.5 md:py-1.5 md:text-sm">
+                <div className="flex items-center gap-1.5 rounded-md border bg-white px-2.5 py-1.5 text-xs">
                   <span className="max-w-[120px] truncate md:max-w-none">
                     {value.name}
                   </span>
@@ -93,7 +93,7 @@ export default function AttributeCard({
                     onClick={() => onRemoveValue(value.id)}
                     className="shrink-0 rounded-full p-0.5 text-red-500 hover:bg-red-50"
                   >
-                    <X className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                    <X className="h-3.5 w-3.5" />
                   </button>
                 </div>
               </li>
@@ -102,7 +102,7 @@ export default function AttributeCard({
         </div>
       )}
 
-      {/* add attribute value input field */}
+      {/* Add attribute value input field */}
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
         <div className="flex flex-1 gap-2">
           <Input
@@ -116,7 +116,6 @@ export default function AttributeCard({
               }
             }}
             placeholder="Add values (separate with | for multiple)"
-            className="border-gray-200 bg-white text-sm shadow-none"
           />
           <Button
             onClick={handleAddValues}
@@ -134,11 +133,10 @@ export default function AttributeCard({
             id={`required-${attribute.id}`}
             checked={attribute.required}
             onCheckedChange={onToggleRequired}
-            className="cursor-pointer"
           />
           <Label
             htmlFor={`required-${attribute.id}`}
-            className="cursor-pointer text-sm font-medium text-gray-700"
+            className="cursor-pointer"
           >
             Required
           </Label>

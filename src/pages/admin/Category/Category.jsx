@@ -1,5 +1,4 @@
 import { useContext, useRef, useState } from "react";
-import { Link } from "react-router";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import ImageField from "../../../components/admin/ImageField/ImageField";
@@ -11,23 +10,24 @@ import Spinner from "../../../components/admin/loaders/Spinner";
 import usePostMutation from "../../../hooks/mutations/usePostMutation";
 import useGetCategories from "../../../hooks/categories/useGetCategories";
 import { handleImgChange } from "../../../utils/admin/handleImgChange";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { ChevronDownIcon, FolderPlus, SlashIcon } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { FolderPlus } from "lucide-react";
 import PageHeader from "@/components/admin/shared/PageHeader";
 import useSelectedStore from "@/hooks/stores/useSelectedStore";
+import { DynamicBreadcrumb } from "@/components/admin/DynamicBreadcrumb";
+
+const CATEGORY_BREADCRUMB_ITEMS = [
+  { label: "Home", href: "/" },
+  {
+    label: "Products",
+    dropdown: [
+      { label: "Sub Category", href: "/products/sub-category" },
+      { label: "Brands", href: "/products/brands" },
+      { label: "Add Product", href: "/products/add-product" },
+      { label: "Inventory", href: "/products/inventory" },
+    ],
+  },
+  { label: "Category" },
+];
 
 export default function Category() {
   const queryClient = useQueryClient();
@@ -88,46 +88,8 @@ export default function Category() {
 
   return (
     <section className="space-y-6">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator>
-            <SlashIcon />
-          </BreadcrumbSeparator>
-          <BreadcrumbItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
-                Products
-                <ChevronDownIcon />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="center">
-                <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/products/sub-category">Sub Category</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/products/brands">Brands</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/products/add-product">Add Product</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/products/inventory">Inventory</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator>
-            <SlashIcon />
-          </BreadcrumbSeparator>
-          <BreadcrumbItem>
-            <BreadcrumbPage>Category</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+      {/* Breadcrumb Navigation */}
+      <DynamicBreadcrumb items={CATEGORY_BREADCRUMB_ITEMS} />
 
       {/* Page Header */}
       <PageHeader

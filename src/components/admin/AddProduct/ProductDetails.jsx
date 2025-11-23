@@ -23,6 +23,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import SunEditor from "suneditor-react";
+import SectionHeader from "../SectionHeader";
 
 export default function ProductDetails({ form }) {
   const [isOpen, setIsOpen] = useState(true);
@@ -68,19 +69,15 @@ export default function ProductDetails({ form }) {
     <Collapsible
       open={isOpen}
       onOpenChange={setIsOpen}
-      className="rounded-lg border bg-white p-4 md:p-6"
+      className="bg-card rounded-lg border p-5"
     >
       {/* header */}
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <h2 className="text-sm font-semibold text-gray-900">
-            Product Details
-          </h2>
-          <p className="mt-1 text-xs text-gray-500 md:text-sm">
-            Enter the basic information about your product including name,
-            description and category
-          </p>
-        </div>
+        <SectionHeader
+          title="Product Details"
+          description="Enter the basic information about your product including name,
+            description and category"
+        />
 
         {/* section collapse toggle button */}
         <CollapsibleTrigger asChild>
@@ -88,7 +85,7 @@ export default function ProductDetails({ form }) {
             type="button"
             variant="secondary"
             size="icon"
-            className="size-8 shrink-0 cursor-pointer md:size-6"
+            className="size-8 shrink-0 md:size-6"
           >
             <ChevronUp
               className={`h-4 w-4 transition-transform duration-200 ease-linear md:h-3 md:w-3 ${isOpen ? "rotate-0" : "rotate-180"}`}
@@ -106,18 +103,13 @@ export default function ProductDetails({ form }) {
           rules={{ required: "Product name is required" }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium text-gray-700">
+              <FormLabel>
                 Product Name <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
-                <Input
-                  type="text"
-                  placeholder="Product Name"
-                  {...field}
-                  className="h-11 shadow-none"
-                />
+                <Input type="text" placeholder="Product Name" {...field} />
               </FormControl>
-              <FormMessage className="text-xs" />
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -129,28 +121,22 @@ export default function ProductDetails({ form }) {
           rules={{ required: "Category is required" }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium text-gray-700">
+              <FormLabel>
                 Category <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="h-11 w-full shadow-none">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select Category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="mobile" className="text-sm">
-                      Mobile
-                    </SelectItem>
-                    <SelectItem value="laptop" className="text-sm">
-                      Laptop
-                    </SelectItem>
-                    <SelectItem value="airplane" className="text-sm">
-                      Airplane
-                    </SelectItem>
+                    <SelectItem value="mobile">Mobile</SelectItem>
+                    <SelectItem value="laptop">Laptop</SelectItem>
+                    <SelectItem value="airplane">Airplane</SelectItem>
                   </SelectContent>
                 </Select>
               </FormControl>
-              <FormMessage className="text-xs" />
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -161,28 +147,20 @@ export default function ProductDetails({ form }) {
           name="subcategory"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium text-gray-700">
-                Subcategory
-              </FormLabel>
+              <FormLabel>Subcategory</FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="h-11 w-full shadow-none">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select Subcategory" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="featured" className="text-sm">
-                      Featured
-                    </SelectItem>
-                    <SelectItem value="android" className="text-sm">
-                      Android
-                    </SelectItem>
-                    <SelectItem value="ios" className="text-sm">
-                      iOS
-                    </SelectItem>
+                    <SelectItem value="featured">Featured</SelectItem>
+                    <SelectItem value="android">Android</SelectItem>
+                    <SelectItem value="ios">iOS</SelectItem>
                   </SelectContent>
                 </Select>
               </FormControl>
-              <FormMessage className="text-xs" />
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -193,28 +171,20 @@ export default function ProductDetails({ form }) {
           name="brand"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium text-gray-700">
-                Brand
-              </FormLabel>
+              <FormLabel>Brand</FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="h-11 w-full shadow-none">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select Brand" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="apple" className="text-sm">
-                      Apple
-                    </SelectItem>
-                    <SelectItem value="samsung" className="text-sm">
-                      Samsung
-                    </SelectItem>
-                    <SelectItem value="google" className="text-sm">
-                      Google
-                    </SelectItem>
+                    <SelectItem value="apple">Apple</SelectItem>
+                    <SelectItem value="samsung">Samsung</SelectItem>
+                    <SelectItem value="google">Google</SelectItem>
                   </SelectContent>
                 </Select>
               </FormControl>
-              <FormMessage className="text-xs" />
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -226,14 +196,12 @@ export default function ProductDetails({ form }) {
             name="tags"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-medium text-gray-700">
-                  Product Tags
-                </FormLabel>
+                <FormLabel>Product Tags</FormLabel>
                 <FormControl>
                   <div className="space-y-2">
                     {/* Display existing tags */}
                     {getTagsArray(field.value).length > 0 && (
-                      <div className="flex flex-wrap gap-2 rounded-md border bg-gray-50 p-2.5">
+                      <div className="flex flex-wrap items-center gap-2">
                         {getTagsArray(field.value).map((tag, index) => (
                           <span
                             key={index}
@@ -243,7 +211,7 @@ export default function ProductDetails({ form }) {
                             <button
                               type="button"
                               onClick={() => removeTag(tag, field)}
-                              className="touch-manipulation rounded-full p-0.5 text-red-500 hover:bg-red-50"
+                              className="shrink-0 rounded-full p-0.5 text-red-500 hover:bg-red-50"
                             >
                               <X className="h-3.5 w-3.5" />
                             </button>
@@ -251,17 +219,18 @@ export default function ProductDetails({ form }) {
                         ))}
                       </div>
                     )}
+
                     {/* Tag input */}
+                    {/* TODO: placeholder text should be more ux friendly */}
                     <Input
-                      placeholder="Type tags and press Enter"
+                      placeholder="Type tags and press Enter. to add multiple values (separate with | for multiple)"
                       value={tagInput}
                       onChange={(e) => setTagInput(e.target.value)}
                       onKeyPress={(e) => handleTagKeyPress(e, field)}
-                      className="h-11 shadow-none"
                     />
                   </div>
                 </FormControl>
-                <FormMessage className="text-xs" />
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -280,21 +249,19 @@ export default function ProductDetails({ form }) {
             }}
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-medium text-gray-700">
-                  Short Description
-                </FormLabel>
+                <FormLabel>Short Description</FormLabel>
                 <FormControl>
                   <Textarea
                     {...field}
                     rows={3}
                     maxLength={150}
                     placeholder="Write a short description (150 characters max)"
-                    className="resize-none shadow-none"
+                    className="resize-none"
                   />
                 </FormControl>
-                <div className="mt-1.5 flex items-center justify-between gap-2">
+                <div className="mt-0.5 flex items-center justify-between gap-2">
                   <FormMessage className="flex-1 text-xs" />
-                  <p className="shrink-0 text-xs text-gray-500 tabular-nums">
+                  <p className="text-muted-foreground shrink-0 text-xs tabular-nums">
                     {field.value ? field.value.length : 0}/150
                   </p>
                 </div>
@@ -310,9 +277,7 @@ export default function ProductDetails({ form }) {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-medium text-gray-700">
-                  Description
-                </FormLabel>
+                <FormLabel>Description</FormLabel>
                 <FormControl>
                   <SunEditor
                     ref={sunEditorRef}

@@ -1,5 +1,6 @@
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Clipboard, Clock, Info } from "lucide-react";
+import { AlertCircle, BookOpen, Clipboard, Clock, Info } from "lucide-react";
 import toast from "react-hot-toast";
 import { Link } from "react-router";
 
@@ -13,11 +14,11 @@ export default function DNSConfiguration({ data }) {
     <div className="border-border bg-card rounded-lg border p-6">
       {/* dns header */}
       <div className="flex items-start justify-between gap-4">
-        <div>
-          <h3 className="text-foreground text-base font-semibold">
+        <div className="space-y-0.5">
+          <h3 className="text-foreground text-sm font-semibold">
             DNS Configuration
           </h3>
-          <p className="text-muted-foreground mt-1.5 text-sm">
+          <p className="text-muted-foreground text-xs">
             Add these records to your domain&apos;s DNS settings. You&apos;ll
             need to add these records in your domain registrar&apos;s control
             panel
@@ -25,9 +26,9 @@ export default function DNSConfiguration({ data }) {
         </div>
 
         {/* section collapse toggle button */}
-        <Button variant="outline" size="sm" className="shrink-0" asChild>
+        <Button variant="outline" size="sm" asChild>
           <Link to="/help/domain-setup">
-            <BookOpen className="h-4 w-4" />
+            <BookOpen />
             Setup Guide
           </Link>
         </Button>
@@ -36,18 +37,14 @@ export default function DNSConfiguration({ data }) {
       {/* content */}
       <div className="mt-6 space-y-6">
         {/* time warning */}
-        <div className="border-warning/20 bg-warning/10 flex items-start gap-3 rounded-lg border px-4 py-3">
-          <Clock className="text-warning mt-0.5 h-5 w-5 shrink-0" />
-          <div className="space-y-1">
-            <p className="text-foreground text-sm font-semibold">
-              DNS Propagation Time
-            </p>
-            <p className="text-muted-foreground text-sm">
-              DNS changes can take up to 48 hours to propagate worldwide, but
-              typically complete within 1-4 hours
-            </p>
-          </div>
-        </div>
+        <Alert variant="warning">
+          <Clock />
+          <AlertTitle className="text-xs">DNS Propagation Time</AlertTitle>
+          <AlertDescription className="text-xs">
+            DNS changes can take up to 48 hours to propagate worldwide, but
+            typically complete within 1-4 hours
+          </AlertDescription>
+        </Alert>
 
         {/* required records */}
         <div className="space-y-4">
@@ -57,10 +54,10 @@ export default function DNSConfiguration({ data }) {
 
           {/* A RECORD */}
           <div className="border-border bg-card rounded-lg border p-5">
-            <h4 className="text-foreground text-sm font-semibold">
+            <h4 className="text-foreground text-xs font-semibold">
               Record 1: A Record
             </h4>
-            <p className="text-muted-foreground mt-1 text-sm">
+            <p className="text-muted-foreground mt-1 text-xs">
               Points your domain to our server
             </p>
 
@@ -70,7 +67,7 @@ export default function DNSConfiguration({ data }) {
                   HOST/NAME
                 </p>
                 <div className="flex items-center gap-2">
-                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-sm">
+                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-xs">
                     @
                   </div>
                   <Button
@@ -93,7 +90,7 @@ export default function DNSConfiguration({ data }) {
                   VALUE/POINTS TO
                 </p>
                 <div className="flex items-center gap-2">
-                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-sm">
+                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-xs">
                     {data?.dnsData?.aRecord}
                   </div>
                   <Button
@@ -116,7 +113,7 @@ export default function DNSConfiguration({ data }) {
                   TTL
                 </p>
                 <div className="flex items-center gap-2">
-                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-sm">
+                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-xs">
                     3600
                   </div>
                   <Button
@@ -138,10 +135,10 @@ export default function DNSConfiguration({ data }) {
 
           {/* CNAME Record */}
           <div className="border-border bg-card rounded-lg border p-5">
-            <h4 className="text-foreground text-sm font-semibold">
+            <h4 className="text-foreground text-xs font-semibold">
               Record 2: CNAME Record
             </h4>
-            <p className="text-muted-foreground mt-1 text-sm">
+            <p className="text-muted-foreground mt-1 text-xs">
               Connects your www subdomain
             </p>
 
@@ -151,7 +148,7 @@ export default function DNSConfiguration({ data }) {
                   HOST/NAME
                 </p>
                 <div className="flex items-center gap-2">
-                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-sm">
+                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-xs">
                     www
                   </div>
                   <Button
@@ -174,7 +171,7 @@ export default function DNSConfiguration({ data }) {
                   VALUE/POINTS TO
                 </p>
                 <div className="flex items-center gap-2">
-                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-sm">
+                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-xs">
                     {data?.dnsData?.cName}
                   </div>
                   <Button
@@ -197,7 +194,7 @@ export default function DNSConfiguration({ data }) {
                   TTL
                 </p>
                 <div className="flex items-center gap-2">
-                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-sm">
+                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-xs">
                     Default
                   </div>
                   <Button
@@ -218,27 +215,20 @@ export default function DNSConfiguration({ data }) {
           </div>
 
           {/* Help Banner */}
-          <div className="border-border bg-muted/50 flex items-start gap-3 rounded-lg border p-4">
-            <Info className="text-muted-foreground mt-0.5 h-5 w-5 shrink-0" />
-            <div className="flex-1 space-y-3">
-              <div>
-                <p className="text-foreground text-sm font-semibold">
-                  Need help adding these DNS records?
-                </p>
-                <p className="text-muted-foreground mt-1 text-sm">
-                  We&apos;ve created step-by-step guides for popular domain
-                  providers to help you connect your domain.
-                </p>
-              </div>
+          <Alert variant="info">
+            <AlertCircle />
+            <AlertTitle className="text-xs">
+              Need help adding these DNS records?
+            </AlertTitle>
+            <AlertDescription className="text-xs">
+              <p>
+                We&apos;ve created step-by-step guides for popular domain
+                providers to help you connect your domain.
+              </p>
 
               {/* Provider Quick Links */}
               <div className="flex flex-wrap items-center gap-2">
-                <Button
-                  variant="link"
-                  size="sm"
-                  className="text-primary hover:text-primary/80 h-auto p-0"
-                  asChild
-                >
+                <Button variant="link" size="sm" asChild className="px-0">
                   <Link to="/help/domain-setup">Complete Setup Guide →</Link>
                 </Button>
                 {/* <span className="text-muted-foreground">|</span>
@@ -269,8 +259,8 @@ export default function DNSConfiguration({ data }) {
                   <Link to="/help/domain-setup/cloudflare">Cloudflare</Link>
                 </Button> */}
               </div>
-            </div>
-          </div>
+            </AlertDescription>
+          </Alert>
         </div>
       </div>
     </div>

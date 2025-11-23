@@ -1,11 +1,6 @@
 import { Link } from "react-router";
 import { useForm } from "react-hook-form";
-import {
-  ChevronDownIcon,
-  ChevronLeft,
-  PackagePlus,
-  SlashIcon,
-} from "lucide-react";
+import { ChevronLeft, PackagePlus } from "lucide-react";
 import { Form } from "@/components/ui/form";
 import ProductDetails from "@/components/admin/AddProduct/ProductDetails";
 import ProductImages from "@/components/admin/AddProduct/ProductImages";
@@ -14,22 +9,22 @@ import { Button } from "@/components/ui/button";
 import Pricing from "@/components/admin/AddProduct/Pricing";
 import useSelectedStore from "@/hooks/stores/useSelectedStore";
 import ProductStatus from "./ProductStatus";
-
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import PageHeader from "@/components/admin/shared/PageHeader";
+import { DynamicBreadcrumb } from "@/components/admin/DynamicBreadcrumb";
+
+const ADD_PRODUCT_BREADCRUMB_ITEMS = [
+  { label: "Home", href: "/" },
+  {
+    label: "Products",
+    dropdown: [
+      { label: "Category", href: "/products/category" },
+      { label: "Sub Category", href: "/products/sub-category" },
+      { label: "Brands", href: "/products/brands" },
+      { label: "Inventory", href: "/products/inventory" },
+    ],
+  },
+  { label: "Add Product" },
+];
 
 export default function AddProduct() {
   const { selectedStore } = useSelectedStore();
@@ -157,46 +152,7 @@ export default function AddProduct() {
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link href="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator>
-            <SlashIcon />
-          </BreadcrumbSeparator>
-          <BreadcrumbItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
-                Products
-                <ChevronDownIcon />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="center">
-                <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/products/category">Category</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/products/sub-category">Sub Category</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/products/brands">Brands</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/products/inventory">Inventory</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator>
-            <SlashIcon />
-          </BreadcrumbSeparator>
-          <BreadcrumbItem>
-            <BreadcrumbPage>Add Product</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+      <DynamicBreadcrumb items={ADD_PRODUCT_BREADCRUMB_ITEMS} />
 
       {/* Page Header */}
       <PageHeader

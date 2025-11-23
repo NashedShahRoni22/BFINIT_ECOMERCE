@@ -1,17 +1,14 @@
-import { Link } from "react-router";
-import { Palette, SlashIcon } from "lucide-react";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { Palette } from "lucide-react";
 import PageHeader from "@/components/admin/shared/PageHeader";
 import ThemeOverview from "./ThemeOverview";
 import ThemeLibrary from "./ThemeLibrary";
 import useSelectedStore from "@/hooks/stores/useSelectedStore";
+import { DynamicBreadcrumb } from "@/components/admin/DynamicBreadcrumb";
+
+const THEME_BREADCRUMB_ITEMS = [
+  { label: "Home", href: "/" },
+  { label: "Themes" },
+];
 
 export default function Themes() {
   const { selectedStore } = useSelectedStore();
@@ -19,21 +16,7 @@ export default function Themes() {
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator>
-            <SlashIcon />
-          </BreadcrumbSeparator>
-          <BreadcrumbItem>
-            <BreadcrumbPage>Themes</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+      <DynamicBreadcrumb items={THEME_BREADCRUMB_ITEMS} />
 
       {/* Page Header */}
       <PageHeader

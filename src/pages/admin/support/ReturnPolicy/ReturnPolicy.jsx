@@ -7,24 +7,23 @@ import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import Spinner from "../../../../components/admin/loaders/Spinner";
 import useGetQuery from "../../../../hooks/queries/useGetQuery";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Link } from "react-router";
-import { ChevronDownIcon, RotateCcw, SlashIcon } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { RotateCcw } from "lucide-react";
 import useSelectedStore from "@/hooks/stores/useSelectedStore";
 import PageHeader from "@/components/admin/shared/PageHeader";
+import { DynamicBreadcrumb } from "@/components/admin/DynamicBreadcrumb";
+
+const SUPPORT_BREADCRUMB_ITEMS = [
+  { label: "Home", href: "/" },
+  {
+    label: "Support",
+    dropdown: [
+      { label: "Help Center", href: "/support/help-center" },
+      { label: "Terms & Conditions", href: "/support/terms-conditions" },
+      { label: "How to Buy", href: "/support/how-to-buy" },
+    ],
+  },
+  { label: "Return & Refunds" },
+];
 
 export default function ReturnPolicy() {
   const queryClient = useQueryClient();
@@ -103,43 +102,7 @@ export default function ReturnPolicy() {
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator>
-            <SlashIcon />
-          </BreadcrumbSeparator>
-          <BreadcrumbItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
-                Support
-                <ChevronDownIcon />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="center">
-                <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/support/help-center">Help Center</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/support/terms-conditions">Terms & Conditions</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/support/how-to-buy">How to Buy</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator>
-            <SlashIcon />
-          </BreadcrumbSeparator>
-          <BreadcrumbItem>
-            <BreadcrumbPage>Return & Refunds</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+      <DynamicBreadcrumb items={SUPPORT_BREADCRUMB_ITEMS} />
 
       {/* Page Header */}
       <PageHeader

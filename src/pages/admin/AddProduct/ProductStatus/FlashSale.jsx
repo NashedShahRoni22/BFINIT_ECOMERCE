@@ -44,89 +44,88 @@ export default function FlashSale({ form }) {
       name="flash_sale"
       render={({ field }) => (
         <FormItem>
-          <div className="rounded-lg border p-4">
+          <div className="bg-card rounded-lg border p-5">
+            {/* Header */}
             <div className="flex items-start gap-3">
-              <div className="bg-secondary shrink-0 rounded p-1.5">
-                <Zap size={16} />
+              <div className="bg-muted flex h-8 w-8 shrink-0 items-center justify-center rounded-md">
+                <Zap className="text-muted-foreground h-4 w-4" />
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-gray-900">Flash Sale</p>
-                <p className="mt-0.5 text-xs text-gray-600 md:text-sm">
-                  Creates urgency with limited-time offer badge. Requires
-                  <span className="font-medium"> Compare at Price</span> to be
-                  set.
+              <div className="min-w-0 flex-1 space-y-0.5">
+                <h4 className="text-xs font-semibold">Flash Sale</h4>
+                <p className="text-muted-foreground text-xs">
+                  Creates urgency with limited-time offer badge. Both{" "}
+                  <span className="text-foreground font-medium">Price</span> and{" "}
+                  <span className="text-foreground font-medium">
+                    Compare at Price
+                  </span>{" "}
+                  must be set.
                 </p>
               </div>
             </div>
-            <div className="mt-4 flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <FormLabel
-                htmlFor="flash_sale"
-                className="text-sm font-medium text-gray-700"
-              >
+
+            {/* Toggle */}
+            <div className="mt-4 flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-between">
+              <FormLabel htmlFor="flash_sale">
                 Enable Flash Sale badge
               </FormLabel>
               <FormControl>
                 <Switch
                   id="flash_sale"
-                  className="cursor-pointer"
                   checked={field.value}
                   onCheckedChange={field.onChange}
                   disabled={!hasValidPrices}
                 />
               </FormControl>
             </div>
-            {/* Show additional fields when enabled */}
+
+            {/* Expanded content when enabled */}
             {isFlashSaleEnabled && hasValidPrices && (
-              <div className="mt-4 space-y-4 border-t pt-4">
+              <div className="mt-5 space-y-4 border-t pt-5">
                 {/* Flash Sale Percentage Display */}
                 <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="text-foreground text-xs font-medium">
                     Flash Sale Percentage
                   </span>
-                  <span className="text-sm font-semibold text-red-600">
+                  <span className="text-destructive text-xs font-semibold">
                     {discountPercentage}% OFF
                   </span>
                 </div>
-                <p className="text-xs text-gray-500">
+                <p className="text-muted-foreground text-xs">
                   Automatically calculated from Price and Compare at Price
                 </p>
+
                 {/* Sale End Date */}
                 <FormField
                   control={form.control}
                   name="flash_sale_end_date"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-sm font-medium text-gray-700">
-                        Sale End Date
-                      </FormLabel>
+                      <FormLabel>Sale End Date</FormLabel>
                       <FormControl>
                         <Input
                           type="datetime-local"
                           {...field}
                           value={field.value || ""}
-                          className="shadow-none"
                         />
                       </FormControl>
-                      <FormMessage className="text-xs" />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
+
                 {/* Show Countdown Timer Toggle */}
                 <FormField
                   control={form.control}
                   name="flash_sale_show_countdown"
                   render={({ field }) => (
                     <FormItem>
-                      <div className="flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                        <FormLabel className="text-sm font-medium text-gray-700">
-                          Show countdown timer
-                        </FormLabel>
+                      <div className="flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                        <FormLabel>Show countdown timer</FormLabel>
                         <FormControl>
                           <Switch
                             checked={field.value}
                             onCheckedChange={field.onChange}
                             disabled={!isEndDateSelected}
-                            className="cursor-pointer"
                           />
                         </FormControl>
                       </div>
@@ -136,7 +135,7 @@ export default function FlashSale({ form }) {
               </div>
             )}
           </div>
-          <FormMessage className="text-xs" />
+          <FormMessage />
         </FormItem>
       )}
     />

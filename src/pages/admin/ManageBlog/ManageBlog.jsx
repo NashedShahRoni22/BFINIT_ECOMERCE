@@ -1,17 +1,18 @@
 import useGetQuery from "../../../hooks/queries/useGetQuery";
 import BlogRow from "../../../components/admin/BlogRow";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Link } from "react-router";
-import { FileText, SlashIcon } from "lucide-react";
+import { FileText } from "lucide-react";
 import PageHeader from "@/components/admin/shared/PageHeader";
 import useSelectedStore from "@/hooks/stores/useSelectedStore";
+import { DynamicBreadcrumb } from "@/components/admin/DynamicBreadcrumb";
+
+const BLOGS_BREADCRUMB_ITEMS = [
+  { label: "Home", href: "/" },
+  {
+    label: "Blogs",
+    dropdown: [{ label: "Add Blog", href: "/blogs/add" }],
+  },
+  { label: "Manage Blog" },
+];
 
 export default function ManageBlog() {
   const { selectedStore } = useSelectedStore();
@@ -26,21 +27,7 @@ export default function ManageBlog() {
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator>
-            <SlashIcon />
-          </BreadcrumbSeparator>
-          <BreadcrumbItem>
-            <BreadcrumbPage>Manage Blog</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+      <DynamicBreadcrumb items={BLOGS_BREADCRUMB_ITEMS} />
 
       {/* Page Header */}
       <PageHeader

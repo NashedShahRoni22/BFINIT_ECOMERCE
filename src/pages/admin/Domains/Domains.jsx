@@ -10,20 +10,18 @@ import useUpdateMutation from "@/hooks/mutations/useUpdateMutation";
 import useGetQuery from "@/hooks/queries/useGetQuery";
 import useSelectedStore from "@/hooks/stores/useSelectedStore";
 import { useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, Globe, SlashIcon } from "lucide-react";
+import { ChevronLeft, Globe } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router";
 import PageHeader from "@/components/admin/shared/PageHeader";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { DynamicBreadcrumb } from "@/components/admin/DynamicBreadcrumb";
+
+const DOMAIN_BREADCRUMB_ITEMS = [
+  { label: "Home", href: "/" },
+  { label: "Domain" },
+];
 
 export default function Domains() {
   const queryClient = useQueryClient();
@@ -74,6 +72,15 @@ export default function Domains() {
   });
 
   const isDomainIntegrated = data && data?.message === "Domain Record Found";
+  const hasDomainOwnership = form.watch("domainOwnership") === "has-domain";
+  const isDomainActive = data?.data?.isActive;
+
+  const showDraftConnectBtn =
+    (!isLoading &&
+      !isDomainIntegrated &&
+      hasDomainOwnership &&
+      !isDomainActive) ||
+    (isDomainIntegrated && isDomainActive);
 
   // Add or Update domain submit handler
   const onSubmit = (values) => {
@@ -116,21 +123,7 @@ export default function Domains() {
   return (
     <div className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator>
-            <SlashIcon />
-          </BreadcrumbSeparator>
-          <BreadcrumbItem>
-            <BreadcrumbPage>Domain</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+      <DynamicBreadcrumb items={DOMAIN_BREADCRUMB_ITEMS} />
 
       {/* Page Header */}
       <PageHeader
@@ -163,29 +156,23 @@ export default function Domains() {
 
           {/* Bottom buttons */}
           <div className="flex flex-col-reverse gap-4 border-t border-slate-200 pt-6 lg:flex-row lg:justify-between">
-            <Button variant="outline" size="lg" asChild>
+            <Button variant="outline" size="lg" type="button" asChild>
               <Link to="/">
-                <ChevronLeft className="mr-2 h-4 w-4" />
+                <ChevronLeft />
                 Back to Dashboard
               </Link>
             </Button>
 
             {/* Submit button for custom domain */}
-            {!isLoading && form.watch("domainOwnership") !== "need-domain" && (
+            {showDraftConnectBtn && (
               <div className="flex flex-col-reverse gap-4 lg:flex-row">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="cursor-pointer"
-                  type="button"
-                >
+                <Button variant="outline" size="lg" type="button">
                   Save as Draft
                 </Button>
 
                 <Button
                   type="submit"
                   size="lg"
-                  className="cursor-pointer"
                   disabled={isSubmitting || isUpdating}
                 >
                   {isDomainIntegrated

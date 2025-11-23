@@ -1,30 +1,29 @@
-import SunEditor from "suneditor-react";
-import EmptyState from "../../../../components/admin/EmptyState";
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import SunEditor from "suneditor-react";
+import { CircleHelp } from "lucide-react";
+import EmptyState from "../../../../components/admin/EmptyState";
 import useGetHelpContent from "../../../../hooks/support/useGetHelpContent";
 import useUpdateMutation from "../../../../hooks/mutations/useUpdateMutation";
 import useAuth from "../../../../hooks/auth/useAuth";
-import toast from "react-hot-toast";
-import { useQueryClient } from "@tanstack/react-query";
 import Spinner from "../../../../components/admin/loaders/Spinner";
 import useSelectedStore from "@/hooks/stores/useSelectedStore";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Link } from "react-router";
-import { ChevronDownIcon, CircleHelp, SlashIcon } from "lucide-react";
 import PageHeader from "@/components/admin/shared/PageHeader";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DynamicBreadcrumb } from "@/components/admin/DynamicBreadcrumb";
+
+const SUPPORT_BREADCRUMB_ITEMS = [
+  { label: "Home", href: "/" },
+  {
+    label: "Support",
+    dropdown: [
+      { label: "Return & Refunds", href: "/support/returns-refunds" },
+      { label: "Terms & Conditions", href: "/support/terms-conditions" },
+      { label: "How to Buy", href: "/support/how-to-buy" },
+    ],
+  },
+  { label: "Help Center" },
+];
 
 export default function AddHelpCenter() {
   const queryClient = useQueryClient();
@@ -96,43 +95,7 @@ export default function AddHelpCenter() {
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator>
-            <SlashIcon />
-          </BreadcrumbSeparator>
-          <BreadcrumbItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
-                Support
-                <ChevronDownIcon />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="center">
-                <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/support/returns-refunds">Return & Refunds</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/support/terms-conditions">Terms & Conditions</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/support/how-to-buy">How to Buy</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator>
-            <SlashIcon />
-          </BreadcrumbSeparator>
-          <BreadcrumbItem>
-            <BreadcrumbPage>Help Center</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+      <DynamicBreadcrumb items={SUPPORT_BREADCRUMB_ITEMS} />
 
       {/* Page Header */}
       <PageHeader

@@ -8,8 +8,9 @@ import CartProvider from "./Providers/CartProvider.jsx";
 import CategoryProvider from "./Providers/CategoryProvider.jsx";
 import ThemeProvider from "./Providers/ThemeProvider.jsx";
 import AuthProvider from "./Providers/AuthProvider.jsx";
-import "./index.css";
 import StoreProvider from "./Providers/StoreProvider.jsx";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import "./index.css";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ createRoot(document.getElementById("root")).render(
         </StoreProvider>
       </AuthProvider>
       <Toaster position="top-center" />
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </StrictMode>,
 );

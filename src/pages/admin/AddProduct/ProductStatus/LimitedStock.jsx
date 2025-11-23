@@ -1,3 +1,4 @@
+import { Package2 } from "lucide-react";
 import {
   FormControl,
   FormField,
@@ -7,7 +8,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Package2 } from "lucide-react";
 
 export default function LimitedStock({ form }) {
   const isLimitedStockEnabled = form.watch("limited_stock");
@@ -18,61 +18,53 @@ export default function LimitedStock({ form }) {
       name="limited_stock"
       render={({ field }) => (
         <FormItem>
-          <div className="rounded-lg border p-4">
+          <div className="bg-card rounded-lg border p-5">
+            {/* Header */}
             <div className="flex items-start gap-3">
-              <div className="bg-secondary shrink-0 rounded p-1.5">
-                <Package2 size={16} />
+              <div className="bg-muted flex h-8 w-8 shrink-0 items-center justify-center rounded-md">
+                <Package2 className="text-muted-foreground h-4 w-4" />
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-gray-900">
-                  Limited Stock
-                </p>
-                <p className="mt-0.5 text-xs text-gray-600 md:text-sm">
+              <div className="min-w-0 flex-1 space-y-0.5">
+                <h4 className="text-xs font-semibold">Limited Stock</h4>
+                <p className="text-muted-foreground text-xs">
                   Shows scarcity to encourage quick purchasing decisions when
                   inventory is running low.
                 </p>
               </div>
             </div>
-            <div className="mt-4 flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <FormLabel
-                htmlFor="limited_stock"
-                className="text-sm font-medium text-gray-700"
-              >
+
+            {/* Toggle */}
+            <div className="mt-4 flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-between">
+              <FormLabel htmlFor="limited_stock">
                 Enable Limited Stock badge
               </FormLabel>
               <FormControl>
                 <Switch
                   id="limited_stock"
-                  className="cursor-pointer"
                   checked={field.value}
                   onCheckedChange={field.onChange}
                 />
               </FormControl>
             </div>
+
+            {/* Expanded content when enabled */}
             {isLimitedStockEnabled && (
               <FormField
                 control={form.control}
                 name="limited_stock_threshold"
                 render={({ field }) => (
-                  <FormItem className="mt-4 border-t pt-4">
-                    <FormLabel className="text-sm font-medium text-gray-700">
-                      Show when stock is below
-                    </FormLabel>
+                  <FormItem className="mt-5 border-t pt-5">
+                    <FormLabel>Show when stock is below</FormLabel>
                     <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="e.g., 10"
-                        {...field}
-                        className="shadow-none"
-                      />
+                      <Input type="number" placeholder="e.g., 50" {...field} />
                     </FormControl>
-                    <FormMessage className="text-xs" />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
             )}
           </div>
-          <FormMessage className="text-xs" />
+          <FormMessage />
         </FormItem>
       )}
     />

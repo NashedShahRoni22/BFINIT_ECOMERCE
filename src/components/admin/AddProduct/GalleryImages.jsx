@@ -164,22 +164,20 @@ export default function GalleryImages({ form }) {
       render={({ field }) => {
         const currentImages = field.value || [];
         const canAddMore = currentImages.length < maxImages;
-        // Create slots: all existing images + one empty slot if we can add more
         const totalSlots = canAddMore
           ? currentImages.length + 1
           : currentImages.length;
+
         return (
           <FormItem className="w-full">
             <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between md:gap-4">
               <div className="flex-1">
-                <FormLabel className="text-sm font-medium text-gray-700">
-                  Gallery Images
-                </FormLabel>
-                <p className="mt-1.5 text-xs text-gray-500">
+                <FormLabel>Gallery Images</FormLabel>
+                <p className="text-muted-foreground mt-1.5 text-xs">
                   Upload up to {maxImages} images (PNG, JPG • max 300KB each)
                 </p>
               </div>
-              <div className="text-xs font-medium text-gray-600 tabular-nums md:text-sm">
+              <div className="text-muted-foreground text-xs tabular-nums">
                 {currentImages.length}/{maxImages} uploaded
               </div>
             </div>
