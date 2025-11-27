@@ -60,7 +60,7 @@ export default function ManageProductCard({
             {/* Price */}
             <div className="mb-2 text-lg font-semibold text-gray-900">
               {currencySymbol}
-              {productDiscountPrice.$numberDecimal}
+              {productDiscountPrice?.$numberDecimal}
             </div>
 
             {/* Stock, Category, Brand - Mobile Grid */}

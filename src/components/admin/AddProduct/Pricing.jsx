@@ -182,8 +182,8 @@ export default function Pricing({ form }) {
           )}
         />
 
-        {/* charge tax */}
-        <div className="flex flex-col items-start">
+        {/* TODO: make it uncomment when shipping based pricing added charge tax */}
+        {/* <div className="flex flex-col items-start">
           <FormField
             control={form.control}
             name="tax"
@@ -209,7 +209,7 @@ export default function Pricing({ form }) {
               </FormItem>
             )}
           />
-        </div>
+        </div> */}
       </CollapsibleContent>
     </Collapsible>
   );

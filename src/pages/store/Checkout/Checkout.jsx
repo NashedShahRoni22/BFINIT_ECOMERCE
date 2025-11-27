@@ -31,7 +31,7 @@ export default function Checkout() {
   // subtotal amount in cents
   const subTotalInCents = cartItems.reduce((total, item) => {
     const priceInCents = Math.round(
-      parseFloat(item.productDiscountPrice.$numberDecimal) * 100,
+      parseFloat(item.productDiscountPrice?.$numberDecimal) * 100,
     );
     return total + priceInCents * item.quantity;
   }, 0);
@@ -129,7 +129,7 @@ export default function Checkout() {
       const formattedCartItems = cartItems.map((item) => ({
         productId: item.productId,
         productName: item.productName,
-        price: item.productDiscountPrice.$numberDecimal,
+        price: item.productDiscountPrice?.$numberDecimal,
         quantity: item.quantity,
       }));
 
@@ -150,7 +150,7 @@ export default function Checkout() {
       const formattedCartItems = cartItems.map((item) => ({
         productId: item.productId,
         productName: item.productName,
-        price: item.productDiscountPrice.$numberDecimal,
+        price: item.productDiscountPrice?.$numberDecimal,
         quantity: item.quantity,
       }));
 
@@ -385,7 +385,7 @@ export default function Checkout() {
               <p>
                 {storePreference?.data?.currencySymbol}{" "}
                 {(
-                  item.productDiscountPrice.$numberDecimal * item.quantity
+                  item.productDiscountPrice?.$numberDecimal * item.quantity
                 ).toFixed(2)}
               </p>
             </li>

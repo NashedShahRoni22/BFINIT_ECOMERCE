@@ -25,7 +25,7 @@ export default function ProductCard3({ product, currencySymbol, storeId }) {
         </Link>
 
         {/* ==> discount highlight temporarily hidden <== */}
-        {/* {productDiscountPrice.$numberDecimal && (
+        {/* {productDiscountPrice?.$numberDecimal && (
             <p className="absolute top-1.5 left-1.5 bg-[#e74040] px-4 py-0.5 text-sm font-bold text-white">
               Sale
             </p>
@@ -71,12 +71,12 @@ export default function ProductCard3({ product, currencySymbol, storeId }) {
       >
         <p className="font-bold">
           {currencySymbol}
-          {product.productDiscountPrice.$numberDecimal}
+          {product.productPrice?.$numberDecimal}
         </p>
-        {product.productDiscountPrice.$numberDecimal && (
+        {product.productDiscountPrice?.$numberDecimal && (
           <p className="text-xs text-neutral-400 line-through">
             {currencySymbol}
-            {productPrice.$numberDecimal}
+            {productPrice?.$numberDecimal}
           </p>
         )}
       </Link>

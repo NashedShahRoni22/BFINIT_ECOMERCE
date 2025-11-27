@@ -149,8 +149,8 @@ export default function Navbar() {
                               {/* Price */}
                               <div className="text-accent text-sm font-semibold">
                                 {product.productDiscountPrice?.$numberDecimal
-                                  ? `$${product.productDiscountPrice.$numberDecimal}`
-                                  : `$${product.productPrice.$numberDecimal}`}
+                                  ? `$${product.productDiscountPrice?.$numberDecimal}`
+                                  : `$${product.productPrice?.$numberDecimal}`}
                               </div>
                             </li>
                           ))}

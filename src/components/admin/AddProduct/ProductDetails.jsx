@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { ChevronUp, X } from "lucide-react";
+import { ChevronUp, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,23 +24,72 @@ import {
 } from "@/components/ui/collapsible";
 import SunEditor from "suneditor-react";
 import SectionHeader from "../SectionHeader";
+import useGetCategories from "@/hooks/categories/useGetCategories";
+import { useNavigate } from "react-router";
+import useGetBrands from "@/hooks/brands/useGetBrands";
 
 export default function ProductDetails({ form }) {
+  // fetch categories
+  const { data: categories, isLoading: isCategoriesLoading } =
+    useGetCategories();
+  // fetch brands
+  const { data: brands, isLoading: isBrandsLoading } = useGetBrands();
+
+  const navigate = useNavigate();
+  const sunEditorRef = useRef();
+
   const [isOpen, setIsOpen] = useState(true);
   const [tagInput, setTagInput] = useState("");
-  const sunEditorRef = useRef();
+
+  // Watch category value from form
+  const selectedCategoryName = form.watch("category");
+
+  const selectedCategory = categories?.data?.find(
+    (cat) => cat?.name === selectedCategoryName,
+  );
+
+  // Get subcategories (empty array if none)
+  const subcategories = selectedCategory?.subcategory || [];
+
+  // handle category select onchange handler
+  const handleCategoryChange = (value, field) => {
+    if (value === "new_category") {
+      return navigate("/products/category");
+    }
+
+    field.onChange(value);
+    form.setValue("subcategory", "");
+  };
+
+  // handle subcategory selct onchange hanlder
+  const handleSubcategoryChange = (value, field) => {
+    if (value === "new_subcategory") {
+      return navigate("/products/sub-category");
+    }
+
+    field.onChange(value);
+  };
+
+  // handle brand select onchange handler
+  const handleBrandChange = (value, field) => {
+    if (value === "new_brand") {
+      return navigate("/products/brands");
+    }
+
+    field.onChange(value);
+  };
 
   const handleTagKeyPress = (e, field) => {
     if (e.key === "Enter" && tagInput.trim()) {
       e.preventDefault();
       const currentTags = field.value
-        ? field.value.split("|").filter((tag) => tag.trim())
+        ? field.value.split(",").filter((tag) => tag.trim())
         : [];
       const newTag = tagInput.trim();
 
       if (!currentTags.includes(newTag)) {
         const updatedTags = [...currentTags, newTag];
-        field.onChange(updatedTags.join("|"));
+        field.onChange(updatedTags.join(","));
       }
       setTagInput("");
     }
@@ -49,15 +98,15 @@ export default function ProductDetails({ form }) {
   // Remove tag
   const removeTag = (tagToRemove, field) => {
     const currentTags = field.value
-      ? field.value.split("|").filter((tag) => tag.trim())
+      ? field.value.split(",").filter((tag) => tag.trim())
       : [];
     const updatedTags = currentTags.filter((tag) => tag !== tagToRemove);
-    field.onChange(updatedTags.join("|"));
+    field.onChange(updatedTags.join(","));
   };
 
   // Get tags array from field value
   const getTagsArray = (value) => {
-    return value ? value.split("|").filter((tag) => tag.trim()) : [];
+    return value ? value.split(",").filter((tag) => tag.trim()) : [];
   };
 
   // Handle SunEditor change
@@ -125,14 +174,50 @@ export default function ProductDetails({ form }) {
                 Category <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select
+                  onValueChange={(value) => handleCategoryChange(value, field)}
+                  value={field.value}
+                  disabled={isCategoriesLoading}
+                >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select Category" />
+                    <SelectValue
+                      placeholder={
+                        isCategoriesLoading
+                          ? "Loading categories..."
+                          : "Select Category"
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="mobile">Mobile</SelectItem>
-                    <SelectItem value="laptop">Laptop</SelectItem>
-                    <SelectItem value="airplane">Airplane</SelectItem>
+                    {categories?.data && categories?.data?.length > 0 ? (
+                      <>
+                        {categories.data.map((cat) => (
+                          <SelectItem key={cat?.id} value={cat?.name}>
+                            {cat?.name}
+                          </SelectItem>
+                        ))}
+                        <SelectItem
+                          value="new_category"
+                          className="text-primary mt-1 cursor-pointer border-t pt-2"
+                        >
+                          <Plus />
+                          <span>Create new category</span>
+                        </SelectItem>
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-muted-foreground px-2 py-2 text-center text-sm">
+                          No category found!
+                        </div>
+                        <SelectItem
+                          value="new_category"
+                          className="text-primary cursor-pointer"
+                        >
+                          <Plus />
+                          <span>Create your first category</span>
+                        </SelectItem>
+                      </>
+                    )}
                   </SelectContent>
                 </Select>
               </FormControl>
@@ -149,14 +234,54 @@ export default function ProductDetails({ form }) {
             <FormItem>
               <FormLabel>Subcategory</FormLabel>
               <FormControl>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select
+                  onValueChange={(value) =>
+                    handleSubcategoryChange(value, field)
+                  }
+                  value={field.value}
+                  disabled={isCategoriesLoading}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select Subcategory" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="featured">Featured</SelectItem>
-                    <SelectItem value="android">Android</SelectItem>
-                    <SelectItem value="ios">iOS</SelectItem>
+                    {!selectedCategoryName ? (
+                      <div className="text-muted-foreground px-2 py-2 text-center text-sm">
+                        Select category first to view subcategories
+                      </div>
+                    ) : subcategories?.length > 0 ? (
+                      <>
+                        {subcategories.map((subcat, index) => (
+                          <SelectItem key={index} value={subcat}>
+                            {subcat}
+                          </SelectItem>
+                        ))}
+                        <SelectItem
+                          value="new_subcategory"
+                          className="text-primary mt-1 cursor-pointer border-t pt-2 font-medium"
+                        >
+                          <div className="flex items-center gap-2">
+                            <Plus className="h-4 w-4" />
+                            <span>Create new subcategory</span>
+                          </div>
+                        </SelectItem>
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-muted-foreground px-2 py-2 text-center text-sm">
+                          No subcategories found for this category
+                        </div>
+                        <SelectItem
+                          value="new_subcategory"
+                          className="text-primary cursor-pointer font-medium"
+                        >
+                          <div className="flex items-center gap-2">
+                            <Plus className="h-4 w-4" />
+                            <span>Create your first subcategory</span>
+                          </div>
+                        </SelectItem>
+                      </>
+                    )}
                   </SelectContent>
                 </Select>
               </FormControl>
@@ -173,14 +298,50 @@ export default function ProductDetails({ form }) {
             <FormItem>
               <FormLabel>Brand</FormLabel>
               <FormControl>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select
+                  onValueChange={(value) => {
+                    handleBrandChange(value, field);
+                  }}
+                  value={field.value}
+                  disabled={isBrandsLoading}
+                >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select Brand" />
+                    <SelectValue
+                      placeholder={
+                        isBrandsLoading ? "Loading brands..." : "Select Brand"
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="apple">Apple</SelectItem>
-                    <SelectItem value="samsung">Samsung</SelectItem>
-                    <SelectItem value="google">Google</SelectItem>
+                    {brands?.data && brands?.data?.length > 0 ? (
+                      <>
+                        {brands?.data?.map((brand) => (
+                          <SelectItem key={brand?.id} value={brand?.name}>
+                            {brand?.name}
+                          </SelectItem>
+                        ))}
+                        <SelectItem
+                          value="new_brand"
+                          className="text-primary mt-1 cursor-pointer border-t pt-2"
+                        >
+                          <Plus />
+                          <span>Create new brand</span>
+                        </SelectItem>
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-muted-foreground px-2 py-2 text-center text-sm">
+                          No brand found!
+                        </div>
+                        <SelectItem
+                          value="new_brand"
+                          className="text-primary cursor-pointer"
+                        >
+                          <Plus />
+                          <span>Create your first brand</span>
+                        </SelectItem>
+                      </>
+                    )}
                   </SelectContent>
                 </Select>
               </FormControl>
@@ -221,9 +382,8 @@ export default function ProductDetails({ form }) {
                     )}
 
                     {/* Tag input */}
-                    {/* TODO: placeholder text should be more ux friendly */}
                     <Input
-                      placeholder="Type tags and press Enter. to add multiple values (separate with | for multiple)"
+                      placeholder="Press Enter or use commas for multiple tags (e.g., organic, seasonal)"
                       value={tagInput}
                       onChange={(e) => setTagInput(e.target.value)}
                       onKeyPress={(e) => handleTagKeyPress(e, field)}

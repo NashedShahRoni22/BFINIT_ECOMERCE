@@ -15,7 +15,7 @@ export default function CartItemRow({
     quantity,
   } = item;
 
-  const price = parseFloat(productDiscountPrice.$numberDecimal).toFixed(2);
+  const price = parseFloat(productDiscountPrice?.$numberDecimal).toFixed(2);
 
   return (
     <tr className="border-b border-gray-200">

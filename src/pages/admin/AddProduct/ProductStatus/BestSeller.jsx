@@ -54,7 +54,7 @@ export default function BestSeller({ form }) {
                 name="best_seller_threshold"
                 render={({ field }) => (
                   <FormItem className="mt-5 border-t pt-5">
-                    <FormLabel>Show when stock is below</FormLabel>
+                    <FormLabel>Show when units sold is at least</FormLabel>
                     <FormControl>
                       <Input type="number" placeholder="e.g., 50" {...field} />
                     </FormControl>

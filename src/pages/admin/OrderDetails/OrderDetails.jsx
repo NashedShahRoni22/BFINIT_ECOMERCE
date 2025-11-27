@@ -163,7 +163,7 @@ export default function OrderDetails() {
                   <p className="font-semibold">
                     {orderData.data.Currency_code}{" "}
                     {(
-                      parseFloat(product.price.$numberDecimal) *
+                      parseFloat(product.price?.$numberDecimal) *
                       product.quantity
                     ).toFixed(2)}
                   </p>

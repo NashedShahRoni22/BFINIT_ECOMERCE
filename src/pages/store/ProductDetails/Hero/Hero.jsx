@@ -71,11 +71,11 @@ export default function Hero({ productDetails, currencySymbol }) {
           Price:{" "}
           <p className="text-neutral-400">
             <span className="text-sm">{currencySymbol}</span>
-            <span className="line-through">{productPrice.$numberDecimal}</span>
+            <span className="line-through">{productPrice?.$numberDecimal}</span>
           </p>
           <p>
             <span className="text-sm">{currencySymbol}</span>
-            <span>{productDiscountPrice.$numberDecimal}</span>
+            <span>{productDiscountPrice?.$numberDecimal}</span>
           </p>
         </div>
         <div className="my-6 grid grid-cols-2 gap-4 text-sm">

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Plus, AlertCircle } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -6,10 +7,10 @@ import {
 } from "@/components/ui/collapsible";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Plus, AlertCircle } from "lucide-react";
 import AttributeCard from "./AttributeCard";
 import AllVariantsTable from "./AllVariantsTable";
 import SectionHeader from "../../SectionHeader";
+import { Alert, AlertTitle } from "@/components/ui/alert";
 
 export default function Variants({ form }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -82,7 +83,7 @@ export default function Variants({ form }) {
     if (!inputValue.trim()) return;
 
     const newValueStrings = inputValue
-      .split("|")
+      .split(",")
       .map((value) => value.trim())
       .filter((value) => value.length > 0);
 
@@ -153,6 +154,11 @@ export default function Variants({ form }) {
           : attr,
       ),
     );
+
+    // Clear variant errors when user updates price fields
+    if (field === "price" && value && value.toString().trim() !== "") {
+      form.clearErrors("variants");
+    }
   };
 
   // Delete variant value from attribute
@@ -249,10 +255,10 @@ export default function Variants({ form }) {
 
         {/* Error Message Display */}
         {variantError && (
-          <div className="mt-4 flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3">
-            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-600" />
-            <p className="text-xs text-red-600">{variantError.message}</p>
-          </div>
+          <Alert variant="destructive" className="mt-4">
+            <AlertCircle />
+            <AlertTitle>{variantError.message}</AlertTitle>
+          </Alert>
         )}
 
         {/* Render all attributes */}

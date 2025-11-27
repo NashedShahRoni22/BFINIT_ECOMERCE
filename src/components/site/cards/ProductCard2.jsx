@@ -63,16 +63,12 @@ export default function ProductCard2({ product, storeId, currencySymbol }) {
         <div className="mt-auto flex items-center gap-2">
           <p className="text-accent text-lg font-bold">
             {currencySymbol}
-            {productDiscountPrice.$numberDecimal}
+            {productDiscountPrice?.$numberDecimal}
           </p>
-          {productDiscountPrice && (
-            <>
-              <p className="text-xs text-neutral-400 line-through">
-                {currencySymbol}
-                {productPrice.$numberDecimal}
-              </p>
-            </>
-          )}
+          <p className="text-xs text-neutral-400 line-through">
+            {currencySymbol}
+            {productPrice?.$numberDecimal}
+          </p>
         </div>
       </Link>
     </div>

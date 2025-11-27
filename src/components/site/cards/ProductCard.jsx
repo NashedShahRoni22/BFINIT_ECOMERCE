@@ -31,16 +31,16 @@ export default function ProductCard({ product, currencySymbol, storeId }) {
         <div className="mt-1.5 flex items-baseline gap-2 px-4">
           <span className="text-xl font-bold">
             {currencySymbol}
-            {productDiscountPrice.$numberDecimal}
+            {productPrice?.$numberDecimal}
           </span>
-          <span className="text-xs text-gray-500">
+          {/* <span className="text-xs text-gray-500">
             -
             {generateDiscountPercentage(
-              productPrice.$numberDecimal,
-              productDiscountPrice.$numberDecimal,
+              productPrice?.$numberDecimal,
+              productDiscountPrice?.$numberDecimal,
             )}
             %
-          </span>
+          </span> */}
         </div>
       </Link>
 

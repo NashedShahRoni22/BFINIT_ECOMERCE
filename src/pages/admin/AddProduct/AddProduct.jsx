@@ -11,6 +11,12 @@ import useSelectedStore from "@/hooks/stores/useSelectedStore";
 import ProductStatus from "./ProductStatus";
 import PageHeader from "@/components/admin/shared/PageHeader";
 import { DynamicBreadcrumb } from "@/components/admin/DynamicBreadcrumb";
+import { transformProductForApi } from "@/utils/admin/productMapper";
+import usePostMutation from "@/hooks/mutations/usePostMutation";
+import toast from "react-hot-toast";
+import { cn } from "@/lib/utils";
+import { Spinner } from "@/components/ui/spinner";
+import { validateVariants } from "@/utils/admin/productValidation";
 
 const ADD_PRODUCT_BREADCRUMB_ITEMS = [
   { label: "Home", href: "/" },
@@ -28,7 +34,7 @@ const ADD_PRODUCT_BREADCRUMB_ITEMS = [
 
 export default function AddProduct() {
   const { selectedStore } = useSelectedStore();
-
+  const storeId = selectedStore?.storeId;
   const form = useForm({
     defaultValues: {
       name: "",
@@ -51,102 +57,66 @@ export default function AddProduct() {
       featured: false,
       limited_stock: false,
       limited_stock_threshold: 10,
+      tax: false,
     },
   });
-
   const { handleSubmit } = form;
-  const storeId = selectedStore?.storeId;
 
+  // Add Product POST Mutation Hook
+  const { mutate, isPending } = usePostMutation({
+    endpoint: `/product/create/${storeId}`,
+    token: true,
+    clientId: true,
+  });
+
+  // Handle Product Add Submit Form
   const onSubmit = (data) => {
-    // Clear any previous variant errors
-    form.clearErrors("variants");
-
-    // Variant validation
-    if (data.variants.enabled) {
-      // Check if at least one attribute exists
-      if (!data.variants.attributes || data.variants.attributes.length === 0) {
-        form.setError("variants", {
-          type: "manual",
-          message:
-            "Please add at least one variant attribute when variants are enabled.",
-        });
-        return;
-      }
-
-      // Check if all attributes have names
-      const attributesWithoutNames = data.variants.attributes.filter(
-        (attr) => !attr.name || attr.name.trim() === "",
-      );
-      if (attributesWithoutNames.length > 0) {
-        form.setError("variants", {
-          type: "manual",
-          message:
-            "All variant attributes must have a name. Please fill in the attribute name field.",
-        });
-        return;
-      }
-
-      // Check if all attributes have at least one value
-      const attributesWithoutValues = data.variants.attributes.filter(
-        (attr) => !attr.values || attr.values.length === 0,
-      );
-      if (attributesWithoutValues.length > 0) {
-        const attrName = attributesWithoutValues[0].name || "Unnamed attribute";
-        form.setError("variants", {
-          type: "manual",
-          message: `"${attrName}" must have at least one value. Add values separated by | (pipe).`,
-        });
-        return;
-      }
-
-      // Check if required attributes are filled
-      const requiredAttributesEmpty = data.variants.attributes.filter(
-        (attr) => attr.required && (!attr.values || attr.values.length === 0),
-      );
-      if (requiredAttributesEmpty.length > 0) {
-        form.setError("variants", {
-          type: "manual",
-          message: `Required attribute "${requiredAttributesEmpty[0].name}" must have at least one value.`,
-        });
-        return;
-      }
-
-      if (data.variants.useDefaultPricing === false) {
-        console.log("Custom pricing is enabled, checking variant prices...");
-
-        // Get all variants from attributes
-        const allVariants = [];
-        data.variants.attributes.forEach((attribute) => {
-          if (attribute.values && attribute.values.length > 0) {
-            attribute.values.forEach((value) => {
-              allVariants.push({
-                ...value,
-                attributeName: attribute.name,
-              });
-            });
-          }
-        });
-
-        // Check if any variant is missing a price
-        const variantsWithoutPrice = allVariants.filter(
-          (variant) => !variant.price || variant.price.toString().trim() === "",
-        );
-
-        if (variantsWithoutPrice.length > 0) {
-          const variantName = variantsWithoutPrice[0].name || "Unnamed variant";
-          const attributeName = variantsWithoutPrice[0].attributeName;
-
-          form.setError("variants", {
-            type: "manual",
-            message: `Custom pricing is enabled. Please set a price for "${variantName}" (${attributeName}) and all other variants.`,
-          });
-          return;
-        }
-      }
+    // validate form
+    if (!validateVariants(data, form)) {
+      return;
     }
 
-    // If all validations pass
-    console.log(data);
+    const formData = new FormData();
+
+    const productData = transformProductForApi(data);
+    formData.append("productData", JSON.stringify(productData));
+
+    // Add thumbnail image (required)
+    if (data?.thumbnail?.file) {
+      formData.append("thumbnailImage", data.thumbnail.file);
+    }
+
+    // Add gallery images (optional)
+    if (data?.gallery && data?.gallery?.length > 0) {
+      data.gallery.forEach((image) => {
+        if (image?.file) {
+          formData.append("productImages", image.file);
+        }
+      });
+    }
+
+    // Add variant images (optional)
+    if (data.variants.enabled && data.variants.attributes) {
+      data.variants.attributes.forEach((attr, attrIndex) => {
+        attr.values.forEach((value, valueIndex) => {
+          if (value.image) {
+            const fieldName = `variants[attributes][${attrIndex}][value][${valueIndex}]`;
+            formData.append(fieldName, value.image);
+          }
+        });
+      });
+    }
+
+    // Call the Add Product mutation function and pass form data as payload
+    mutate(formData, {
+      onSuccess: (res) => {
+        toast.success(res?.message);
+        form.reset();
+      },
+      onError: (err) => {
+        toast.error(err?.message);
+      },
+    });
   };
 
   return (
@@ -164,24 +134,29 @@ export default function AddProduct() {
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* If store is selected then show the fields of add product */}
-          {storeId && (
-            <>
-              {/* Product Details */}
-              <ProductDetails form={form} />
+          <fieldset
+            disabled={isPending}
+            className={cn("space-y-6", isPending && "pointer-events-none")}
+          >
+            {storeId && (
+              <>
+                {/* Product Details */}
+                <ProductDetails form={form} />
 
-              {/* Product Thumbnail & Gallery Images */}
-              <ProductImages form={form} />
+                {/* Product Thumbnail & Gallery Images */}
+                <ProductImages form={form} />
 
-              {/* Pricing */}
-              <Pricing form={form} />
+                {/* Pricing */}
+                <Pricing form={form} />
 
-              {/* Product Status */}
-              <ProductStatus form={form} />
+                {/* Product Status */}
+                <ProductStatus form={form} />
 
-              {/* Product Variants */}
-              <Variants form={form} />
-            </>
-          )}
+                {/* Product Variants */}
+                <Variants form={form} />
+              </>
+            )}
+          </fieldset>
 
           <div className="flex flex-col-reverse gap-4 lg:flex-row lg:justify-between">
             <Button variant="outline" size="lg" asChild>
@@ -193,12 +168,25 @@ export default function AddProduct() {
             {/* show submit and save as draft button when store is selected */}
             {storeId && (
               <div className="flex flex-col-reverse gap-4 lg:flex-row">
-                <Button variant="outline" size="lg" className="cursor-pointer">
+                {/* TODO: implement save as draft. it will be silent save automatically */}
+                {/* <Button
+                  disabled={isPending}
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                >
                   Save as Draft
-                </Button>
+                </Button> */}
 
-                <Button type="submit" size="lg" className="cursor-pointer">
-                  Add New Product
+                <Button disabled={isPending} type="submit" size="lg">
+                  {isPending ? (
+                    <>
+                      <Spinner />
+                      Adding Product...
+                    </>
+                  ) : (
+                    "Add New Product"
+                  )}
                 </Button>
               </div>
             )}

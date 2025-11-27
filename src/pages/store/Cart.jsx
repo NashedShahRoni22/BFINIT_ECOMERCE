@@ -13,7 +13,7 @@ export default function Cart() {
 
   const subTotalInCents = cartItems.reduce((total, item) => {
     const priceInCents = Math.round(
-      parseFloat(item.productDiscountPrice.$numberDecimal) * 100,
+      parseFloat(item.productDiscountPrice?.$numberDecimal) * 100,
     );
     return total + priceInCents * item.quantity;
   }, 0);

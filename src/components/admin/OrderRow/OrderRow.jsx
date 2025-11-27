@@ -80,7 +80,7 @@ export default function OrderRow({ order, currencySymbol, storeId }) {
       <td className="py-2 text-sm">#{orderId}</td>
       <td className="py-2 text-center text-sm">
         {currencySymbol}
-        {TotalAmount.$numberDecimal}
+        {TotalAmount?.$numberDecimal}
       </td>
       <td className="py-2 text-center text-sm">{PaymentMethode}</td>
       <td className="py-2 text-center text-sm">{PaymentStatus}</td>

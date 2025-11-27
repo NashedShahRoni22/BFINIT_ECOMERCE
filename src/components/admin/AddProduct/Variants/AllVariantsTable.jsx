@@ -53,6 +53,10 @@ export default function AllVariantsTable({
   const handlePricingToggle = (enabled) => {
     setUseDefaultPricing(enabled);
 
+    // Clear previous variant error when switch pricing mode for each variant like custom price or use default price
+
+    form.clearErrors("variants");
+
     if (enabled) {
       // When switching to default pricing, update all variants with main product prices
       getAllVariants().forEach((variant) => {

@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { postApi } from "../../api/postApi";
+import useAuth from "../auth/useAuth";
 
 export default function usePostMutation({
   endpoint,
@@ -7,8 +8,16 @@ export default function usePostMutation({
   clientId = null,
   storeId = null,
 }) {
+  const { user } = useAuth();
+
   return useMutation({
     mutationFn: (payload) =>
-      postApi(endpoint, token, clientId, storeId, payload),
+      postApi(
+        endpoint,
+        token && user?.token,
+        clientId && user?.data?.clientid,
+        storeId,
+        payload,
+      ),
   });
 }

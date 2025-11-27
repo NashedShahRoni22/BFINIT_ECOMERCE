@@ -115,7 +115,7 @@ export default function AttributeCard({
                 handleAddValues();
               }
             }}
-            placeholder="Add values (separate with | for multiple)"
+            placeholder="Press Enter or use commas for multiple (e.g., Red, Blue, Green)"
           />
           <Button
             onClick={handleAddValues}
