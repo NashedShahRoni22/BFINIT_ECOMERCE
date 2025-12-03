@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Plus, AlertCircle } from "lucide-react";
 import {
   Collapsible,
@@ -11,6 +11,7 @@ import AttributeCard from "./AttributeCard";
 import AllVariantsTable from "./AllVariantsTable";
 import SectionHeader from "../../SectionHeader";
 import { Alert, AlertTitle } from "@/components/ui/alert";
+import toast from "react-hot-toast";
 
 export default function Variants({ form }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,15 +21,23 @@ export default function Variants({ form }) {
   // Get error state from form
   const variantError = form.formState.errors.variants;
 
-  // Watch form values and update them when attributes change
-  useEffect(() => {
-    // Update form with current variants data
-    form.setValue("variants", {
-      enabled: isOpen,
-      useDefaultPricing,
-      attributes: attributes,
-    });
-  }, [attributes, isOpen, useDefaultPricing, form]);
+  // Handle toggle varinats
+  const handleToggleVariants = (enabled) => {
+    setIsOpen(enabled);
+
+    if (enabled && attributes.length === 0) {
+      setAttributes([
+        {
+          id: Date.now(),
+          name: "",
+          values: [],
+          required: false,
+        },
+      ]);
+    } else if (!enabled) {
+      setAttributes([]);
+    }
+  };
 
   // Get all variants from attributes values
   const getAllVariants = () => {
@@ -48,19 +57,41 @@ export default function Variants({ form }) {
   };
 
   // Add new attribute
-  const addAttribute = () => {
+  const addAttribute = useCallback(() => {
+    // Clear error when user starts adding attributes
+    if (variantError) {
+      form.clearErrors("variants");
+    }
+
     const newAttribute = {
       id: Date.now(),
       name: "",
       values: [],
       required: false,
     };
-    setAttributes([...attributes, newAttribute]);
-    // Clear error when user starts adding attributes
-    if (variantError) {
-      form.clearErrors("variants");
+
+    if (attributes.length === 0) {
+      return setAttributes([newAttribute]);
     }
-  };
+
+    const allNamesValid = attributes.every((attr) => attr.name?.trim());
+
+    if (!allNamesValid) {
+      return toast.error(
+        "Please fill all attribute names before adding new one",
+      );
+    }
+
+    const allHaveValues = attributes.every((attr) => attr.values.length > 0);
+
+    if (!allHaveValues) {
+      return toast.error(
+        "Please add values to all attributes before adding new one",
+      );
+    }
+
+    setAttributes((prev) => [...prev, newAttribute]);
+  }, [attributes, form, variantError]);
 
   // Delete attribute
   const deleteAttribute = (id) => {
@@ -77,6 +108,16 @@ export default function Variants({ form }) {
       form.clearErrors("variants");
     }
   };
+
+  // Watch form values and update them when attributes change
+  useEffect(() => {
+    // Update form with current variants data
+    form.setValue("variants", {
+      enabled: isOpen,
+      useDefaultPricing,
+      attributes: attributes,
+    });
+  }, [attributes, isOpen, useDefaultPricing, form]);
 
   // Add values from input (pipe separated) - now creates value objects
   const addValues = (id, inputValue) => {
@@ -233,6 +274,7 @@ export default function Variants({ form }) {
 
           <CollapsibleTrigger asChild>
             <Switch
+              onClick={() => handleToggleVariants(!isOpen)}
               checked={isOpen}
               className={`${isOpen ? "bg-primary" : "bg-input"}`}
             />

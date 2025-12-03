@@ -11,8 +11,8 @@ export default function StoreDeleteModal({ store, close }) {
   // custom delete hook
   const { mutate, isPending } = useDeleteMutation({
     endpoint: `/store/delete/${store?.storeId}`,
-    token: user?.token,
-    clientId: user?.data?.clientid,
+    token: true,
+    clientId: true,
   });
 
   // handle store delete

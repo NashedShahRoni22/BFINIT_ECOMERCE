@@ -10,17 +10,21 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getApi } from "../../api/getApi";
+import useAuth from "../auth/useAuth";
 
 export default function useGetQuery({
   endpoint,
-  token,
-  clientId,
+  token = null,
+  clientId = null,
   queryKey,
   enabled,
 }) {
+  const { user } = useAuth();
+
   return useQuery({
     queryKey,
-    queryFn: () => getApi(endpoint, token, clientId),
+    queryFn: () =>
+      getApi(endpoint, token && user?.token, clientId && user?.data?.clientid),
     enabled,
   });
 }

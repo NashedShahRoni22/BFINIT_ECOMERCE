@@ -83,7 +83,7 @@ export default function DomainField({ form, isDomainIntegrated, data }) {
 
           {isDomainIntegrated && (
             <div className="flex shrink-0 items-center gap-2">
-              <Badge variant={isActive ? "active" : "inactive"} showDot>
+              <Badge variant={isActive ? "success" : "neutral"} showDot>
                 {isPending ? "Updating..." : isActive ? "Active" : "Inactive"}
               </Badge>
               <Switch

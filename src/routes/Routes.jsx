@@ -7,7 +7,7 @@ import AddProduct from "../pages/admin/AddProduct/AddProduct";
 import Category from "../pages/admin/Category/Category";
 import SubCategory from "../pages/admin/SubCategory/SubCategory";
 import Brands from "../pages/admin/Brands/Brands";
-import ManageProduct from "../pages/admin/ManageProduct/ManageProduct";
+import ManageProduct from "../pages/admin/ManageProduct/ManageProduct"; // TODO: remove this old inventory management page
 import StoreCustomizeLayout from "../layout/StoreCustomizeLayout";
 import Stores from "../pages/admin/Stores/Stores";
 import Orders from "../pages/admin/Orders/Orders";
@@ -51,6 +51,7 @@ import ThemeCustomize from "@/layout/ThemeCustomize";
 import LiveView from "@/pages/LiveView/LiveView";
 import DomainIntegrationHelp from "@/pages/Help-Guieds/Domain/DomainIntegrationGuide";
 import DomainIntegrationGuide from "@/pages/Help-Guieds/Domain/DomainIntegrationGuide";
+import Inventory from "@/pages/admin/Inventory/Inventory";
 
 export const router = createBrowserRouter([
   {
@@ -125,7 +126,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/products/inventory",
-        element: <ManageProduct />,
+        element: <Inventory />,
       },
       {
         path: "/products/customers",

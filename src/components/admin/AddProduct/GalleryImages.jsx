@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
-import { Plus, X } from "lucide-react";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { Plus, Upload, X } from "lucide-react";
 import {
   FormControl,
   FormField,
@@ -7,11 +8,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import toast from "react-hot-toast";
 
 export default function GalleryImages({ form }) {
   const [dragOverIndex, setDragOverIndex] = useState(null);
-  const fileInputRef = useRef(null);
   const maxFileSize = 300 * 1024; // 300KB
   const maxImages = 8; // Maximum number of gallery images
 
@@ -69,10 +68,6 @@ export default function GalleryImages({ form }) {
     setDragOverIndex(null);
   };
 
-  const handleFileInput = (e, currentGallery, onChange, targetIndex = null) => {
-    handleFiles(e.target.files, currentGallery, onChange, targetIndex);
-  };
-
   const removeImage = (index, currentGallery, onChange) => {
     const updatedGallery = [...(currentGallery || [])];
     const imageToRemove = updatedGallery[index];
@@ -117,41 +112,58 @@ export default function GalleryImages({ form }) {
     if (isEmpty) {
       return (
         <div
-          className={`relative flex aspect-square w-full shrink-0 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-4 text-gray-500 transition-colors duration-200 ease-linear hover:border-gray-400 md:p-6 ${
+          className={`relative aspect-square w-full cursor-pointer rounded-md border transition-colors ${
             dragOverIndex === index
-              ? "scale-[1.02] border-blue-400 bg-blue-50/50"
-              : "border-gray-300"
+              ? "border-primary bg-primary/5"
+              : "border-border hover:border-primary/50 hover:bg-muted/50 border-dashed"
           }`}
           onClick={onUpload}
           onDrop={onDrop}
           onDragOver={onDragOver}
           onDragLeave={onDragLeave}
         >
-          <Plus className="h-6 w-6 md:h-5 md:w-5" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Plus className="text-muted-foreground/60 h-5 w-5" />
+          </div>
         </div>
       );
     }
 
     return (
       <div
-        className="group relative"
+        className="group relative aspect-square"
         onDrop={onDrop}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
       >
-        <div className="relative aspect-square w-full overflow-hidden rounded-lg border-2 border-gray-200 bg-white">
+        <div
+          className={`bg-muted relative h-full w-full overflow-hidden rounded-md border transition-colors ${
+            dragOverIndex === index ? "border-primary" : "border-border"
+          }`}
+        >
           <img
             src={image.preview}
             alt={image.name}
             className="h-full w-full object-cover"
           />
+
           <button
             type="button"
-            onClick={() => onRemove(index)}
-            className="absolute top-1.5 right-1.5 z-50 flex size-8 touch-manipulation items-center justify-center rounded-full bg-red-500 text-white opacity-100 transition-opacity hover:bg-red-600 md:size-6 md:opacity-0 md:group-hover:opacity-100"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove(index);
+            }}
+            className="bg-destructive text-destructive-foreground absolute top-1.5 right-1.5 z-10 flex size-6 items-center justify-center rounded-md shadow-sm transition-opacity hover:opacity-90 md:opacity-0 md:group-hover:opacity-100"
+            aria-label="Remove"
           >
-            <X className="h-4 w-4 md:h-3 md:w-3" />
+            <X className="h-3 w-3" />
           </button>
+
+          {dragOverIndex === index && (
+            <div className="bg-primary/10 absolute inset-0 flex items-center justify-center backdrop-blur-[2px]">
+              <Upload className="text-primary h-5 w-5" />
+            </div>
+          )}
         </div>
       </div>
     );
@@ -164,64 +176,58 @@ export default function GalleryImages({ form }) {
       render={({ field }) => {
         const currentImages = field.value || [];
         const canAddMore = currentImages.length < maxImages;
-        const totalSlots = canAddMore
-          ? currentImages.length + 1
-          : currentImages.length;
+        const totalSlots = Math.min(
+          canAddMore ? currentImages.length + 1 : currentImages.length,
+          maxImages,
+        );
 
         return (
-          <FormItem className="w-full">
-            <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between md:gap-4">
-              <div className="flex-1">
-                <FormLabel>Gallery Images</FormLabel>
-                <p className="text-muted-foreground mt-1.5 text-xs">
-                  Upload up to {maxImages} images (PNG, JPG • max 300KB each)
+          <FormItem className="w-full md:w-2/3">
+            <div className="flex items-center justify-between">
+              <div>
+                <FormLabel className="text-xs font-medium">
+                  Gallery Images
+                </FormLabel>
+                <p className="text-muted-foreground mt-0.5 text-[11px]">
+                  PNG, JPG • max 300KB each
                 </p>
               </div>
-              <div className="text-muted-foreground text-xs tabular-nums">
-                {currentImages.length}/{maxImages} uploaded
+              <div className="text-muted-foreground text-[11px] font-medium tabular-nums">
+                {currentImages.length}/{maxImages}
               </div>
             </div>
             <FormControl>
-              <div className="mt-4">
-                <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-6 xl:grid-cols-4">
-                  {Array.from({ length: totalSlots }).map((_, index) => {
-                    const image = currentImages[index];
-                    const isEmpty = !image;
-                    return (
-                      <ImageSlot
-                        key={index}
-                        image={image}
-                        index={index}
-                        isEmpty={isEmpty}
-                        onRemove={(idx) =>
-                          removeImage(idx, field.value, field.onChange)
-                        }
-                        onUpload={() =>
-                          handleSlotClick(index, field.value, field.onChange)
-                        }
-                        onDrop={(e) =>
-                          handleDrop(e, field.value, field.onChange, index)
-                        }
-                        onDragOver={(e) => handleDragOver(e, index)}
-                        onDragLeave={handleDragLeave}
-                      />
-                    );
-                  })}
+              <div className="mt-3">
+                <div className="grid grid-cols-3 gap-2 md:grid-cols-4 lg:gap-3">
+                  {Array.from({ length: Math.max(totalSlots, 1) }).map(
+                    (_, index) => {
+                      const image = currentImages[index];
+                      const isEmpty = !image;
+                      return (
+                        <ImageSlot
+                          key={image?.id || `empty-${index}`}
+                          image={image}
+                          index={index}
+                          isEmpty={isEmpty}
+                          onRemove={(idx) =>
+                            removeImage(idx, field.value, field.onChange)
+                          }
+                          onUpload={() =>
+                            handleSlotClick(index, field.value, field.onChange)
+                          }
+                          onDrop={(e) =>
+                            handleDrop(e, field.value, field.onChange, index)
+                          }
+                          onDragOver={(e) => handleDragOver(e, index)}
+                          onDragLeave={handleDragLeave}
+                        />
+                      );
+                    },
+                  )}
                 </div>
-                {/* Hidden input for general file upload */}
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={(e) =>
-                    handleFileInput(e, field.value, field.onChange)
-                  }
-                  className="hidden"
-                />
               </div>
             </FormControl>
-            <FormMessage className="text-xs" />
+            <FormMessage className="mt-1.5 text-[11px]" />
           </FormItem>
         );
       }}

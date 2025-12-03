@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Upload, X } from "lucide-react";
+import { Image, X } from "lucide-react";
+import toast from "react-hot-toast";
 import {
   FormControl,
   FormField,
@@ -8,7 +8,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import toast from "react-hot-toast";
 
 export default function ThumbnailImage({ form }) {
   const [dragActive, setDragActive] = useState(false);
@@ -75,76 +74,73 @@ export default function ThumbnailImage({ form }) {
       name="thumbnail"
       rules={{ required: "Thumbnail image is required" }}
       render={({ field }) => (
-        <FormItem className="w-full">
+        <FormItem className="w-full md:w-1/3">
           <div>
             <FormLabel>
-              Thumbnail Image <span className="text-destructive">*</span>
+              Thumbnail <span className="text-destructive">*</span>
             </FormLabel>
-            <p className="text-muted-foreground mt-1.5 text-xs">
-              PNG, JPG • max 500KB
+            <p className="text-muted-foreground mt-0.5 text-[11px]">
+              1000×1000px • PNG, JPEG, JPG • max 500KB
             </p>
           </div>
           <FormControl>
-            <div className="relative mt-4">
+            <div className="mt-3">
               {field.value ? (
-                // Show uploaded image
                 <div className="group relative">
-                  <div className="relative mx-auto aspect-square w-full max-w-xs shrink-0 overflow-hidden rounded-lg border-2 border-gray-200 bg-white md:h-72 md:max-w-none">
+                  <div className="border-border bg-muted relative aspect-square w-full overflow-hidden rounded-md border">
                     <img
                       src={field.value.preview}
                       alt={field.value.name}
                       className="h-full w-full object-cover"
                     />
                     <button
-                      type="button"
                       onClick={() => removeImage(field.onChange, field.value)}
-                      className="absolute top-2 right-2 flex size-8 touch-manipulation items-center justify-center rounded-full bg-red-500 text-white opacity-100 transition-opacity hover:bg-red-600 md:size-6 md:opacity-0 md:group-hover:opacity-100"
+                      type="button"
+                      className="bg-destructive text-destructive-foreground absolute top-1.5 right-1.5 flex size-6 items-center justify-center rounded-md shadow-sm transition-opacity hover:cursor-pointer hover:opacity-90 md:opacity-0 md:group-hover:opacity-100"
+                      aria-label="Remove"
                     >
-                      <X className="h-4 w-4 md:h-3 md:w-3" />
+                      <X className="h-3 w-3" />
                     </button>
                   </div>
+                  <p className="text-muted-foreground mt-1.5 truncate text-[11px]">
+                    {field.value.name}
+                  </p>
                 </div>
               ) : (
-                // Show upload area
                 <div
-                  className={`relative mx-auto flex aspect-square w-full max-w-xs shrink-0 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-4 transition-colors duration-200 ease-linear hover:border-gray-400 md:h-72 md:max-w-none md:p-6 ${
+                  className={`relative aspect-square w-full cursor-pointer rounded-md border transition-colors ${
                     dragActive
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-gray-300"
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:border-primary/50 hover:bg-muted/50 border-dashed"
                   }`}
                   onDrop={(e) => handleDrop(e, field.onChange)}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <Upload size={18} className="text-muted-foreground" />
-                  <div className="text-muted-foreground mt-2 text-center text-xs">
-                    <div>Drag & Drop your thumbnail image here or</div>
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      className="mt-3"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        fileInputRef.current?.click();
-                      }}
-                    >
-                      Browse Files
-                    </Button>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-4">
+                    <Image className="text-muted-foreground/60 h-8 w-8" />
+                    <div className="text-center">
+                      <p className="text-foreground text-xs font-medium">
+                        Drop image or click
+                      </p>
+                      <p className="text-muted-foreground mt-0.5 text-[11px]">
+                        1000×1000px recommended
+                      </p>
+                    </div>
                   </div>
                 </div>
               )}
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/*"
+                accept="image/png,image/jpeg,image/jpg"
                 onChange={(e) => handleFileInput(e, field.onChange)}
                 className="hidden"
               />
             </div>
           </FormControl>
-          <FormMessage className="text-xs" />
+          <FormMessage className="mt-1.5 text-[11px]" />
         </FormItem>
       )}
     />
