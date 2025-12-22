@@ -1,5 +1,7 @@
-/* google fonts - poppins, inter, merriweather sans & roboto */
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+/* ===> Fonts Imported <===
+        - Inter
+*/
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
 /* tailwind styles */
 @import "tailwindcss";
@@ -11,15 +13,9 @@
   /* colors */
   --color-dashboard-primary: #2d67b2;
   --color-dashboard-primary-hover: #24559a;
-  /* --color-primary: #fff;
-  --color-accent: #fff;
-  --color-on-primary: #fff; */
-
   /* fonts */
   --font-inter: "Inter", serif;
-  --font-merriweather: Merriweather Sans, serif;
-  --font-poppins: "Poppins", serif;
-  --font-roboto: Roboto, serif;
+  --font-geist: "Geist", sans-serif;
 }
 
 @layer utilities {
@@ -88,166 +84,6 @@ html {
 .sun-editor .se-wrapper .se-wrapper-inner {
   font-size: 0.875rem; /* text-sm */
   line-height: 1.25rem;
-}
-
-/* content support css  */
-#preview {
-  color: #333;
-}
-
-#preview h1 {
-  font-size: 1.75rem;
-  line-height: 2rem;
-  font-weight: 600;
-  text-transform: none;
-  margin-bottom: 0.5rem;
-}
-
-#preview h2 {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-  font-weight: 600;
-  text-transform: none;
-  margin-bottom: 0.5rem;
-}
-
-#preview h3 {
-  font-size: 1.125rem;
-  line-height: 1.75rem;
-  font-weight: 600;
-  text-transform: none;
-  margin-bottom: 0.5rem;
-}
-
-#preview h4,
-#preview h5,
-#preview h6 {
-  font-weight: 600;
-  text-transform: none;
-  margin-bottom: 0.5rem;
-}
-
-#preview p {
-  font-size: 1rem;
-  line-height: 1.75rem;
-  font-weight: 400;
-  text-transform: none;
-  text-align: left;
-  margin-bottom: 0.5rem;
-}
-
-#preview a {
-  text-decoration: underline;
-  color: #007bff;
-  transition: color 0.2s ease;
-}
-
-#preview a:hover {
-  color: #0056b3;
-}
-
-#preview ul,
-#preview ol {
-  margin-left: 1.5rem;
-  font-size: 1rem;
-  line-height: 1.75rem;
-  font-weight: 400;
-  text-align: left;
-  text-transform: none;
-  margin-bottom: 1rem;
-  list-style-type: disc;
-}
-
-#preview li {
-  margin-bottom: 0.5rem;
-}
-
-#preview blockquote {
-  font-size: 1rem;
-  line-height: 1.75rem;
-  font-weight: 400;
-  padding: 1rem;
-  border-left: 4px solid #ccc;
-  background-color: #f9f9f9;
-  margin-bottom: 1rem;
-  text-align: left;
-}
-
-#preview pre {
-  font-size: 1rem;
-  line-height: 1.75rem;
-  font-weight: 400;
-  background-color: #1a1919;
-  padding: 1rem;
-  border-radius: 4px;
-  overflow-x: auto;
-  margin-bottom: 1rem;
-  text-align: left;
-  color: #fff;
-}
-
-#preview code {
-  font-size: 1rem;
-  line-height: 1.75rem;
-  font-weight: 400;
-  background-color: #2b2828;
-  padding: 0.2rem 0.4rem;
-  border-radius: 4px;
-  margin-bottom: 1rem;
-  text-align: left;
-  color: #fff;
-}
-
-#preview img {
-  max-width: 100%;
-  height: auto;
-  margin-bottom: 1rem;
-}
-
-#preview hr {
-  border: none;
-  border-top: 1px solid #ccc;
-  margin: 2rem 0;
-}
-
-#preview table {
-  border-collapse: collapse;
-  font-size: 1rem;
-  line-height: 1.75rem;
-  font-weight: 400;
-  width: 100%;
-  margin-bottom: 1rem;
-}
-
-#preview td,
-#preview th {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-}
-
-#preview th {
-  font-weight: bold;
-  background-color: #f9f9f9;
-}
-
-#preview tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-#preview tr:hover {
-  background-color: #ddd;
-}
-
-#preview caption {
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 0.5rem;
-}
-
-#preview figcaption {
-  font-weight: bold;
-  text-align: center;
-  margin-top: 0.5rem;
 }
 
 @theme inline {

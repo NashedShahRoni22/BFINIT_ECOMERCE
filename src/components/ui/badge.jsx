@@ -29,7 +29,7 @@ const badgeVariants = cva(
     defaultVariants: {
       variant: "default",
     },
-  },
+  }
 );
 
 function Badge({
@@ -54,7 +54,7 @@ function Badge({
             variant === "success" && "bg-success",
             variant === "neutral" && "bg-muted-foreground",
             variant === "info" && "bg-info",
-            variant === "warning" && "bg-warning",
+            variant === "warning" && "bg-warning"
           )}
           aria-hidden="true"
         />

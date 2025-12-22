@@ -1,16 +1,15 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { RouterProvider } from "react-router/dom";
-import { router } from "./routes/Routes.jsx";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider } from "react-router";
 import { Toaster } from "react-hot-toast";
-import CartProvider from "./Providers/CartProvider.jsx";
-import CategoryProvider from "./Providers/CategoryProvider.jsx";
-import ThemeProvider from "./Providers/ThemeProvider.jsx";
-import AuthProvider from "./Providers/AuthProvider.jsx";
-import StoreProvider from "./Providers/StoreProvider.jsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import AuthProvider from "./providers/AuthProvider";
+import SelectedStoreProvider from "./providers/SelectedStoreProvider";
+import ThemeProvider from "./providers/ThemeProvider";
+import { router } from "./routes";
 import "./index.css";
+import "suneditor/dist/css/suneditor.min.css";
 
 const queryClient = new QueryClient();
 
@@ -18,18 +17,14 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <StoreProvider>
-          <CategoryProvider>
-            <CartProvider>
-              <ThemeProvider>
-                <RouterProvider router={router} />
-              </ThemeProvider>
-            </CartProvider>
-          </CategoryProvider>
-        </StoreProvider>
+        <SelectedStoreProvider>
+          <ThemeProvider>
+            <RouterProvider router={router} />
+            <Toaster />
+            <ReactQueryDevtools initialIsOpen={false} />
+          </ThemeProvider>
+        </SelectedStoreProvider>
       </AuthProvider>
-      <Toaster position="top-center" />
-      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
-  </StrictMode>,
+  </StrictMode>
 );
