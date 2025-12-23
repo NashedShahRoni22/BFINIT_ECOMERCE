@@ -14,8 +14,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CollapsibleTrigger } from "@radix-ui/react-collapsible";
 import SectionHeader from "./SectionHeader";
+import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function Pricing({ form }) {
+  const { data, isLoading } = useGetStorePreference();
+
   const prefixRef = useRef(null);
 
   const [isOpen, setIsOpen] = useState(true);
@@ -75,7 +79,7 @@ export default function Pricing({ form }) {
                     ref={prefixRef}
                     className="text-muted-foreground pointer-events-none absolute left-3 text-sm"
                   >
-                    $
+                    {isLoading ? <Spinner /> : data?.data?.currencySymbol}
                   </span>
                   <Input
                     {...field}
@@ -125,7 +129,7 @@ export default function Pricing({ form }) {
                 <FormControl>
                   <div className="relative flex items-center">
                     <span className="text-muted-foreground absolute left-3 text-sm">
-                      $
+                      {isLoading ? <Spinner /> : data?.data?.currencySymbol}
                     </span>
                     <Input
                       {...field}
@@ -156,8 +160,9 @@ export default function Pricing({ form }) {
           }}
         />
 
+        {/* TODO: make it available when inventory track is available */}
         {/* per item cost */}
-        <FormField
+        {/* <FormField
           control={form.control}
           name="cost"
           render={({ field }) => (
@@ -166,7 +171,7 @@ export default function Pricing({ form }) {
               <FormControl>
                 <div className="relative flex items-center">
                   <p className="text-muted-foreground absolute left-3 text-sm">
-                    $
+                    {isLoading ? <Spinner /> : data?.data?.currencySymbol}
                   </p>
                   <Input
                     {...field}
@@ -182,7 +187,7 @@ export default function Pricing({ form }) {
               </p>
             </FormItem>
           )}
-        />
+        /> */}
 
         {/* TODO: make it uncomment when shipping based pricing added charge tax */}
         {/* <div className="flex flex-col items-start">

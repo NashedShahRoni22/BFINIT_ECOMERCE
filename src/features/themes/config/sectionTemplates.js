@@ -134,46 +134,47 @@ export const sectionTemplates = {
               value: "manual",
               description: "Choose specific products yourself",
             },
-            {
-              label: "Featured Products",
-              value: "badge:featured",
-              description: "Products marked as featured",
-            },
-            {
-              label: "New Arrivals",
-              value: "badge:new_arrival",
-              description: "Products marked as new",
-            },
-            {
-              label: "Hot Deals",
-              value: "badge:hot_deal",
-              description: "Products on special promotion",
-            },
-            {
-              label: "Best Selling",
-              value: "auto:best_selling",
-              description: "Top products by sales volume",
-            },
-            {
-              label: "Recently Added",
-              value: "auto:newest",
-              description: "Newest products by date added",
-            },
+            // TODO: after implementing query params then enable these fields.
+            // {
+            //   label: "Featured Products",
+            //   value: "badge:featured",
+            //   description: "Products marked as featured",
+            // },
+            // {
+            //   label: "New Arrivals",
+            //   value: "badge:new_arrival",
+            //   description: "Products marked as new",
+            // },
+            // {
+            //   label: "Hot Deals",
+            //   value: "badge:hot_deal",
+            //   description: "Products on special promotion",
+            // },
+            // {
+            //   label: "Best Selling",
+            //   value: "auto:best_selling",
+            //   description: "Top products by sales volume",
+            // },
+            // {
+            //   label: "Recently Added",
+            //   value: "auto:newest",
+            //   description: "Newest products by date added",
+            // },
           ],
         },
-        {
-          key: "sortBy",
-          label: "Sort By",
-          type: "select",
-          options: [
-            { label: "Default", value: "default" },
-            { label: "Price: Low to High", value: "price_asc" },
-            { label: "Price: High to Low", value: "price_desc" },
-            { label: "Name: A to Z", value: "name_asc" },
-            { label: "Name: Z to A", value: "name_desc" },
-          ],
-          helpText: "Order in which products appear",
-        },
+        // {
+        //   key: "sortBy",
+        //   label: "Sort By",
+        //   type: "select",
+        //   options: [
+        //     { label: "Default", value: "default" },
+        //     { label: "Price: Low to High", value: "price_asc" },
+        //     { label: "Price: High to Low", value: "price_desc" },
+        //     { label: "Name: A to Z", value: "name_asc" },
+        //     { label: "Name: Z to A", value: "name_desc" },
+        //   ],
+        //   helpText: "Order in which products appear",
+        // },
         {
           key: "columns",
           label: "Number of Columns",
@@ -200,61 +201,8 @@ export const sectionTemplates = {
         },
       ],
     },
-    {
-      id: "product-carousel",
-      name: "Product Carousel",
-      description: "Scrollable product showcase",
-      thumbnail: "🎠",
-      singleInstance: false, // Multiple carousels allowed
-      defaultContent: {
-        title: "Trending Products",
-        autoplay: true,
-      },
-      fieldSchema: [
-        {
-          key: "title",
-          label: "Section Title",
-          type: "text",
-          placeholder: "Enter section title",
-        },
-        {
-          key: "autoplay",
-          label: "Auto-play Carousel",
-          type: "checkbox",
-        },
-      ],
-    },
   ],
-  // content: [
-  //   {
-  //     id: "testimonials",
-  //     name: "Testimonials",
-  //     description: "Customer testimonials section",
-  //     thumbnail: "💬",
-  //     singleInstance: false, // Multiple testimonial sections allowed
-  //     defaultContent: {
-  //       title: "What Our Customers Say",
-  //       columns: "3",
-  //     },
-  //     fieldSchema: [
-  //       {
-  //         key: "title",
-  //         label: "Section Title",
-  //         type: "text",
-  //         placeholder: "Enter section title",
-  //       },
-  //       {
-  //         key: "columns",
-  //         label: "Number of Columns",
-  //         type: "select",
-  //         options: [
-  //           { label: "2 Columns", value: "2" },
-  //           { label: "3 Columns", value: "3" },
-  //         ],
-  //       },
-  //     ],
-  //   },
-  // ],
+
   footer: [
     {
       id: "footer-default",

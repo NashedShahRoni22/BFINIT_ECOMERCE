@@ -80,7 +80,7 @@ export default function StoreSwitcherDropdown() {
         {/* Store List */}
         {stores && stores?.data?.length > 0 ? (
           <>
-            <div className="max-h-[320px] overflow-y-auto px-1">
+            <div className="max-h-80 overflow-y-auto px-1">
               {stores?.data?.map((store) => (
                 <DropdownMenuItem
                   key={store?.storeId}
@@ -88,7 +88,7 @@ export default function StoreSwitcherDropdown() {
                   className="flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-2 transition-colors hover:bg-neutral-50"
                 >
                   {/* Store Icon */}
-                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-neutral-100">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-neutral-100">
                     <Store className="h-4 w-4 text-neutral-600" />
                   </div>
 
@@ -99,7 +99,7 @@ export default function StoreSwitcherDropdown() {
                         {store?.storeName}
                       </span>
                       {selectedStore?.storeId === store?.storeId && (
-                        <Check className="h-3.5 w-3.5 flex-shrink-0 text-blue-600" />
+                        <Check className="h-3.5 w-3.5 shrink-0 text-blue-600" />
                       )}
                     </div>
                     {store?.storeDomain && (
@@ -155,7 +155,7 @@ export default function StoreSwitcherDropdown() {
             <DropdownMenuItem asChild>
               <button
                 onClick={handleStoreCreate}
-                className="flex cursor-pointer items-center justify-center gap-2 rounded-md bg-blue-50 px-3 py-2 transition-colors hover:bg-blue-100"
+                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-blue-50 px-3 py-2 transition-colors hover:bg-blue-100"
               >
                 <Plus className="h-4 w-4 text-blue-600" />
                 <span className="text-xs font-semibold text-blue-600">

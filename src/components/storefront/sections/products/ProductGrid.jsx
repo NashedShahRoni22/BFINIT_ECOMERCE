@@ -1,9 +1,8 @@
+import { useParams } from "react-router";
 import ProductCard from "../../cards/products/ProductCard";
-import { cn } from "@/lib/utils";
 import useGetQuery from "@/hooks/api/useGetQuery";
-import useAuth from "@/hooks/auth/useAuth";
+import { cn } from "@/lib/utils";
 import { dummyProducts } from "@/features/themes/utils/contstants";
-import useSelectedStore from "@/hooks/useSelectedStore";
 
 const gridColsMap = {
   2: "grid-cols-2",
@@ -12,34 +11,28 @@ const gridColsMap = {
 };
 
 export default function ProductGrid({ content }) {
-  const { user } = useAuth();
-  const { selectedStore } = useSelectedStore();
+  const { storeId } = useParams();
 
   const isManualProduct = content?.productSource?.type === "manual";
   const manualProductIds = isManualProduct ? content?.productSource?.value : [];
   const hasManualProducts = manualProductIds && manualProductIds.length > 0;
   const idsQuery = hasManualProducts ? manualProductIds.join(",") : "";
 
+  // TODO: need to fix product object structure as same as allProducts
   const { data: manualProducts } = useGetQuery({
     endpoint: `/product/store/batches?ids=${idsQuery}&limit=${
       content?.productsToShow || 8
     }`,
-    token: user?.token,
-    clientId: user?.data?.clientid,
     queryKey: ["manual-products", idsQuery],
-    enabled: !!user?.data?.clientid && !!user?.token && hasManualProducts,
+    enabled: !!idsQuery && !!content?.productsToShow && hasManualProducts,
   });
 
-  // FIX 3: Fetch all products for non-manual selection
-  const { data: allProducts, isLoading } = useGetQuery({
-    endpoint: `/product/store?storeId=${selectedStore?.storeId}`,
-    token: user?.token,
-    clientId: user?.data?.clientid,
-    queryKey: ["all-products"],
-    enabled: !!user?.data?.clientid && !!user?.token && !isManualProduct,
+  const { data: allProducts } = useGetQuery({
+    endpoint: `/product/store?storeId=${storeId}`,
+    queryKey: ["products", "list", storeId],
+    enabled: !!storeId && !isManualProduct,
   });
 
-  // FIX 4: Properly select which products to display
   const mainProducts = isManualProduct
     ? manualProducts?.data || []
     : allProducts?.data || [];
@@ -50,14 +43,14 @@ export default function ProductGrid({ content }) {
   return (
     <div className="bg-muted px-8 py-16">
       {content?.showTitle && (
-        <h2 className="mb-10 text-center text-4xl font-bold text-foreground">
+        <h2 className="text-foreground mb-10 text-center text-4xl font-bold">
           {content.title}
         </h2>
       )}
       <div
         className={cn(
-          "grid gap-6 max-w-7xl mx-auto",
-          gridColsMap[content?.columns]
+          "mx-auto grid max-w-7xl gap-6",
+          gridColsMap[content?.columns],
         )}
       >
         {displayProducts

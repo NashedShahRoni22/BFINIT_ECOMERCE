@@ -18,7 +18,7 @@ export default function InventoryTableSkeleton() {
               <div className="bg-card size-4 rounded"></div>
             </TableHead>
 
-            {Array.from({ length: 6 }).map((_, i) => (
+            {Array.from({ length: 5 }).map((_, i) => (
               <TableHead key={i}>
                 <Skeleton className="bg-card h-3 w-24" />
               </TableHead>
@@ -54,9 +54,9 @@ export default function InventoryTableSkeleton() {
               </TableCell>
 
               {/* Stock */}
-              <TableCell>
+              {/* <TableCell>
                 <Skeleton className="h-5 w-20 rounded-full" />
-              </TableCell>
+              </TableCell> */}
 
               {/* Price */}
               <TableCell>

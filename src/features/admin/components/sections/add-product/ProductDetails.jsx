@@ -45,7 +45,7 @@ export default function ProductDetails({ form }) {
   const selectedCategoryName = form.watch("category");
 
   const selectedCategory = categories?.data?.find(
-    (cat) => cat?.name === selectedCategoryName
+    (cat) => cat?.name === selectedCategoryName,
   );
 
   // Get subcategories (empty array if none)
@@ -198,26 +198,26 @@ export default function ProductDetails({ form }) {
                             {cat?.name}
                           </SelectItem>
                         ))}
-                        <SelectItem
+                        {/* <SelectItem
                           value="new_category"
                           className="text-primary mt-1 cursor-pointer border-t pt-2"
                         >
                           <Plus />
                           <span>Create new category</span>
-                        </SelectItem>
+                        </SelectItem> */}
                       </>
                     ) : (
                       <>
                         <div className="text-muted-foreground px-2 py-2 text-center text-sm">
                           No category found!
                         </div>
-                        <SelectItem
+                        {/* <SelectItem
                           value="new_category"
                           className="text-primary cursor-pointer"
                         >
                           <Plus />
                           <span>Create your first category</span>
-                        </SelectItem>
+                        </SelectItem> */}
                       </>
                     )}
                   </SelectContent>
@@ -322,26 +322,26 @@ export default function ProductDetails({ form }) {
                             {brand?.name}
                           </SelectItem>
                         ))}
-                        <SelectItem
+                        {/* <SelectItem
                           value="new_brand"
                           className="text-primary mt-1 cursor-pointer border-t pt-2"
                         >
                           <Plus />
                           <span>Create new brand</span>
-                        </SelectItem>
+                        </SelectItem> */}
                       </>
                     ) : (
                       <>
                         <div className="text-muted-foreground px-2 py-2 text-center text-sm">
                           No brand found!
                         </div>
-                        <SelectItem
+                        {/* <SelectItem
                           value="new_brand"
                           className="text-primary cursor-pointer"
                         >
                           <Plus />
                           <span>Create your first brand</span>
-                        </SelectItem>
+                        </SelectItem> */}
                       </>
                     )}
                   </SelectContent>

@@ -1,13 +1,12 @@
 import { Pencil } from "lucide-react";
-import useTheme from "../../hooks/useTheme";
-import { componentMap } from "../../config/componentMap";
+import useTheme from "@/hooks/useTheme";
+import { componentMap } from "@/features/themes/config/componentMap";
 
 export default function SectionRenderer({
   sections = [],
   activeSection = null,
-  isEditorMode = false,
 }) {
-  const { setActiveSection } = useTheme();
+  const { setActiveSection, isPreviewMode, isEditorMode } = useTheme();
 
   const renderSection = (section, index) => {
     if (!section.visible) return null;
@@ -31,25 +30,25 @@ export default function SectionRenderer({
       <div
         key={section?.id || `section-${index}`}
         onClick={() => setActiveSection(section.id)}
-        className="relative group/section"
+        className="group/section relative"
       >
         {/* section hover effect */}
-        {isEditorMode && !isActive && (
+        {isEditorMode && !isPreviewMode && !isActive && (
           <>
-            <div className="absolute pointer-events-none opacity-0 transition-opacity group-hover/section:opacity-100 inset-0 border border-dashed z-100 border-muted-foreground/40" />
+            <div className="border-muted-foreground/40 pointer-events-none absolute inset-0 z-100 border border-dashed opacity-0 transition-opacity group-hover/section:opacity-100" />
 
-            <div className="absolute pointer-events-none opacity-0 text-xs group-hover/section:opacity-100 transition-opacity bg-muted text-muted-foreground z-100 px-1.5 py-0.5 rounded -top-3 left-3 font-medium">
+            <div className="bg-muted text-muted-foreground pointer-events-none absolute -top-3 left-3 z-100 rounded px-1.5 py-0.5 text-xs font-medium opacity-0 transition-opacity group-hover/section:opacity-100">
               {section.name}
             </div>
           </>
         )}
 
         {/* section editing active style */}
-        {isEditorMode && isActive && (
+        {isEditorMode && !isPreviewMode && isActive && (
           <>
-            <div className="pointer-events-none absolute inset-0 z-100 border border-dashed border-primary" />
+            <div className="border-primary pointer-events-none absolute inset-0 z-100 border border-dashed" />
 
-            <div className="bg-primary items-center gap-1 font-medium inline-flex text-xs absolute z-100 text-primary-foreground px-1.5 py-0.5 rounded -top-3 left-3">
+            <div className="bg-primary text-primary-foreground absolute -top-3 left-3 z-100 inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs font-medium">
               <Pencil className="size-3.5" /> Editing
             </div>
           </>

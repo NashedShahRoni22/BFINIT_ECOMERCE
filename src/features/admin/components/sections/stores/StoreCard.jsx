@@ -17,7 +17,7 @@ export default function StoreCard({ store = {} }) {
 
   return (
     <>
-      <div className="bg-card group relative rounded-lg border p-6">
+      <div className="bg-card group relative rounded-lg border p-4">
         {/* More Options Menu - Top Right */}
         <div className="absolute top-4 right-2">
           <DropdownMenu>
@@ -81,7 +81,7 @@ export default function StoreCard({ store = {} }) {
           </Button>
 
           <Button size="sm" className="text-xs" asChild>
-            <Link to={`/stores/customize/${storeId}`}>
+            <Link to={`/stores/${storeId}/theme-editor`}>
               <Palette className="h-3.5 w-3.5" />
               Customize
             </Link>

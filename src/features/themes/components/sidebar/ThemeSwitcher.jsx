@@ -1,5 +1,5 @@
 import { Check } from "lucide-react";
-import useTheme from "../../hooks/useTheme";
+import useTheme from "@/hooks/useTheme";
 
 const themes = [
   {
@@ -42,7 +42,7 @@ export default function ThemeSwitcher() {
           <button
             key={theme.id}
             onClick={() => setColorTheme(theme.id)}
-            className={`text-xs transition-colors font-medium rounded-md w-full flex items-center gap-2.5 bg-accent border p-2 pl-2.5 ${
+            className={`bg-accent flex w-full items-center gap-2.5 rounded-md border p-2 pl-2.5 text-xs font-medium transition-colors ${
               theme.id === colorTheme
                 ? "bg-accent text-foreground border-accent-foreground/20"
                 : "border-border text-muted-foreground bg-card hover:bg-accent/50"

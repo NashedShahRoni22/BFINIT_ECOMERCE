@@ -1,11 +1,11 @@
 import CreateStoreCard from "../components/sections/home/CreateStoreCard";
 import QuickNavs from "../components/sections/home/QuickNavs";
 import QuickTips from "../components/sections/home/QuickTips";
-import StoreCard from "../components/sections/home/StoreCard";
 import StoreLimitCard from "../components/sections/home/StoreLimitCard";
 import useAuth from "@/hooks/auth/useAuth";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import useGetStores from "../hooks/store/useGetStores";
+import StoreCard from "../components/sections/stores/StoreCard";
 
 export default function Home() {
   const { user } = useAuth();
@@ -77,7 +77,7 @@ export default function Home() {
             stores?.data &&
             stores?.data?.length > 0 &&
             stores?.data?.map((store) => (
-              <StoreCard key={store?.storeId} storeData={store} />
+              <StoreCard key={store?.storeId} store={store} />
             ))}
 
           {storeCount < storeLimit ? (

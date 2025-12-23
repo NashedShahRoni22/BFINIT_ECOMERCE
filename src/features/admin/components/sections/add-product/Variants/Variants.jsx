@@ -36,6 +36,15 @@ export default function Variants({ form }) {
       ]);
     } else if (!enabled) {
       setAttributes([]);
+      setUseDefaultPricing(true);
+
+      form.setValue("variants", {
+        enabled: false,
+        useDefaultPricing: true,
+        attributes: [],
+      });
+
+      form.clearErrors("variants");
     }
   };
 
@@ -78,7 +87,7 @@ export default function Variants({ form }) {
 
     if (!allNamesValid) {
       return toast.error(
-        "Please fill all attribute names before adding new one"
+        "Please fill all attribute names before adding new one",
       );
     }
 
@@ -86,7 +95,7 @@ export default function Variants({ form }) {
 
     if (!allHaveValues) {
       return toast.error(
-        "Please add values to all attributes before adding new one"
+        "Please add values to all attributes before adding new one",
       );
     }
 
@@ -101,7 +110,7 @@ export default function Variants({ form }) {
   // Update attribute name
   const updateAttributeName = (id, name) => {
     setAttributes(
-      attributes.map((attr) => (attr.id === id ? { ...attr, name } : attr))
+      attributes.map((attr) => (attr.id === id ? { ...attr, name } : attr)),
     );
     // Clear error when user starts filling data
     if (variantError) {
@@ -111,11 +120,10 @@ export default function Variants({ form }) {
 
   // Watch form values and update them when attributes change
   useEffect(() => {
-    // Update form with current variants data
     form.setValue("variants", {
       enabled: isOpen,
-      useDefaultPricing,
-      attributes: attributes,
+      useDefaultPricing: isOpen ? useDefaultPricing : true,
+      attributes: isOpen ? attributes : [],
     });
   }, [attributes, isOpen, useDefaultPricing, form]);
 
@@ -159,8 +167,8 @@ export default function Variants({ form }) {
               ...attr,
               values: [...attr.values, ...newValueObjects],
             }
-          : attr
-      )
+          : attr,
+      ),
     );
 
     // Clear error when user adds values
@@ -178,8 +186,8 @@ export default function Variants({ form }) {
               ...attr,
               values: attr.values.filter((value) => value.id !== valueId),
             }
-          : attr
-      )
+          : attr,
+      ),
     );
   };
 
@@ -191,11 +199,11 @@ export default function Variants({ form }) {
           ? {
               ...attr,
               values: attr.values.map((val) =>
-                val.id === valueId ? { ...val, [field]: value } : val
+                val.id === valueId ? { ...val, [field]: value } : val,
               ),
             }
-          : attr
-      )
+          : attr,
+      ),
     );
 
     // Clear variant errors when user updates price fields
@@ -213,8 +221,8 @@ export default function Variants({ form }) {
               ...attr,
               values: attr.values.filter((val) => val.id !== valueId),
             }
-          : attr
-      )
+          : attr,
+      ),
     );
   };
 
@@ -222,8 +230,8 @@ export default function Variants({ form }) {
   const toggleRequired = (id) => {
     setAttributes(
       attributes.map((attr) =>
-        attr.id === id ? { ...attr, required: !attr.required } : attr
-      )
+        attr.id === id ? { ...attr, required: !attr.required } : attr,
+      ),
     );
   };
 
@@ -247,11 +255,11 @@ export default function Variants({ form }) {
                       image: file,
                       imageUrl: imageUrl,
                     }
-                  : val
+                  : val,
               ),
             }
-          : attr
-      )
+          : attr,
+      ),
     );
   };
 

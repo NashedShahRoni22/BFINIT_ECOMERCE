@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import usePostMutation from "@/hooks/api/usePostMutation";
 import useDeleteMutation from "@/hooks/api/useDeleteMutation";
-import useTheme from "../../hooks/useTheme";
+import useTheme from "@/hooks/useTheme";
 
 const validateImage = (file) => {
   const allowedImageTypes = [
@@ -90,6 +90,10 @@ export default function ImageUploadField({ field, value, onChange }) {
   };
 
   const removeImage = () => {
+    if (value === "/uploads/default_slider/hero-default.webp") {
+      return setImagePreview(null);
+    }
+
     const data = {
       imageAddress: imagePreview,
     };
@@ -172,10 +176,10 @@ export default function ImageUploadField({ field, value, onChange }) {
             <>
               <Upload size={18} className="text-muted-foreground mb-2" />
               <span className="mb-1 text-xs font-medium">Upload Image</span>
-              <span className="text-muted-foreground text-center text-[11px] leading-relaxed px-4">
+              <span className="text-muted-foreground px-4 text-center text-[11px] leading-relaxed">
                 JPG, PNG, WebP • Max 2MB
               </span>
-              <span className="text-muted-foreground text-[11px] mt-0.5">
+              <span className="text-muted-foreground mt-0.5 text-[11px]">
                 Recommended: 1920x1080px
               </span>
             </>

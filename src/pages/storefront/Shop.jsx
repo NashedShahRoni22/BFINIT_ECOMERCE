@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import { dummyProducts } from "@/features/themes/utils/contstants";
-import ProductCard from "../components/cards/products/ProductCard";
+import ProductCard from "../../components/storefront/cards/products/ProductCard";
 
 const gridLayoutMap = {
   2: "grid-cols-1 sm:grid-cols-2",
@@ -28,8 +28,6 @@ export default function ShopPage() {
   // Fetch products
   const { data: productsData, isLoading } = useGetQuery({
     endpoint: `/product/store?storeId=${selectedStore?.storeId}&page=${currentPage}&limit=${productsPerPage}`,
-    token: true,
-    clientId: true,
     queryKey: ["shop-products", selectedStore?.storeId, currentPage],
     enabled: !!selectedStore?.storeId,
   });
@@ -39,7 +37,7 @@ export default function ShopPage() {
   const totalPages = productsData?.totalPages || 1;
 
   // Extract unique values for filters
-  const { categories, brands, tags } = useMemo(() => {
+  const { categories, brands } = useMemo(() => {
     const cats = [
       ...new Set(products.map((p) => p.productCategory).filter(Boolean)),
     ];
@@ -47,7 +45,7 @@ export default function ShopPage() {
       ...new Set(
         products
           .map((p) => p.productBrand)
-          .filter((b) => b && b !== "Undefined")
+          .filter((b) => b && b !== "Undefined"),
       ),
     ];
     const tgs = [...new Set(products.flatMap((p) => p.tags || []))];
@@ -61,21 +59,21 @@ export default function ShopPage() {
     // Category filter
     if (selectedCategories.length > 0) {
       filtered = filtered.filter((p) =>
-        selectedCategories.includes(p.productCategory)
+        selectedCategories.includes(p.productCategory),
       );
     }
 
     // Brand filter
     if (selectedBrands.length > 0) {
       filtered = filtered.filter((p) =>
-        selectedBrands.includes(p.productBrand)
+        selectedBrands.includes(p.productBrand),
       );
     }
 
     // Tag filter
     if (selectedTags.length > 0) {
       filtered = filtered.filter((p) =>
-        p.tags?.some((tag) => selectedTags.includes(tag))
+        p.tags?.some((tag) => selectedTags.includes(tag)),
       );
     }
 
@@ -120,19 +118,19 @@ export default function ShopPage() {
     setSelectedCategories((prev) =>
       prev.includes(category)
         ? prev.filter((c) => c !== category)
-        : [...prev, category]
+        : [...prev, category],
     );
   };
 
   const toggleBrand = (brand) => {
     setSelectedBrands((prev) =>
-      prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
+      prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand],
     );
   };
 
   const toggleTag = (tag) => {
     setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
     );
   };
 
@@ -155,35 +153,35 @@ export default function ShopPage() {
     <div className="bg-background">
       {/* Hero Section */}
       <div className="bg-muted/30 py-12 sm:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
+        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+          <h1 className="text-foreground mb-3 text-3xl font-bold sm:text-4xl">
             Shop All Products
           </h1>
-          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground mx-auto max-w-2xl text-base sm:text-lg">
             Discover our complete collection of quality products curated just
             for you.
           </p>
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex gap-6">
           {/* Sidebar Filters - Desktop */}
           <aside
             className={cn(
-              "hidden lg:block w-64 flex-shrink-0",
-              showFilters && "block"
+              "hidden w-64 flex-shrink-0 lg:block",
+              showFilters && "block",
             )}
           >
-            <div className="sticky top-4 bg-card border border-border rounded-lg p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-foreground">
+            <div className="bg-card border-border sticky top-4 rounded-lg border p-6">
+              <div className="mb-6 flex items-center justify-between">
+                <h3 className="text-foreground text-lg font-semibold">
                   Filters
                 </h3>
                 {hasActiveFilters && (
                   <button
                     onClick={clearAllFilters}
-                    className="text-xs text-primary hover:underline"
+                    className="text-primary text-xs hover:underline"
                   >
                     Clear All
                   </button>
@@ -193,22 +191,22 @@ export default function ShopPage() {
               {/* Categories */}
               {categories.length > 0 && (
                 <div className="mb-6">
-                  <h4 className="text-sm font-medium text-foreground mb-3">
+                  <h4 className="text-foreground mb-3 text-sm font-medium">
                     Categories
                   </h4>
-                  <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
+                  <div className="custom-scrollbar max-h-48 space-y-2 overflow-y-auto">
                     {categories.map((category) => (
                       <label
                         key={category}
-                        className="flex items-center cursor-pointer"
+                        className="flex cursor-pointer items-center"
                       >
                         <input
                           type="checkbox"
                           checked={selectedCategories.includes(category)}
                           onChange={() => toggleCategory(category)}
-                          className="mr-2 rounded border-border"
+                          className="border-border mr-2 rounded"
                         />
-                        <span className="text-sm text-muted-foreground">
+                        <span className="text-muted-foreground text-sm">
                           {category}
                         </span>
                       </label>
@@ -220,22 +218,22 @@ export default function ShopPage() {
               {/* Brands */}
               {brands.length > 0 && (
                 <div className="mb-6">
-                  <h4 className="text-sm font-medium text-foreground mb-3">
+                  <h4 className="text-foreground mb-3 text-sm font-medium">
                     Brands
                   </h4>
-                  <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
+                  <div className="custom-scrollbar max-h-48 space-y-2 overflow-y-auto">
                     {brands.map((brand) => (
                       <label
                         key={brand}
-                        className="flex items-center cursor-pointer"
+                        className="flex cursor-pointer items-center"
                       >
                         <input
                           type="checkbox"
                           checked={selectedBrands.includes(brand)}
                           onChange={() => toggleBrand(brand)}
-                          className="mr-2 rounded border-border"
+                          className="border-border mr-2 rounded"
                         />
-                        <span className="text-sm text-muted-foreground">
+                        <span className="text-muted-foreground text-sm">
                           {brand}
                         </span>
                       </label>
@@ -246,7 +244,7 @@ export default function ShopPage() {
 
               {/* Price Range */}
               <div className="mb-6">
-                <h4 className="text-sm font-medium text-foreground mb-3">
+                <h4 className="text-foreground mb-3 text-sm font-medium">
                   Price Range
                 </h4>
                 <div className="space-y-3">
@@ -260,49 +258,24 @@ export default function ShopPage() {
                     }
                     className="w-full"
                   />
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                  <div className="text-muted-foreground flex items-center justify-between text-sm">
                     <span>${priceRange[0]}</span>
                     <span>${priceRange[1]}</span>
                   </div>
                 </div>
               </div>
-
-              {/* Tags */}
-              {tags.length > 0 && (
-                <div className="mb-6">
-                  <h4 className="text-sm font-medium text-foreground mb-3">
-                    Tags
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {tags.map((tag) => (
-                      <button
-                        key={tag}
-                        onClick={() => toggleTag(tag)}
-                        className={cn(
-                          "px-3 py-1 text-xs rounded-full border transition-colors",
-                          selectedTags.includes(tag)
-                            ? "bg-primary text-primary-foreground border-primary"
-                            : "bg-background text-muted-foreground border-border hover:border-primary"
-                        )}
-                      >
-                        {tag}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           </aside>
 
           {/* Main Content */}
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             {/* Toolbar */}
-            <div className="bg-card border border-border rounded-lg p-4 mb-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="bg-card border-border mb-6 rounded-lg border p-4">
+              <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                 {/* Results Count */}
-                <div className="text-sm text-muted-foreground">
+                <div className="text-muted-foreground text-sm">
                   Showing{" "}
-                  <span className="font-medium text-foreground">
+                  <span className="text-foreground font-medium">
                     {filteredProducts.length}
                   </span>{" "}
                   products
@@ -312,9 +285,9 @@ export default function ShopPage() {
                   {/* Mobile Filter Toggle */}
                   <button
                     onClick={() => setShowFilters(!showFilters)}
-                    className="lg:hidden flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-md text-sm font-medium"
+                    className="bg-secondary text-secondary-foreground flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium lg:hidden"
                   >
-                    <SlidersHorizontal className="w-4 h-4" />
+                    <SlidersHorizontal className="h-4 w-4" />
                     Filters
                   </button>
 
@@ -322,7 +295,7 @@ export default function ShopPage() {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="px-4 py-2 bg-background border border-border rounded-md text-sm text-foreground"
+                    className="bg-background border-border text-foreground rounded-md border px-4 py-2 text-sm"
                   >
                     <option value="default">Default</option>
                     <option value="newest">Newest First</option>
@@ -333,22 +306,22 @@ export default function ShopPage() {
                   </select>
 
                   {/* Grid Layout */}
-                  <div className="hidden sm:flex items-center gap-1 bg-muted rounded-md p-1">
+                  <div className="bg-muted hidden items-center gap-1 rounded-md p-1 sm:flex">
                     {[2, 3, 4, 5].map((cols) => (
                       <button
                         key={cols}
                         onClick={() => setGridLayout(cols)}
                         className={cn(
-                          "p-2 rounded transition-colors",
+                          "rounded p-2 transition-colors",
                           gridLayout === cols
                             ? "bg-background text-foreground shadow-sm"
-                            : "text-muted-foreground hover:text-foreground"
+                            : "text-muted-foreground hover:text-foreground",
                         )}
                       >
-                        {cols === 2 && <Grid3x3 className="w-4 h-4" />}
-                        {cols === 3 && <LayoutGrid className="w-4 h-4" />}
-                        {cols === 4 && <Grid3x3 className="w-4 h-4" />}
-                        {cols === 5 && <List className="w-4 h-4" />}
+                        {cols === 2 && <Grid3x3 className="h-4 w-4" />}
+                        {cols === 3 && <LayoutGrid className="h-4 w-4" />}
+                        {cols === 4 && <Grid3x3 className="h-4 w-4" />}
+                        {cols === 5 && <List className="h-4 w-4" />}
                       </button>
                     ))}
                   </div>
@@ -359,37 +332,37 @@ export default function ShopPage() {
             {/* Active Filters */}
             {hasActiveFilters && (
               <div className="mb-6 flex flex-wrap items-center gap-2">
-                <span className="text-sm text-muted-foreground">
+                <span className="text-muted-foreground text-sm">
                   Active filters:
                 </span>
                 {selectedCategories.map((cat) => (
                   <button
                     key={cat}
                     onClick={() => toggleCategory(cat)}
-                    className="flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary text-xs rounded-full"
+                    className="bg-primary/10 text-primary flex items-center gap-1 rounded-full px-3 py-1 text-xs"
                   >
                     {cat}
-                    <X className="w-3 h-3" />
+                    <X className="h-3 w-3" />
                   </button>
                 ))}
                 {selectedBrands.map((brand) => (
                   <button
                     key={brand}
                     onClick={() => toggleBrand(brand)}
-                    className="flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary text-xs rounded-full"
+                    className="bg-primary/10 text-primary flex items-center gap-1 rounded-full px-3 py-1 text-xs"
                   >
                     {brand}
-                    <X className="w-3 h-3" />
+                    <X className="h-3 w-3" />
                   </button>
                 ))}
                 {selectedTags.map((tag) => (
                   <button
                     key={tag}
                     onClick={() => toggleTag(tag)}
-                    className="flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary text-xs rounded-full"
+                    className="bg-primary/10 text-primary flex items-center gap-1 rounded-full px-3 py-1 text-xs"
                   >
                     {tag}
-                    <X className="w-3 h-3" />
+                    <X className="h-3 w-3" />
                   </button>
                 ))}
               </div>
@@ -400,9 +373,9 @@ export default function ShopPage() {
               <div className={cn("grid gap-6", gridLayoutMap[gridLayout])}>
                 {[...Array(12)].map((_, i) => (
                   <div key={i} className="animate-pulse">
-                    <div className="bg-muted aspect-square rounded-lg mb-4"></div>
-                    <div className="bg-muted h-4 rounded w-3/4 mb-2"></div>
-                    <div className="bg-muted h-4 rounded w-1/2"></div>
+                    <div className="bg-muted mb-4 aspect-square rounded-lg"></div>
+                    <div className="bg-muted mb-2 h-4 w-3/4 rounded"></div>
+                    <div className="bg-muted h-4 w-1/2 rounded"></div>
                   </div>
                 ))}
               </div>
@@ -422,11 +395,11 @@ export default function ShopPage() {
 
             {/* Empty State */}
             {!isLoading && filteredProducts.length === 0 && (
-              <div className="text-center py-16">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-muted rounded-full mb-4">
-                  <SlidersHorizontal className="w-8 h-8 text-muted-foreground" />
+              <div className="py-16 text-center">
+                <div className="bg-muted mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full">
+                  <SlidersHorizontal className="text-muted-foreground h-8 w-8" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
+                <h3 className="text-foreground mb-2 text-lg font-semibold">
                   No products found
                 </h3>
                 <p className="text-muted-foreground mb-6">
@@ -435,7 +408,7 @@ export default function ShopPage() {
                 {hasActiveFilters && (
                   <button
                     onClick={clearAllFilters}
-                    className="px-6 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium"
+                    className="bg-primary text-primary-foreground rounded-md px-6 py-2 text-sm font-medium"
                   >
                     Clear All Filters
                   </button>
@@ -445,13 +418,13 @@ export default function ShopPage() {
 
             {/* Pagination */}
             {!isLoading && filteredProducts.length > 0 && totalPages > 1 && (
-              <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
                 <button
                   onClick={() =>
                     setCurrentPage((prev) => Math.max(prev - 1, 1))
                   }
                   disabled={currentPage === 1}
-                  className="px-6 py-2 border border-border rounded-md text-sm font-medium text-foreground hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="border-border text-foreground hover:bg-accent rounded-md border px-6 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Previous
                 </button>
@@ -470,10 +443,10 @@ export default function ShopPage() {
                           key={pageNum}
                           onClick={() => setCurrentPage(pageNum)}
                           className={cn(
-                            "w-10 h-10 border rounded-md text-sm font-medium transition-colors",
+                            "h-10 w-10 rounded-md border text-sm font-medium transition-colors",
                             currentPage === pageNum
                               ? "bg-primary text-primary-foreground border-primary"
-                              : "border-border text-foreground hover:bg-accent"
+                              : "border-border text-foreground hover:bg-accent",
                           )}
                         >
                           {pageNum}
@@ -498,7 +471,7 @@ export default function ShopPage() {
                     setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                   }
                   disabled={currentPage === totalPages}
-                  className="px-6 py-2 border border-border rounded-md text-sm font-medium text-foreground hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="border-border text-foreground hover:bg-accent rounded-md border px-6 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Next
                 </button>
@@ -510,15 +483,15 @@ export default function ShopPage() {
 
       {/* Mobile Filters Overlay */}
       {showFilters && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
-          <div className="fixed inset-y-0 left-0 w-full max-w-sm bg-card border-r border-border overflow-y-auto p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-foreground">Filters</h3>
+        <div className="bg-background/80 fixed inset-0 z-50 backdrop-blur-sm lg:hidden">
+          <div className="bg-card border-border fixed inset-y-0 left-0 w-full max-w-sm overflow-y-auto border-r p-6">
+            <div className="mb-6 flex items-center justify-between">
+              <h3 className="text-foreground text-lg font-semibold">Filters</h3>
               <button
                 onClick={() => setShowFilters(false)}
-                className="p-2 hover:bg-accent rounded-md"
+                className="hover:bg-accent rounded-md p-2"
               >
-                <X className="w-5 h-5" />
+                <X className="h-5 w-5" />
               </button>
             </div>
 

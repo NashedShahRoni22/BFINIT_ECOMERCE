@@ -10,6 +10,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ProductSelectionModal from "./ProductSelectionModal";
+import useGetQuery from "@/hooks/api/useGetQuery";
+import { formatPrice } from "@/utils/formatPrice";
 
 export default function ProductSourceField({ field, value, onChange }) {
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
@@ -27,8 +29,8 @@ export default function ProductSourceField({ field, value, onChange }) {
     currentType === "badge"
       ? `badge:${currentValue}`
       : currentType === "auto"
-      ? `auto:${currentValue}`
-      : currentType;
+        ? `auto:${currentValue}`
+        : currentType;
 
   const handleSourceChange = (newValue) => {
     if (newValue === "all") {
@@ -77,6 +79,18 @@ export default function ProductSourceField({ field, value, onChange }) {
 
   const selectedProducts = Array.isArray(currentValue) ? currentValue : [];
 
+  const idsQuery =
+    selectedProducts?.length > 0 ? selectedProducts?.join(",") : [];
+
+  const isManualTypeProducts = value?.type === "manual";
+  const hasManualProductIds = value?.value?.length > 0;
+
+  const { data: products, isLoading } = useGetQuery({
+    endpoint: `/product/store/batches?ids=${idsQuery}`,
+    queryKey: ["manual-products", idsQuery],
+    enabled: !!idsQuery && !!isManualTypeProducts && !!hasManualProductIds,
+  });
+
   return (
     <>
       <div className="space-y-3">
@@ -111,13 +125,13 @@ export default function ProductSourceField({ field, value, onChange }) {
         {/* Manual Selection UI */}
         {currentType === "manual" && (
           <div className="space-y-2">
-            {selectedProducts.length > 0 && (
+            {!isLoading && products && products?.data?.length > 0 && (
               <div className="border-border bg-muted/20 space-y-1.5 rounded-lg border p-2">
-                {selectedProducts.map((productId) => (
+                {products?.data?.map((product) => (
                   <SelectedProductChip
-                    key={productId}
-                    productId={productId}
-                    onRemove={() => removeProduct(productId)}
+                    key={product?._id}
+                    product={product}
+                    onRemove={() => removeProduct(product?._id)}
                   />
                 ))}
               </div>
@@ -131,8 +145,8 @@ export default function ProductSourceField({ field, value, onChange }) {
               className="h-8 w-full text-xs"
             >
               <Package size={14} className="mr-1.5" />
-              {selectedProducts.length > 0
-                ? `Edit Products (${selectedProducts.length})`
+              {!isLoading && products && products?.data?.length > 0
+                ? `Edit Products (${products?.data?.length})`
                 : "Select Products"}
             </Button>
           </div>
@@ -160,27 +174,23 @@ export default function ProductSourceField({ field, value, onChange }) {
   );
 }
 
-function SelectedProductChip({ productId, onRemove }) {
-  const product = {
-    id: productId,
-    name: `Product ${productId}`,
-    price: "$29.99",
-    image:
-      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=80&h=80&fit=crop",
-  };
+function SelectedProductChip({ product, onRemove }) {
+  const { productName, thumbnailImage, productPrice } = product;
 
   return (
     <div className="bg-background border-border group flex items-center gap-2 rounded-md border p-1.5 pr-2">
       <img
-        src={product.image}
-        alt={product.name}
+        src={`https://ecomback.bfinit.com${thumbnailImage}`}
+        alt={productName}
         className="h-8 w-8 rounded object-cover"
       />
       <div className="min-w-0 flex-1">
         <p className="text-foreground truncate text-xs font-medium">
-          {product.name}
+          {productName}
         </p>
-        <p className="text-muted-foreground text-[10px]">{product.price}</p>
+        <p className="text-muted-foreground text-[10px]">
+          {formatPrice(productPrice?.$numberDecimal)}
+        </p>
       </div>
       <button
         type="button"

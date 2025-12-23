@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DynamicFormField from "../inspector/DynamicFormField";
-import useTheme from "../../hooks/useTheme";
 import EmptyInspector from "../inspector/EmptyInspector";
+import useTheme from "@/hooks/useTheme";
 
 export default function Inspector() {
   const {
@@ -62,7 +62,7 @@ export default function Inspector() {
   return (
     <aside className="flex h-[calc(100vh-63px)] w-full max-w-80 flex-col border-l bg-white">
       {/* Header - Matches SectionSidebar styling exactly */}
-      <div className="bg-card border-b px-4 py-2.5 flex items-start justify-between gap-3">
+      <div className="bg-card flex items-start justify-between gap-3 border-b px-4 py-2.5">
         <div>
           <h2 className="text-foreground text-xs font-semibold">
             {section.name}
@@ -73,10 +73,10 @@ export default function Inspector() {
         </div>
         <button
           onClick={handleCancelClick}
-          className="rounded-md p-1 hover:bg-accent transition-colors shrink-0"
+          className="hover:bg-accent shrink-0 rounded-md p-1 transition-colors"
           aria-label="Close"
         >
-          <X className="h-3.5 w-3.5 text-muted-foreground" />
+          <X className="text-muted-foreground h-3.5 w-3.5" />
         </button>
       </div>
 

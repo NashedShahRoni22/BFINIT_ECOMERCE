@@ -2,7 +2,7 @@ import { Eye, EyeOff, GripVertical, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import useTheme from "../../hooks/useTheme";
+import useTheme from "@/hooks/useTheme";
 
 export default function SectionItem({ section }) {
   const {
@@ -49,8 +49,8 @@ export default function SectionItem({ section }) {
           <GripVertical className="size-3.5" />
         </div>
         <span
-          className={`text-xs truncate pr-2 ${
-            isActive ? "text-[#6366F1] font-medium" : "text-muted-foreground"
+          className={`truncate pr-2 text-xs ${
+            isActive ? "font-medium text-[#6366F1]" : "text-muted-foreground"
           }`}
         >
           {section.name}
@@ -81,7 +81,7 @@ export default function SectionItem({ section }) {
           }}
           size="icon"
           variant="ghost"
-          className="h-7 w-7 shrink-0 bg-transparent hover:bg-transparent text-muted-foreground hover:text-destructive"
+          className="text-muted-foreground hover:text-destructive h-7 w-7 shrink-0 bg-transparent hover:bg-transparent"
         >
           <Trash2 size={14} />
         </Button>

@@ -13,6 +13,7 @@ import EmptyInventory from "../components/sections/inventory/EmptyInventory";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import PageHeader from "../components/PageHeader";
 import InventoryTable from "../components/sections/inventory/table/InventoryTable";
+import InventoryPagination from "../components/sections/inventory/InventoryPagination";
 
 const INVENTORY_BREADCRUMB_ITEMS = [
   { label: "Home", href: "/" },
@@ -34,34 +35,44 @@ export default function Inventory() {
 
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const debouncedSearch = useDebounce(search);
+  const currentPage = parseInt(searchParams.get("page") || "1", 10);
 
-  // set search params
   useEffect(() => {
+    const params = new URLSearchParams();
+
     if (debouncedSearch) {
       searchParams.set("search", debouncedSearch);
-    } else {
-      searchParams.delete("search");
+      params.set("page", "1");
     }
-    setSearchParams(searchParams, { replace: true });
-  }, [debouncedSearch, searchParams, setSearchParams]);
 
-  // TODO: need to change this API to a dedicated inventory api
+    if (!debouncedSearch && currentPage > 1) {
+      params.set("page", currentPage.toString());
+    }
+
+    setSearchParams(params, { replace: true });
+  }, [debouncedSearch, currentPage, searchParams, setSearchParams]);
+
   const { data, isLoading } = useGetQuery({
     endpoint: `/product/store?storeId=${selectedStore?.storeId}${
       debouncedSearch ? `&search=${debouncedSearch}` : ""
-    }`,
-    token: true,
-    clientId: true,
+    }&page=${currentPage}`,
     enabled: !!selectedStore?.storeId,
-    queryKey: ["products", "list", selectedStore?.storeId, debouncedSearch],
+    queryKey: [
+      "products",
+      "list",
+      selectedStore?.storeId,
+      debouncedSearch,
+      currentPage,
+    ],
   });
 
   const products = data?.data || [];
 
   const handleClearSearch = () => {
     setSearch("");
-    // searchParams.delete("search");
-    // setSearchParams(searchParams, { replace: true });
+    searchParams.delete("search");
+    searchParams.set("page", "1");
+    setSearchParams(searchParams);
   };
 
   let content = null;
@@ -110,7 +121,10 @@ export default function Inventory() {
         {isLoading && debouncedSearch ? (
           <InventoryTableSkeleton />
         ) : products.length > 0 ? (
-          <InventoryTable products={products} />
+          <>
+            <InventoryTable products={products} />
+            <InventoryPagination data={data} />
+          </>
         ) : debouncedSearch ? (
           // Show search empty state if actively searching
           <EmptySearchResults

@@ -1,20 +1,23 @@
 import PrivateRoute from "./PrivateRoute";
-import ThemeEditorLayout from "@/layouts/ThemeEditorLayout";
-import Home from "@/features/themes/pages/Home";
-import ProductDetails from "@/features/themes/pages/ProductDetails";
-import Cart from "@/features/themes/pages/Cart";
+import ThemeEditorProvider from "@/providers/ThemeEditorProvider";
 import CartProvider from "@/providers/CartProvider";
-import Contact from "@/features/themes/pages/Contact";
-import About from "@/features/themes/pages/About";
-import Shop from "@/features/themes/pages/Shop";
+import ThemeEditorLayout from "@/layouts/ThemeEditorLayout";
+import Home from "@/pages/storefront/Home";
+import ProductDetails from "@/pages/storefront/ProductDetails";
+import Cart from "@/pages/storefront/Cart";
+import Contact from "@/pages/storefront/Contact";
+import About from "@/pages/storefront/About";
+import Shop from "@/pages/storefront/Shop";
 
 export const themeEditorRoutes = {
-  path: "/theme/customize",
+  path: "/stores/:storeId/theme-editor",
   element: (
     <PrivateRoute>
-      <CartProvider>
-        <ThemeEditorLayout />
-      </CartProvider>
+      <ThemeEditorProvider>
+        <CartProvider>
+          <ThemeEditorLayout />
+        </CartProvider>
+      </ThemeEditorProvider>
     </PrivateRoute>
   ),
   children: [

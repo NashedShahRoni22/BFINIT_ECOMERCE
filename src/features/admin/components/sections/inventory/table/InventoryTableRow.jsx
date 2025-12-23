@@ -65,7 +65,7 @@ export default function InventoryTableRow({ product }) {
           return {
             ...oldData,
             data: oldData.data.filter(
-              (product) => product.productId !== productId
+              (product) => product.productId !== productId,
             ),
           };
         });
@@ -120,13 +120,13 @@ export default function InventoryTableRow({ product }) {
         </TableCell>
 
         {/* stock */}
-        <TableCell className="border">
+        {/* <TableCell className="border">
           {productQuantity > 0 ? (
             <Badge variant="success">In Stock</Badge>
           ) : (
             <Badge variant="neutral">Out of Stock</Badge>
           )}
-        </TableCell>
+        </TableCell> */}
 
         {/* price */}
         <TableCell className="space-x-2 border text-xs">

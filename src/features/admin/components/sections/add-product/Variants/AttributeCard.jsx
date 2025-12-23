@@ -1,9 +1,15 @@
 import { useState } from "react";
-import { Trash, X } from "lucide-react";
+import { Trash, X, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function AttributeCard({
   attribute,
@@ -71,7 +77,7 @@ export default function AttributeCard({
           size="icon"
           variant="ghost"
           onClick={onDelete}
-          className="size-8 shrink-0 text-red-500 hover:bg-red-50 hover:text-red-700"
+          className="text-destructive hover:bg-destructive/10 hover:text-destructive size-8 shrink-0"
         >
           <Trash className="h-4 w-4" />
         </Button>
@@ -83,7 +89,7 @@ export default function AttributeCard({
           <ul className="flex flex-wrap items-center gap-2">
             {attribute.values.map((value) => (
               <li key={value.id} className="group relative">
-                <div className="flex items-center gap-1.5 rounded-md border bg-white px-2.5 py-1.5 text-xs">
+                <div className="bg-card flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs">
                   <span className="max-w-[120px] truncate md:max-w-none">
                     {value.name}
                   </span>
@@ -91,7 +97,7 @@ export default function AttributeCard({
                   <button
                     type="button"
                     onClick={() => onRemoveValue(value.id)}
-                    className="shrink-0 rounded-full p-0.5 text-red-500 hover:bg-red-50"
+                    className="text-destructive hover:bg-destructive/10 shrink-0 rounded-full p-0.5"
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>
@@ -136,9 +142,21 @@ export default function AttributeCard({
           />
           <Label
             htmlFor={`required-${attribute.id}`}
-            className="cursor-pointer"
+            className="flex cursor-pointer items-center gap-1.5 text-sm font-normal"
           >
             Required
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="text-muted-foreground h-3.5 w-3.5" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-xs">
+                    Customers must choose this option before checkout
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </Label>
         </div>
       </div>

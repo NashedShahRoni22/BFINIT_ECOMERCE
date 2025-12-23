@@ -15,7 +15,7 @@ import {
 import SectionItem from "../sidebar/SectionItem";
 import AddSectionModal from "../modals/AddSectionModal";
 import ThemeSwitcher from "../sidebar/ThemeSwitcher";
-import useTheme from "../../hooks/useTheme";
+import useTheme from "@/hooks/useTheme";
 
 export default function ThemeEditorSidebar() {
   const {
@@ -30,7 +30,7 @@ export default function ThemeEditorSidebar() {
       activationConstraint: {
         distance: 8,
       },
-    })
+    }),
   );
 
   const handleAddSection = (template) => {

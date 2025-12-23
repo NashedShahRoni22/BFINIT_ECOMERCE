@@ -1,5 +1,5 @@
-import SectionRenderer from "../components/core/SectionRenderer";
-import useTheme from "../hooks/useTheme";
+import SectionRenderer from "@/components/storefront/core/SectionRenderer";
+import useTheme from "@/hooks/useTheme";
 
 export default function Home() {
   const { sections, activeSection } = useTheme();

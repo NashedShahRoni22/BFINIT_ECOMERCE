@@ -1,5 +1,5 @@
-import useTheme from "../../hooks/useTheme";
-import SectionRenderer from "../core/SectionRenderer";
+import useTheme from "@/hooks/useTheme";
+import SectionRenderer from "./core/SectionRenderer";
 
 export default function Header() {
   const { sections, activeSection } = useTheme();
@@ -9,7 +9,6 @@ export default function Header() {
       <SectionRenderer
         sections={sections?.header}
         activeSection={activeSection}
-        isEditorMode={true}
       />
     </header>
   );

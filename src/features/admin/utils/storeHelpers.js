@@ -9,7 +9,7 @@ export const createStorePayload = (data) => {
     storeTelephone: data?.telephone
       ? `${data?.phone_code}${data?.telephone}`
       : "",
-    storeAddress: data?.address,
+    storeAddress: `${data?.address},`,
     storeFacebookLink: data?.facebook,
     storeTwitterLink: data?.twitter,
     storeYoutubeLink: data?.youtube,

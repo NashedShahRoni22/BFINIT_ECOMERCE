@@ -5,12 +5,12 @@ import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import useUpdateMutation from "@/hooks/api/useUpdateMutation";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import useTheme from "../../hooks/useTheme";
+import useTheme from "@/hooks/useTheme";
 
 export default function ThemeEditorHeader() {
   const navigate = useNavigate();
   const { selectedStore } = useSelectedStore();
-  const { colorTheme, sections, isUploading } = useTheme();
+  const { colorTheme, sections, isUploading, handleTogglePreview } = useTheme();
 
   const [isDesktopView, setIsDesktopView] = useState(true);
 
@@ -33,12 +33,6 @@ export default function ThemeEditorHeader() {
       success: "Theme saved successfully",
       error: "Failed to save theme",
     });
-  };
-
-  // Handle Preview
-  const handlePreveiw = () => {
-    handleSave();
-    // navigate(`/store/${storeId}/themes/${themesId}/preview`);
   };
 
   const handleExit = () => {
@@ -83,7 +77,7 @@ export default function ThemeEditorHeader() {
       {/* Right: Actions */}
       <div className="flex items-center gap-2">
         <Button
-          onClick={handlePreveiw}
+          onClick={handleTogglePreview}
           size="sm"
           variant="outline"
           disabled={isPending}

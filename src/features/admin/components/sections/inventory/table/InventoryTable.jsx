@@ -22,7 +22,7 @@ export default function InventoryTable({ products }) {
           <TableHead className="border text-xs font-semibold">
             Category
           </TableHead>
-          <TableHead className="border text-xs font-semibold">Stock</TableHead>
+          {/* <TableHead className="border text-xs font-semibold">Stock</TableHead> */}
           <TableHead className="border text-xs font-semibold">Price</TableHead>
           <TableHead className="border text-xs font-semibold">
             Variants

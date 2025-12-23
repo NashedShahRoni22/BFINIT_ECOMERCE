@@ -9,14 +9,13 @@ import { timeAgo } from "@/utils/formatDate";
 
 export default function ThemeOverview() {
   const { selectedStore } = useSelectedStore();
-  const storeId = selectedStore?.storeId;
 
   const { data, isLoading } = useGetQuery({
-    endpoint: `/store/theme/meta/admin/${storeId}`,
+    endpoint: `/store/theme/meta/admin/${selectedStore?.storeId}`,
     token: true,
     clientId: true,
-    queryKey: ["admin", "stores", storeId, "theme", "meta"],
-    enabled: !!storeId,
+    queryKey: ["admin", "stores", selectedStore?.storeId, "theme", "meta"],
+    enabled: !!selectedStore?.storeId,
   });
 
   const {
@@ -74,16 +73,14 @@ export default function ThemeOverview() {
         {/* Actions */}
         <div className="flex flex-wrap items-center gap-2 pt-2">
           <Button size="sm" asChild className="text-xs">
-            <Link to="/theme/customize">
+            <Link to={`/stores/${selectedStore?.storeId}/theme-editor`}>
               <SlidersHorizontal className="size-3.5" />
               Customize Theme
             </Link>
           </Button>
 
           <Button size="sm" variant="outline" asChild className="text-xs">
-            <Link
-              to={`/store/${selectedStore?.storeId}/themes/themesId/preview`}
-            >
+            <Link to={`/stores/${selectedStore?.storeId}`}>
               <ExternalLink className="size-3.5" />
               View Store
             </Link>

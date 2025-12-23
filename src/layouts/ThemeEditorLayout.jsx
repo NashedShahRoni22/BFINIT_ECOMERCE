@@ -1,29 +1,35 @@
-import { Outlet } from "react-router";
-import ThemeEditorHeader from "../features/themes/components/layout/ThemeEditorHeader";
-import ThemeEditorSidebar from "../features/themes/components/layout/ThemeEditorSidebar";
-import Inspector from "../features/themes/components/layout/Inspector";
-import Header from "@/features/themes/components/canvas/Header";
-import Footer from "@/features/themes/components/canvas/Footer";
+import Footer from "@/components/storefront/Footer";
+import Header from "@/components/storefront/Header";
 import Canvas from "@/features/themes/components/layout/Canvas";
+import Inspector from "@/features/themes/components/layout/Inspector";
+import PreviewModeBar from "@/features/themes/components/layout/PreviewModeBar";
+import ThemeEditorHeader from "@/features/themes/components/layout/ThemeEditorHeader";
+import ThemeEditorSidebar from "@/features/themes/components/layout/ThemeEditorSidebar";
+import useTheme from "@/hooks/useTheme";
+import { Outlet } from "react-router";
 
 export default function ThemeEditorLayout() {
+  const { isPreviewMode } = useTheme();
+
   return (
     <main className="font-geist bg-muted">
-      <ThemeEditorHeader />
+      {!isPreviewMode && <ThemeEditorHeader />}
+
+      {isPreviewMode && <PreviewModeBar />}
 
       <div className="flex justify-between">
         {/* left sidebar */}
-        <ThemeEditorSidebar />
+        {!isPreviewMode && <ThemeEditorSidebar />}
 
         {/* canvas site preview */}
-        <Canvas>
+        <Canvas isPreviewMode={isPreviewMode}>
           <Header />
           <Outlet />
           <Footer />
         </Canvas>
 
         {/* section editing form field */}
-        <Inspector />
+        {!isPreviewMode && <Inspector />}
       </div>
     </main>
   );
