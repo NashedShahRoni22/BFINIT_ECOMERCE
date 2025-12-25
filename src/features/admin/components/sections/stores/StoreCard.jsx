@@ -34,18 +34,18 @@ export default function StoreCard({ store = {} }) {
               <DropdownMenuItem asChild>
                 <Link
                   to={`/stores/edit/${storeId}`}
-                  className="hover:cursor-pointer"
+                  className="text-xs hover:cursor-pointer"
                 >
-                  <Pencil />
+                  <Pencil className="size-3.5" />
                   Edit Store
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                className="text-destructive focus:text-destructive hover:cursor-pointer"
+                className="text-destructive focus:text-destructive text-xs hover:cursor-pointer"
                 onClick={() => setShowDeleteDialog(true)}
               >
-                <Trash2 />
+                <Trash2 className="size-3.5" />
                 Delete Store
               </DropdownMenuItem>
             </DropdownMenuContent>

@@ -4,6 +4,7 @@ import { FileText } from "lucide-react";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import PageHeader from "../components/PageHeader";
 import BlogRow from "../components/sections/manage-blog/BlogRow";
+import EmptyStoreState from "../components/EmptyStoreState";
 
 const BLOGS_BREADCRUMB_ITEMS = [
   { label: "Home", href: "/" },
@@ -23,6 +24,15 @@ export default function ManageBlog() {
     queryKey: ["blogs", selectedStore?.storeId],
     enabled: !!selectedStore?.storeId,
   });
+
+  if (!selectedStore) {
+    return (
+      <EmptyStoreState
+        title="No Store Selected"
+        description="Create a store to start writing and managing blog content for your audience."
+      />
+    );
+  }
 
   return (
     <section className="space-y-6">

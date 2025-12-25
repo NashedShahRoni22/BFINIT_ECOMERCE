@@ -13,7 +13,8 @@ import useUpdateMutation from "@/hooks/api/useUpdateMutation";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import PageHeader from "../components/PageHeader";
 import { Spinner } from "@/components/ui/spinner";
-import EmptyState from "../components/EmptyState";
+import EmptyState from "../components/EmptyStoreState";
+import EmptyStoreState from "../components/EmptyStoreState";
 
 const SUPPORT_BREADCRUMB_ITEMS = [
   { label: "Home", href: "/" },
@@ -82,7 +83,7 @@ export default function ReturnsRefundsForm() {
         toast.success(
           returnPolicy?.data
             ? "Return policy center updated!"
-            : "Return policy created!"
+            : "Return policy created!",
         );
         setHasUnsavedChanges(false);
         queryClient.invalidateQueries([
@@ -101,6 +102,15 @@ export default function ReturnsRefundsForm() {
     !hasUnsavedChanges ||
     !content.trim() ||
     isPending;
+
+  if (!selectedStore) {
+    return (
+      <EmptyStoreState
+        title="Store Required"
+        description="Create a store before setting up your returns and refunds policy."
+      />
+    );
+  }
 
   return (
     <section className="space-y-6">

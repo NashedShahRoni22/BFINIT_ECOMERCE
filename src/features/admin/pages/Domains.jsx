@@ -17,6 +17,7 @@ import DomainSkeleton from "../components/skeletons/DomainSkeleton";
 import DomainOwnership from "../components/sections/domains/DomainOwnership";
 import NewDomain from "../components/sections/domains/NewDomain";
 import DomainField from "../components/sections/domains/DomainField";
+import EmptyStoreState from "../components/EmptyStoreState";
 
 const DOMAIN_BREADCRUMB_ITEMS = [
   { label: "Home", href: "/" },
@@ -86,7 +87,7 @@ export default function Domains() {
   const onSubmit = (values) => {
     if (isDomainIntegrated && data.data.domainName === values.domain) {
       return toast.error(
-        "This domain is already connected. Please enter a different domain name."
+        "This domain is already connected. Please enter a different domain name.",
       );
     }
 
@@ -119,6 +120,15 @@ export default function Domains() {
       },
     });
   };
+
+  if (!selectedStore) {
+    return (
+      <EmptyStoreState
+        title="Store Required"
+        description="Create a store first before connecting a custom domain name."
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -180,8 +190,8 @@ export default function Domains() {
                       ? "Updating..."
                       : "Update Domain"
                     : isSubmitting
-                    ? "Connecting..."
-                    : "Connect Domain"}
+                      ? "Connecting..."
+                      : "Connect Domain"}
                 </Button>
               </div>
             )}

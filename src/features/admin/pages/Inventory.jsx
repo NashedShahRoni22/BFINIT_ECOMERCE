@@ -14,6 +14,7 @@ import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import PageHeader from "../components/PageHeader";
 import InventoryTable from "../components/sections/inventory/table/InventoryTable";
 import InventoryPagination from "../components/sections/inventory/InventoryPagination";
+import EmptyStoreState from "../components/EmptyStoreState";
 
 const INVENTORY_BREADCRUMB_ITEMS = [
   { label: "Home", href: "/" },
@@ -74,6 +75,15 @@ export default function Inventory() {
     searchParams.set("page", "1");
     setSearchParams(searchParams);
   };
+
+  if (!selectedStore) {
+    return (
+      <EmptyStoreState
+        title="No Store Selected"
+        description="Create a store to start tracking and managing your product inventory."
+      />
+    );
+  }
 
   let content = null;
 

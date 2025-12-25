@@ -10,7 +10,8 @@ import useUpdateMutation from "@/hooks/api/useUpdateMutation";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import PageHeader from "../components/PageHeader";
 import { Spinner } from "@/components/ui/spinner";
-import EmptyState from "../components/EmptyState";
+import EmptyState from "../components/EmptyStoreState";
+import EmptyStoreState from "../components/EmptyStoreState";
 
 const SUPPORT_BREADCRUMB_ITEMS = [
   { label: "Home", href: "/" },
@@ -79,7 +80,7 @@ export default function TermsConditionsForm() {
         toast.success(
           termsConditions?.data
             ? "Terms & Conditions updated!"
-            : "Terms & Conditions created!"
+            : "Terms & Conditions created!",
         );
         setHasUnsavedChanges(false);
         queryClient.invalidateQueries([
@@ -98,6 +99,15 @@ export default function TermsConditionsForm() {
     !hasUnsavedChanges ||
     !content.trim() ||
     isPending;
+
+  if (!selectedStore) {
+    return (
+      <EmptyStoreState
+        title="Store Required"
+        description="Create a store first to define your terms and conditions for customers."
+      />
+    );
+  }
 
   return (
     <section className="space-y-6">

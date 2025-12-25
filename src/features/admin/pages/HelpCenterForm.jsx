@@ -8,9 +8,10 @@ import useSelectedStore from "@/hooks/useSelectedStore";
 import useUpdateMutation from "@/hooks/api/useUpdateMutation";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import PageHeader from "../components/PageHeader";
-import EmptyState from "../components/EmptyState";
+import EmptyState from "../components/EmptyStoreState";
 import useGetHelpContent from "../hooks/useGetHelpContent";
 import { Spinner } from "@/components/ui/spinner";
+import EmptyStoreState from "../components/EmptyStoreState";
 
 const SUPPORT_BREADCRUMB_ITEMS = [
   { label: "Home", href: "/" },
@@ -30,7 +31,7 @@ export default function HelpCenterForm() {
   const { user } = useAuth();
   const { selectedStore } = useSelectedStore();
   const { data: helpContent, isLoading } = useGetHelpContent(
-    selectedStore?.storeId
+    selectedStore?.storeId,
   );
   const [content, setContent] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -75,7 +76,7 @@ export default function HelpCenterForm() {
     mutate(payload, {
       onSuccess: () => {
         toast.success(
-          helpContent?.data ? "Help center updated!" : "Help center created!"
+          helpContent?.data ? "Help center updated!" : "Help center created!",
         );
         setHasUnsavedChanges(false);
         queryClient.invalidateQueries(["help", selectedStore?.storeId]);
@@ -91,6 +92,15 @@ export default function HelpCenterForm() {
     !hasUnsavedChanges ||
     !content.trim() ||
     isPending;
+
+  if (!selectedStore) {
+    return (
+      <EmptyStoreState
+        title="Store Required"
+        description="Create a store first to customize your help center content for customers."
+      />
+    );
+  }
 
   return (
     <section className="space-y-6">

@@ -10,8 +10,9 @@ import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import PageHeader from "../components/PageHeader";
 import FormInput from "../components/sections/store-form/FormInput";
 import ActionBtn from "../components/sections/store-form/ActionBtn";
-import EmptyState from "../components/EmptyState";
+import EmptyState from "../components/EmptyStoreState";
 import useGetAllMeta from "../hooks/meta/getAllMeta";
+import EmptyStoreState from "../components/EmptyStoreState";
 
 const SEO_BREADCRUMB_ITEMS = [
   { label: "Home", href: "/" },
@@ -112,6 +113,15 @@ export default function SeoForm() {
       },
     });
   };
+
+  if (!selectedStore) {
+    return (
+      <EmptyStoreState
+        title="Store Required"
+        description="Create a store first to optimize your storefront for search engines."
+      />
+    );
+  }
 
   return (
     <section className="space-y-6">

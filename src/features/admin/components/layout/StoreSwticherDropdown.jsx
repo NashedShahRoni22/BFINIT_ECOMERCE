@@ -27,10 +27,13 @@ export default function StoreSwitcherDropdown() {
   const navigate = useNavigate();
 
   const storeLimit = user?.data?.storeLimit || 0;
+  const hasStores = stores?.data?.length > 0;
 
   const handleStoreCreate = () => {
     navigate("/stores/create");
   };
+
+  if (!isLoading && !hasStores) return null;
 
   return (
     <DropdownMenu>

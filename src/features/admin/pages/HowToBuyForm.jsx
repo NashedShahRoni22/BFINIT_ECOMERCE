@@ -10,7 +10,8 @@ import useUpdateMutation from "@/hooks/api/useUpdateMutation";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import PageHeader from "../components/PageHeader";
 import { Spinner } from "@/components/ui/spinner";
-import EmptyState from "../components/EmptyState";
+import EmptyState from "../components/EmptyStoreState";
+import EmptyStoreState from "../components/EmptyStoreState";
 
 const SUPPORT_BREADCRUMB_ITEMS = [
   { label: "Home", href: "/" },
@@ -77,7 +78,7 @@ export default function HowToBuyForm() {
     mutate(payload, {
       onSuccess: () => {
         toast.success(
-          buyingGuide?.data ? "Buying Guide updated!" : "Buying Guide created!"
+          buyingGuide?.data ? "Buying Guide updated!" : "Buying Guide created!",
         );
         setHasUnsavedChanges(false);
         queryClient.invalidateQueries([
@@ -96,6 +97,15 @@ export default function HowToBuyForm() {
     !hasUnsavedChanges ||
     !content.trim() ||
     isPending;
+
+  if (!selectedStore) {
+    return (
+      <EmptyStoreState
+        title="Store Required"
+        description="Create a store before adding shopping instructions for your customers."
+      />
+    );
+  }
 
   return (
     <section className="space-y-6">

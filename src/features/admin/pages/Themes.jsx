@@ -3,6 +3,8 @@ import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import PageHeader from "../components/PageHeader";
 import ThemeOverview from "../components/sections/themes/ThemeOverview";
 import ThemeLibrary from "../components/sections/themes/ThemeLibrary";
+import useSelectedStore from "@/hooks/useSelectedStore";
+import EmptyStoreState from "../components/EmptyStoreState";
 
 const THEME_BREADCRUMB_ITEMS = [
   { label: "Home", href: "/" },
@@ -10,6 +12,17 @@ const THEME_BREADCRUMB_ITEMS = [
 ];
 
 export default function Themes() {
+  const { selectedStore } = useSelectedStore();
+
+  if (!selectedStore) {
+    return (
+      <EmptyStoreState
+        title="Store Required"
+        description="Create a store first to choose and customize your storefront theme."
+      />
+    );
+  }
+
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}

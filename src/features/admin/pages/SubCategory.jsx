@@ -12,6 +12,7 @@ import useSelectedStore from "@/hooks/useSelectedStore";
 import usePostMutation from "@/hooks/api/usePostMutation";
 import useAuth from "@/hooks/auth/useAuth";
 import useGetSubCategories from "../hooks/category/useGetSubCategories";
+import EmptyStoreState from "../components/EmptyStoreState";
 
 const SUBCATEGORY_BREADCRUMB_ITEMS = [
   { label: "Home", href: "/" },
@@ -41,7 +42,7 @@ export default function SubCategory() {
   // fetch sub-categories based on storeId & categoryId
   const { data: subCategoriesData } = useGetSubCategories(
     selectedStore?.storeId,
-    selectedCategory
+    selectedCategory,
   );
 
   // custom hooks to create new sub-category
@@ -72,7 +73,7 @@ export default function SubCategory() {
   // remove sub-category from local subCategories array
   const removeSubCategory = (indexToRemove) => {
     const filteredSubCategories = subCategoires.filter(
-      (_, index) => index !== indexToRemove
+      (_, index) => index !== indexToRemove,
     );
     setSubCategories(filteredSubCategories);
   };
@@ -99,6 +100,15 @@ export default function SubCategory() {
       },
     });
   };
+
+  if (!selectedStore) {
+    return (
+      <EmptyStoreState
+        title="No Store Selected"
+        description="Create a store before adding subcategories to organize your product catalog."
+      />
+    );
+  }
 
   return (
     <section className="space-y-6">

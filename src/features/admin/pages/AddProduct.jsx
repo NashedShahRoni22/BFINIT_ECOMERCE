@@ -17,6 +17,7 @@ import PageHeader from "../components/PageHeader";
 import usePostMutation from "@/hooks/api/usePostMutation";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import { validateVariants } from "@/utils/productValidation";
+import EmptyStoreState from "../components/EmptyStoreState";
 
 const ADD_PRODUCT_BREADCRUMB_ITEMS = [
   { label: "Home", href: "/" },
@@ -118,6 +119,15 @@ export default function AddProduct() {
       },
     });
   };
+
+  if (!selectedStore) {
+    return (
+      <EmptyStoreState
+        title="Store Required"
+        description="You need to create a store before you can add products to sell."
+      />
+    );
+  }
 
   return (
     <section className="space-y-6">

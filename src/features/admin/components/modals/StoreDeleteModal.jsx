@@ -14,6 +14,7 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import useAuth from "@/hooks/auth/useAuth";
 import useDeleteMutation from "@/hooks/api/useDeleteMutation";
+import useSelectedStore from "@/hooks/useSelectedStore";
 
 export default function StoreDeleteModal({
   store = {},
@@ -22,6 +23,7 @@ export default function StoreDeleteModal({
 }) {
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const { selectedStore, handleSetStore } = useSelectedStore();
 
   const { storeName, storeId } = store;
 
@@ -35,16 +37,35 @@ export default function StoreDeleteModal({
   // handle store delete
   const handleDelete = () => {
     mutate(null, {
-      onSuccess: () => {
+      onSuccess: async () => {
         toast.success("Store deleted successfully!");
-        queryClient.invalidateQueries([
+
+        await queryClient.invalidateQueries([
           "admin",
           "stores",
           user?.data?.clientid,
         ]);
+
+        const updatedStores = queryClient.getQueryData([
+          "admin",
+          "stores",
+          user?.data?.clientid,
+        ]);
+
+        if (updatedStores?.data?.length > 0) {
+          const stillExists = updatedStores.data.some(
+            (s) => s.storeId === selectedStore?.storeId,
+          );
+
+          if (!stillExists) {
+            handleSetStore(updatedStores.data[0]);
+          }
+        } else {
+          handleSetStore(null);
+        }
       },
       onError: () => {
-        toast.error("Something went wrong!");
+        toast.error("Failed to delete store. Please try again.");
       },
     });
   };

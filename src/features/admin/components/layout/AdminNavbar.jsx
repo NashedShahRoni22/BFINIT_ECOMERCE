@@ -35,8 +35,8 @@ export default function AdminNavbar({ showSideNav, setShowSideNav }) {
 
       {/* notification & admin profile */}
       <div className="flex items-center justify-center gap-2.5 sm:gap-4">
-        {/* notification */}
-        <NotificationDropdown />
+        {/* TODO: implement notification feature order, account etc related */}
+        {/* <NotificationDropdown /> */}
 
         {/* admin profile */}
         <div className="hidden md:inline-block">

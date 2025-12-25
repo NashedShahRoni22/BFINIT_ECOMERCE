@@ -7,10 +7,22 @@ import StoreCard from "../components/sections/stores/StoreCard";
 import useAuth from "@/hooks/auth/useAuth";
 import useGetStores from "../hooks/store/useGetStores";
 import { breadcrubms } from "@/utils/constants/breadcrumbs";
+import useSelectedStore from "@/hooks/useSelectedStore";
+import EmptyStoreState from "../components/EmptyStoreState";
 
 export default function Stores() {
   const { user } = useAuth();
+  const { selectedStore } = useSelectedStore();
   const { data: stores } = useGetStores();
+
+  if (!selectedStore) {
+    return (
+      <EmptyStoreState
+        title="No Stores Created Yet"
+        description="Get started by creating your first online store. You can manage multiple stores from this dashboard."
+      />
+    );
+  }
 
   return (
     <section className="space-y-6">

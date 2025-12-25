@@ -17,12 +17,14 @@ import { useQueryClient } from "@tanstack/react-query";
 import useAuth from "@/hooks/auth/useAuth";
 import { Spinner } from "@/components/ui/spinner";
 import { createStorePayload } from "../utils/storeHelpers";
+import useSelectedStore from "@/hooks/useSelectedStore";
 
 export default function CreateStore() {
   const navigate = useNavigate();
 
-  const { user } = useAuth();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const { selectedStore, handleSetStore } = useSelectedStore();
 
   const form = useForm({
     defaultValues: {
@@ -70,14 +72,19 @@ export default function CreateStore() {
     const storePayload = createStorePayload(data);
 
     mutate(storePayload, {
-      onSuccess: () => {
+      onSuccess: (response) => {
         toast.success("Store created successfully!");
         queryClient.invalidateQueries([
           "admin",
           "stores",
           user?.data?.clientid,
         ]);
-        navigate("/stores");
+
+        if (!selectedStore && response?.data) {
+          handleSetStore(response.data);
+        }
+
+        navigate("/");
       },
 
       onError: (error) => {

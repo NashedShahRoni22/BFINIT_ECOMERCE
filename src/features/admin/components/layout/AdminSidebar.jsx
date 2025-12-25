@@ -8,6 +8,7 @@ import {
   FileDown,
   BookOpen,
   CircleX,
+  X,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
@@ -16,6 +17,8 @@ import useAuth from "@/hooks/auth/useAuth";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useGetStores from "../../hooks/store/useGetStores";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default function AdminSidebar({ showSideNav, toggleSideNav }) {
   const { user } = useAuth();
@@ -65,7 +68,7 @@ export default function AdminSidebar({ showSideNav, toggleSideNav }) {
     setShowGuide(false);
     localStorage.setItem(
       `guideKey_${user?.data?.clientid}`,
-      JSON.stringify(false)
+      JSON.stringify(false),
     );
   };
 
@@ -387,7 +390,7 @@ export default function AdminSidebar({ showSideNav, toggleSideNav }) {
                       {navMenuItem.name}
                     </span>
                   </Link>
-                )
+                ),
               )}
             </div>
           </div>
@@ -395,38 +398,45 @@ export default function AdminSidebar({ showSideNav, toggleSideNav }) {
       </nav>
 
       {/* guide download btn */}
-      <div className="px-4 md:px-0">
-        {showGuide && (
-          <div className="group relative rounded-md border border-neutral-200 bg-[#f5f8fc] px-4 pt-6 pb-2">
-            <div className="absolute -top-5 left-1/2 flex size-10 -translate-x-1/2 items-center justify-center overflow-hidden rounded-full bg-blue-200">
-              <BookOpen className="size-8" />
+      {showGuide && (
+        <Card className="border-border bg-card relative">
+          {/* Icon Badge */}
+          <div className="bg-primary absolute -top-4 left-1/2 flex size-8 -translate-x-1/2 items-center justify-center rounded-full">
+            <BookOpen className="text-primary-foreground size-4" />
+          </div>
+
+          {/* Close Button */}
+          <button
+            onClick={closeGuide}
+            className="bg-background hover:bg-muted focus:ring-ring absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full shadow-md transition-colors hover:cursor-pointer focus:ring-2 focus:outline-none"
+            aria-label="Close guide"
+          >
+            <X className="text-muted-foreground size-3.5" />
+          </button>
+
+          <CardContent className="space-y-2.5 py-2">
+            <div className="space-y-1 text-center">
+              <h3 className="text-foreground text-xs font-semibold">
+                BFINIT Guide
+              </h3>
+              <p className="text-muted-foreground text-[11px] leading-tight">
+                How our ecommerce platform works
+              </p>
             </div>
 
-            {/* close button */}
-            <button
-              onClick={closeGuide}
-              className="absolute -top-2 -right-2 cursor-pointer rounded-full bg-[#f5f8fc]"
-            >
-              <CircleX className="size-5 text-red-600" />
-            </button>
-
-            <p className="text-center font-semibold">BFINIT Guide</p>
-            <p className="mt-1.5 text-center text-[11px] leading-tight tracking-tight text-balance text-gray-700">
-              How our ecommerce platform works
-            </p>
-
-            <a
-              href="https://ecomback.bfinit.com/uploads/ecom/guide/BFINIT%20E-Commerce%20Guide.pdf"
-              download
-              target="_blanck"
-              onClick={toggleSideNav}
-              className="mt-3 inline-block w-full cursor-pointer rounded-full bg-gray-900 py-1.5 text-center text-xs text-white transition-all duration-200 ease-linear hover:bg-gray-800 active:scale-95"
-            >
-              Get Help Guide
-            </a>
-          </div>
-        )}
-      </div>
+            <Button asChild className="h-7 w-full text-xs" size="sm">
+              <a
+                href="https://ecomback.bfinit.com/uploads/ecom/guide/BFINIT%20E-Commerce%20Guide.pdf"
+                download
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Get Help Guide
+              </a>
+            </Button>
+          </CardContent>
+        </Card>
+      )}
     </aside>
   );
 }

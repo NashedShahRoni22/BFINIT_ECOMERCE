@@ -14,6 +14,7 @@ import useAuth from "@/hooks/auth/useAuth";
 import useGetCategories from "../hooks/category/useGetCategories";
 import { handleImgChange } from "@/utils/handleImgChange";
 import { handleRemoveImg } from "@/utils/handleRemoveImg";
+import EmptyStoreState from "../components/EmptyStoreState";
 
 const CATEGORY_BREADCRUMB_ITEMS = [
   { label: "Home", href: "/" },
@@ -85,6 +86,15 @@ export default function Category() {
       },
     });
   };
+
+  if (!selectedStore) {
+    return (
+      <EmptyStoreState
+        title="No Store Selected"
+        description="Create a store before organizing your products into categories."
+      />
+    );
+  }
 
   return (
     <section className="space-y-6">

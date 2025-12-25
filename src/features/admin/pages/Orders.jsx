@@ -6,6 +6,7 @@ import useAuth from "@/hooks/auth/useAuth";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useGetStorePreference from "../hooks/store/useGetStorePreference";
+import EmptyStoreState from "../components/EmptyStoreState";
 
 const ORDERS_BREADCRUMB_ITEMS = [
   { label: "Home", href: "/" },
@@ -18,7 +19,7 @@ export default function Orders() {
 
   // fetch store preference
   const { data: storePreference } = useGetStorePreference(
-    selectedStore?.storeId
+    selectedStore?.storeId,
   );
 
   // fetch orders of selected store
@@ -29,6 +30,15 @@ export default function Orders() {
     queryKey: ["orders", selectedStore?.storeId],
     enabled: !!selectedStore?.storeId && !!user?.token,
   });
+
+  if (!selectedStore) {
+    return (
+      <EmptyStoreState
+        title="No Orders Yet"
+        description="Create your store to start receiving and managing customer orders."
+      />
+    );
+  }
 
   return (
     <section className="space-y-6">

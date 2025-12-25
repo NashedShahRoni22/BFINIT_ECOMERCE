@@ -13,6 +13,7 @@ import BrandList from "../components/sections/brands/BrandList";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import PageHeader from "../components/PageHeader";
 import useSelectedStore from "@/hooks/useSelectedStore";
+import EmptyStoreState from "../components/EmptyStoreState";
 
 const BRANDS_BREADCRUMB_ITEMS = [
   { label: "Home", href: "/" },
@@ -69,6 +70,15 @@ export default function Brands() {
       },
     });
   };
+
+  if (!selectedStore) {
+    return (
+      <EmptyStoreState
+        title="No Store Selected"
+        description="Create a store before adding and managing product brands."
+      />
+    );
+  }
 
   return (
     <section className="space-y-6">

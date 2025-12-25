@@ -2,9 +2,12 @@ import useAuth from "@/hooks/auth/useAuth";
 
 import useGetQuery from "@/hooks/api/useGetQuery";
 import StripeRow from "../components/sections/payments/StripeRow";
+import EmptyStoreState from "../components/EmptyStoreState";
+import useSelectedStore from "@/hooks/useSelectedStore";
 
 export default function Payments() {
   const { user } = useAuth();
+  const { selectedStore } = useSelectedStore();
 
   // fetch stripe info of all stores
   const { data, isLoading, isError } = useGetQuery({
@@ -14,6 +17,15 @@ export default function Payments() {
     queryKey: ["stripeConnectionInfo", user?.token, user?.data?.clientid],
     enabled: !!user?.token && !!user?.data?.clientid,
   });
+
+  if (!selectedStore) {
+    return (
+      <EmptyStoreState
+        title="No Store Selected"
+        description="Create a store before setting up payment methods for your customers."
+      />
+    );
+  }
 
   if (isError) {
     return <div>Something went wrong...</div>;
