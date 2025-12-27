@@ -32,6 +32,7 @@ export default function Canvas({ children, isPreviewMode }) {
 
   return (
     <div
+      id="canvas"
       className={`bg-background custom-scrollbar w-full ${
         isPreviewMode
           ? "h-screen overflow-y-auto"
