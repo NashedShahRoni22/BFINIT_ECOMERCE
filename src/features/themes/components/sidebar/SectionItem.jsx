@@ -44,7 +44,7 @@ export default function SectionItem({ section }) {
         <div
           {...attributes}
           {...listeners}
-          className="text-muted-foreground hover:text-foreground cursor-grab py-2 pr-2 pl-2.5 transition-colors active:cursor-grabbing"
+          className="text-muted-foreground hover: cursor-grab py-2 pr-2 pl-2.5 transition-colors active:cursor-grabbing"
         >
           <GripVertical className="size-3.5" />
         </div>

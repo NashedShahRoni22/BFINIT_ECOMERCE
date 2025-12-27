@@ -416,9 +416,7 @@ export default function AdminSidebar({ showSideNav, toggleSideNav }) {
 
           <CardContent className="space-y-2.5 py-2">
             <div className="space-y-1 text-center">
-              <h3 className="text-foreground text-xs font-semibold">
-                BFINIT Guide
-              </h3>
+              <h3 className="text-xs font-semibold">BFINIT Guide</h3>
               <p className="text-muted-foreground text-[11px] leading-tight">
                 How our ecommerce platform works
               </p>

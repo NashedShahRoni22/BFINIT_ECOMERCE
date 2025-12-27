@@ -22,7 +22,7 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="font-inter text-foreground h-dvh w-full overflow-hidden">
+    <div className="font-inter h-dvh w-full overflow-hidden">
       {/* Store Selection Modal */}
       <StoreSelectionModal />
 

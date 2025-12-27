@@ -26,7 +26,7 @@ export default function FlashSale({ form }) {
     ? Math.round(
         ((parseFloat(compareAtPrice) - parseFloat(price)) /
           parseFloat(compareAtPrice)) *
-          100
+          100,
       )
     : 0;
 
@@ -54,11 +54,9 @@ export default function FlashSale({ form }) {
                 <h4 className="text-xs font-semibold">Flash Sale</h4>
                 <p className="text-muted-foreground text-xs">
                   Creates urgency with limited-time offer badge. Both{" "}
-                  <span className="text-foreground font-medium">Price</span> and{" "}
-                  <span className="text-foreground font-medium">
-                    Compare at Price
-                  </span>{" "}
-                  must be set.
+                  <span className="font-medium">Price</span> and{" "}
+                  <span className="font-medium">Compare at Price</span> must be
+                  set.
                 </p>
               </div>
             </div>
@@ -83,7 +81,7 @@ export default function FlashSale({ form }) {
               <div className="mt-5 space-y-4 border-t pt-5">
                 {/* Flash Sale Percentage Display */}
                 <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                  <span className="text-foreground text-xs font-medium">
+                  <span className="text-xs font-medium">
                     Flash Sale Percentage
                   </span>
                   <span className="text-destructive text-xs font-semibold">

@@ -154,7 +154,7 @@ export default function ShopPage() {
       {/* Hero Section */}
       <div className="bg-muted/30 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <h1 className="text-foreground mb-3 text-3xl font-bold sm:text-4xl">
+          <h1 className="mb-3 text-3xl font-bold sm:text-4xl">
             Shop All Products
           </h1>
           <p className="text-muted-foreground mx-auto max-w-2xl text-base sm:text-lg">
@@ -175,9 +175,7 @@ export default function ShopPage() {
           >
             <div className="bg-card border-border sticky top-4 rounded-lg border p-6">
               <div className="mb-6 flex items-center justify-between">
-                <h3 className="text-foreground text-lg font-semibold">
-                  Filters
-                </h3>
+                <h3 className="text-lg font-semibold">Filters</h3>
                 {hasActiveFilters && (
                   <button
                     onClick={clearAllFilters}
@@ -191,9 +189,7 @@ export default function ShopPage() {
               {/* Categories */}
               {categories.length > 0 && (
                 <div className="mb-6">
-                  <h4 className="text-foreground mb-3 text-sm font-medium">
-                    Categories
-                  </h4>
+                  <h4 className="mb-3 text-sm font-medium">Categories</h4>
                   <div className="custom-scrollbar max-h-48 space-y-2 overflow-y-auto">
                     {categories.map((category) => (
                       <label
@@ -218,9 +214,7 @@ export default function ShopPage() {
               {/* Brands */}
               {brands.length > 0 && (
                 <div className="mb-6">
-                  <h4 className="text-foreground mb-3 text-sm font-medium">
-                    Brands
-                  </h4>
+                  <h4 className="mb-3 text-sm font-medium">Brands</h4>
                   <div className="custom-scrollbar max-h-48 space-y-2 overflow-y-auto">
                     {brands.map((brand) => (
                       <label
@@ -244,9 +238,7 @@ export default function ShopPage() {
 
               {/* Price Range */}
               <div className="mb-6">
-                <h4 className="text-foreground mb-3 text-sm font-medium">
-                  Price Range
-                </h4>
+                <h4 className="mb-3 text-sm font-medium">Price Range</h4>
                 <div className="space-y-3">
                   <input
                     type="range"
@@ -275,9 +267,7 @@ export default function ShopPage() {
                 {/* Results Count */}
                 <div className="text-muted-foreground text-sm">
                   Showing{" "}
-                  <span className="text-foreground font-medium">
-                    {filteredProducts.length}
-                  </span>{" "}
+                  <span className="font-medium">{filteredProducts.length}</span>{" "}
                   products
                 </div>
 
@@ -295,7 +285,7 @@ export default function ShopPage() {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="bg-background border-border text-foreground rounded-md border px-4 py-2 text-sm"
+                    className="bg-background border-border rounded-md border px-4 py-2 text-sm"
                   >
                     <option value="default">Default</option>
                     <option value="newest">Newest First</option>
@@ -314,8 +304,8 @@ export default function ShopPage() {
                         className={cn(
                           "rounded p-2 transition-colors",
                           gridLayout === cols
-                            ? "bg-background text-foreground shadow-sm"
-                            : "text-muted-foreground hover:text-foreground",
+                            ? "bg-background shadow-sm"
+                            : "text-muted-foreground hover:",
                         )}
                       >
                         {cols === 2 && <Grid3x3 className="h-4 w-4" />}
@@ -399,7 +389,7 @@ export default function ShopPage() {
                 <div className="bg-muted mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full">
                   <SlidersHorizontal className="text-muted-foreground h-8 w-8" />
                 </div>
-                <h3 className="text-foreground mb-2 text-lg font-semibold">
+                <h3 className="mb-2 text-lg font-semibold">
                   No products found
                 </h3>
                 <p className="text-muted-foreground mb-6">
@@ -424,7 +414,7 @@ export default function ShopPage() {
                     setCurrentPage((prev) => Math.max(prev - 1, 1))
                   }
                   disabled={currentPage === 1}
-                  className="border-border text-foreground hover:bg-accent rounded-md border px-6 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                  className="border-border hover:bg-accent rounded-md border px-6 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Previous
                 </button>
@@ -446,7 +436,7 @@ export default function ShopPage() {
                             "h-10 w-10 rounded-md border text-sm font-medium transition-colors",
                             currentPage === pageNum
                               ? "bg-primary text-primary-foreground border-primary"
-                              : "border-border text-foreground hover:bg-accent",
+                              : "border-border hover:bg-accent",
                           )}
                         >
                           {pageNum}
@@ -471,7 +461,7 @@ export default function ShopPage() {
                     setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                   }
                   disabled={currentPage === totalPages}
-                  className="border-border text-foreground hover:bg-accent rounded-md border px-6 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                  className="border-border hover:bg-accent rounded-md border px-6 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Next
                 </button>
@@ -486,7 +476,7 @@ export default function ShopPage() {
         <div className="bg-background/80 fixed inset-0 z-50 backdrop-blur-sm lg:hidden">
           <div className="bg-card border-border fixed inset-y-0 left-0 w-full max-w-sm overflow-y-auto border-r p-6">
             <div className="mb-6 flex items-center justify-between">
-              <h3 className="text-foreground text-lg font-semibold">Filters</h3>
+              <h3 className="text-lg font-semibold">Filters</h3>
               <button
                 onClick={() => setShowFilters(false)}
                 className="hover:bg-accent rounded-md p-2"

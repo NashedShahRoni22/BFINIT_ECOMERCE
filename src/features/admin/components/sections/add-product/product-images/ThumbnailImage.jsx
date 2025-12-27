@@ -124,9 +124,7 @@ export default function ThumbnailImage({ form }) {
                       className="text-muted-foreground/60 h-8 w-8"
                     />
                     <div className="text-center">
-                      <p className="text-foreground text-xs font-medium">
-                        Drop image or click
-                      </p>
+                      <p className="text-xs font-medium">Drop image or click</p>
                       <p className="text-muted-foreground mt-0.5 text-[11px]">
                         1000×1000px recommended
                       </p>

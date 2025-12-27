@@ -64,9 +64,7 @@ export default function Inspector() {
       {/* Header - Matches SectionSidebar styling exactly */}
       <div className="bg-card flex items-start justify-between gap-3 border-b px-4 py-2.5">
         <div>
-          <h2 className="text-foreground text-xs font-semibold">
-            {section.name}
-          </h2>
+          <h2 className="text-xs font-semibold">{section.name}</h2>
           <p className="text-muted-foreground mt-0.5 text-[11px]">
             Edit section content
           </p>

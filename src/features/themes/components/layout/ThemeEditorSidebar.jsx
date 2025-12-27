@@ -88,7 +88,7 @@ export default function ThemeEditorSidebar() {
         {/* Header */}
         <div className="bg-card border-b px-4 py-2.5">
           <div className="flex items-center justify-between">
-            <h2 className="text-foreground text-xs font-semibold">Sections</h2>
+            <h2 className="text-xs font-semibold">Sections</h2>
             <Button
               onClick={() => setIsModalOpen(true)}
               variant="ghost"

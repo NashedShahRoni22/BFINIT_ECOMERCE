@@ -104,7 +104,7 @@ export default function AllVariantsTable({
   return (
     <div className="mt-6">
       <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <h3 className="text-foreground text-xs font-semibold">
+        <h3 className="text-xs font-semibold">
           Generated Variants ({getAllVariants().length})
         </h3>
 
@@ -191,9 +191,7 @@ export default function AllVariantsTable({
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <p className="text-foreground truncate text-xs font-medium">
-                    {variant.name}
-                  </p>
+                  <p className="truncate text-xs font-medium">{variant.name}</p>
                   <p className="text-muted-foreground truncate text-xs">
                     {variant.attributeName}
                   </p>
@@ -214,9 +212,7 @@ export default function AllVariantsTable({
             <div className="space-y-3">
               {/* SKU */}
               <div>
-                <label className="text-foreground mb-1 block text-xs font-medium">
-                  SKU
-                </label>
+                <label className="mb-1 block text-xs font-medium">SKU</label>
                 <Input
                   value={variant.sku}
                   onChange={(e) =>
@@ -234,7 +230,7 @@ export default function AllVariantsTable({
               {/* Price and Discount Price */}
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-foreground mb-1 block text-xs font-medium">
+                  <label className="mb-1 block text-xs font-medium">
                     Price <span className="text-destructive">*</span>
                   </label>
                   <div className="flex items-center gap-1">
@@ -257,7 +253,7 @@ export default function AllVariantsTable({
                 </div>
 
                 <div>
-                  <label className="text-foreground mb-1 block text-xs font-medium">
+                  <label className="mb-1 block text-xs font-medium">
                     Discount Price
                   </label>
                   <div className="flex items-center gap-1">
@@ -283,7 +279,7 @@ export default function AllVariantsTable({
               {/* Stock and Status */}
               <div className="flex items-end gap-3">
                 <div className="flex-1">
-                  <label className="text-foreground mb-1 block text-xs font-medium">
+                  <label className="mb-1 block text-xs font-medium">
                     Stock
                   </label>
                   <Input
@@ -313,9 +309,7 @@ export default function AllVariantsTable({
                       )
                     }
                   />
-                  <label className="text-foreground text-xs font-medium">
-                    Active
-                  </label>
+                  <label className="text-xs font-medium">Active</label>
                 </div>
               </div>
             </div>
@@ -328,27 +322,19 @@ export default function AllVariantsTable({
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
-              <TableHead className="text-foreground text-xs font-medium">
-                Variant
-              </TableHead>
-              <TableHead className="text-foreground text-xs font-medium">
-                SKU
-              </TableHead>
-              <TableHead className="text-foreground text-xs font-medium">
+              <TableHead className="text-xs font-medium">Variant</TableHead>
+              <TableHead className="text-xs font-medium">SKU</TableHead>
+              <TableHead className="text-xs font-medium">
                 Price <span className="text-destructive">*</span>
               </TableHead>
-              <TableHead className="text-foreground text-xs font-medium">
+              <TableHead className="text-xs font-medium">
                 Discount Price
               </TableHead>
-              <TableHead className="text-foreground text-xs font-medium">
+              {/* <TableHead className=" text-xs font-medium">
                 Stock
-              </TableHead>
-              <TableHead className="text-foreground text-xs font-medium">
-                Status
-              </TableHead>
-              <TableHead className="text-foreground text-xs font-medium">
-                Action
-              </TableHead>
+              </TableHead> */}
+              <TableHead className="text-xs font-medium">Status</TableHead>
+              <TableHead className="text-xs font-medium">Action</TableHead>
             </TableRow>
           </TableHeader>
 
@@ -401,9 +387,7 @@ export default function AllVariantsTable({
                   </div>
 
                   <div>
-                    <p className="text-foreground text-xs font-medium">
-                      {variant.name}
-                    </p>
+                    <p className="text-xs font-medium">{variant.name}</p>
                     <p className="text-muted-foreground text-xs">
                       {variant.attributeName}
                     </p>
@@ -478,7 +462,7 @@ export default function AllVariantsTable({
                   </div>
                 </TableCell>
 
-                <TableCell>
+                {/* <TableCell>
                   <Input
                     type="number"
                     value={variant.stock}
@@ -493,7 +477,7 @@ export default function AllVariantsTable({
                     placeholder="0"
                     className="w-16"
                   />
-                </TableCell>
+                </TableCell> */}
 
                 <TableCell>
                   <Switch

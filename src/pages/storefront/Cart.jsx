@@ -27,9 +27,7 @@ export default function Cart() {
                 <ShoppingBag className="text-muted-foreground h-16 w-16" />
               </div>
             </div>
-            <h2 className="text-foreground mb-3 text-3xl font-bold">
-              Your cart is empty
-            </h2>
+            <h2 className="mb-3 text-3xl font-bold">Your cart is empty</h2>
             <p className="text-muted-foreground mb-8">
               Looks like you haven't added anything to your cart yet
             </p>
@@ -46,18 +44,14 @@ export default function Cart() {
     );
   }
 
-  const estimatedTax = subtotal * 0.1;
-  const shippingCost = subtotal > 100 ? 0 : 10;
-  const total = subtotal + estimatedTax + shippingCost;
+  const total = subtotal;
 
   return (
     <div className="bg-background min-h-screen">
       <div className="container mx-auto px-4 py-8 lg:py-12">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-foreground text-3xl font-bold lg:text-4xl">
-            Shopping Cart
-          </h1>
+          <h1 className="text-3xl font-bold lg:text-4xl">Shopping Cart</h1>
           <p className="text-muted-foreground mt-2">
             {cartItems.length} {cartItems.length === 1 ? "item" : "items"}
           </p>
@@ -69,13 +63,10 @@ export default function Cart() {
             {cartItems.map((item) => {
               const itemPrice = getItemPrice(item);
               const itemTotal = itemPrice * item.quantity;
-              const hasDiscount =
-                item.productDiscount > 0 &&
-                item.productDiscount < item.productPrice;
+              const hasDiscount = item.unitPrice > item.discountPrice;
               const discountPercentage = hasDiscount
                 ? Math.round(
-                    ((item.productPrice - item.productDiscount) /
-                      item.productPrice) *
+                    ((item.unitPrice - item.discountPrice) / item.unitPrice) *
                       100,
                   )
                 : 0;
@@ -109,19 +100,19 @@ export default function Cart() {
                           <div>
                             <Link
                               to={`${basePath}/shop/${item.productId}`}
-                              className="text-card-foreground hover:text-foreground text-base font-semibold transition-colors lg:text-lg"
+                              className="text-card-foreground hover: text-base font-semibold transition-colors lg:text-lg"
                             >
                               {item.productName}
                             </Link>
-                            {item.selectedVariant && (
+                            {item.hasVariants && item.variant && (
                               <p className="text-muted-foreground mt-1 text-sm">
-                                Variant: {item.selectedVariant.name}
+                                {item.variant.name}: {item.variant.value.name}
                               </p>
                             )}
                           </div>
                           <button
                             onClick={() => removeFromCart(item.id)}
-                            className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-md p-1 transition-colors"
+                            className="text-muted-foreground hover:bg-muted hover: rounded-md p-1 transition-colors"
                             aria-label="Remove item"
                           >
                             <X className="h-5 w-5" />
@@ -130,12 +121,12 @@ export default function Cart() {
 
                         {/* Price */}
                         <div className="mt-2 flex items-center gap-2">
-                          <span className="text-foreground text-lg font-bold">
+                          <span className="text-lg font-bold">
                             ${itemPrice.toFixed(2)}
                           </span>
                           {hasDiscount && (
                             <span className="text-muted-foreground text-sm line-through">
-                              ${item.productPrice.toFixed(2)}
+                              ${item.unitPrice.toFixed(2)}
                             </span>
                           )}
                         </div>
@@ -171,7 +162,7 @@ export default function Cart() {
                           <p className="text-muted-foreground text-xs">
                             Subtotal
                           </p>
-                          <p className="text-foreground text-lg font-bold">
+                          <p className="text-lg font-bold">
                             ${itemTotal.toFixed(2)}
                           </p>
                         </div>
@@ -185,7 +176,7 @@ export default function Cart() {
             {/* Clear Cart */}
             <button
               onClick={clearCart}
-              className="text-muted-foreground hover:text-foreground text-sm underline transition-colors"
+              className="text-muted-foreground hover: text-sm underline transition-colors"
             >
               Clear all items
             </button>
@@ -204,7 +195,7 @@ export default function Cart() {
                   {/* Subtotal */}
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Subtotal</span>
-                    <span className="text-foreground font-semibold">
+                    <span className="font-semibold">
                       ${subtotal.toFixed(2)}
                     </span>
                   </div>
@@ -225,54 +216,10 @@ export default function Cart() {
                   {/* Divider */}
                   <div className="border-t"></div>
 
-                  {/* Tax */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Estimated Tax</span>
-                    <span className="text-foreground font-semibold">
-                      ${estimatedTax.toFixed(2)}
-                    </span>
-                  </div>
-
-                  {/* Shipping */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Shipping</span>
-                    {shippingCost === 0 ? (
-                      <span className="text-success font-semibold">FREE</span>
-                    ) : (
-                      <span className="text-foreground font-semibold">
-                        ${shippingCost.toFixed(2)}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Free Shipping Progress */}
-                  {subtotal < 100 && subtotal > 0 && (
-                    <div className="bg-muted rounded-lg p-3">
-                      <p className="text-muted-foreground mb-2 text-xs">
-                        Add{" "}
-                        <strong className="text-foreground">
-                          ${(100 - subtotal).toFixed(2)}
-                        </strong>{" "}
-                        more for free shipping
-                      </p>
-                      <div className="bg-background h-2 overflow-hidden rounded-full">
-                        <div
-                          className="bg-foreground h-full transition-all"
-                          style={{ width: `${(subtotal / 100) * 100}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Divider */}
-                  <div className="border-t"></div>
-
                   {/* Total */}
                   <div className="flex items-center justify-between">
-                    <span className="text-foreground text-lg font-bold">
-                      Total
-                    </span>
-                    <span className="text-foreground text-2xl font-bold">
+                    <span className="text-lg font-bold">Total</span>
+                    <span className="text-2xl font-bold">
                       ${total.toFixed(2)}
                     </span>
                   </div>
@@ -290,56 +237,11 @@ export default function Cart() {
                 {/* Continue Shopping */}
                 <Link
                   to={`${basePath}/shop`}
-                  className="text-foreground hover:bg-muted mt-3 flex w-full items-center justify-center rounded-md border px-6 py-3.5 text-sm font-semibold transition-colors"
+                  className="hover:bg-muted mt-3 flex w-full items-center justify-center rounded-md border px-6 py-3.5 text-sm font-semibold transition-colors"
                 >
                   Continue Shopping
                 </Link>
               </div>
-
-              {/* Trust Badges */}
-              {/* <div className="rounded-lg border bg-card p-4">
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-success/20">
-                      <span className="text-xs font-bold text-success">✓</span>
-                    </div>
-                    <div>
-                      <p className="font-medium text-foreground">
-                        Secure Checkout
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Your data is protected
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-success/20">
-                      <span className="text-xs font-bold text-success">✓</span>
-                    </div>
-                    <div>
-                      <p className="font-medium text-foreground">
-                        Free Returns
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Within 30 days
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-success/20">
-                      <span className="text-xs font-bold text-success">✓</span>
-                    </div>
-                    <div>
-                      <p className="font-medium text-foreground">
-                        24/7 Support
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        We're here to help
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div> */}
             </div>
           </div>
         </div>

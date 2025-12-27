@@ -107,7 +107,7 @@ export default function ProductSelectionModal({
                     className="h-12 w-12 rounded object-cover"
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="text-foreground truncate text-sm font-medium">
+                    <p className="truncate text-sm font-medium">
                       {product.productName}
                     </p>
                     <p className="text-muted-foreground text-xs">

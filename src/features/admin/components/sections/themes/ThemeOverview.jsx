@@ -55,7 +55,7 @@ export default function ThemeOverview() {
             </Badge>
           )}
 
-          <h2 className="text-foreground text-sm font-semibold">{themeName}</h2>
+          <h2 className="text-sm font-semibold">{themeName}</h2>
 
           <p className="text-muted-foreground max-w-md text-xs leading-relaxed">
             {themeDescription}

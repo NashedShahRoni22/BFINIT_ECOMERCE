@@ -43,7 +43,7 @@ export default function ThemeEditorHeader() {
     <nav className="bg-background flex items-center justify-between border-b px-6 py-2.5">
       {/* Left: Store Identity */}
       <div className="flex items-center gap-3">
-        <h1 className="text-foreground text-sm font-semibold">My Store</h1>
+        <h1 className="text-sm font-semibold">My Store</h1>
         <div className="bg-border h-5 w-px" />
         <span className="text-muted-foreground text-xs font-medium">
           Theme Editor
@@ -56,7 +56,7 @@ export default function ThemeEditorHeader() {
           onClick={() => setIsDesktopView(true)}
           size="sm"
           variant="ghost"
-          className="data-[active=true]:bg-background data-[active=true]:text-foreground text-muted-foreground h-7 w-9 p-0 transition-colors hover:cursor-pointer data-[active=true]:shadow-sm"
+          className="data-[active=true]:bg-background data-[active=true]: text-muted-foreground h-7 w-9 p-0 transition-colors hover:cursor-pointer data-[active=true]:shadow-sm"
           data-active={isDesktopView}
           title="Desktop view"
         >
@@ -66,7 +66,7 @@ export default function ThemeEditorHeader() {
           onClick={() => setIsDesktopView(false)}
           size="sm"
           variant="ghost"
-          className="data-[active=true]:bg-background data-[active=true]:text-foreground text-muted-foreground h-7 w-9 p-0 transition-colors hover:cursor-pointer data-[active=true]:shadow-sm"
+          className="data-[active=true]:bg-background data-[active=true]: text-muted-foreground h-7 w-9 p-0 transition-colors hover:cursor-pointer data-[active=true]:shadow-sm"
           data-active={!isDesktopView}
           title="Mobile view"
         >

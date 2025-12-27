@@ -151,7 +151,7 @@ export const adminSidebarLinks = [
 
 export const quickNavigationLinks = [
   { name: "Orders", icon: ShoppingCart, url: "/orders" },
-  { name: "Products", icon: Package, url: "/products/manage-product" },
+  { name: "Products", icon: Package, url: "/products/inventory" },
   // { name: "Customers", icon: FaUsers, url: "" },
   { name: "Blogs", icon: Newspaper, url: "/blogs/manage" },
   // { name: "Payments", icon: FaCreditCard, url: "" },

@@ -15,9 +15,7 @@ export default function DNSConfiguration({ data }) {
       {/* dns header */}
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-0.5">
-          <h3 className="text-foreground text-sm font-semibold">
-            DNS Configuration
-          </h3>
+          <h3 className="text-sm font-semibold">DNS Configuration</h3>
           <p className="text-muted-foreground text-xs">
             Add these records to your domain&apos;s DNS settings. You&apos;ll
             need to add these records in your domain registrar&apos;s control
@@ -48,15 +46,11 @@ export default function DNSConfiguration({ data }) {
 
         {/* required records */}
         <div className="space-y-4">
-          <h3 className="text-foreground text-sm font-semibold">
-            Required DNS Records
-          </h3>
+          <h3 className="text-sm font-semibold">Required DNS Records</h3>
 
           {/* A RECORD */}
           <div className="border-border bg-card rounded-lg border p-5">
-            <h4 className="text-foreground text-xs font-semibold">
-              Record 1: A Record
-            </h4>
+            <h4 className="text-xs font-semibold">Record 1: A Record</h4>
             <p className="text-muted-foreground mt-1 text-xs">
               Points your domain to our server
             </p>
@@ -67,7 +61,7 @@ export default function DNSConfiguration({ data }) {
                   HOST/NAME
                 </p>
                 <div className="flex items-center gap-2">
-                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-xs">
+                  <div className="border-border bg-muted flex-1 rounded-md border px-3 py-2 font-mono text-xs">
                     @
                   </div>
                   <Button
@@ -90,7 +84,7 @@ export default function DNSConfiguration({ data }) {
                   VALUE/POINTS TO
                 </p>
                 <div className="flex items-center gap-2">
-                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-xs">
+                  <div className="border-border bg-muted flex-1 rounded-md border px-3 py-2 font-mono text-xs">
                     {data?.dnsData?.aRecord}
                   </div>
                   <Button
@@ -113,7 +107,7 @@ export default function DNSConfiguration({ data }) {
                   TTL
                 </p>
                 <div className="flex items-center gap-2">
-                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-xs">
+                  <div className="border-border bg-muted flex-1 rounded-md border px-3 py-2 font-mono text-xs">
                     3600
                   </div>
                   <Button
@@ -135,9 +129,7 @@ export default function DNSConfiguration({ data }) {
 
           {/* CNAME Record */}
           <div className="border-border bg-card rounded-lg border p-5">
-            <h4 className="text-foreground text-xs font-semibold">
-              Record 2: CNAME Record
-            </h4>
+            <h4 className="text-xs font-semibold">Record 2: CNAME Record</h4>
             <p className="text-muted-foreground mt-1 text-xs">
               Connects your www subdomain
             </p>
@@ -148,7 +140,7 @@ export default function DNSConfiguration({ data }) {
                   HOST/NAME
                 </p>
                 <div className="flex items-center gap-2">
-                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-xs">
+                  <div className="border-border bg-muted flex-1 rounded-md border px-3 py-2 font-mono text-xs">
                     www
                   </div>
                   <Button
@@ -171,7 +163,7 @@ export default function DNSConfiguration({ data }) {
                   VALUE/POINTS TO
                 </p>
                 <div className="flex items-center gap-2">
-                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-xs">
+                  <div className="border-border bg-muted flex-1 rounded-md border px-3 py-2 font-mono text-xs">
                     {data?.dnsData?.cName}
                   </div>
                   <Button
@@ -194,7 +186,7 @@ export default function DNSConfiguration({ data }) {
                   TTL
                 </p>
                 <div className="flex items-center gap-2">
-                  <div className="border-border bg-muted text-foreground flex-1 rounded-md border px-3 py-2 font-mono text-xs">
+                  <div className="border-border bg-muted flex-1 rounded-md border px-3 py-2 font-mono text-xs">
                     Default
                   </div>
                   <Button

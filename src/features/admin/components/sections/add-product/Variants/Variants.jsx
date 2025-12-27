@@ -296,11 +296,14 @@ export default function Variants({ form }) {
       <CollapsibleContent className="mt-5">
         {/* Add variant heading */}
         <div className="flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <h3 className="text-foreground text-xs font-semibold">
-            Variant Attributes
-          </h3>
-          <Button type="button" size="sm" onClick={addAttribute}>
-            <Plus />
+          <h3 className="text-xs font-semibold">Variant Attributes</h3>
+          <Button
+            type="button"
+            size="sm"
+            onClick={addAttribute}
+            className="text-xs"
+          >
+            <Plus className="h-3.5 w-3.5" />
             Add Attribute
           </Button>
         </div>

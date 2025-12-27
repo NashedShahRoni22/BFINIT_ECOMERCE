@@ -55,13 +55,13 @@ export default function DomainField({ form, isDomainIntegrated, data }) {
           toast.success(
             newStatus
               ? "Domain activated successfully"
-              : "Domain deactivated successfully"
+              : "Domain deactivated successfully",
           );
         },
         onError: () => {
           toast.error("Failed to update domain status");
         },
-      }
+      },
     );
   };
 
@@ -70,7 +70,7 @@ export default function DomainField({ form, isDomainIntegrated, data }) {
       <div className="bg-card rounded-lg border p-5">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-0.5">
-            <h3 className="text-foreground text-sm font-semibold">
+            <h3 className="text-sm font-semibold">
               {isDomainIntegrated
                 ? "Update Your Domain"
                 : "Connect Your Domain"}
@@ -111,7 +111,7 @@ export default function DomainField({ form, isDomainIntegrated, data }) {
         {/* Current Domain */}
         {isDomainIntegrated && (
           <div className="bg-muted/50 mt-5 rounded-lg border px-3.5 py-2.5">
-            <p className="text-foreground text-xs">
+            <p className="text-xs">
               <span className="text-muted-foreground">Current Domain:</span>{" "}
               <span className="font-medium">{data?.domainName}</span>
               {!isActive && (

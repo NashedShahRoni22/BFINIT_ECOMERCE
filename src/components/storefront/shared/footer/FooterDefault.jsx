@@ -32,20 +32,18 @@ export default function FooterDefault({ content }) {
 
   // Filter out social links that are empty
   const activeSocialLinks = Object.entries(content?.socialLinks)?.filter(
-    ([_, url]) => url && url.trim() !== ""
+    ([_, url]) => url && url.trim() !== "",
   );
 
   return (
-    <footer className="bg-card border-t border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer className="bg-card border-border border-t">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 mb-8">
+        <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5 lg:gap-12">
           {/* Company Info */}
           <div className="lg:col-span-2">
-            <h3 className="text-lg font-semibold text-foreground mb-3">
-              Agatha Store
-            </h3>
-            <p className="text-muted-foreground text-sm mb-6 leading-relaxed max-w-md">
+            <h3 className="mb-3 text-lg font-semibold">Agatha Store</h3>
+            <p className="text-muted-foreground mb-6 max-w-md text-sm leading-relaxed">
               {content?.description}
             </p>
 
@@ -54,22 +52,22 @@ export default function FooterDefault({ content }) {
               <div className="space-y-3 text-sm">
                 <a
                   href={content?.contact?.email}
-                  className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-muted-foreground hover: flex items-center gap-2 transition-colors"
                 >
-                  <Mail className="w-4 h-4 shrink-0" />
+                  <Mail className="h-4 w-4 shrink-0" />
                   <span>{content?.contact?.email}</span>
                 </a>
 
                 <a
                   href={content?.contact?.mobile}
-                  className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-muted-foreground hover: flex items-center gap-2 transition-colors"
                 >
-                  <Phone className="w-4 h-4 shrink-0" />
+                  <Phone className="h-4 w-4 shrink-0" />
                   <span>{content?.contact?.mobile}</span>
                 </a>
 
-                <div className="flex items-start gap-2 text-muted-foreground">
-                  <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
+                <div className="text-muted-foreground flex items-start gap-2">
+                  <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
                   <span className="leading-relaxed">
                     {content?.contact?.address}
                   </span>
@@ -81,7 +79,7 @@ export default function FooterDefault({ content }) {
           {/* Company Links */}
           {companyLinks && companyLinks.length > 0 && (
             <div>
-              <h4 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">
+              <h4 className="mb-4 text-sm font-semibold tracking-wider uppercase">
                 Company
               </h4>
               <ul className="space-y-3">
@@ -89,7 +87,7 @@ export default function FooterDefault({ content }) {
                   <li key={index}>
                     <a
                       href={link.url}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-block"
+                      className="text-muted-foreground hover: inline-block text-sm transition-colors"
                     >
                       {link.label}
                     </a>
@@ -102,7 +100,7 @@ export default function FooterDefault({ content }) {
           {/* Shop Links */}
           {shopLinks && shopLinks.length > 0 && (
             <div>
-              <h4 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">
+              <h4 className="mb-4 text-sm font-semibold tracking-wider uppercase">
                 Shop
               </h4>
               <ul className="space-y-3">
@@ -110,7 +108,7 @@ export default function FooterDefault({ content }) {
                   <li key={index}>
                     <a
                       href={link.url}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-block"
+                      className="text-muted-foreground hover: inline-block text-sm transition-colors"
                     >
                       {link.label}
                     </a>
@@ -123,7 +121,7 @@ export default function FooterDefault({ content }) {
           {/* Support Links */}
           {supportLinks && supportLinks.length > 0 && (
             <div>
-              <h4 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">
+              <h4 className="mb-4 text-sm font-semibold tracking-wider uppercase">
                 Support
               </h4>
               <ul className="space-y-3">
@@ -131,7 +129,7 @@ export default function FooterDefault({ content }) {
                   <li key={index}>
                     <a
                       href={link.url}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-block"
+                      className="text-muted-foreground hover: inline-block text-sm transition-colors"
                     >
                       {link.label}
                     </a>
@@ -143,13 +141,13 @@ export default function FooterDefault({ content }) {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-border"></div>
+        <div className="border-border border-t"></div>
 
         {/* Bottom Footer */}
         <div className="pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+          <div className="mb-6 flex flex-col items-center justify-between gap-4 md:flex-row">
             {/* Copyright */}
-            <p className="text-sm text-muted-foreground text-center md:text-left">
+            <p className="text-muted-foreground text-center text-sm md:text-left">
               {content?.copyright}
             </p>
 
@@ -161,10 +159,10 @@ export default function FooterDefault({ content }) {
                     href={content?.socialLinks?.facebook}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-muted-foreground hover: transition-colors"
                     aria-label="Facebook"
                   >
-                    <Facebook className="w-5 h-5" />
+                    <Facebook className="h-5 w-5" />
                   </a>
                 )}
                 {content?.socialLinks?.twitter && (
@@ -172,10 +170,10 @@ export default function FooterDefault({ content }) {
                     href={content?.socialLinks?.twitter}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-muted-foreground hover: transition-colors"
                     aria-label="Twitter"
                   >
-                    <Twitter className="w-5 h-5" />
+                    <Twitter className="h-5 w-5" />
                   </a>
                 )}
                 {content?.socialLinks?.instagram && (
@@ -183,10 +181,10 @@ export default function FooterDefault({ content }) {
                     href={content?.socialLinks?.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-muted-foreground hover: transition-colors"
                     aria-label="Instagram"
                   >
-                    <Instagram className="w-5 h-5" />
+                    <Instagram className="h-5 w-5" />
                   </a>
                 )}
                 {content?.socialLinks?.youtube && (
@@ -194,10 +192,10 @@ export default function FooterDefault({ content }) {
                     href={content?.socialLinks?.youtube}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-muted-foreground hover: transition-colors"
                     aria-label="LinkedIn"
                   >
-                    <Youtube className="w-5 h-5" />
+                    <Youtube className="h-5 w-5" />
                   </a>
                 )}
               </div>

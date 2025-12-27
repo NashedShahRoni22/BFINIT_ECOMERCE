@@ -40,10 +40,8 @@ export default function Stores() {
 
         <div className="flex items-center gap-4 pb-2">
           <span className="text-muted-foreground text-sm">
-            <span className="text-foreground font-semibold">
-              {stores?.data?.length || 0}
-            </span>
-            /{user?.data?.storeLimit || 0} stores
+            <span className="font-semibold">{stores?.data?.length || 0}</span>/
+            {user?.data?.storeLimit || 0} stores
           </span>
 
           {user?.data?.storeLimit > stores?.data?.length && (

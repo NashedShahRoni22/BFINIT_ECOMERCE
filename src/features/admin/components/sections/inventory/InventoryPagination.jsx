@@ -72,9 +72,9 @@ export default function InventoryPagination({ data }) {
         className="text-muted-foreground text-xs whitespace-nowrap"
         aria-live="polite"
       >
-        Showing <span className="text-foreground">{startItem}</span> to{" "}
-        <span className="text-foreground">{endItem}</span> of{" "}
-        <span className="text-foreground">{totalProducts}</span> products
+        Showing <span className="">{startItem}</span> to{" "}
+        <span className="">{endItem}</span> of{" "}
+        <span className="">{totalProducts}</span> products
       </p>
 
       {totalPages > 1 && (

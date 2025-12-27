@@ -60,14 +60,12 @@ export default function AttributeCard({
           />
         ) : (
           <div className="flex min-w-0 flex-1 items-center gap-2">
-            <p className="text-foreground truncate text-xs font-medium">
-              {nameValue}
-            </p>
+            <p className="truncate text-xs font-medium">{nameValue}</p>
             <Button
               size="sm"
               variant="ghost"
               onClick={() => setIsEditingName(true)}
-              className="text-muted-foreground hover:text-foreground h-auto shrink-0 p-1 text-xs"
+              className="text-muted-foreground hover: h-auto shrink-0 p-1 text-xs"
             >
               Edit
             </Button>
@@ -128,7 +126,7 @@ export default function AttributeCard({
             disabled={!inputValue.trim()}
             size="sm"
             variant="outline"
-            className="shrink-0"
+            className="shrink-0 text-xs"
           >
             Add
           </Button>
@@ -142,7 +140,7 @@ export default function AttributeCard({
           />
           <Label
             htmlFor={`required-${attribute.id}`}
-            className="flex cursor-pointer items-center gap-1.5 text-sm font-normal"
+            className="flex cursor-pointer items-center gap-1.5 text-xs"
           >
             Required
             <TooltipProvider>

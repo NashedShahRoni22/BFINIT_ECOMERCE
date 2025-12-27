@@ -16,7 +16,7 @@ const badgeVariants = cva(
         destructive:
           "justify-center rounded-md border px-2 py-0.5 text-xs font-medium gap-1 border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
-          "justify-center rounded-md border px-2 py-0.5 text-xs font-medium gap-1 text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
+          "justify-center rounded-md border px-2 py-0.5 text-xs font-medium gap-1  [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
         success:
           "gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-medium border-success/20 bg-success/10 text-success dark:border-success/30 dark:bg-success/20",
         warning:
@@ -29,7 +29,7 @@ const badgeVariants = cva(
     defaultVariants: {
       variant: "default",
     },
-  }
+  },
 );
 
 function Badge({
@@ -54,7 +54,7 @@ function Badge({
             variant === "success" && "bg-success",
             variant === "neutral" && "bg-muted-foreground",
             variant === "info" && "bg-info",
-            variant === "warning" && "bg-warning"
+            variant === "warning" && "bg-warning",
           )}
           aria-hidden="true"
         />

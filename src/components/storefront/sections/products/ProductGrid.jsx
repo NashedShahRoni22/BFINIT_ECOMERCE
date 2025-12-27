@@ -43,7 +43,7 @@ export default function ProductGrid({ content }) {
   return (
     <div className="bg-muted px-8 py-16">
       {content?.showTitle && (
-        <h2 className="text-foreground mb-10 text-center text-4xl font-bold">
+        <h2 className="mb-10 text-center text-4xl font-bold">
           {content.title}
         </h2>
       )}

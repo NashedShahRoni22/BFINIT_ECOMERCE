@@ -199,10 +199,8 @@ export default function InventoryTableRow({ product }) {
         description={
           <>
             Are you sure you want to delete{" "}
-            <span className="text-foreground font-medium">
-              &quot;{productName}&quot;
-            </span>
-            ? This action cannot be undone.
+            <span className="font-medium">&quot;{productName}&quot;</span>? This
+            action cannot be undone.
           </>
         }
         onConfirm={handleProductDelete}

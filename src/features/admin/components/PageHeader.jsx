@@ -14,13 +14,11 @@ export default function PageHeader({
         <Icon className="text-muted-foreground h-4 w-4" />
       </div>
       <div className="flex-1">
-        <h1 className="text-foreground text-sm font-semibold">{title}</h1>
+        <h1 className="text-sm font-semibold">{title}</h1>
         <p className="text-muted-foreground mt-0.5 text-xs">
           {description}{" "}
           {showStoreName && (
-            <span className="text-foreground font-medium">
-              {selectedStore?.storeName}
-            </span>
+            <span className="font-medium">{selectedStore?.storeName}</span>
           )}
         </p>
       </div>

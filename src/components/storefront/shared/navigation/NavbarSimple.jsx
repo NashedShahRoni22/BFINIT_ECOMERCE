@@ -34,14 +34,14 @@ export default function NavbarSimple({ content }) {
           {/* Mobile menu button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="hover:bg-accent text-foreground rounded-md p-2 lg:hidden"
+            className="hover:bg-accent rounded-md p-2 lg:hidden"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
 
           {/* Logo */}
           <div className="flex shrink-0 items-center">
-            <Link to={basePath} className="text-foreground text-2xl font-bold">
+            <Link to={basePath} className="text-2xl font-bold">
               {content.logoText}
             </Link>
           </div>
@@ -52,7 +52,7 @@ export default function NavbarSimple({ content }) {
               <Link
                 key={link.name}
                 to={`${basePath}${link.href}`}
-                className="text-foreground hover:text-primary flex items-center gap-1 text-sm font-medium transition-colors duration-200"
+                className="hover:text-primary flex items-center gap-1 text-sm font-medium transition-colors duration-200"
               >
                 {link.name}
                 {link.hasDropdown && <ChevronDown size={16} />}
@@ -82,7 +82,7 @@ export default function NavbarSimple({ content }) {
               ) : (
                 <button
                   onClick={() => setSearchOpen(true)}
-                  className="hover:bg-accent text-foreground rounded-md p-2 transition-colors"
+                  className="hover:bg-accent rounded-md p-2 transition-colors"
                   aria-label="Search"
                 >
                   <Search size={20} />
@@ -91,18 +91,18 @@ export default function NavbarSimple({ content }) {
             </div>
 
             {/* Wishlist - Desktop only */}
-            <button
-              className="hover:bg-accent text-foreground hidden rounded-md p-2 transition-colors sm:block"
+            {/* <button
+              className="hover:bg-accent  hidden rounded-md p-2 transition-colors sm:block"
               aria-label="Wishlist"
             >
               <Heart size={20} />
-            </button>
+            </button> */}
 
             {/* Account Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setAccountDropdownOpen(!accountDropdownOpen)}
-                className="hover:bg-accent text-foreground rounded-md p-2 transition-colors"
+                className="hover:bg-accent rounded-md p-2 transition-colors"
                 aria-label="Account"
               >
                 <User size={20} />
@@ -110,19 +110,19 @@ export default function NavbarSimple({ content }) {
 
               {accountDropdownOpen && (
                 <div className="bg-popover border-border absolute right-0 z-50 mt-2 w-48 rounded-lg border py-2 shadow-lg">
-                  <a
-                    href="#"
+                  <Link
+                    to={`${basePath}/login`}
                     className="text-popover-foreground hover:bg-accent block px-4 py-2 text-sm transition-colors"
                   >
                     Sign In
-                  </a>
-                  <a
-                    href="#"
+                  </Link>
+                  <Link
+                    to={`${basePath}/signup`}
                     className="text-popover-foreground hover:bg-accent block px-4 py-2 text-sm transition-colors"
                   >
                     Create Account
-                  </a>
-                  <hr className="border-border my-2" />
+                  </Link>
+                  {/* <hr className="border-border my-2" />
                   <a
                     href="#"
                     className="text-popover-foreground hover:bg-accent block px-4 py-2 text-sm transition-colors"
@@ -140,7 +140,7 @@ export default function NavbarSimple({ content }) {
                     className="text-popover-foreground hover:bg-accent block px-4 py-2 text-sm transition-colors"
                   >
                     Settings
-                  </a>
+                  </a> */}
                 </div>
               )}
             </div>
@@ -148,7 +148,7 @@ export default function NavbarSimple({ content }) {
             {/* Cart */}
             <Link
               to={`${basePath}/cart`}
-              className="hover:bg-accent text-foreground relative rounded-md p-2 transition-colors"
+              className="hover:bg-accent relative rounded-md p-2 transition-colors"
             >
               <ShoppingCart size={20} />
               <span className="bg-destructive text-destructive-foreground absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold">
@@ -167,7 +167,7 @@ export default function NavbarSimple({ content }) {
               <a
                 key={link.name}
                 href={link.href}
-                className="text-foreground hover:bg-accent block rounded-md px-3 py-2 text-base font-medium transition-colors"
+                className="hover:bg-accent block rounded-md px-3 py-2 text-base font-medium transition-colors"
               >
                 {link.name}
               </a>
@@ -177,13 +177,13 @@ export default function NavbarSimple({ content }) {
             <hr className="border-border my-4" />
             <a
               href="#"
-              className="text-foreground hover:bg-accent block rounded-md px-3 py-2 text-base font-medium transition-colors"
+              className="hover:bg-accent block rounded-md px-3 py-2 text-base font-medium transition-colors"
             >
               Wishlist
             </a>
             <a
               href="#"
-              className="text-foreground hover:bg-accent block rounded-md px-3 py-2 text-base font-medium transition-colors"
+              className="hover:bg-accent block rounded-md px-3 py-2 text-base font-medium transition-colors"
             >
               My Orders
             </a>

@@ -112,9 +112,7 @@ export default function ImageUploadField({ field, value, onChange }) {
 
   return (
     <div className="space-y-2">
-      <Label className="text-foreground text-xs font-medium">
-        {field.label}
-      </Label>
+      <Label className="text-xs font-medium">{field.label}</Label>
       {field.helpText && (
         <p className="text-muted-foreground -mt-0.5 text-[11px] leading-relaxed">
           {field.helpText}
@@ -168,9 +166,7 @@ export default function ImageUploadField({ field, value, onChange }) {
                 size={18}
                 className="text-muted-foreground mb-1.5 animate-spin"
               />
-              <span className="text-foreground text-xs font-medium">
-                Uploading...
-              </span>
+              <span className="text-xs font-medium">Uploading...</span>
             </>
           ) : (
             <>

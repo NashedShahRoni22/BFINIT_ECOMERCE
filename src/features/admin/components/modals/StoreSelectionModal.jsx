@@ -94,7 +94,7 @@ export default function StoreSelectionModal() {
       <DialogContent className="w-[calc(100%-2rem)] max-w-[400px] gap-0 p-0 sm:w-full [&>button]:hidden">
         {/* Header */}
         <DialogHeader className="border-b px-4 py-3 sm:px-4">
-          <DialogTitle className="text-foreground text-sm font-semibold sm:text-sm">
+          <DialogTitle className="text-sm font-semibold sm:text-sm">
             Select a store
           </DialogTitle>
           <DialogDescription className="text-muted-foreground text-[11px] leading-relaxed sm:text-[11px]">
@@ -127,7 +127,7 @@ export default function StoreSelectionModal() {
 
                   {/* Store Info */}
                   <div className="min-w-0 flex-1">
-                    <p className="text-foreground truncate text-sm font-medium sm:text-xs">
+                    <p className="truncate text-sm font-medium sm:text-xs">
                       {store.storeName}
                     </p>
                     {store.storeDomain && (
@@ -144,9 +144,7 @@ export default function StoreSelectionModal() {
               <div className="bg-muted/50 mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full border sm:h-10 sm:w-10">
                 <Store className="text-muted-foreground h-5 w-5 sm:h-4 sm:w-4" />
               </div>
-              <p className="text-foreground text-sm font-medium sm:text-xs">
-                No stores yet
-              </p>
+              <p className="text-sm font-medium sm:text-xs">No stores yet</p>
               <p className="text-muted-foreground mt-1 text-xs leading-relaxed sm:text-[11px]">
                 Create your first store to get started
               </p>
@@ -158,7 +156,7 @@ export default function StoreSelectionModal() {
         <div className="border-t px-3 py-3 sm:py-2.5">
           <button
             onClick={handleCreateStore}
-            className="text-foreground hover:bg-accent focus-visible:bg-accent active:bg-accent flex w-full items-center justify-center gap-1.5 rounded-md px-2.5 py-2 text-sm font-medium transition-colors hover:cursor-pointer focus-visible:outline-none sm:text-xs"
+            className="hover:bg-accent focus-visible:bg-accent active:bg-accent flex w-full items-center justify-center gap-1.5 rounded-md px-2.5 py-2 text-sm font-medium transition-colors hover:cursor-pointer focus-visible:outline-none sm:text-xs"
           >
             <Plus className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
             Create new store

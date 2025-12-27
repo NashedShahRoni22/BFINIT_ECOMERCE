@@ -95,9 +95,7 @@ export default function ProductSourceField({ field, value, onChange }) {
     <>
       <div className="space-y-3">
         <div className="space-y-2">
-          <Label className="text-foreground text-xs font-medium">
-            {field.label}
-          </Label>
+          <Label className="text-xs font-medium">{field.label}</Label>
           {field.helpText && (
             <p className="text-muted-foreground -mt-0.5 text-[11px] leading-relaxed">
               {field.helpText}
@@ -185,9 +183,7 @@ function SelectedProductChip({ product, onRemove }) {
         className="h-8 w-8 rounded object-cover"
       />
       <div className="min-w-0 flex-1">
-        <p className="text-foreground truncate text-xs font-medium">
-          {productName}
-        </p>
+        <p className="truncate text-xs font-medium">{productName}</p>
         <p className="text-muted-foreground text-[10px]">
           {formatPrice(productPrice?.$numberDecimal)}
         </p>

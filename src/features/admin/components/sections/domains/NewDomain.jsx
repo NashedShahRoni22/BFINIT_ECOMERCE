@@ -21,9 +21,7 @@ export default function NewDomain() {
     <div className="bg-card rounded-lg border p-5">
       {/* Header Section */}
       <div className="mb-5 space-y-0.5">
-        <h3 className="text-foreground text-sm font-semibold">
-          Get Your Custom Domain
-        </h3>
+        <h3 className="text-sm font-semibold">Get Your Custom Domain</h3>
         <p className="text-muted-foreground text-xs">
           Purchase a professional domain name for your store from our trusted
           partners
@@ -37,7 +35,7 @@ export default function NewDomain() {
             key={feat?.id}
             className="bg-card flex flex-col items-center gap-2 rounded-lg border p-3 text-center"
           >
-            <feat.icon className="text-foreground h-4 w-4" />
+            <feat.icon className="h-4 w-4" />
             <p className="text-muted-foreground text-xs">{feat?.title}</p>
           </div>
         ))}
@@ -52,7 +50,7 @@ export default function NewDomain() {
             </div>
             <div className="flex-1 space-y-2">
               <div className="space-y-0.5">
-                <h4 className="text-foreground text-xs font-semibold">
+                <h4 className="text-xs font-semibold">
                   BFINIT Domain Registration
                 </h4>
                 <p className="text-muted-foreground text-xs">

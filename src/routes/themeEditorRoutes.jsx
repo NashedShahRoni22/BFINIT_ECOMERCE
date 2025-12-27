@@ -8,6 +8,8 @@ import Cart from "@/pages/storefront/Cart";
 import Contact from "@/pages/storefront/Contact";
 import About from "@/pages/storefront/About";
 import Shop from "@/pages/storefront/Shop";
+import Signup from "@/pages/storefront/Signup";
+import CheckoutPage from "@/components/storefront/checkout/checkout";
 
 export const themeEditorRoutes = {
   path: "/stores/:storeId/theme-editor",
@@ -44,6 +46,14 @@ export const themeEditorRoutes = {
     {
       path: "contact",
       element: <Contact />,
+    },
+    {
+      path: "checkout",
+      element: <CheckoutPage />,
+    },
+    {
+      path: "signup",
+      element: <Signup />,
     },
   ],
 };

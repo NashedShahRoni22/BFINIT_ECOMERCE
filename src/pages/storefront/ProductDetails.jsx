@@ -154,9 +154,7 @@ export default function ProductDetails() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <h2 className="text-foreground text-2xl font-semibold">
-            Product not found
-          </h2>
+          <h2 className="text-2xl font-semibold">Product not found</h2>
           <Button onClick={() => navigate("/")} className="mt-4">
             Back to Home
           </Button>
@@ -241,9 +239,7 @@ export default function ProductDetails() {
           <div className="space-y-6">
             {/* Title and Rating */}
             <div>
-              <h1 className="text-foreground text-3xl font-bold">
-                {product.productName}
-              </h1>
+              <h1 className="text-3xl font-bold">{product.productName}</h1>
               <div className="mt-2 flex items-center gap-2">
                 <div className="flex items-center">
                   {[...Array(5)].map((_, i) => (
@@ -275,7 +271,7 @@ export default function ProductDetails() {
             {/* Price */}
             <div className="space-y-1">
               <div className="flex items-baseline gap-3">
-                <span className="text-foreground text-4xl font-bold">
+                <span className="text-4xl font-bold">
                   ${getCurrentPrice().toFixed(2)}
                 </span>
                 {getDiscountPrice() && (
@@ -390,9 +386,9 @@ export default function ProductDetails() {
                 <ShoppingCart className="mr-2 h-5 w-5" />
                 Add to Cart
               </Button>
-              <Button size="lg" variant="outline">
+              {/* <Button size="lg" variant="outline">
                 <Heart className="h-5 w-5" />
-              </Button>
+              </Button> */}
             </div>
 
             {/* Additional Info */}
@@ -440,9 +436,7 @@ export default function ProductDetails() {
         {/* Description */}
         {product.productDescription && (
           <div className="mt-12">
-            <h2 className="text-foreground mb-4 text-2xl font-bold">
-              Product Description
-            </h2>
+            <h2 className="mb-4 text-2xl font-bold">Product Description</h2>
             <div
               className="prose prose-sm border-border bg-card max-w-none rounded-lg border p-6"
               dangerouslySetInnerHTML={{ __html: product.productDescription }}

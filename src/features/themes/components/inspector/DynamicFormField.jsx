@@ -18,10 +18,7 @@ export default function DynamicFormField({ field, value, onChange }) {
     case "text":
       return (
         <div className="space-y-2">
-          <Label
-            htmlFor={field.key}
-            className="text-foreground text-xs font-medium"
-          >
+          <Label htmlFor={field.key} className="text-xs font-medium">
             {field.label}
           </Label>
           {field.helpText && (
@@ -43,10 +40,7 @@ export default function DynamicFormField({ field, value, onChange }) {
     case "textarea":
       return (
         <div className="space-y-2">
-          <Label
-            htmlFor={field.key}
-            className="text-foreground text-xs font-medium"
-          >
+          <Label htmlFor={field.key} className="text-xs font-medium">
             {field.label}
           </Label>
           {field.helpText && (
@@ -68,10 +62,7 @@ export default function DynamicFormField({ field, value, onChange }) {
     case "select":
       return (
         <div className="space-y-2">
-          <Label
-            htmlFor={field.key}
-            className="text-foreground text-xs font-medium"
-          >
+          <Label htmlFor={field.key} className="text-xs font-medium">
             {field.label}
           </Label>
           {field.helpText && (
@@ -134,7 +125,7 @@ export default function DynamicFormField({ field, value, onChange }) {
           <div className="space-y-1">
             <Label
               htmlFor={field.key}
-              className="text-xs font-medium leading-none cursor-pointer"
+              className="cursor-pointer text-xs leading-none font-medium"
             >
               {field.label}
             </Label>

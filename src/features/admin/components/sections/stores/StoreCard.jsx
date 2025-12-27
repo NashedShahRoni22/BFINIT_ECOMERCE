@@ -64,7 +64,7 @@ export default function StoreCard({ store = {} }) {
           <div className="mt-1 min-w-0 flex-1">
             <Link
               to={`/stores/preview/${storeId}`}
-              className="text-foreground block truncate text-sm font-semibold hover:underline"
+              className="block truncate text-sm font-semibold hover:underline"
             >
               {storeName}
             </Link>

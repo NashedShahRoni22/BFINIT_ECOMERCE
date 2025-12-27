@@ -28,7 +28,7 @@ export default function DynamicBreadcrumb({ items = [], className = "" }) {
                 {item.dropdown ? (
                   // Dropdown item
                   <DropdownMenu>
-                    <DropdownMenuTrigger className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-xs font-normal transition-colors [&_svg]:pointer-events-none [&_svg]:shrink-0">
+                    <DropdownMenuTrigger className="text-muted-foreground hover: flex items-center gap-1 text-xs font-normal transition-colors [&_svg]:pointer-events-none [&_svg]:shrink-0">
                       {item.label}
                       <ChevronDownIcon className="h-3 w-3" />
                     </DropdownMenuTrigger>
@@ -48,7 +48,7 @@ export default function DynamicBreadcrumb({ items = [], className = "" }) {
                   </DropdownMenu>
                 ) : isLast ? (
                   // Last item (current page)
-                  <BreadcrumbPage className="text-foreground text-xs font-medium">
+                  <BreadcrumbPage className="text-xs font-medium">
                     {item.label}
                   </BreadcrumbPage>
                 ) : (
@@ -56,7 +56,7 @@ export default function DynamicBreadcrumb({ items = [], className = "" }) {
                   <BreadcrumbLink asChild>
                     <Link
                       to={item.href}
-                      className="text-muted-foreground hover:text-foreground text-xs font-normal transition-colors"
+                      className="text-muted-foreground hover: text-xs font-normal transition-colors"
                     >
                       {item.label}
                     </Link>

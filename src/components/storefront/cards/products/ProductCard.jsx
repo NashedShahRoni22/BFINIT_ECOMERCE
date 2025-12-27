@@ -1,12 +1,12 @@
+import { useState } from "react";
 import { Link } from "react-router";
 import { ShoppingCart, Heart, Eye, Star, Image, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useBasePath from "@/hooks/useBasePath";
 import { formatPrice } from "@/utils/formatPrice";
 import { getDiscountPercent } from "@/utils/products";
-import { useState } from "react";
-import VariantSelectorModal from "../../modals/VariantSelectorModal";
 import useCart from "@/hooks/useCart";
+import VariantSelectorModal from "../../modals/VariantSelectorModal";
 
 export default function ProductCard({ product }) {
   const {
@@ -40,9 +40,11 @@ export default function ProductCard({ product }) {
     : productDiscount;
 
   const hasVariants = variants?.enabled && variants?.attributes?.length > 0;
+  const hasRequiredVariants =
+    hasVariants && variants.attributes.some((attr) => attr.required === true);
+
   const discountPercent = getDiscountPercent(originalPrice, originalDiscount);
 
-  // Determine which badge to show (priority order)
   const badge = flash_sale
     ? {
         text: "Flash Sale",
@@ -70,10 +72,10 @@ export default function ProductCard({ product }) {
               : null;
 
   const handleAddToCart = () => {
-    if (hasVariants) {
+    if (hasRequiredVariants) {
       setShowVariantModal(true);
     } else {
-      addToCart(product, 1, null);
+      addToCart(product, 1);
     }
   };
 
@@ -130,13 +132,13 @@ export default function ProductCard({ product }) {
                 <Eye />
               </Link>
             </Button>
-            <Button
+            {/* <Button
               size="icon"
               variant="secondary"
               className="bg-background/95 hover:bg-primary hover:text-primary-foreground h-9 w-9 rounded-full backdrop-blur-sm"
             >
               <Heart className="h-4 w-4" />
-            </Button>
+            </Button> */}
           </div>
         </div>
 
@@ -164,7 +166,7 @@ export default function ProductCard({ product }) {
           {/* Product Name */}
           <Link
             to={`${basePath}/shop/${productId}`}
-            className="text-foreground group-hover:text-primary mb-2 line-clamp-2 text-sm leading-snug font-semibold transition-colors"
+            className="group-hover:text-primary mb-2 line-clamp-2 text-sm leading-snug font-semibold transition-colors"
           >
             {productName}
           </Link>
@@ -180,7 +182,7 @@ export default function ProductCard({ product }) {
           <div className="mt-auto flex items-center justify-between gap-2">
             <div className="flex flex-col">
               <div className="flex items-baseline gap-2">
-                <span className="text-foreground text-lg font-bold">
+                <span className="text-lg font-bold">
                   {formatPrice(originalPrice)}
                 </span>
                 {originalDiscount > 0 && (
@@ -195,7 +197,7 @@ export default function ProductCard({ product }) {
               onClick={handleAddToCart}
               className="hover:bg-primary/90 h-9 gap-1.5 px-3 text-xs font-medium"
             >
-              {hasVariants ? (
+              {hasRequiredVariants ? (
                 <>
                   <Settings2 className="h-3.5 w-3.5" />
                   <span className="hidden sm:inline">Options</span>

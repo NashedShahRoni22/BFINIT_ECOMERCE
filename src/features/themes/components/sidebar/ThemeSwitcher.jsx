@@ -44,7 +44,7 @@ export default function ThemeSwitcher() {
             onClick={() => setColorTheme(theme.id)}
             className={`bg-accent flex w-full items-center gap-2.5 rounded-md border p-2 pl-2.5 text-xs font-medium transition-colors ${
               theme.id === colorTheme
-                ? "bg-accent text-foreground border-accent-foreground/20"
+                ? "bg-accent border-accent-foreground/20"
                 : "border-border text-muted-foreground bg-card hover:bg-accent/50"
             }`}
           >
