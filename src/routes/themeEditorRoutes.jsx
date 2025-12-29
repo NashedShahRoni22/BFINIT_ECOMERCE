@@ -10,6 +10,7 @@ import About from "@/pages/storefront/About";
 import Shop from "@/pages/storefront/Shop";
 import Signup from "@/pages/storefront/Signup";
 import CheckoutPage from "@/components/storefront/checkout/checkout";
+import Login from "@/pages/storefront/Login";
 
 export const themeEditorRoutes = {
   path: "/stores/:storeId/theme-editor",
@@ -54,6 +55,10 @@ export const themeEditorRoutes = {
     {
       path: "signup",
       element: <Signup />,
+    },
+    {
+      path: "login",
+      element: <Login />,
     },
   ],
 };

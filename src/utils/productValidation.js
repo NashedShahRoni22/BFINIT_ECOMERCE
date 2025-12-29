@@ -25,7 +25,7 @@ export const validateVariants = (data, form) => {
 
   // Check if all attributes have names
   const attributesWithoutNames = data.variants.attributes.filter(
-    (attr) => !attr.name || attr.name.trim() === ""
+    (attr) => !attr.name || attr.name.trim() === "",
   );
   if (attributesWithoutNames.length > 0) {
     form.setError("variants", {
@@ -38,20 +38,20 @@ export const validateVariants = (data, form) => {
 
   // Check if all attributes have at least one value
   const attributesWithoutValues = data.variants.attributes.filter(
-    (attr) => !attr.values || attr.values.length === 0
+    (attr) => !attr.values || attr.values.length === 0,
   );
   if (attributesWithoutValues.length > 0) {
     const attrName = attributesWithoutValues[0].name || "Unnamed attribute";
     form.setError("variants", {
       type: "manual",
-      message: `"${attrName}" must have at least one value. Add values separated by , (comma).`,
+      message: `Please add at least one value for "${attrName}"`,
     });
     return false;
   }
 
   // Check if required attributes are filled
   const requiredAttributesEmpty = data.variants.attributes.filter(
-    (attr) => attr.required && (!attr.values || attr.values.length === 0)
+    (attr) => attr.required && (!attr.values || attr.values.length === 0),
   );
   if (requiredAttributesEmpty.length > 0) {
     form.setError("variants", {
@@ -78,7 +78,7 @@ export const validateVariants = (data, form) => {
     });
 
     const variantsWithoutPrice = allVariants.filter(
-      (variant) => !variant.price || variant.price.toString().trim() === ""
+      (variant) => !variant.price || variant.price.toString().trim() === "",
     );
 
     if (variantsWithoutPrice.length > 0) {

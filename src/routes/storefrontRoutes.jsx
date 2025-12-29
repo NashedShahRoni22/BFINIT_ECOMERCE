@@ -4,6 +4,7 @@ import About from "@/pages/storefront/About";
 import Cart from "@/pages/storefront/Cart";
 import Contact from "@/pages/storefront/Contact";
 import Home from "@/pages/storefront/Home";
+import Login from "@/pages/storefront/Login";
 import ProductDetails from "@/pages/storefront/ProductDetails";
 import ShopPage from "@/pages/storefront/Shop";
 import Signup from "@/pages/storefront/Signup";
@@ -51,6 +52,10 @@ export const storeFrontRoutes = {
     {
       path: "signup",
       element: <Signup />,
+    },
+    {
+      path: "login",
+      element: <Login />,
     },
   ],
 };

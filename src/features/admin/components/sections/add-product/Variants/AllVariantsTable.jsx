@@ -115,7 +115,7 @@ export default function AllVariantsTable({
             onCheckedChange={handlePricingToggle}
           />
           <Label
-            className="cursor-pointer"
+            className="cursor-pointer text-xs"
             onClick={() => handlePricingToggle(!useDefaultPricing)}
           >
             {useDefaultPricing ? "Default Pricing" : "Custom Pricing"}
@@ -124,10 +124,10 @@ export default function AllVariantsTable({
       </div>
 
       {/* Info message about current pricing mode */}
-      <Alert variant="info" className="mb-4">
-        <Info className="h-4 w-4" />
-        <AlertTitle>Pricing Mode</AlertTitle>
-        <AlertDescription>
+      <Alert className="mb-4">
+        <Info />
+        <AlertTitle className="text-xs">Pricing Mode</AlertTitle>
+        <AlertDescription className="text-xs">
           {useDefaultPricing ? (
             <>
               Using main product price (

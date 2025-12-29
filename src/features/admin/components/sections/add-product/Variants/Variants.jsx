@@ -312,7 +312,9 @@ export default function Variants({ form }) {
         {variantError && (
           <Alert variant="destructive" className="mt-4">
             <AlertCircle />
-            <AlertTitle>{variantError.message}</AlertTitle>
+            <AlertTitle className="mt-0.5 text-xs">
+              {variantError.message}
+            </AlertTitle>
           </Alert>
         )}
 

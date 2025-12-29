@@ -37,11 +37,13 @@ export default function ImageUploadField({ field, value, onChange }) {
   const { mutate, isPending: isUploading } = usePostMutation({
     endpoint: `/store/theme/image/upload`,
     token: true,
+    clientId: true,
   });
 
   const { mutate: deleteMutate, isPending: isDeleting } = useDeleteMutation({
     endpoint: `/store/theme/image/delete`,
     token: true,
+    clientId: true,
   });
 
   const [imagePreview, setImagePreview] = useState(value);

@@ -192,15 +192,15 @@ export default function AddProduct() {
                   disabled={isPending}
                   type="submit"
                   size="sm"
-                  className="text-xs"
+                  className="min-w-[101px] text-xs"
                 >
                   {isPending ? (
                     <>
                       <Spinner size="3.5" />
-                      Adding Product...
+                      Saving...
                     </>
                   ) : (
-                    "Add New Product"
+                    "Save Product"
                   )}
                 </Button>
               </div>

@@ -160,7 +160,7 @@ export default function ProductDetails({ form }) {
               <FormControl>
                 <Input type="text" placeholder="Product Name" {...field} />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-xs" />
             </FormItem>
           )}
         />
@@ -223,7 +223,7 @@ export default function ProductDetails({ form }) {
                   </SelectContent>
                 </Select>
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-xs" />
             </FormItem>
           )}
         />

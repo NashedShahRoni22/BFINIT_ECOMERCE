@@ -227,7 +227,7 @@ export default function Cart() {
 
                 {/* Checkout Button */}
                 <Link
-                  to={`${basePath}/checkout`}
+                  to={`${basePath}/login`}
                   className="bg-foreground text-background hover:bg-foreground/90 mt-6 flex w-full items-center justify-center gap-2 rounded-md px-6 py-3.5 text-sm font-semibold transition-colors"
                 >
                   Proceed to Checkout

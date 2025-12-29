@@ -141,7 +141,7 @@ export default function ThumbnailImage({ form }) {
               />
             </div>
           </FormControl>
-          <FormMessage className="mt-1.5 text-[11px]" />
+          <FormMessage className="mt-1.5 text-xs" />
         </FormItem>
       )}
     />
