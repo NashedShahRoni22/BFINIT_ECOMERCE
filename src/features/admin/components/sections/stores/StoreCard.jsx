@@ -63,7 +63,7 @@ export default function StoreCard({ store = {} }) {
           </div>
           <div className="mt-1 min-w-0 flex-1">
             <Link
-              to={`/stores/preview/${storeId}`}
+              to={`/stores/${storeId}`}
               className="block truncate text-sm font-semibold hover:underline"
             >
               {storeName}
@@ -74,7 +74,7 @@ export default function StoreCard({ store = {} }) {
         {/* Primary Action Buttons */}
         <div className="mt-6 grid grid-cols-2 gap-2">
           <Button size="sm" variant="outline" className="text-xs" asChild>
-            <Link to={`/stores/preview/${storeId}`}>
+            <Link to={`/stores/${storeId}`}>
               <Eye className="h-3.5 w-3.5" />
               Preview
             </Link>
