@@ -3,6 +3,7 @@ import ProductCard from "../../cards/products/ProductCard";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import { cn } from "@/lib/utils";
 import { dummyProducts } from "@/features/themes/utils/contstants";
+import useTheme from "@/hooks/useTheme";
 
 const gridColsMap = {
   2: "grid-cols-2",
@@ -12,6 +13,7 @@ const gridColsMap = {
 
 export default function ProductGrid({ content }) {
   const { storeId } = useParams();
+  const { isEditorMode } = useTheme();
 
   const isManualProduct = content?.productSource?.type === "manual";
   const manualProductIds = isManualProduct ? content?.productSource?.value : [];
@@ -39,6 +41,10 @@ export default function ProductGrid({ content }) {
 
   const displayProducts =
     mainProducts.length > 0 ? mainProducts : dummyProducts;
+
+  if (!isEditorMode && mainProducts?.length === 0) {
+    return null;
+  }
 
   return (
     <div className="bg-muted px-8 py-16">
