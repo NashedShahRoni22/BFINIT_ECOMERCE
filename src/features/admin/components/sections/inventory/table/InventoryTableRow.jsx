@@ -26,6 +26,7 @@ export default function InventoryTableRow({ product }) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const { storeId } = selectedStore;
   const {
     productName,
     productCategory,
@@ -159,7 +160,11 @@ export default function InventoryTableRow({ product }) {
 
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
-                <Link to={`/`} className="cursor-pointer text-xs font-medium">
+                <Link
+                  target="_blank"
+                  to={`/stores/${storeId}/shop/${productId}`}
+                  className="cursor-pointer text-xs font-medium"
+                >
                   <Eye />
                   View
                 </Link>

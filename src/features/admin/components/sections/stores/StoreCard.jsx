@@ -74,7 +74,7 @@ export default function StoreCard({ store = {} }) {
         {/* Primary Action Buttons */}
         <div className="mt-6 grid grid-cols-2 gap-2">
           <Button size="sm" variant="outline" className="text-xs" asChild>
-            <Link to={`/stores/${storeId}`}>
+            <Link target="_blank" to={`/stores/${storeId}`}>
               <Eye className="h-3.5 w-3.5" />
               Preview
             </Link>

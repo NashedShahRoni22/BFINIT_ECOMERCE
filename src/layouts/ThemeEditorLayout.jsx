@@ -1,3 +1,4 @@
+import { Outlet } from "react-router";
 import Footer from "@/components/storefront/Footer";
 import Header from "@/components/storefront/Header";
 import Canvas from "@/features/themes/components/layout/Canvas";
@@ -6,7 +7,6 @@ import PreviewModeBar from "@/features/themes/components/layout/PreviewModeBar";
 import ThemeEditorHeader from "@/features/themes/components/layout/ThemeEditorHeader";
 import ThemeEditorSidebar from "@/features/themes/components/layout/ThemeEditorSidebar";
 import useTheme from "@/hooks/useTheme";
-import { Outlet } from "react-router";
 
 export default function ThemeEditorLayout() {
   const { isPreviewMode } = useTheme();

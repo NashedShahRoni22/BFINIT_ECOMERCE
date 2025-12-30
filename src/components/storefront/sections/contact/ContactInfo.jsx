@@ -1,6 +1,13 @@
 import { Mail, Phone, MapPin } from "lucide-react";
 
-export default function ContactInfo() {
+export default function ContactInfo({ data = {} }) {
+  const { storePhone, storeTelephone, storeEmail, storeAddress, country } =
+    data;
+
+  const fullAddress = storeAddress + country;
+  const encodedAddress = encodeURIComponent(fullAddress);
+  const mapUrl = `https://www.google.com/maps?q=${encodedAddress}`;
+
   return (
     <div className="lg:col-span-2">
       <h2 className="mb-2 text-xl font-semibold">Contact Information</h2>
@@ -8,43 +15,70 @@ export default function ContactInfo() {
         Have a question? Fill out the form and we'll get back to you.
       </p>
 
-      <div className="space-y-5">
+      <address className="space-y-5 not-italic">
+        {/* phone */}
         <div className="flex items-start gap-3">
           <div className="bg-muted flex h-9 w-9 shrink-0 items-center justify-center rounded-md">
             <Phone className="h-4 w-4" />
           </div>
-          <div>
-            <h3 className="mb-0.5 text-sm font-medium">Phone</h3>
-            <p className="text-muted-foreground text-sm">+1 (555) 123-4567</p>
+          <div className="flex flex-col gap-y-1">
+            <h3 className="text-sm font-medium">Phone</h3>
+            <a
+              href={`tel:${storePhone}`}
+              className="text-muted-foreground hover:text-foreground text-sm leading-6"
+            >
+              {storePhone}
+            </a>
+            {storeTelephone && (
+              <a
+                href={`tel:${storeTelephone}`}
+                className="text-muted-foreground hover:text-foreground text-sm leading-6"
+              >
+                {storeTelephone}
+              </a>
+            )}
           </div>
         </div>
 
+        {/* email */}
         <div className="flex items-start gap-3">
           <div className="bg-muted flex h-9 w-9 shrink-0 items-center justify-center rounded-md">
             <Mail className="h-4 w-4" />
           </div>
           <div>
             <h3 className="mb-0.5 text-sm font-medium">Email</h3>
-            <p className="text-muted-foreground text-sm">contact@example.com</p>
+            <a
+              href={`mailto:${storeEmail}`}
+              className="text-muted-foreground hover:text-foreground text-sm leading-6"
+            >
+              {storeEmail}
+            </a>
           </div>
         </div>
 
+        {/* address */}
         <div className="flex items-start gap-3">
           <div className="bg-muted flex h-9 w-9 shrink-0 items-center justify-center rounded-md">
             <MapPin className="h-4 w-4" />
           </div>
           <div>
             <h3 className="mb-0.5 text-sm font-medium">Office</h3>
-            <p className="text-muted-foreground text-sm">123 Business Street</p>
-            <p className="text-muted-foreground text-sm">New York, NY 10001</p>
+            <a
+              href={mapUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-foreground block max-w-xs text-sm leading-6"
+            >
+              {fullAddress}
+            </a>
           </div>
         </div>
-      </div>
+      </address>
 
-      {/* Google Map - Mobile: Below form, Desktop: Below contact info */}
+      {/* map */}
       <div className="border-border mt-8 hidden overflow-hidden rounded-lg border lg:block">
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024.2219901290355!2d-74.00369368400567!3d40.71277537933029!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a23e28c1191%3A0x49f75d3281df052a!2s150%20Park%20Row%2C%20New%20York%2C%20NY%2010007!5e0!3m2!1sen!2sus!4v1234567890123"
+          src={`${mapUrl}&output=embed`}
           width="100%"
           height="240"
           style={{ border: 0 }}

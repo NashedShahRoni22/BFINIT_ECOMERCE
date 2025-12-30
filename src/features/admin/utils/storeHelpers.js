@@ -46,3 +46,33 @@ export const cleanPhoneNumber = (phone_code, phoneNumber) => {
 
   return cleaned;
 };
+
+export const fillFormWithStoreData = (store, countryData, setValue) => {
+  if (store?.message !== "store Preference retrived succesfully") return;
+
+  const phoneCode = countryData?.phone_code;
+
+  const formValues = {
+    address: store?.storeAddress,
+    country: store?.country,
+    currency_code: store?.currencyCode,
+    currency_name: store?.currencyName,
+    currency_symbol: store?.currencySymbol,
+    email: store?.storeEmail,
+    facebook: store?.storeFacebookLink,
+    instagram: store?.storeInstagramLink,
+    mobile: cleanPhoneNumber(phoneCode, store?.storePhone),
+    name: store?.storeName,
+    phone_code: phoneCode,
+    telephone: cleanPhoneNumber(phoneCode, store?.storeTelephone),
+    time_zone: store?.timeZone,
+    twitter: store?.storeTwitterLink,
+    youtube: store?.storeYoutubeLink,
+    logo: store?.storeLogo,
+    favicon: store?.storeFavicon,
+  };
+
+  Object.entries(formValues).forEach(([key, value]) => {
+    setValue(key, value);
+  });
+};

@@ -1,19 +1,19 @@
+import { Link } from "react-router";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import useBasePath from "@/hooks/useBasePath";
 
 export default function HeroDefault({ content }) {
-  const { backgroundImage, cta, subTitle, title } = content || {};
+  const basePath = useBasePath();
 
-  const bgImg = backgroundImage
-    ? `https://ecomback.bfinit.com${backgroundImage}`
-    : "https://images.pexels.com/photos/875862/pexels-photo-875862.png";
+  const { backgroundImage, cta, subTitle, title } = content || {};
 
   return (
     <div className="relative h-[500px] w-full overflow-hidden md:h-[600px]">
       {/* background image*/}
       <div className="bg-muted absolute inset-0">
         <img
-          src={bgImg}
+          src={`https://ecomback.bfinit.com${backgroundImage}`}
           alt="Hero background"
           className="h-full w-full object-cover"
         />
@@ -32,12 +32,15 @@ export default function HeroDefault({ content }) {
             {subTitle}
           </p>
 
-          <div className="flex flex-col gap-4 sm:flex-row">
-            <Button className="hover:bg-primary-foreground hover: text-primary-foreground border-primary-foreground group rounded-md border bg-transparent px-8 py-4 font-medium">
+          <Button
+            asChild
+            className="border-primary-foreground group hover:text-primary hover:bg-primary-foreground w-fit rounded-md border bg-transparent px-8 py-4 font-medium"
+          >
+            <Link to={`${basePath}/shop`}>
               {cta}
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Button>
-          </div>
+            </Link>
+          </Button>
         </div>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import {
   Mail,
   Phone,
@@ -8,30 +9,24 @@ import {
   Linkedin,
   Youtube,
 } from "lucide-react";
+import useBasePath from "@/hooks/useBasePath";
+import { footerLinks } from "@/features/themes/utils/contstants";
 
 export default function FooterDefault({ content }) {
-  const companyLinks = [
-    { label: "About Us", url: "/about" },
-    { label: "Contact", url: "/contact" },
-    { label: "Blog", url: "/blog" },
-  ];
+  const basePath = useBasePath();
 
-  const shopLinks = [
-    { label: "All Products", url: "/products" },
-    { label: "Best Sellers", url: "/products?filter=bestseller" },
-    { label: "New Arrivals", url: "/products?filter=new-arrival" },
-    { label: "Sale", url: "/products?filter=sale" },
-  ];
+  const {
+    description,
+    showContactInfo,
+    contact,
+    copyright,
+    showSocialLinks,
+    socialLinks,
+  } = content;
 
-  const supportLinks = [
-    { label: "Customer Support", url: "/help" },
-    { label: "Return Policy", url: "/returns" },
-    { label: "Legal & Terms", url: "/terms" },
-    { label: "Shopping Guide", url: "/how-to-buy" },
-  ];
+  const { company, shop, support } = footerLinks;
 
-  // Filter out social links that are empty
-  const activeSocialLinks = Object.entries(content?.socialLinks)?.filter(
+  const activeSocialLinks = Object.entries(socialLinks)?.filter(
     ([_, url]) => url && url.trim() !== "",
   );
 
@@ -44,53 +39,51 @@ export default function FooterDefault({ content }) {
           <div className="lg:col-span-2">
             <h3 className="mb-3 text-lg font-semibold">Agatha Store</h3>
             <p className="text-muted-foreground mb-6 max-w-md text-sm leading-relaxed">
-              {content?.description}
+              {description}
             </p>
 
             {/* Contact Info */}
-            {content?.showContactInfo && (
+            {showContactInfo && (
               <div className="space-y-3 text-sm">
                 <a
-                  href={content?.contact?.email}
+                  href={`mailto:${contact?.email}`}
                   className="text-muted-foreground hover: flex items-center gap-2 transition-colors"
                 >
                   <Mail className="h-4 w-4 shrink-0" />
-                  <span>{content?.contact?.email}</span>
+                  <span>{contact?.email}</span>
                 </a>
 
                 <a
-                  href={content?.contact?.mobile}
+                  href={`tel:${contact?.mobile}`}
                   className="text-muted-foreground hover: flex items-center gap-2 transition-colors"
                 >
                   <Phone className="h-4 w-4 shrink-0" />
-                  <span>{content?.contact?.mobile}</span>
+                  <span>{contact?.mobile}</span>
                 </a>
 
-                <div className="text-muted-foreground flex items-start gap-2">
+                <di className="text-muted-foreground flex items-start gap-2">
                   <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
-                  <span className="leading-relaxed">
-                    {content?.contact?.address}
-                  </span>
-                </div>
+                  <span className="leading-relaxed">{contact?.address}</span>
+                </di>
               </div>
             )}
           </div>
 
           {/* Company Links */}
-          {companyLinks && companyLinks.length > 0 && (
+          {company && company?.length > 0 && (
             <div>
               <h4 className="mb-4 text-sm font-semibold tracking-wider uppercase">
                 Company
               </h4>
               <ul className="space-y-3">
-                {companyLinks.map((link, index) => (
+                {company.map((link, index) => (
                   <li key={index}>
-                    <a
-                      href={link.url}
+                    <Link
+                      to={`${basePath}${link.url}`}
                       className="text-muted-foreground hover: inline-block text-sm transition-colors"
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -98,20 +91,20 @@ export default function FooterDefault({ content }) {
           )}
 
           {/* Shop Links */}
-          {shopLinks && shopLinks.length > 0 && (
+          {shop && shop.length > 0 && (
             <div>
               <h4 className="mb-4 text-sm font-semibold tracking-wider uppercase">
                 Shop
               </h4>
               <ul className="space-y-3">
-                {shopLinks.map((link, index) => (
+                {shop.map((link, index) => (
                   <li key={index}>
-                    <a
-                      href={link.url}
+                    <Link
+                      to={`${basePath}${link.url}`}
                       className="text-muted-foreground hover: inline-block text-sm transition-colors"
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -119,20 +112,20 @@ export default function FooterDefault({ content }) {
           )}
 
           {/* Support Links */}
-          {supportLinks && supportLinks.length > 0 && (
+          {support && support.length > 0 && (
             <div>
               <h4 className="mb-4 text-sm font-semibold tracking-wider uppercase">
                 Support
               </h4>
               <ul className="space-y-3">
-                {supportLinks.map((link, index) => (
+                {support.map((link, index) => (
                   <li key={index}>
-                    <a
-                      href={link.url}
+                    <Link
+                      to={`${basePath}${link.url}`}
                       className="text-muted-foreground hover: inline-block text-sm transition-colors"
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -148,15 +141,15 @@ export default function FooterDefault({ content }) {
           <div className="mb-6 flex flex-col items-center justify-between gap-4 md:flex-row">
             {/* Copyright */}
             <p className="text-muted-foreground text-center text-sm md:text-left">
-              {content?.copyright}
+              {copyright}
             </p>
 
             {/* Social Links */}
-            {content?.showSocialLinks && activeSocialLinks?.length > 0 && (
+            {showSocialLinks && activeSocialLinks?.length > 0 && (
               <div className="flex items-center gap-4">
-                {content?.socialLinks?.facebook && (
+                {socialLinks?.facebook && (
                   <a
-                    href={content?.socialLinks?.facebook}
+                    href={socialLinks?.facebook}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-muted-foreground hover: transition-colors"
@@ -165,9 +158,9 @@ export default function FooterDefault({ content }) {
                     <Facebook className="h-5 w-5" />
                   </a>
                 )}
-                {content?.socialLinks?.twitter && (
+                {socialLinks?.twitter && (
                   <a
-                    href={content?.socialLinks?.twitter}
+                    href={socialLinks?.twitter}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-muted-foreground hover: transition-colors"
@@ -176,9 +169,9 @@ export default function FooterDefault({ content }) {
                     <Twitter className="h-5 w-5" />
                   </a>
                 )}
-                {content?.socialLinks?.instagram && (
+                {socialLinks?.instagram && (
                   <a
-                    href={content?.socialLinks?.instagram}
+                    href={socialLinks?.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-muted-foreground hover: transition-colors"
@@ -187,9 +180,9 @@ export default function FooterDefault({ content }) {
                     <Instagram className="h-5 w-5" />
                   </a>
                 )}
-                {content?.socialLinks?.youtube && (
+                {socialLinks?.youtube && (
                   <a
-                    href={content?.socialLinks?.youtube}
+                    href={socialLinks?.youtube}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-muted-foreground hover: transition-colors"

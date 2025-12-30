@@ -1,4 +1,4 @@
-import { Outlet } from "react-router";
+import { Outlet, ScrollRestoration } from "react-router";
 import StorefrontLoader from "@/components/storefront/loader/StorefrontLoader";
 import Footer from "@/components/storefront/Footer";
 import Header from "@/components/storefront/Header";
@@ -14,6 +14,7 @@ export default function StorefrontLayout() {
       <Header />
       <Outlet />
       <Footer />
+      <ScrollRestoration />
     </main>
   );
 }

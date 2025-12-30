@@ -4,9 +4,11 @@ import useSelectedStore from "@/hooks/useSelectedStore";
 export default function useGetStorePreference(storeId) {
   const { selectedStore } = useSelectedStore();
 
+  const activeStoreId = storeId || selectedStore?.storeId;
+
   return useGetQuery({
-    endpoint: `/store/preference/?storeId=${storeId || selectedStore?.storeId}`,
-    queryKey: ["storePreference", storeId || selectedStore?.storeId],
-    enabled: !!storeId || !!selectedStore?.storeId,
+    endpoint: `/store/preference/?storeId=${activeStoreId}`,
+    queryKey: ["storePreference", activeStoreId],
+    enabled: !!activeStoreId,
   });
 }
