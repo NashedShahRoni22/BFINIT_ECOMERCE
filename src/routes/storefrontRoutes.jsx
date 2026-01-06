@@ -1,8 +1,8 @@
 import Checkout from "@/components/storefront/checkout/checkout";
 import StorefrontLayout from "@/layouts/StorefrontLayout";
-import About from "@/pages/storefront/About";
 import Cart from "@/pages/storefront/Cart";
 import Contact from "@/pages/storefront/Contact";
+import ContentPage from "@/pages/storefront/ContentPage";
 import Home from "@/pages/storefront/Home";
 import Login from "@/pages/storefront/Login";
 import ProductDetails from "@/pages/storefront/ProductDetails";
@@ -35,7 +35,7 @@ export const storeFrontRoutes = {
     },
     {
       path: "about",
-      element: <About />,
+      element: <ContentPage title="About Us" />,
     },
     {
       path: "cart",
@@ -56,6 +56,30 @@ export const storeFrontRoutes = {
     {
       path: "login",
       element: <Login />,
+    },
+    {
+      path: "support/customer-support",
+      element: (
+        <ContentPage title="Customer Support" apiEndpoint="/store/storehelp" />
+      ),
+    },
+    {
+      path: "support/return-policy",
+      element: (
+        <ContentPage title="Return Policy" apiEndpoint="/store/return&refund" />
+      ),
+    },
+    {
+      path: "support/terms-and-conditions",
+      element: (
+        <ContentPage title="Legal & Terms" apiEndpoint="/store//storeterms" />
+      ),
+    },
+    {
+      path: "support/shopping-guide",
+      element: (
+        <ContentPage title="Shopping Guide" apiEndpoint="/store/howtobuy" />
+      ),
     },
   ],
 };

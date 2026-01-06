@@ -24,7 +24,7 @@ export default function DNSConfiguration({ data }) {
         </div>
 
         {/* section collapse toggle button */}
-        <Button variant="outline" size="sm" asChild>
+        <Button variant="outline" size="sm" asChild className="text-xs">
           <Link to="/help/domain-setup">
             <BookOpen />
             Setup Guide
@@ -220,7 +220,12 @@ export default function DNSConfiguration({ data }) {
 
               {/* Provider Quick Links */}
               <div className="flex flex-wrap items-center gap-2">
-                <Button variant="link" size="sm" asChild className="px-0">
+                <Button
+                  variant="link"
+                  size="sm"
+                  asChild
+                  className="px-0 text-xs"
+                >
                   <Link to="/help/domain-setup">Complete Setup Guide →</Link>
                 </Button>
                 {/* <span className="text-muted-foreground">|</span>

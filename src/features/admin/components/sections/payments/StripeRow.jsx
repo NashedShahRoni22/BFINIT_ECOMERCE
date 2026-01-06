@@ -19,9 +19,11 @@ export default function StripeRow({ store, token, clientId }) {
         onError: () => {
           toast.error("Somthing went wrong!");
         },
-      }
+      },
     );
   };
+
+  console.log(store);
 
   return (
     <tr className="border-t border-neutral-200 transition-all duration-200 ease-in-out hover:bg-[#f5f6f8]">

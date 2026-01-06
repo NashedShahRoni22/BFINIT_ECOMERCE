@@ -2,29 +2,20 @@ import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import SunEditor from "suneditor-react";
-import { CircleHelp } from "lucide-react";
+import { ChevronLeft, CircleHelp } from "lucide-react";
 import useAuth from "@/hooks/auth/useAuth";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useUpdateMutation from "@/hooks/api/useUpdateMutation";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import PageHeader from "../components/PageHeader";
-import EmptyState from "../components/EmptyStoreState";
 import useGetHelpContent from "../hooks/useGetHelpContent";
 import { Spinner } from "@/components/ui/spinner";
 import EmptyStoreState from "../components/EmptyStoreState";
-
-const SUPPORT_BREADCRUMB_ITEMS = [
-  { label: "Home", href: "/" },
-  {
-    label: "Support",
-    dropdown: [
-      { label: "Return & Refunds", href: "/support/returns-refunds" },
-      { label: "Terms & Conditions", href: "/support/terms-conditions" },
-      { label: "How to Buy", href: "/support/how-to-buy" },
-    ],
-  },
-  { label: "Help Center" },
-];
+import { breadcrubms } from "@/utils/constants/breadcrumbs";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
+import InfoBanner from "../components/sections/support/InfoBanner";
+import QuickTips from "../components/sections/support/QuickTips";
 
 export default function HelpCenterForm() {
   const queryClient = useQueryClient();
@@ -105,7 +96,7 @@ export default function HelpCenterForm() {
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <DynamicBreadcrumb items={SUPPORT_BREADCRUMB_ITEMS} />
+      <DynamicBreadcrumb items={breadcrubms.Help} />
 
       {/* Page Header */}
       <PageHeader
@@ -114,11 +105,12 @@ export default function HelpCenterForm() {
         description="Create and update help articles for"
       />
 
-      {selectedStore?.storeId ? (
-        <div className="">
-          <small className="mb-2 inline-block text-xs text-neutral-500">
-            Write helpful content to assist your customers
-          </small>
+      <div className="bg-card space-y-6 rounded-lg p-5">
+        {helpContent?.data && <InfoBanner />}
+
+        <div className="space-y-2">
+          <h2 className="text-sm font-semibold">Article Content</h2>
+
           <SunEditor
             name="content"
             height="400px"
@@ -150,30 +142,33 @@ export default function HelpCenterForm() {
               charCounter: true,
             }}
           />
-          <div className="mt-4 flex items-center justify-end">
-            <button
-              type="button"
-              disabled={isDisabled}
-              onClick={handlePublishContent}
-              className={`inline-flex min-h-[38px] min-w-[138px] items-center justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-white transition-all duration-200 ease-linear outline-none ${
-                isDisabled
-                  ? "bg-dashboard-primary/50 cursor-not-allowed"
-                  : "bg-dashboard-primary hover:bg-dashboard-primary-hover cursor-pointer"
-              }`}
-            >
-              {isPending ? (
-                <Spinner />
-              ) : helpContent?.data ? (
-                "Update Article"
-              ) : (
-                "Publish Article"
-              )}
-            </button>
-          </div>
+
+          <QuickTips />
         </div>
-      ) : (
-        <EmptyState description="Please select a store to manage Help Center Content." />
-      )}
+
+        <div className="flex flex-col-reverse gap-4 lg:flex-row lg:justify-between">
+          <Button variant="outline" size="sm" asChild className="text-xs">
+            <Link to="/">
+              <ChevronLeft /> Back to Home
+            </Link>
+          </Button>
+
+          <Button
+            disabled={isDisabled}
+            onClick={handlePublishContent}
+            size="sm"
+            className="text-xs"
+          >
+            {isPending ? (
+              <Spinner />
+            ) : helpContent?.data ? (
+              "Update Article"
+            ) : (
+              "Publish Article"
+            )}
+          </Button>
+        </div>
+      </div>
     </section>
   );
 }

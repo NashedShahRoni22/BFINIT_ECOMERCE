@@ -49,9 +49,10 @@ export const sectionTemplates = {
       thumbnail: "🖼️",
       singleInstance: false, // Only one hero allowed
       defaultContent: {
-        title: "Hero with background image",
-        subTitle: "hero with bg image section",
-        cta: "Testing",
+        title: "Discover Your Next Favorite Thing",
+        subTitle:
+          "Curated products and collections designed for your lifestyle",
+        cta: "Shop Now",
         backgroundImage: null,
       },
       fieldSchema: [

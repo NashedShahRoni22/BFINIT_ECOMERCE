@@ -63,7 +63,7 @@ export default function NewDomain() {
                 get online with seamless integration to your store
               </p>
 
-              <Button asChild size="sm" className="mt-1">
+              <Button asChild size="sm" className="mt-1 text-xs">
                 <Link
                   to="https://www.secureserver.net/?plid=599412"
                   target="_blank"
@@ -78,9 +78,9 @@ export default function NewDomain() {
 
         {/* Next Step Info */}
         <Alert variant="info">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Next Step</AlertTitle>
-          <AlertDescription>
+          <AlertCircle className="h-3.5 w-3.5" />
+          <AlertTitle className="text-xs">Next Step</AlertTitle>
+          <AlertDescription className="text-xs">
             After purchasing your domain, come back here to connect it to your
             store
           </AlertDescription>

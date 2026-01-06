@@ -166,24 +166,31 @@ export default function Domains() {
 
           {/* Bottom buttons */}
           <div className="flex flex-col-reverse gap-4 border-t border-slate-200 pt-6 lg:flex-row lg:justify-between">
-            <Button variant="outline" size="lg" type="button" asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              type="button"
+              asChild
+              className="text-xs"
+            >
               <Link to="/">
                 <ChevronLeft />
-                Back to Dashboard
+                Back to Home
               </Link>
             </Button>
 
             {/* Submit button for custom domain */}
             {showDraftConnectBtn && (
               <div className="flex flex-col-reverse gap-4 lg:flex-row">
-                <Button variant="outline" size="lg" type="button">
+                {/* <Button variant="outline" size="lg" type="button">
                   Save as Draft
-                </Button>
+                </Button> */}
 
                 <Button
                   type="submit"
-                  size="lg"
+                  size="sm"
                   disabled={isSubmitting || isUpdating}
+                  className="text-xs"
                 >
                   {isDomainIntegrated
                     ? isUpdating

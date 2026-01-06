@@ -6,11 +6,11 @@ import Home from "@/pages/storefront/Home";
 import ProductDetails from "@/pages/storefront/ProductDetails";
 import Cart from "@/pages/storefront/Cart";
 import Contact from "@/pages/storefront/Contact";
-import About from "@/pages/storefront/About";
 import Shop from "@/pages/storefront/Shop";
 import Signup from "@/pages/storefront/Signup";
 import CheckoutPage from "@/components/storefront/checkout/checkout";
 import Login from "@/pages/storefront/Login";
+import ContentPage from "@/pages/storefront/ContentPage";
 
 export const themeEditorRoutes = {
   path: "/stores/:storeId/theme-editor",
@@ -38,7 +38,7 @@ export const themeEditorRoutes = {
     },
     {
       path: "about",
-      element: <About />,
+      element: <ContentPage title="About Us" />,
     },
     {
       path: "cart",

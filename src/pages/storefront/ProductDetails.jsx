@@ -7,10 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import useCart from "@/hooks/useCart";
 
 export default function ProductDetails() {
   const { productId } = useParams();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   const { data, isLoading } = useGetQuery({
     endpoint: `/product/?productId=${productId}`,
@@ -92,17 +94,18 @@ export default function ProductDetails() {
       return;
     }
 
-    const cartItem = {
-      productId: product._id,
-      productName: product.productName,
-      quantity,
-      variants: selectedVariants,
-      price: getCurrentPrice(),
-      image: selectedImage,
-    };
+    // Get the selected variant data if variants are enabled
+    const selectedVariant = product.variants?.enabled
+      ? currentVariantData
+      : null;
 
-    console.log("Adding to cart:", cartItem);
-    // Add your cart logic here
+    // Get the attribute name (first selected variant's attribute name)
+    const attributeName = product.variants?.enabled
+      ? Object.keys(selectedVariants)[0]
+      : null;
+
+    // Call addToCart with correct parameters
+    addToCart(product, quantity, selectedVariant, attributeName);
   };
 
   const getCurrentPrice = () => {
@@ -113,7 +116,7 @@ export default function ProductDetails() {
     ) {
       return parseFloat(currentVariantData.price.$numberDecimal);
     }
-    return parseFloat(product?.productPrice?.$numberDecimal || 0);
+    return parseFloat(product?.productPrice || 0);
   };
 
   const getDiscountPrice = () => {

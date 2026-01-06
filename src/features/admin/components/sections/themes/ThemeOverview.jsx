@@ -80,7 +80,7 @@ export default function ThemeOverview() {
           </Button>
 
           <Button size="sm" variant="outline" asChild className="text-xs">
-            <Link to={`/stores/${selectedStore?.storeId}`}>
+            <Link to={`/stores/${selectedStore?.storeId}`} target="_blank">
               <ExternalLink className="size-3.5" />
               View Store
             </Link>

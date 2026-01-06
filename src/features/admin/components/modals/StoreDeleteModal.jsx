@@ -46,24 +46,25 @@ export default function StoreDeleteModal({
           user?.data?.clientid,
         ]);
 
-        const updatedStores = queryClient.getQueryData([
+        const freshStores = queryClient.getQueryData([
           "admin",
           "stores",
           user?.data?.clientid,
         ]);
 
-        if (updatedStores?.data?.length > 0) {
-          const stillExists = updatedStores.data.some(
-            (s) => s.storeId === selectedStore?.storeId,
-          );
+        const wasSelectedStoreDeleted = selectedStore?.storeId === storeId;
 
-          if (!stillExists) {
-            handleSetStore(updatedStores.data[0]);
-          }
+        if (!wasSelectedStoreDeleted) {
+          return;
+        }
+
+        if (freshStores?.data?.length > 0) {
+          handleSetStore(freshStores.data[0]);
         } else {
           handleSetStore(null);
         }
       },
+
       onError: () => {
         toast.error("Failed to delete store. Please try again.");
       },

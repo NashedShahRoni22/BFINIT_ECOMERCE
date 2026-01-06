@@ -20,14 +20,14 @@ import useAuth from "@/hooks/auth/useAuth";
 import usePostMutation from "@/hooks/api/usePostMutation";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useUpdateMutation from "@/hooks/api/useUpdateMutation";
-import useGetAllMeta from "@/features/admin/hooks/meta/getAllMeta";
 import SearchEnginePreview from "./SearchEnginePreview";
+import useGetStoreMeta from "@/hooks/useGetStoreMeta";
 
 export default function TitleDescriptionForm() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const { selectedStore } = useSelectedStore();
-  const { data: metaData, isLoading } = useGetAllMeta(selectedStore?.storeId);
+  const { data: metaData, isLoading } = useGetStoreMeta(selectedStore?.storeId);
 
   const form = useForm({
     defaultValues: {

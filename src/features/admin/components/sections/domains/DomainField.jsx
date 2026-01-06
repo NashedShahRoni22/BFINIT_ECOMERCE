@@ -138,13 +138,13 @@ export default function DomainField({ form, isDomainIntegrated, data }) {
             }}
             render={({ field }) => (
               <FormItem className="mt-5">
-                <FormLabel>
+                <FormLabel className="text-xs">
                   Domain Name <span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input placeholder="example.com" {...field} />
                 </FormControl>
-                <FormDescription>
+                <FormDescription className="text-xs">
                   Enter your root domain without &apos;www&apos; or
                   &apos;https://&apos; (e.g., example.com)
                 </FormDescription>

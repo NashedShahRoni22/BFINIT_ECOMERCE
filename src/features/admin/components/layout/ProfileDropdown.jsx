@@ -47,14 +47,14 @@ export default function ProfileDropdown() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="sm" className="cursor-pointer">
-          <div className="bg-dashboard-primary flex h-6 w-6 items-center justify-center rounded-md text-[11px] font-semibold text-white sm:h-5 sm:w-5 sm:text-[10px]">
+          <div className="bg-dashboard-primary flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-[11px] font-semibold text-white sm:h-5 sm:w-5 sm:text-[10px]">
             {clientInfo?.data?.clientFname?.[0]}
             {clientInfo?.data?.clientLname?.[0]}
           </div>
-          <span className="hidden items-center text-xs font-medium sm:flex">
+          <span className="hidden max-w-[120px] items-center truncate text-xs font-medium sm:inline-block">
             {clientInfo?.data?.clientFname} {clientInfo?.data?.clientLname}{" "}
           </span>
-          <ChevronDown size={14} className="text-muted-foreground" />
+          <ChevronDown size={14} className="text-muted-foreground shrink-0" />
         </Button>
       </DropdownMenuTrigger>
 
@@ -62,11 +62,11 @@ export default function ProfileDropdown() {
         {/* User Info Section */}
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="truncate text-sm font-semibold">
+            <p className="max-w-[200px] truncate text-sm font-semibold">
               {clientInfo?.data?.clientFname} {clientInfo?.data?.clientLname}
             </p>
             <p
-              className="truncate text-xs text-neutral-500"
+              className="text-muted-foreground max-w-[200px] truncate text-xs"
               title={clientInfo?.data?.clientEmail}
             >
               {clientInfo?.data?.clientEmail}

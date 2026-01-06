@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
-import { Package, Plus, Search, Settings2 } from "lucide-react";
+import { Package, PackageOpen, Plus, Search, Settings2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import useSelectedStore from "@/hooks/useSelectedStore";
@@ -9,26 +9,13 @@ import useDebounce from "@/hooks/useDebounce";
 import InventoryToolsSkeleton from "../components/skeletons/InventoryToolsSkeleton";
 import InventoryTableSkeleton from "../components/skeletons/InventoryTableSkeleton";
 import EmptySearchResults from "../components/sections/inventory/EmptySearchResults";
-import EmptyInventory from "../components/sections/inventory/EmptyInventory";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import PageHeader from "../components/PageHeader";
 import InventoryTable from "../components/sections/inventory/table/InventoryTable";
 import InventoryPagination from "../components/sections/inventory/InventoryPagination";
 import EmptyStoreState from "../components/EmptyStoreState";
-
-const INVENTORY_BREADCRUMB_ITEMS = [
-  { label: "Home", href: "/" },
-  {
-    label: "Products",
-    dropdown: [
-      { label: "Category", href: "/products/category" },
-      { label: "Sub Category", href: "/products/sub-category" },
-      { label: "Brands", href: "/products/brands" },
-      { label: "Add Product", href: "/products/add-product" },
-    ],
-  },
-  { label: "Inventory" },
-];
+import { breadcrubms } from "@/utils/constants/breadcrumbs";
+import EmptyState from "../components/EmptyState";
 
 export default function Inventory() {
   const { selectedStore } = useSelectedStore();
@@ -143,7 +130,13 @@ export default function Inventory() {
           />
         ) : (
           // Show inventory empty state if no products at all
-          <EmptyInventory />
+          <EmptyState
+            icon={PackageOpen}
+            title="No products found"
+            description="Get started by adding your first product to the inventory"
+            actionLabel="Add Product"
+            actionPath="/products/add-product"
+          />
         )}
       </>
     );
@@ -151,7 +144,7 @@ export default function Inventory() {
 
   return (
     <section className="space-y-6">
-      <DynamicBreadcrumb items={INVENTORY_BREADCRUMB_ITEMS} />
+      <DynamicBreadcrumb items={breadcrubms.Inventory} />
 
       <PageHeader
         icon={Package}

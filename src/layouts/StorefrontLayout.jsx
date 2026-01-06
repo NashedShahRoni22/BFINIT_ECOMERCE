@@ -1,13 +1,25 @@
-import { Outlet, ScrollRestoration } from "react-router";
+import { useEffect } from "react";
+import { Outlet, ScrollRestoration, useParams } from "react-router";
 import StorefrontLoader from "@/components/storefront/loader/StorefrontLoader";
-import Footer from "@/components/storefront/Footer";
 import Header from "@/components/storefront/Header";
+import Footer from "@/components/storefront/Footer";
+import useGetStoreMeta from "@/hooks/useGetStoreMeta";
 import useTheme from "@/hooks/useTheme";
+import { updateStoreMeta } from "@/utils/meta";
 
 export default function StorefrontLayout() {
-  const { isLoading } = useTheme();
+  const { storeId } = useParams();
+  const { isLoading: isThemeLoading } = useTheme();
+  const { data: storeMeta, isLoading: isMetaLoading } =
+    useGetStoreMeta(storeId);
 
-  if (isLoading) return <StorefrontLoader />;
+  useEffect(() => {
+    if (storeMeta?.data?.length > 0) {
+      updateStoreMeta(storeMeta?.data?.[0]);
+    }
+  }, [storeMeta]);
+
+  if (isThemeLoading || isMetaLoading) return <StorefrontLoader />;
 
   return (
     <main>

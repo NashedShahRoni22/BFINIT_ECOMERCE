@@ -1,9 +1,11 @@
 import { Link } from "react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Image } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useBasePath from "@/hooks/useBasePath";
+import useTheme from "@/hooks/useTheme";
 
 export default function HeroDefault({ content }) {
+  const { isEditorMode, isPreviewMode } = useTheme();
   const basePath = useBasePath();
 
   const { backgroundImage, cta, subTitle, title } = content || {};
@@ -17,6 +19,24 @@ export default function HeroDefault({ content }) {
           alt="Hero background"
           className="h-full w-full object-cover"
         />
+
+        {backgroundImage ? (
+          <img
+            src={`https://ecomback.bfinit.com${backgroundImage}`}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : (
+          <div className="bg-muted absolute inset-0 flex items-center justify-center">
+            {isEditorMode && !isPreviewMode && (
+              <div className="text-muted-foreground text-center">
+                <Image className="mx-auto mb-2 h-12 w-12 opacity-50" />
+                <p className="text-sm">No background image set</p>
+                <p className="mt-1 text-xs">Add one in the inspector panel →</p>
+              </div>
+            )}
+          </div>
+        )}
         {/* overlay */}
         <div className="bg-foreground/40 absolute inset-0"></div>
       </div>
