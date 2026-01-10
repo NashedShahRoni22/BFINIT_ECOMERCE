@@ -1,10 +1,15 @@
 import { useContext } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Minus, Plus, X, ShoppingBag, ArrowRight, Tag } from "lucide-react";
 import { CartContext } from "@/context/CartContext";
 import useBasePath from "../../hooks/useBasePath";
+import useStorefrontAuth from "@/hooks/auth/useStorefrontAuth";
+import { Button } from "@/components/ui/button";
 
 export default function Cart() {
+  const navigate = useNavigate();
+  const { customer } = useStorefrontAuth();
+
   const {
     cartItems,
     removeFromCart,
@@ -45,6 +50,14 @@ export default function Cart() {
   }
 
   const total = subtotal;
+
+  const handleCheckout = () => {
+    if (customer?.token) {
+      return navigate(`${basePath}/checkout`);
+    }
+
+    navigate(`${basePath}/login`);
+  };
 
   return (
     <div className="bg-background min-h-screen">
@@ -226,13 +239,13 @@ export default function Cart() {
                 </div>
 
                 {/* Checkout Button */}
-                <Link
-                  to={`${basePath}/login`}
+                <Button
+                  onClick={handleCheckout}
                   className="bg-foreground text-background hover:bg-foreground/90 mt-6 flex w-full items-center justify-center gap-2 rounded-md px-6 py-3.5 text-sm font-semibold transition-colors"
                 >
                   Proceed to Checkout
                   <ArrowRight className="h-4 w-4" />
-                </Link>
+                </Button>
 
                 {/* Continue Shopping */}
                 <Link

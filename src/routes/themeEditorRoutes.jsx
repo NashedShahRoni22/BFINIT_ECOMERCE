@@ -11,19 +11,27 @@ import Signup from "@/pages/storefront/Signup";
 import CheckoutPage from "@/components/storefront/checkout/checkout";
 import Login from "@/pages/storefront/Login";
 import ContentPage from "@/pages/storefront/ContentPage";
+import StorefrontAuthProvider from "@/providers/StorefrontAuthProvider";
+import NotFound from "@/pages/storefront/NotFound";
 
 export const themeEditorRoutes = {
   path: "/stores/:storeId/theme-editor",
   element: (
     <PrivateRoute>
       <ThemeEditorProvider>
-        <CartProvider>
-          <ThemeEditorLayout />
-        </CartProvider>
+        <StorefrontAuthProvider>
+          <CartProvider>
+            <ThemeEditorLayout />
+          </CartProvider>
+        </StorefrontAuthProvider>
       </ThemeEditorProvider>
     </PrivateRoute>
   ),
   children: [
+    {
+      path: "*",
+      element: <NotFound />,
+    },
     {
       index: true,
       element: <Home />,

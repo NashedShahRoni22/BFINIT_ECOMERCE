@@ -18,20 +18,7 @@ import usePostMutation from "@/hooks/api/usePostMutation";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import { validateVariants } from "@/utils/productValidation";
 import EmptyStoreState from "../components/EmptyStoreState";
-
-const ADD_PRODUCT_BREADCRUMB_ITEMS = [
-  { label: "Home", href: "/" },
-  {
-    label: "Products",
-    dropdown: [
-      { label: "Category", href: "/products/category" },
-      { label: "Sub Category", href: "/products/sub-category" },
-      { label: "Brands", href: "/products/brands" },
-      { label: "Inventory", href: "/products/inventory" },
-    ],
-  },
-  { label: "Add Product" },
-];
+import { breadcrubms } from "@/utils/constants/breadcrumbs";
 
 export default function AddProduct() {
   const { selectedStore } = useSelectedStore();
@@ -109,15 +96,15 @@ export default function AddProduct() {
     }
 
     // Call the Add Product mutation function and pass form data as payload
-    mutate(formData, {
-      onSuccess: (res) => {
-        toast.success(res?.message);
-        form.reset();
-      },
-      onError: (err) => {
-        toast.error(err?.message);
-      },
-    });
+    // mutate(formData, {
+    //   onSuccess: (res) => {
+    //     toast.success(res?.message);
+    //     form.reset();
+    //   },
+    //   onError: (err) => {
+    //     toast.error(err?.message);
+    //   },
+    // });
   };
 
   if (!selectedStore) {
@@ -132,7 +119,7 @@ export default function AddProduct() {
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <DynamicBreadcrumb items={ADD_PRODUCT_BREADCRUMB_ITEMS} />
+      <DynamicBreadcrumb items={breadcrubms.Add_Product} />
 
       {/* Page Header */}
       <PageHeader

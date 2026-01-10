@@ -19,14 +19,23 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import usePostMutation from "@/hooks/api/usePostMutation";
+import { Link, useNavigate, useParams } from "react-router";
+import useBasePath from "@/hooks/useBasePath";
+import useStorefrontAuth from "@/hooks/auth/useStorefrontAuth";
+import toast from "react-hot-toast";
 
 export default function SignUpPage() {
+  const { storeId } = useParams();
+  const navigate = useNavigate();
+  const basePath = useBasePath();
+  const { saveAuthInfo } = useStorefrontAuth();
+
   const { mutate, isPending } = usePostMutation({
     endpoint: `/customer/auth/onboard`,
+    storeId,
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [signupSuccess, setSignupSuccess] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -85,9 +94,11 @@ export default function SignUpPage() {
       },
       {
         onSuccess: (data) => {
-          console.log("Sign up successful:", data);
-
-          setSignupSuccess(true);
+          if (data.message === "Access Created Successfully") {
+            toast.success("Login success!");
+            saveAuthInfo(data);
+            navigate(basePath);
+          }
         },
         onError: (error) => {
           console.error("Error during sign up:", error);
@@ -107,25 +118,6 @@ export default function SignUpPage() {
       handleSignUp();
     }
   };
-
-  if (signupSuccess) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-neutral-50 p-4">
-        <Card className="w-full max-w-md">
-          <CardContent className="pt-6 text-center">
-            <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-              <CheckCircle2 className="h-8 w-8 text-green-600" />
-            </div>
-            <h2 className="mb-2 text-2xl font-bold">Account Created!</h2>
-            <p className="mb-6 text-neutral-600">
-              Your account has been created successfully. Redirecting to
-              login...
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-neutral-50 p-4">
@@ -257,12 +249,12 @@ export default function SignUpPage() {
             {/* Sign In Link */}
             <p className="mt-6 text-center text-sm text-neutral-600">
               Already have an account?{" "}
-              <a
-                href="/login"
+              <Link
+                to={`${basePath}/login`}
                 className="font-medium text-neutral-900 hover:underline"
               >
                 Sign in
-              </a>
+              </Link>
             </p>
           </CardContent>
         </Card>

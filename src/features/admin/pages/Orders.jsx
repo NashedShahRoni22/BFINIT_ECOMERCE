@@ -7,6 +7,8 @@ import useGetQuery from "@/hooks/api/useGetQuery";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useGetStorePreference from "../hooks/store/useGetStorePreference";
 import EmptyStoreState from "../components/EmptyStoreState";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ORDERS_BREADCRUMB_ITEMS = [
   { label: "Home", href: "/" },
@@ -23,7 +25,7 @@ export default function Orders() {
   );
 
   // fetch orders of selected store
-  const { data: orders } = useGetQuery({
+  const { data: orders, isLoading } = useGetQuery({
     endpoint: `/orders/all/${selectedStore?.storeId}`,
     token: user?.token,
     clientId: user?.data?.clientid,
@@ -40,6 +42,10 @@ export default function Orders() {
     );
   }
 
+  const hasOrders = orders?.OrdersData && orders.OrdersData.length > 0;
+  const noOrdersAvailable =
+    orders?.message === "No orders available for this store";
+
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
@@ -52,49 +58,75 @@ export default function Orders() {
         description="View and manage customer orders for"
       />
 
-      {/* Responsive Table */}
-      {orders && orders?.OrdersData?.length > 0 && (
-        <table className="mt-6 w-full">
-          <thead>
-            <tr className="border-y border-neutral-200 text-left">
-              <th className="py-2 text-sm font-medium">Order ID</th>
-              <th className="py-2 text-center text-sm font-medium">
-                Total Amount
-              </th>
-              <th className="py-2 text-center text-sm font-medium">
-                Payment Method
-              </th>
-              <th className="py-2 text-center text-sm font-medium">
-                Payment Status
-              </th>
-              <th className="py-2 text-center text-sm font-medium">
-                Order Status
-              </th>
-              <th className="py-2 text-center text-sm font-medium">
-                Delivery Status
-              </th>
-              <th className="py-2 text-center text-sm font-medium">Details</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders?.OrdersData?.map((order) => (
-              <OrderRow
-                key={order?.orderId}
-                order={order}
-                currencySymbol={storePreference?.currencySymbol}
-                storeId={selectedStore?.storeId}
-              />
-            ))}
-          </tbody>
-        </table>
+      {/* Loading State */}
+      {isLoading && (
+        <Card>
+          <CardContent className="space-y-4 p-6">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-16 w-full" />
+            <Skeleton className="h-16 w-full" />
+            <Skeleton className="h-16 w-full" />
+          </CardContent>
+        </Card>
       )}
 
-      {/* no order message */}
-      {orders && orders?.message === "No orders available for this store" && (
-        <p className="mt-12 text-center text-lg">
-          You haven&apos;t received any orders yet. When you do, they&apos;ll
-          appear here.
-        </p>
+      {/* Orders Table */}
+      {!isLoading && hasOrders && (
+        <Card>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-border bg-muted/50 border-b">
+                    <th className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
+                      Order ID
+                    </th>
+                    <th className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
+                      Date & Time
+                    </th>
+                    <th className="text-muted-foreground px-4 py-3 text-center text-xs font-medium">
+                      Order Status
+                    </th>
+                    <th className="text-muted-foreground px-4 py-3 text-center text-xs font-medium">
+                      Delivery Status
+                    </th>
+                    <th className="text-muted-foreground px-4 py-3 text-center text-xs font-medium">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-border divide-y">
+                  {orders.OrdersData.map((order) => (
+                    <OrderRow
+                      key={order.orderId}
+                      order={order}
+                      currencySymbol={storePreference?.currencySymbol}
+                      storeId={selectedStore?.storeId}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* No Orders Message */}
+      {!isLoading && noOrdersAvailable && (
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center px-4 py-16">
+            <div className="bg-muted mb-4 rounded-full p-4">
+              <ShoppingCart className="text-muted-foreground h-8 w-8" />
+            </div>
+            <h3 className="text-foreground mb-2 text-lg font-medium">
+              No orders yet
+            </h3>
+            <p className="text-muted-foreground max-w-md text-center text-sm">
+              You haven't received any orders yet. When you do, they'll appear
+              here.
+            </p>
+          </CardContent>
+        </Card>
       )}
     </section>
   );

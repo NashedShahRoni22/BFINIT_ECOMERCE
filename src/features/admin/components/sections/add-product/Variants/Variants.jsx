@@ -13,7 +13,7 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 import toast from "react-hot-toast";
 import SectionHeader from "../SectionHeader";
 
-export default function Variants({ form }) {
+export default function Variants({ form, isEditMode = false }) {
   const [isOpen, setIsOpen] = useState(false);
   const [attributes, setAttributes] = useState([]);
   const [useDefaultPricing, setUseDefaultPricing] = useState(true);
@@ -127,6 +127,16 @@ export default function Variants({ form }) {
     });
   }, [attributes, isOpen, useDefaultPricing, form]);
 
+  useEffect(() => {
+    const formVariants = form.watch("variants");
+
+    if (formVariants?.enabled && formVariants.attributes?.length > 0) {
+      setIsOpen(true);
+      setAttributes(formVariants.attributes);
+      setUseDefaultPricing(formVariants.useDefaultPricing);
+    }
+  }, [form.watch("variants")?.enabled]);
+
   // Add values from input (pipe separated) - now creates value objects
   const addValues = (id, inputValue) => {
     if (!inputValue.trim()) return;
@@ -210,20 +220,6 @@ export default function Variants({ form }) {
     if (field === "price" && value && value.toString().trim() !== "") {
       form.clearErrors("variants");
     }
-  };
-
-  // Delete variant value from attribute
-  const deleteVariant = (attributeId, valueId) => {
-    setAttributes(
-      attributes.map((attr) =>
-        attr.id === attributeId
-          ? {
-              ...attr,
-              values: attr.values.filter((val) => val.id !== valueId),
-            }
-          : attr,
-      ),
-    );
   };
 
   // Toggle required status
@@ -324,6 +320,7 @@ export default function Variants({ form }) {
             <AttributeCard
               key={attribute.id}
               attribute={attribute}
+              isEditMode={isEditMode}
               onDelete={() => deleteAttribute(attribute.id)}
               onUpdateName={(name) => updateAttributeName(attribute.id, name)}
               onAddValues={(values) => addValues(attribute.id, values)}
@@ -344,9 +341,11 @@ export default function Variants({ form }) {
         {/* Generated Variants Table */}
         {getAllVariants().length > 0 && (
           <AllVariantsTable
+            isEditMode={isEditMode}
+            attributes={attributes}
+            setAttributes={setAttributes}
             getAllVariants={getAllVariants}
             updateVariant={updateVariant}
-            deleteVariant={deleteVariant}
             onImageUpload={handleVariantImageUpload}
             form={form}
             useDefaultPricing={useDefaultPricing}

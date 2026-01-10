@@ -9,18 +9,27 @@ import ProductDetails from "@/pages/storefront/ProductDetails";
 import ShopPage from "@/pages/storefront/Shop";
 import Signup from "@/pages/storefront/Signup";
 import CartProvider from "@/providers/CartProvider";
+import StorefrontAuthProvider from "@/providers/StorefrontAuthProvider";
 import StorefrontThemeProvider from "@/providers/StorefrontThemeProvider";
+import PrivateRoute from "./PrivateRoute";
+import NotFound from "@/pages/storefront/NotFound";
 
 export const storeFrontRoutes = {
   path: "/stores/:storeId",
   element: (
     <StorefrontThemeProvider>
-      <CartProvider>
-        <StorefrontLayout />
-      </CartProvider>
+      <StorefrontAuthProvider>
+        <CartProvider>
+          <StorefrontLayout />
+        </CartProvider>
+      </StorefrontAuthProvider>
     </StorefrontThemeProvider>
   ),
   children: [
+    {
+      path: "*",
+      element: <NotFound />,
+    },
     {
       index: true,
       element: <Home />,
@@ -44,10 +53,6 @@ export const storeFrontRoutes = {
     {
       path: "contact",
       element: <Contact />,
-    },
-    {
-      path: "checkout",
-      element: <Checkout />,
     },
     {
       path: "signup",
@@ -79,6 +84,14 @@ export const storeFrontRoutes = {
       path: "support/shopping-guide",
       element: (
         <ContentPage title="Shopping Guide" apiEndpoint="/store/howtobuy" />
+      ),
+    },
+    {
+      path: "checkout",
+      element: (
+        <PrivateRoute role="customer">
+          <Checkout />
+        </PrivateRoute>
       ),
     },
   ],

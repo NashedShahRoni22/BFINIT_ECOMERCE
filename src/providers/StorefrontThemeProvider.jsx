@@ -30,7 +30,7 @@ export default function StorefrontThemeProvider({ children }) {
   }, [isLoading, data?.message, data?.data?.sections, data?.data?.theme]);
 
   useEffect(() => {
-    document.documentElement.classList.remove("theme-green", "theme-violet");
+    // document.documentElement.classList.remove("theme-green", "theme-violet");
 
     if (colorTheme !== "default") {
       document.documentElement.classList.add(`theme-${colorTheme}`);

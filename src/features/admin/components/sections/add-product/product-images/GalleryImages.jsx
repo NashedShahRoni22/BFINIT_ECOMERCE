@@ -31,6 +31,7 @@ export default function GalleryImages({ form }) {
       file: file,
       preview: URL.createObjectURL(file),
       name: file.name,
+      isExisting: false, // Mark as new upload
     }));
 
     let updatedGallery = [...(currentGallery || [])];
@@ -38,7 +39,8 @@ export default function GalleryImages({ form }) {
     if (targetIndex !== null && targetIndex < updatedGallery.length) {
       // Replace existing image at specific index
       const oldImage = updatedGallery[targetIndex];
-      if (oldImage && oldImage.preview) {
+      // Only revoke blob URLs, not server URLs
+      if (oldImage && oldImage.preview && !oldImage.isExisting) {
         URL.revokeObjectURL(oldImage.preview);
       }
       updatedGallery[targetIndex] = newImages[0];
@@ -72,7 +74,8 @@ export default function GalleryImages({ form }) {
     const updatedGallery = [...(currentGallery || [])];
     const imageToRemove = updatedGallery[index];
 
-    if (imageToRemove && imageToRemove.preview) {
+    // Only revoke blob URLs, not server URLs
+    if (imageToRemove && imageToRemove.preview && !imageToRemove.isExisting) {
       URL.revokeObjectURL(imageToRemove.preview);
     }
 
@@ -92,7 +95,7 @@ export default function GalleryImages({ form }) {
           e.target.files,
           currentGallery,
           onChange,
-          index < (currentGallery?.length || 0) ? index : null
+          index < (currentGallery?.length || 0) ? index : null,
         );
       }
     };
@@ -178,7 +181,7 @@ export default function GalleryImages({ form }) {
         const canAddMore = currentImages.length < maxImages;
         const totalSlots = Math.min(
           canAddMore ? currentImages.length + 1 : currentImages.length,
-          maxImages
+          maxImages,
         );
 
         return (
@@ -220,7 +223,7 @@ export default function GalleryImages({ form }) {
                           onDragLeave={handleDragLeave}
                         />
                       );
-                    }
+                    },
                   )}
                 </div>
               </div>

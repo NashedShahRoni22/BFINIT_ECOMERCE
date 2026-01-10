@@ -1,6 +1,47 @@
 import { Link, useParams } from "react-router";
+import {
+  Package,
+  MapPin,
+  CreditCard,
+  ShoppingBag,
+  ArrowLeft,
+} from "lucide-react";
 import useAuth from "@/hooks/auth/useAuth";
 import useGetQuery from "@/hooks/api/useGetQuery";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// Status configurations
+const ORDER_STATUSES = [
+  { value: "PLACED", label: "Placed", variant: "secondary" },
+  { value: "CONFIRMED", label: "Confirmed", variant: "default" },
+  { value: "PROCESSING", label: "Processing", variant: "default" },
+  { value: "SHIPPED", label: "Shipped", variant: "default" },
+  { value: "DELIVERED", label: "Delivered", variant: "default" },
+  { value: "CANCELLED", label: "Cancelled", variant: "destructive" },
+];
+
+const DELIVERY_STATUSES = [
+  { value: "PENDING", label: "Pending", variant: "secondary" },
+  { value: "IN_TRANSIT", label: "In Transit", variant: "default" },
+  { value: "OUT_FOR_DELIVERY", label: "Out for Delivery", variant: "default" },
+  { value: "DELIVERED", label: "Delivered", variant: "default" },
+  { value: "FAILED", label: "Failed", variant: "destructive" },
+  { value: "RETURNED", label: "Returned", variant: "destructive" },
+];
+
+function getStatusVariant(status, statusList) {
+  const found = statusList.find((s) => s.value === status);
+  return found ? found.variant : "secondary";
+}
+
+function getStatusLabel(status, statusList) {
+  const found = statusList.find((s) => s.value === status);
+  return found ? found.label : status;
+}
 
 export default function OrderDetails() {
   const { orderId } = useParams();
@@ -14,10 +55,6 @@ export default function OrderDetails() {
     enabled: !!orderId && !!user?.token,
   });
 
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
-
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -29,157 +66,237 @@ export default function OrderDetails() {
     });
   };
 
+  if (isLoading) {
+    return (
+      <section className="space-y-6">
+        <Card>
+          <CardContent className="space-y-4 p-6">
+            <Skeleton className="h-8 w-64" />
+            <Skeleton className="h-4 w-48" />
+            <Skeleton className="h-32 w-full" />
+            <Skeleton className="h-32 w-full" />
+          </CardContent>
+        </Card>
+      </section>
+    );
+  }
+
+  const order = orderData?.data;
+  const shipping = order?.ShippingDetails;
+
+  // Calculate order total
+  const orderTotal = order?.Products?.reduce((sum, product) => {
+    return sum + parseFloat(product?.lineTotal?.$numberDecimal || 0);
+  }, 0);
+
   return (
-    <section className="text-sm">
-      {/* <PageHeading heading="Shipping Details" /> */}
+    <section className="space-y-6">
+      {/* Back Button */}
+      <div>
+        <Button variant="ghost" size="sm" asChild className="text-xs">
+          <Link to="/orders">
+            <ArrowLeft className="mr-1.5 h-3.5 w-3.5" />
+            Back to Orders
+          </Link>
+        </Button>
+      </div>
 
-      <div className="mt-6 border border-neutral-100">
-        {/* order information */}
-        <div className="flex items-start justify-between p-5">
-          <div>
-            <h2 className="text-lg font-medium">Order Information</h2>
-            <p className="text-sm text-neutral-500">
-              Order placed on {formatDate(orderData?.data?.createdAt)}
-            </p>
+      {/* Order Header */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex items-start justify-between">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <Package className="text-muted-foreground h-5 w-5" />
+                <h1 className="text-foreground text-xl font-semibold">
+                  Order #{orderId}
+                </h1>
+              </div>
+              <p className="text-muted-foreground text-sm">
+                Placed on {formatDate(order?.createdAt)}
+              </p>
+            </div>
+            <div className="space-y-2 text-right">
+              <div className="flex items-center justify-end gap-2">
+                <span className="text-muted-foreground text-xs">
+                  Order Status:
+                </span>
+                <Badge
+                  variant={getStatusVariant(order?.orderStatus, ORDER_STATUSES)}
+                  className="text-xs"
+                >
+                  {getStatusLabel(order?.orderStatus, ORDER_STATUSES)}
+                </Badge>
+              </div>
+              <div className="flex items-center justify-end gap-2">
+                <span className="text-muted-foreground text-xs">
+                  Delivery Status:
+                </span>
+                <Badge
+                  variant={getStatusVariant(
+                    order?.deliveryStatus,
+                    DELIVERY_STATUSES,
+                  )}
+                  className="text-xs"
+                >
+                  {getStatusLabel(order?.deliveryStatus, DELIVERY_STATUSES)}
+                </Badge>
+              </div>
+              <p className="text-foreground mt-2 text-lg font-semibold">
+                ${orderTotal?.toFixed(2)}
+              </p>
+            </div>
           </div>
-          <div className="flex flex-col items-end">
-            <p>
-              <span className="font-semibold">Order Status: </span>
-              <span
-                className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                  orderData?.data?.orderStatus === "Pending"
-                    ? "bg-yellow-100 text-yellow-500"
-                    : "bg-green-100 text-green-600"
-                }`}
-              >
-                {orderData?.data?.orderStatus}
-              </span>
-            </p>
-            <p className="mt-2 text-sm font-semibold">
-              Total:{" "}
-              <span className="text-gray-500">
-                {orderData?.data?.Currency_code}{" "}
-                {orderData?.data?.TotalAmount?.$numberDecimal}
-              </span>
-            </p>
-          </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        <div className="grid grid-cols-2 gap-8 px-5">
-          {/* shipping information */}
-          <div className="mt-4 space-y-2 rounded border border-neutral-100 p-5">
-            <h2 className="mb-4 text-lg font-medium">Shipping Details</h2>
-            <p>
-              <span className="font-medium">Name:</span>{" "}
-              {orderData?.data?.ShippingDetails?.name}
-            </p>
-            <p>
-              <span className="font-medium">Email:</span>{" "}
-              {orderData?.data?.ShippingDetails?.email}
-            </p>
-            <p>
-              <span className="font-medium">Phone:</span>{" "}
-              {orderData?.data?.ShippingDetails?.phone}
-            </p>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {/* Shipping Details */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <MapPin className="text-muted-foreground h-4 w-4" />
+              Shipping Details
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="space-y-1">
+              <p className="text-muted-foreground text-xs">Customer Name</p>
+              <p className="text-foreground text-sm font-medium">
+                {shipping?.name}
+              </p>
+            </div>
 
-            <div>
-              <p className="font-medium">Address:</p>
-              <div className="mt-1 grid grid-cols-2 gap-1">
+            <div className="space-y-1">
+              <p className="text-muted-foreground text-xs">Email</p>
+              <p className="text-foreground text-sm">{shipping?.email}</p>
+            </div>
+
+            <div className="space-y-1">
+              <p className="text-muted-foreground text-xs">Phone</p>
+              <p className="text-foreground text-sm">{shipping?.phone}</p>
+            </div>
+
+            <Separator />
+
+            <div className="space-y-2">
+              <p className="text-muted-foreground text-xs font-medium">
+                Shipping Address
+              </p>
+              <div className="text-foreground space-y-1 text-sm">
+                <p>{shipping?.addressLine1}</p>
+                {shipping?.addressLine2 && <p>{shipping?.addressLine2}</p>}
                 <p>
-                  <span className="font-medium">Street:</span>{" "}
-                  {orderData?.data?.ShippingDetails?.addressLine1}
+                  {shipping?.city}, {shipping?.state && `${shipping?.state}, `}
+                  {shipping?.zipCode}
                 </p>
-                <p>
-                  <span className="font-medium">City:</span>{" "}
-                  {orderData?.data?.ShippingDetails?.city}
-                </p>
-                <p>
-                  <span className="font-medium">Street (optional):</span>{" "}
-                  {orderData?.data?.ShippingDetails?.addressLine2}
-                </p>
-                <p>
-                  <span className="font-medium">State (optional):</span>{" "}
-                  {orderData?.data?.ShippingDetails?.state}
-                </p>
-                <p>
-                  <span className="font-medium">ZIP Code:</span>{" "}
-                  {orderData?.data?.ShippingDetails?.zipCode}
-                </p>
-                <p>
-                  <span className="font-medium">Country:</span>{" "}
-                  {orderData?.data?.ShippingDetails?.country}
-                </p>
+                <p>{shipping?.country}</p>
               </div>
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          {/* payment information */}
-          <div className="mt-4 border border-neutral-100 p-5">
-            <h2 className="text-lg font-medium">Payment Information</h2>
-
-            <div className="mt-4 space-y-2.5">
-              <p>
-                <span className="font-medium">Payment Method:</span>{" "}
-                {orderData?.data?.PaymentMethod}
-              </p>
-              <p>
-                <span className="font-medium">Payment Status:</span>{" "}
-                <span className="rounded-full bg-yellow-100 px-3 py-0.5 text-xs text-yellow-500">
-                  {orderData?.data?.paymentStatus}
-                </span>
-              </p>
-              <p>
-                <span className="font-medium">Delivery Status:</span>{" "}
-                <span
-                  className={`rounded-full px-3 py-0.5 text-xs ${
-                    orderData?.data?.deliveryStatus === "Pending"
-                      ? "bg-yellow-100 text-yellow-500"
-                      : "bg-green-100 text-green-600"
-                  }`}
-                >
-                  {orderData?.data?.deliveryStatus}
-                </span>
+        {/* Payment Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <CreditCard className="text-muted-foreground h-4 w-4" />
+              Payment Information
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="space-y-1">
+              <p className="text-muted-foreground text-xs">Payment Method</p>
+              <p className="text-foreground text-sm font-medium">
+                {order?.PaymentMethod || "N/A"}
               </p>
             </div>
-          </div>
-        </div>
 
-        <div className="px-10 py-5">
-          <h2 className="text-lg font-medium">Products</h2>
-          <ul className="mt-2">
-            {orderData?.data?.Products?.map((product) => (
-              <li
-                key={product?.productId}
-                className="flex items-center justify-between border-y border-neutral-100 py-2"
-              >
-                <div>
-                  <Link
-                    to={`/products/${product?.productId}`}
-                    className="font-medium"
-                  >
-                    {product?.productName}
-                  </Link>
-                  <p>Quantity: {product?.quantity}</p>
-                </div>
-                <div>
-                  <p>
-                    {orderData?.data?.Currency_code}{" "}
-                    {parseFloat(product?.price?.$numberDecimal).toFixed(2)} x{" "}
-                    {product?.quantity}
-                  </p>
-                  <p className="font-semibold">
-                    {orderData.data.Currency_code}{" "}
-                    {(
-                      parseFloat(product.price?.$numberDecimal) *
-                      product.quantity
-                    ).toFixed(2)}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
+            <div className="space-y-1">
+              <p className="text-muted-foreground text-xs">Payment Status</p>
+              <Badge variant="secondary" className="text-xs">
+                {order?.paymentStatus || "Pending"}
+              </Badge>
+            </div>
+
+            <Separator />
+
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Subtotal</span>
+                <span className="text-foreground">
+                  ${orderTotal?.toFixed(2)}
+                </span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Tax</span>
+                <span className="text-foreground">$0.00</span>
+              </div>
+              <Separator />
+              <div className="flex justify-between text-base font-semibold">
+                <span className="text-foreground">Total</span>
+                <span className="text-foreground">
+                  ${orderTotal?.toFixed(2)}
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Products */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <ShoppingBag className="text-muted-foreground h-4 w-4" />
+            Order Items
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="divide-border divide-y">
+            {order?.Products?.map((product) => (
+              <div
+                key={product?._id}
+                className="hover:bg-muted/30 p-4 transition-colors"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="space-y-1">
+                    <Link
+                      to={`/products/${product?.productId}`}
+                      className="text-foreground hover:text-primary text-sm font-medium transition-colors"
+                    >
+                      {product?.productName}
+                    </Link>
+                    <p className="text-muted-foreground text-xs">
+                      Quantity: {product?.quantity}
+                    </p>
+                    {product?.variant && (
+                      <p className="text-muted-foreground text-xs">
+                        Variant: {product?.variant}
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-1 text-right">
+                    <p className="text-muted-foreground text-xs">
+                      $
+                      {parseFloat(product?.unitPrice?.$numberDecimal).toFixed(
+                        2,
+                      )}{" "}
+                      × {product?.quantity}
+                    </p>
+                    <p className="text-foreground text-sm font-semibold">
+                      $
+                      {parseFloat(product?.lineTotal?.$numberDecimal).toFixed(
+                        2,
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </section>
   );
 }

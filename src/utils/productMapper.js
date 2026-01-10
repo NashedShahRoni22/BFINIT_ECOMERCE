@@ -55,7 +55,7 @@ export const transformProductForApi = (data) => {
   return productData;
 };
 
-const transformVariantsForApi = (variants) => {
+export const transformVariantsForApi = (variants) => {
   if (!variants.enabled) {
     return {
       enabled: false,

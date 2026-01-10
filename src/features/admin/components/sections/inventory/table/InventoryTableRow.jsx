@@ -171,7 +171,7 @@ export default function InventoryTableRow({ product }) {
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link
-                  to={`/products/${productId}`}
+                  to={`/products/edit/${productId}`}
                   className="cursor-pointer text-xs font-medium"
                 >
                   <Pencil />

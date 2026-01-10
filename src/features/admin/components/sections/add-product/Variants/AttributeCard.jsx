@@ -10,18 +10,32 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ConfirmationDialog from "../../../modals/ConfirmationDialog";
+import toast from "react-hot-toast";
+import useDeleteMutation from "@/hooks/api/useDeleteMutation";
+import { useParams } from "react-router";
 
 export default function AttributeCard({
   attribute,
+  isEditMode,
   onDelete,
   onUpdateName,
   onAddValues,
   onRemoveValue,
   onToggleRequired,
 }) {
+  const { productId } = useParams();
+
+  const { mutate, isPending } = useDeleteMutation({
+    endpoint: `/product/delete/attribute/${productId}?attributeId=${attribute.id}`,
+    token: true,
+    clientId: true,
+  });
+
   const [inputValue, setInputValue] = useState("");
   const [nameValue, setNameValue] = useState(attribute.name);
-  const [isEditingName, setIsEditingName] = useState(!attribute.name); // Show input if no name initially
+  const [isEditingName, setIsEditingName] = useState(!attribute.name);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const handleNameChange = (e) => {
     const newName = e.target.value;
@@ -34,6 +48,32 @@ export default function AttributeCard({
       if (nameValue.trim()) {
         setIsEditingName(false);
       }
+    }
+  };
+
+  const handleAttributeDelete = () => {
+    if (isEditMode) {
+      setIsDeleteDialogOpen(true);
+    } else {
+      onDelete();
+    }
+  };
+
+  const confirmDeleteAttribute = () => {
+    if (attribute) {
+      mutate(null, {
+        onSuccess: () => {
+          onDelete();
+          setIsDeleteDialogOpen(false);
+          toast.success("Attribute deleted successfully");
+        },
+
+        onError: () => {
+          onDelete();
+          setIsDeleteDialogOpen(false);
+          toast.success("Attribute deleted successfully");
+        },
+      });
     }
   };
 
@@ -72,9 +112,10 @@ export default function AttributeCard({
           </div>
         )}
         <Button
+          type="button"
           size="icon"
           variant="ghost"
-          onClick={onDelete}
+          onClick={handleAttributeDelete}
           className="text-destructive hover:bg-destructive/10 hover:text-destructive size-8 shrink-0"
         >
           <Trash className="h-4 w-4" />
@@ -158,6 +199,39 @@ export default function AttributeCard({
           </Label>
         </div>
       </div>
+
+      {/* Attribute delete confirmation modal */}
+      <ConfirmationDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        title="Delete attribute?"
+        description={
+          <>
+            Are you sure you want to delete the{" "}
+            {attribute.name ? (
+              <>
+                <span className="font-medium">
+                  &quot;{attribute.name}&quot;
+                </span>{" "}
+                attribute
+              </>
+            ) : (
+              "this attribute"
+            )}
+            ? This will also delete all its variants. This action cannot be
+            undone.
+          </>
+        }
+        onConfirm={confirmDeleteAttribute}
+        onCancel={() => {
+          setIsDeleteDialogOpen(false);
+        }}
+        confirmText="Delete"
+        cancelText="Cancel"
+        isLoading={isPending}
+        loadingText="Deleting"
+        variant="destructive"
+      />
     </div>
   );
 }

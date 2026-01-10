@@ -80,33 +80,61 @@ export default function ProductDetails({ form }) {
   };
 
   const handleTagKeyPress = (e, field) => {
-    if (e.key === "Enter" && tagInput.trim()) {
+    if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
-      const currentTags = field.value
-        ? field.value.split(",").filter((tag) => tag.trim())
-        : [];
-      const newTag = tagInput.trim();
 
-      if (!currentTags.includes(newTag)) {
-        const updatedTags = [...currentTags, newTag];
-        field.onChange(updatedTags.join(","));
+      if (tagInput.trim() === "") return;
+
+      const currentTags = getTagsArray(field.value);
+      const newTags = tagInput
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag !== "" && !currentTags.includes(tag));
+
+      if (newTags.length > 0) {
+        const allTags = [...currentTags, ...newTags];
+        // Store as array with single comma-separated string
+        field.onChange([allTags.join(", ")]);
+        setTagInput("");
       }
-      setTagInput("");
     }
   };
 
   // Remove tag
   const removeTag = (tagToRemove, field) => {
-    const currentTags = field.value
-      ? field.value.split(",").filter((tag) => tag.trim())
-      : [];
+    const currentTags = getTagsArray(field.value);
     const updatedTags = currentTags.filter((tag) => tag !== tagToRemove);
-    field.onChange(updatedTags.join(","));
+    // Store back as array with single comma-separated string
+    field.onChange([updatedTags.join(", ")]);
   };
 
-  // Get tags array from field value
   const getTagsArray = (value) => {
-    return value ? value.split(",").filter((tag) => tag.trim()) : [];
+    // If it's an array with a comma-separated string as the first element
+    if (Array.isArray(value)) {
+      // If it's empty array
+      if (value.length === 0) return [];
+
+      // Take the first element and split it
+      const firstElement = value[0];
+      if (typeof firstElement === "string") {
+        return firstElement
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter((tag) => tag !== "");
+      }
+      return value.filter((tag) => tag && tag.trim() !== "");
+    }
+
+    // If it's a string, split it
+    if (typeof value === "string") {
+      return value
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag !== "");
+    }
+
+    // Fallback for null/undefined
+    return [];
   };
 
   // Handle SunEditor change
@@ -198,26 +226,26 @@ export default function ProductDetails({ form }) {
                             {cat?.name}
                           </SelectItem>
                         ))}
-                        {/* <SelectItem
+                        <SelectItem
                           value="new_category"
                           className="text-primary mt-1 cursor-pointer border-t pt-2"
                         >
                           <Plus />
                           <span>Create new category</span>
-                        </SelectItem> */}
+                        </SelectItem>
                       </>
                     ) : (
                       <>
                         <div className="text-muted-foreground px-2 py-2 text-center text-sm">
                           No category found!
                         </div>
-                        {/* <SelectItem
+                        <SelectItem
                           value="new_category"
                           className="text-primary cursor-pointer"
                         >
                           <Plus />
                           <span>Create your first category</span>
-                        </SelectItem> */}
+                        </SelectItem>
                       </>
                     )}
                   </SelectContent>
@@ -322,26 +350,26 @@ export default function ProductDetails({ form }) {
                             {brand?.name}
                           </SelectItem>
                         ))}
-                        {/* <SelectItem
+                        <SelectItem
                           value="new_brand"
                           className="text-primary mt-1 cursor-pointer border-t pt-2"
                         >
                           <Plus />
                           <span>Create new brand</span>
-                        </SelectItem> */}
+                        </SelectItem>
                       </>
                     ) : (
                       <>
                         <div className="text-muted-foreground px-2 py-2 text-center text-sm">
                           No brand found!
                         </div>
-                        {/* <SelectItem
+                        <SelectItem
                           value="new_brand"
                           className="text-primary cursor-pointer"
                         >
                           <Plus />
                           <span>Create your first brand</span>
-                        </SelectItem> */}
+                        </SelectItem>
                       </>
                     )}
                   </SelectContent>
@@ -447,7 +475,7 @@ export default function ProductDetails({ form }) {
                     name="description"
                     height="220px"
                     placeholder="Detail product description with features, benefits and specifications"
-                    defaultValue={field.value || ""}
+                    setContents={field.value || ""}
                     setOptions={{
                       buttonList: [
                         [
@@ -463,14 +491,34 @@ export default function ProductDetails({ form }) {
                           "fontSize",
                           "fontColor",
                           "hiliteColor",
-                          "align",
-                          "list",
+                          "removeFormat",
+                        ],
+                        ["align", "list", "outdent", "indent", "lineHeight"],
+                        [
+                          "blockquote",
+                          "horizontalRule",
+                          "table",
                           "link",
                           "image",
                           "video",
                         ],
-                        ["removeFormat", "preview"],
+                        ["fullScreen", "showBlocks", "preview"],
                       ],
+                      charCounter: true,
+                      charCounterLabel: "Characters:",
+
+                      formats: [
+                        "p",
+                        "div",
+                        "h1",
+                        "h2",
+                        "h3",
+                        "h4",
+                        "h5",
+                        "h6",
+                        "blockquote",
+                      ],
+                      fontSize: [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36],
                     }}
                   />
                 </FormControl>

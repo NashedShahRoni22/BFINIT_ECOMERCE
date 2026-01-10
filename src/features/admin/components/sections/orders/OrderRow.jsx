@@ -1,20 +1,58 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import toast from "react-hot-toast";
-import { Eye } from "lucide-react";
+import { Eye, Package } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import useAuth from "@/hooks/auth/useAuth";
 import usePatchMutaion from "@/hooks/api/usePatchMutaion";
 
-export default function OrderRow({ order, currencySymbol, storeId }) {
+// Status configurations matching API format
+const ORDER_STATUSES = [
+  { value: "PLACED", label: "Placed", variant: "secondary" },
+  { value: "CONFIRMED", label: "Confirmed", variant: "default" },
+  { value: "PROCESSING", label: "Processing", variant: "default" },
+  { value: "SHIPPED", label: "Shipped", variant: "default" },
+  { value: "DELIVERED", label: "Delivered", variant: "default" },
+  { value: "CANCELLED", label: "Cancelled", variant: "destructive" },
+];
+
+const DELIVERY_STATUSES = [
+  { value: "PENDING", label: "Pending", variant: "secondary" },
+  { value: "IN_TRANSIT", label: "In Transit", variant: "default" },
+  { value: "OUT_FOR_DELIVERY", label: "Out for Delivery", variant: "default" },
+  { value: "DELIVERED", label: "Delivered", variant: "default" },
+  { value: "FAILED", label: "Failed", variant: "destructive" },
+  { value: "RETURNED", label: "Returned", variant: "destructive" },
+];
+
+function getStatusVariant(status, statusList) {
+  const found = statusList.find((s) => s.value === status);
+  return found ? found.variant : "secondary";
+}
+
+function getStatusLabel(status, statusList) {
+  const found = statusList.find((s) => s.value === status);
+  return found ? found.label : status;
+}
+
+export default function OrderRow({ order, storeId }) {
   const {
     orderId,
     OrderStatus: initialOrderStatus,
-    TotalAmount,
-    PaymentStatus,
     deliveryStatus: initialDeliveryStatus,
-    PaymentMethode,
+    createdDate,
+    createdTime,
   } = order;
+
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const [orderStatus, setOrderStatus] = useState(initialOrderStatus);
@@ -36,8 +74,7 @@ export default function OrderRow({ order, currencySymbol, storeId }) {
     });
 
   // function to update order status
-  const updateOrderStatus = (e) => {
-    const value = e.target.value;
+  const updateOrderStatus = (value) => {
     setOrderStatus(value);
 
     const payload = {
@@ -55,9 +92,8 @@ export default function OrderRow({ order, currencySymbol, storeId }) {
     });
   };
 
-  // function to update delevery status
-  const updateDeliveryStatus = (e) => {
-    const value = e.target.value;
+  // function to update delivery status
+  const updateDeliveryStatus = (value) => {
     setDeliveryStatus(value);
 
     const payload = {
@@ -76,57 +112,102 @@ export default function OrderRow({ order, currencySymbol, storeId }) {
   };
 
   return (
-    <tr className="border-t border-neutral-200">
-      <td className="py-2 text-sm">#{orderId}</td>
-      <td className="py-2 text-center text-sm">
-        {currencySymbol}
-        {TotalAmount?.$numberDecimal}
+    <tr className="hover:bg-muted/30 transition-colors">
+      {/* Order ID */}
+      <td className="px-4 py-3">
+        <div className="flex items-center gap-2">
+          <Package className="text-muted-foreground h-4 w-4 flex-shrink-0" />
+          <span className="text-foreground font-mono text-xs">#{orderId}</span>
+        </div>
       </td>
-      <td className="py-2 text-center text-sm">{PaymentMethode}</td>
-      <td className="py-2 text-center text-sm">{PaymentStatus}</td>
-      <td className="py-2 text-center text-sm">
-        <select
-          value={orderStatus}
-          disabled={orderLoading}
-          onChange={updateOrderStatus}
-          className={`cursor-pointer rounded-md border px-1 py-0.5 text-xs font-medium outline-none ${
-            orderStatus === "Pending"
-              ? "bg-yellow-100 text-yellow-500"
-              : "bg-green-100 text-green-600"
-          }`}
-        >
-          <option value="Pending" className="text-black">
-            Pending
-          </option>
-          <option value="Confirm" className="text-black">
-            Confirm
-          </option>
-        </select>
+
+      {/* Date & Time */}
+      <td className="px-4 py-3">
+        <div className="text-xs">
+          <div className="text-foreground font-medium">{createdDate}</div>
+          <div className="text-muted-foreground">{createdTime}</div>
+        </div>
       </td>
-      <td className="py-2 text-center text-sm">
-        <select
-          value={deliveryStatus}
-          disabled={deliveryLoading}
-          onChange={updateDeliveryStatus}
-          className={`cursor-pointer rounded-md border px-1 py-0.5 text-xs font-medium outline-none ${
-            deliveryStatus === "Pending"
-              ? "bg-yellow-100 text-yellow-500"
-              : "bg-green-100 text-green-600"
-          }`}
-        >
-          <option value="Pending" className="text-black">
-            Pending
-          </option>
-          <option value="Shipped" className="text-black">
-            Shipped
-          </option>
-        </select>
+
+      {/* Order Status */}
+      <td className="px-4 py-3">
+        <div className="flex justify-center">
+          <Select
+            value={orderStatus}
+            onValueChange={updateOrderStatus}
+            disabled={orderLoading}
+          >
+            <SelectTrigger className="border-border h-8 w-32 text-xs">
+              <SelectValue>
+                <Badge
+                  variant={getStatusVariant(orderStatus, ORDER_STATUSES)}
+                  className="text-xs"
+                >
+                  {getStatusLabel(orderStatus, ORDER_STATUSES)}
+                </Badge>
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {ORDER_STATUSES.map((status) => (
+                <SelectItem
+                  key={status.value}
+                  value={status.value}
+                  className="text-xs"
+                >
+                  <Badge variant={status.variant} className="text-xs">
+                    {status.label}
+                  </Badge>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </td>
-      <td className="py-2 text-center text-sm">
-        <div className="inline-flex items-center justify-center">
-          <Link to={`/orders/${orderId}`}>
-            <Eye className="text-dashboard-primary/75 hover:text-dashboard-primary min-w-fit cursor-pointer text-lg transition-all duration-200 ease-in-out" />
-          </Link>
+
+      {/* Delivery Status */}
+      <td className="px-4 py-3">
+        <div className="flex justify-center">
+          <Select
+            value={deliveryStatus}
+            onValueChange={updateDeliveryStatus}
+            disabled={deliveryLoading}
+          >
+            <SelectTrigger className="border-border h-8 w-36 text-xs">
+              <SelectValue>
+                <Badge
+                  variant={getStatusVariant(deliveryStatus, DELIVERY_STATUSES)}
+                  className="text-xs"
+                >
+                  {getStatusLabel(deliveryStatus, DELIVERY_STATUSES)}
+                </Badge>
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {DELIVERY_STATUSES.map((status) => (
+                <SelectItem
+                  key={status.value}
+                  value={status.value}
+                  className="text-xs"
+                >
+                  <Badge variant={status.variant} className="text-xs">
+                    {status.label}
+                  </Badge>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </td>
+
+      {/* Actions */}
+      <td className="px-4 py-3">
+        <div className="flex justify-center">
+          <Button variant="ghost" size="sm" asChild className="h-8 text-xs">
+            <Link to={`/orders/${orderId}`}>
+              <Eye className="mr-1.5 h-3.5 w-3.5" />
+              View
+            </Link>
+          </Button>
         </div>
       </td>
     </tr>

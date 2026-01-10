@@ -90,7 +90,7 @@ export default function ThumbnailImage({ form }) {
                   <div className="border-border bg-muted relative aspect-square w-full overflow-hidden rounded-md border">
                     <img
                       src={field.value.preview}
-                      alt={field.value.name}
+                      alt={field.value?.name}
                       className="h-full w-full object-cover"
                     />
                     <button
@@ -103,7 +103,7 @@ export default function ThumbnailImage({ form }) {
                     </button>
                   </div>
                   <p className="text-muted-foreground mt-1.5 truncate text-[11px]">
-                    {field.value.name}
+                    {field.value?.name}
                   </p>
                 </div>
               ) : (

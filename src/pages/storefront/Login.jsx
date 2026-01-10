@@ -1,3 +1,4 @@
+import { Link, useNavigate, useParams } from "react-router";
 import { useState } from "react";
 import { Eye, EyeOff, Mail, Lock, Loader2, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,20 +12,27 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import usePostMutation from "@/hooks/api/usePostMutation";
+import toast from "react-hot-toast";
+import useStorefrontAuth from "@/hooks/auth/useStorefrontAuth";
+import useBasePath from "@/hooks/useBasePath";
 
 export default function Login() {
+  const { storeId } = useParams();
+  const navigate = useNavigate();
+
   const { mutate, isPending } = usePostMutation({
     endpoint: `/customer/auth/login`,
+    storeId,
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [loginSuccess, setLoginSuccess] = useState(false);
+  const { saveAuthInfo } = useStorefrontAuth();
+  const basePath = useBasePath();
 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
 
   const handleInputChange = (e) => {
@@ -66,8 +74,11 @@ export default function Login() {
       },
       {
         onSuccess: (data) => {
-          console.log("Login successful:", data);
-          setLoginSuccess(true);
+          if (data.message === "Authentication Successfully") {
+            toast.success("Login success!");
+            saveAuthInfo(data);
+            navigate(basePath);
+          }
         },
         onError: (error) => {
           console.error("Error during login:", error);
@@ -87,24 +98,6 @@ export default function Login() {
       handleLogin();
     }
   };
-
-  if (loginSuccess) {
-    return (
-      <div className="bg-muted flex min-h-screen items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardContent className="pt-6 text-center">
-            <div className="bg-success/10 mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full">
-              <CheckCircle2 className="text-success h-8 w-8" />
-            </div>
-            <h2 className="mb-2 text-2xl font-bold">Welcome Back!</h2>
-            <p className="text-muted-foreground mb-6">
-              Login successful. Redirecting to dashboard...
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="bg-muted flex min-h-screen items-center justify-center p-4">
@@ -217,12 +210,12 @@ export default function Login() {
             {/* Sign Up Link */}
             <p className="text-muted-foreground mt-6 text-center text-sm">
               Don't have an account?{" "}
-              <a
-                href="/signup"
+              <Link
+                to={`${basePath}/signup`}
                 className="text-foreground font-medium hover:underline"
               >
                 Sign up
-              </a>
+              </Link>
             </p>
           </CardContent>
         </Card>

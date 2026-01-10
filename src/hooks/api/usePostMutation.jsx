@@ -6,18 +6,21 @@ export default function usePostMutation({
   endpoint,
   token = null,
   clientId = null,
+  customerId = null,
   storeId = null,
 }) {
   const { user } = useAuth();
+  const activeToken = token ? token : user?.token;
 
   return useMutation({
     mutationFn: (payload) =>
       postApi(
         endpoint,
-        token && user?.token,
+        token && activeToken,
         clientId && user?.data?.clientid,
+        customerId,
         storeId,
-        payload
+        payload,
       ),
   });
 }

@@ -1,16 +1,9 @@
-/**
- * Validates product variant configuration
- * @param {Object} data - Form data containing variants
- * @param {Object} form - React Hook Form instance
- * @returns {boolean} - True if validation passes, false otherwise
- */
-
 export const validateVariants = (data, form) => {
   // Clear any previous variant errors
   form.clearErrors("variants");
 
   if (!data.variants.enabled) {
-    return true; // No validation needed if variants are disabled
+    return true;
   }
 
   // Check if at least one attribute exists
@@ -93,5 +86,5 @@ export const validateVariants = (data, form) => {
     }
   }
 
-  return true; // All validations passed
+  return true;
 };

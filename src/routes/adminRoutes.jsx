@@ -22,6 +22,7 @@ import Stores from "@/features/admin/pages/Stores";
 import CreateStore from "@/features/admin/pages/CreateStore";
 import UpdateStore from "@/features/admin/pages/UpdateStore";
 import SubCategoryUpdate from "@/features/admin/pages/SubCategoryUpdate";
+import UpdateProduct from "@/features/admin/pages/UpdateProduct";
 
 export const adminRoutes = {
   path: "/",
@@ -115,6 +116,10 @@ export const adminRoutes = {
     {
       path: "stores/edit/:storeId",
       element: <UpdateStore />,
+    },
+    {
+      path: "products/edit/:productId",
+      element: <UpdateProduct />,
     },
   ],
 };
