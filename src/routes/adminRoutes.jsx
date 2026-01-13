@@ -23,6 +23,7 @@ import CreateStore from "@/features/admin/pages/CreateStore";
 import UpdateStore from "@/features/admin/pages/UpdateStore";
 import SubCategoryUpdate from "@/features/admin/pages/SubCategoryUpdate";
 import UpdateProduct from "@/features/admin/pages/UpdateProduct";
+import AddAbout from "@/features/admin/pages/AddAbout";
 
 export const adminRoutes = {
   path: "/",
@@ -100,6 +101,10 @@ export const adminRoutes = {
     {
       path: "/support/terms-conditions",
       element: <TermsConditionsForm />,
+    },
+    {
+      path: "/support/about",
+      element: <AddAbout />,
     },
     {
       path: "/support/how-to-buy",

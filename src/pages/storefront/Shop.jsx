@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Grid3x3, LayoutGrid, List, SlidersHorizontal, X } from "lucide-react";
+import { Columns2, Columns3, SlidersHorizontal, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import useSelectedStore from "@/hooks/useSelectedStore";
@@ -9,14 +9,12 @@ import ProductCard from "../../components/storefront/cards/products/ProductCard"
 const gridLayoutMap = {
   2: "grid-cols-1 sm:grid-cols-2",
   3: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
-  4: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
-  5: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5",
 };
 
 export default function ShopPage() {
   const { selectedStore } = useSelectedStore();
   const [currentPage, setCurrentPage] = useState(1);
-  const [gridLayout, setGridLayout] = useState(4);
+  const [gridLayout, setGridLayout] = useState(3);
   const [sortBy, setSortBy] = useState("default");
   const [showFilters, setShowFilters] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 10000]);
@@ -296,8 +294,8 @@ export default function ShopPage() {
                   </select>
 
                   {/* Grid Layout */}
-                  <div className="bg-muted hidden items-center gap-1 rounded-md p-1 sm:flex">
-                    {[2, 3, 4, 5].map((cols) => (
+                  <div className="bg-muted hidden items-center gap-1 rounded-md p-1 lg:flex">
+                    {[2, 3].map((cols) => (
                       <button
                         key={cols}
                         onClick={() => setGridLayout(cols)}
@@ -308,10 +306,8 @@ export default function ShopPage() {
                             : "text-muted-foreground hover:",
                         )}
                       >
-                        {cols === 2 && <Grid3x3 className="h-4 w-4" />}
-                        {cols === 3 && <LayoutGrid className="h-4 w-4" />}
-                        {cols === 4 && <Grid3x3 className="h-4 w-4" />}
-                        {cols === 5 && <List className="h-4 w-4" />}
+                        {cols === 2 && <Columns2 className="h-4 w-4" />}
+                        {cols === 3 && <Columns3 className="h-4 w-4" />}
                       </button>
                     ))}
                   </div>

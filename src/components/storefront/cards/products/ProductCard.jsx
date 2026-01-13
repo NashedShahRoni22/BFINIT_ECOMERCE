@@ -7,6 +7,7 @@ import { formatPrice } from "@/utils/formatPrice";
 import { getDiscountPercent } from "@/utils/products";
 import useCart from "@/hooks/useCart";
 import VariantSelectorModal from "../../modals/VariantSelectorModal";
+import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
 
 export default function ProductCard({ product }) {
   const {
@@ -26,11 +27,14 @@ export default function ProductCard({ product }) {
     variants,
   } = product || {};
 
+  const { data: storePreference } = useGetStorePreference();
+
   const { addToCart } = useCart();
   const basePath = useBasePath();
 
   const [showVariantModal, setShowVariantModal] = useState(false);
 
+  const currencySymbol = storePreference?.data?.currencySymbol;
   const originalPrice = productPrice?.$numberDecimal
     ? productPrice?.$numberDecimal
     : productPrice;
@@ -188,11 +192,11 @@ export default function ProductCard({ product }) {
             <div className="flex flex-col">
               <div className="flex items-baseline gap-2">
                 <span className="text-lg font-bold">
-                  {formatPrice(originalPrice)}
+                  {formatPrice(originalPrice, currencySymbol)}
                 </span>
                 {originalDiscount > 0 && (
                   <span className="text-muted-foreground text-xs line-through">
-                    {formatPrice(originalDiscount)}
+                    {formatPrice(originalDiscount, currencySymbol)}
                   </span>
                 )}
               </div>

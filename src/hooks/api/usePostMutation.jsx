@@ -5,18 +5,20 @@ import useAuth from "../auth/useAuth";
 export default function usePostMutation({
   endpoint,
   token = null,
+  customerToken = null,
   clientId = null,
   customerId = null,
   storeId = null,
 }) {
   const { user } = useAuth();
-  const activeToken = token ? token : user?.token;
+
+  const activeToken = customerToken || (token && user?.token) || null;
 
   return useMutation({
     mutationFn: (payload) =>
       postApi(
         endpoint,
-        token && activeToken,
+        activeToken,
         clientId && user?.data?.clientid,
         customerId,
         storeId,

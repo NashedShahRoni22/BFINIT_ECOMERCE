@@ -5,6 +5,8 @@ import { CartContext } from "@/context/CartContext";
 import useBasePath from "../../hooks/useBasePath";
 import useStorefrontAuth from "@/hooks/auth/useStorefrontAuth";
 import { Button } from "@/components/ui/button";
+import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
+import { formatPrice } from "@/utils/formatPrice";
 
 export default function Cart() {
   const navigate = useNavigate();
@@ -19,6 +21,9 @@ export default function Cart() {
     totalSavings,
     getItemPrice,
   } = useContext(CartContext);
+
+  const { data: storePreference } = useGetStorePreference();
+  const currencySymbol = storePreference?.data?.currencySymbol;
 
   const basePath = useBasePath();
 
@@ -60,8 +65,8 @@ export default function Cart() {
   };
 
   return (
-    <div className="bg-background min-h-screen">
-      <div className="container mx-auto px-4 py-8 lg:py-12">
+    <div className="bg-background mx-auto min-h-screen max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold lg:text-4xl">Shopping Cart</h1>
@@ -135,11 +140,11 @@ export default function Cart() {
                         {/* Price */}
                         <div className="mt-2 flex items-center gap-2">
                           <span className="text-lg font-bold">
-                            ${itemPrice.toFixed(2)}
+                            {formatPrice(itemPrice, currencySymbol)}
                           </span>
                           {hasDiscount && (
                             <span className="text-muted-foreground text-sm line-through">
-                              ${item.unitPrice.toFixed(2)}
+                              {formatPrice(item.unitPrice, currencySymbol)}
                             </span>
                           )}
                         </div>
@@ -176,7 +181,7 @@ export default function Cart() {
                             Subtotal
                           </p>
                           <p className="text-lg font-bold">
-                            ${itemTotal.toFixed(2)}
+                            {formatPrice(itemTotal, currencySymbol)}
                           </p>
                         </div>
                       </div>
@@ -209,7 +214,7 @@ export default function Cart() {
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Subtotal</span>
                     <span className="font-semibold">
-                      ${subtotal.toFixed(2)}
+                      {formatPrice(subtotal, currencySymbol)}
                     </span>
                   </div>
 
@@ -221,7 +226,7 @@ export default function Cart() {
                         You Save
                       </span>
                       <span className="text-success font-semibold">
-                        -${totalSavings.toFixed(2)}
+                        -{formatPrice(totalSavings, currencySymbol)}
                       </span>
                     </div>
                   )}
@@ -233,7 +238,7 @@ export default function Cart() {
                   <div className="flex items-center justify-between">
                     <span className="text-lg font-bold">Total</span>
                     <span className="text-2xl font-bold">
-                      ${total.toFixed(2)}
+                      {formatPrice(total, currencySymbol)}
                     </span>
                   </div>
                 </div>

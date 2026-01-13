@@ -8,6 +8,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useParams } from "react-router";
 import ConfirmationDialog from "../../../modals/ConfirmationDialog";
+import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
 
 export default function VariantTableRow({
   isEditMode,
@@ -21,6 +22,8 @@ export default function VariantTableRow({
   updateVariant,
   useDefaultPricing,
 }) {
+  const { data, isLoading } = useGetStorePreference();
+
   const { productId } = useParams();
   const { mutate, isPending } = useDeleteMutation({
     endpoint: `/product/delete/attribute-value/${productId}?attributeId=${variant.attributeId}&valueId=${variant.id}`,
@@ -140,7 +143,9 @@ export default function VariantTableRow({
 
         <TableCell>
           <div className="flex items-center gap-1">
-            <span className="text-muted-foreground text-xs">$</span>
+            <span className="text-muted-foreground text-xs">
+              {data?.data?.currencySymbol}
+            </span>
             <Input
               type="number"
               value={variant.price}
@@ -166,7 +171,9 @@ export default function VariantTableRow({
 
         <TableCell>
           <div className="flex items-center gap-1">
-            <span className="text-muted-foreground text-xs">$</span>
+            <span className="text-muted-foreground text-xs">
+              {data?.data?.currencySymbol}
+            </span>
             <Input
               type="number"
               value={variant.discountPrice}

@@ -129,6 +129,11 @@ export const adminSidebarLinks = [
             icon: CornerDownRight,
           },
           {
+            name: "How to Buy",
+            url: "/support/how-to-buy",
+            icon: CornerDownRight,
+          },
+          {
             name: "Returns & Refunds",
             url: "/support/returns-refunds",
             icon: CornerDownRight,
@@ -139,8 +144,8 @@ export const adminSidebarLinks = [
             icon: CornerDownRight,
           },
           {
-            name: "How to Buy",
-            url: "/support/how-to-buy",
+            name: "About",
+            url: "/support/about",
             icon: CornerDownRight,
           },
         ],

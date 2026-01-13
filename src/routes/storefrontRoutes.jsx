@@ -13,6 +13,7 @@ import StorefrontAuthProvider from "@/providers/StorefrontAuthProvider";
 import StorefrontThemeProvider from "@/providers/StorefrontThemeProvider";
 import PrivateRoute from "./PrivateRoute";
 import NotFound from "@/pages/storefront/NotFound";
+import Orders from "@/pages/storefront/Orders";
 
 export const storeFrontRoutes = {
   path: "/stores/:storeId",
@@ -91,6 +92,14 @@ export const storeFrontRoutes = {
       element: (
         <PrivateRoute role="customer">
           <Checkout />
+        </PrivateRoute>
+      ),
+    },
+    {
+      path: "orders",
+      element: (
+        <PrivateRoute role="customer">
+          <Orders />
         </PrivateRoute>
       ),
     },

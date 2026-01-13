@@ -95,16 +95,15 @@ export default function AddProduct() {
       });
     }
 
-    // Call the Add Product mutation function and pass form data as payload
-    // mutate(formData, {
-    //   onSuccess: (res) => {
-    //     toast.success(res?.message);
-    //     form.reset();
-    //   },
-    //   onError: (err) => {
-    //     toast.error(err?.message);
-    //   },
-    // });
+    mutate(formData, {
+      onSuccess: (res) => {
+        toast.success(res?.message);
+        form.reset();
+      },
+      onError: (err) => {
+        toast.error(err?.message);
+      },
+    });
   };
 
   if (!selectedStore) {

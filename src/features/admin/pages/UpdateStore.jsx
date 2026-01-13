@@ -78,7 +78,7 @@ export default function UpdateStore() {
 
   useEffect(() => {
     fillFormWithStoreData(store, countryData, setValue);
-  }, [store, countryData, setValue]);
+  }, [store, setValue]);
 
   const onSubmit = (data) => {
     const storePayload = createStorePayload(data);

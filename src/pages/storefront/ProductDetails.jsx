@@ -8,11 +8,15 @@ import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import useCart from "@/hooks/useCart";
+import { formatPrice } from "@/utils/formatPrice";
+import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
 
 export default function ProductDetails() {
   const { productId } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+
+  const { data: storePreference } = useGetStorePreference();
 
   const { data, isLoading } = useGetQuery({
     endpoint: `/product/?productId=${productId}`,
@@ -20,6 +24,7 @@ export default function ProductDetails() {
     enabled: !!productId,
   });
 
+  const currencySymbol = storePreference?.data?.currencySymbol;
   const product = data?.data;
 
   const [selectedImage, setSelectedImage] = useState("");
@@ -114,9 +119,12 @@ export default function ProductDetails() {
       !product.variants.useDefaultPricing &&
       currentVariantData
     ) {
-      return parseFloat(currentVariantData.price.$numberDecimal);
+      return formatPrice(
+        currentVariantData.price.$numberDecimal,
+        currencySymbol,
+      );
     }
-    return parseFloat(product?.productPrice || 0);
+    return formatPrice(product?.productPrice || 0, currencySymbol);
   };
 
   const getDiscountPrice = () => {
@@ -274,12 +282,10 @@ export default function ProductDetails() {
             {/* Price */}
             <div className="space-y-1">
               <div className="flex items-baseline gap-3">
-                <span className="text-4xl font-bold">
-                  ${getCurrentPrice().toFixed(2)}
-                </span>
+                <span className="text-4xl font-bold">{getCurrentPrice()}</span>
                 {getDiscountPrice() && (
                   <span className="text-muted-foreground text-xl line-through">
-                    ${getDiscountPrice().toFixed(2)}
+                    {getDiscountPrice().toFixed(2)}
                   </span>
                 )}
               </div>

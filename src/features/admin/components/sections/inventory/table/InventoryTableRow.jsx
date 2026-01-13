@@ -45,7 +45,7 @@ export default function InventoryTableRow({ product }) {
     clientId: true,
   });
 
-  const currencyCode = storePreference?.currencyCode || "USD";
+  const currencySymbol = storePreference?.currencySymbol;
   const totalVariants =
     variants &&
     variants?.attributes?.reduce((acc, attribute) => {
@@ -131,11 +131,11 @@ export default function InventoryTableRow({ product }) {
 
         {/* price */}
         <TableCell className="space-x-2 border text-xs">
-          <span>{formatPrice(productPrice, currencyCode)}</span>
+          <span>{formatPrice(productPrice, currencySymbol)}</span>
 
           {productDiscount > 0 && (
             <span className="text-muted-foreground line-through">
-              {formatPrice(productDiscount, currencyCode)}
+              {formatPrice(productDiscount, currencySymbol)}
             </span>
           )}
         </TableCell>
