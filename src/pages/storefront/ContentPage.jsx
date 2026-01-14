@@ -24,6 +24,10 @@ export default function ContentPage({ title, apiEndpoint }) {
     return <EmptyContent title={title} />;
   }
 
+  // TODO: content api description property name will be just description
+  const content =
+    data?.data?.aboutDescription || data?.data?.faqDescription || data?.data;
+
   return (
     <div>
       <Hero title={title} />
@@ -32,7 +36,7 @@ export default function ContentPage({ title, apiEndpoint }) {
         id="content-display"
         className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
       >
-        <article dangerouslySetInnerHTML={{ __html: data.data }} />
+        <article dangerouslySetInnerHTML={{ __html: content }} />
       </div>
     </div>
   );

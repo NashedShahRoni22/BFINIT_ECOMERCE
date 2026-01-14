@@ -47,13 +47,20 @@ export const cleanPhoneNumber = (phone_code, phoneNumber) => {
   return cleaned;
 };
 
+export const cleanAddress = (address) => {
+  const cleanedAddress = address.replace(/,\s*$/, "");
+  return cleanedAddress;
+};
+
 export const fillFormWithStoreData = (store, countryData, setValue) => {
   if (store?.message !== "store Preference retrived succesfully") return;
 
   const phoneCode = countryData?.phone_code;
 
+  console.log(phoneCode);
+
   const formValues = {
-    address: store?.storeAddress,
+    address: cleanAddress(store?.storeAddress),
     country: store?.country,
     currency_code: store?.currencyCode,
     currency_name: store?.currencyName,

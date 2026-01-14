@@ -45,7 +45,9 @@ export const storeFrontRoutes = {
     },
     {
       path: "about",
-      element: <ContentPage title="About Us" />,
+      element: (
+        <ContentPage title="About Us" apiEndpoint="/store/publicAboutData" />
+      ),
     },
     {
       path: "cart",
@@ -86,6 +88,10 @@ export const storeFrontRoutes = {
       element: (
         <ContentPage title="Shopping Guide" apiEndpoint="/store/howtobuy" />
       ),
+    },
+    {
+      path: "support/faq",
+      element: <ContentPage title="FAQ" apiEndpoint="/faq/public" />,
     },
     {
       path: "checkout",

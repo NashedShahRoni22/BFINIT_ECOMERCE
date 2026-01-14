@@ -24,6 +24,7 @@ import UpdateStore from "@/features/admin/pages/UpdateStore";
 import SubCategoryUpdate from "@/features/admin/pages/SubCategoryUpdate";
 import UpdateProduct from "@/features/admin/pages/UpdateProduct";
 import AddAbout from "@/features/admin/pages/AddAbout";
+import AddFaq from "@/features/admin/pages/AddFaq";
 
 export const adminRoutes = {
   path: "/",
@@ -109,6 +110,10 @@ export const adminRoutes = {
     {
       path: "/support/how-to-buy",
       element: <HowToBuyForm />,
+    },
+    {
+      path: "/support/faq",
+      element: <AddFaq />,
     },
     {
       path: "/stores",

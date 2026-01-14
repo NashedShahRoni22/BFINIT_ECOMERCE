@@ -1,4 +1,4 @@
-import { ChevronLeft, Info } from "lucide-react";
+import { ChevronLeft, FileQuestionMark, Info } from "lucide-react";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import EmptyStoreState from "../components/EmptyStoreState";
 import PageHeader from "../components/PageHeader";
@@ -21,22 +21,22 @@ export default function AddAbout() {
   const queryClient = useQueryClient();
   const { selectedStore } = useSelectedStore();
 
-  const { data: aboutContent, isLoading } = useGetQuery({
-    endpoint: `/store/aboutData/${selectedStore?.storeId}`,
+  const { data: faqContent, isLoading } = useGetQuery({
+    endpoint: `/faq/${selectedStore?.storeId}`,
     token: true,
     clientId: true,
-    queryKey: ["/store/aboutData", selectedStore?.storeId],
+    queryKey: ["/faq", selectedStore?.storeId],
     enabled: !!selectedStore?.storeId,
   });
 
   const { mutate, isPending } = usePostMutation({
-    endpoint: `/store/about/${selectedStore?.storeId}`,
+    endpoint: `/faq/${selectedStore?.storeId}`,
     token: true,
     clientId: true,
   });
 
   const { mutate: updateMutate, isPending: isUpdatePending } = usePatchMutaion({
-    endpoint: `/store/updateAboutData/${selectedStore?.storeId}`,
+    endpoint: `/faq/${selectedStore?.storeId}`,
     token: true,
     clientId: true,
   });
@@ -52,42 +52,39 @@ export default function AddAbout() {
 
   const handleContentChange = (content) => {
     setContent(content);
-    setHasUnsavedChanges(content !== aboutContent?.data?.aboutDescription);
+    setHasUnsavedChanges(content !== faqContent?.data?.faqDescription);
   };
 
   useEffect(() => {
     if (
       selectedStore?.storeId &&
       !isLoading &&
-      aboutContent?.data?.aboutDescription
+      faqContent?.data?.faqDescription
     ) {
-      const initialContent = isEmptyHtml(aboutContent?.data?.aboutDescription)
+      const initialContent = isEmptyHtml(faqContent?.data?.faqDescription)
         ? ""
-        : aboutContent?.data?.aboutDescription;
+        : faqContent?.data?.faqDescription;
       setContent(initialContent);
       setHasUnsavedChanges(false);
     } else {
       setContent("");
       setHasUnsavedChanges(false);
     }
-  }, [selectedStore?.storeId, isLoading, aboutContent?.data?.aboutDescription]);
+  }, [selectedStore?.storeId, isLoading, faqContent?.data?.faqDescription]);
 
   const handlePublishContent = () => {
     if (!content?.trim()) {
-      return toast.error("About Content can't be empty!");
+      return toast.error("Faq Content can't be empty!");
     }
 
-    const payload = { aboutDescription: content };
+    const payload = { faqDescription: content };
 
-    if (aboutContent?.data?.aboutDescription) {
+    if (faqContent?.data?.faqDescription) {
       updateMutate(payload, {
         onSuccess: () => {
-          toast.success("About content updated!");
+          toast.success("Faq content updated!");
           setHasUnsavedChanges(false);
-          queryClient.invalidateQueries([
-            "/store/aboutData",
-            selectedStore?.storeId,
-          ]);
+          queryClient.invalidateQueries(["/faq", selectedStore?.storeId]);
         },
 
         onError: () => {
@@ -97,12 +94,9 @@ export default function AddAbout() {
     } else {
       mutate(payload, {
         onSuccess: () => {
-          toast.success("About content created!");
+          toast.success("Faq content created!");
           setHasUnsavedChanges(false);
-          queryClient.invalidateQueries([
-            "/store/aboutData",
-            selectedStore?.storeId,
-          ]);
+          queryClient.invalidateQueries(["/faq", selectedStore?.storeId]);
         },
 
         onError: () => {
@@ -113,16 +107,17 @@ export default function AddAbout() {
   };
 
   const isDisabled =
-    aboutContent?.data?.aboutDescription === content ||
+    faqContent?.data?.faqDescription === content ||
     !hasUnsavedChanges ||
     !content.trim() ||
-    isPending;
+    isPending ||
+    isUpdatePending;
 
   if (!selectedStore) {
     return (
       <EmptyStoreState
         title="Store Required"
-        description="Create a store before adding shopping instructions for your customers."
+        description="Create a store before adding FAQ instructions for your customers."
       />
     );
   }
@@ -130,17 +125,17 @@ export default function AddAbout() {
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <DynamicBreadcrumb items={breadcrubms.AddAbout} />
+      <DynamicBreadcrumb items={breadcrubms.Faq} />
 
       {/* Page Header */}
       <PageHeader
-        icon={Info}
-        title="About"
-        description="Create and update about page for"
+        icon={FileQuestionMark}
+        title="FAQ"
+        description="Create and update FAQ page for"
       />
 
       <div className="bg-card space-y-6 rounded-lg p-5">
-        {aboutContent?.data?.aboutDescription && <InfoBanner />}
+        {faqContent?.data?.faqDescription && <InfoBanner />}
 
         <div className="space-y-2">
           <h2 className="text-sm font-semibold">Article Content</h2>
@@ -209,7 +204,7 @@ export default function AddAbout() {
           >
             {isPending ? (
               <Spinner />
-            ) : aboutContent?.data?.aboutDescription ? (
+            ) : faqContent?.data?.faqDescription ? (
               "Update Article"
             ) : (
               "Publish Article"

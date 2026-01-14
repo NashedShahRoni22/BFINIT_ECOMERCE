@@ -5,7 +5,7 @@ import EmptyStoreState from "../components/EmptyStoreState";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import { breadcrubms } from "@/utils/constants/breadcrumbs";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
-import { CreditCard, DollarSign } from "lucide-react";
+import { CreditCard } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import PaymentStatus from "../components/sections/payments/PaymentStatus";
 
@@ -14,13 +14,17 @@ export default function Payments() {
   const { selectedStore } = useSelectedStore();
 
   // fetch stripe info of all stores
-  const { data, isLoading, isError } = useGetQuery({
+  const { data } = useGetQuery({
     endpoint: `/payments/stripe/client`,
     token: user?.token,
     clientId: user?.data?.clientid,
     queryKey: ["stripeConnectionInfo", user?.token, user?.data?.clientid],
     enabled: !!user?.token && !!user?.data?.clientid,
   });
+
+  const currentStore =
+    data?.data?.length > 0 &&
+    data?.data?.find((status) => status.storeId === selectedStore?.storeId);
 
   if (!selectedStore) {
     return (
@@ -30,14 +34,6 @@ export default function Payments() {
       />
     );
   }
-
-  if (isError) {
-    return <div>Something went wrong...</div>;
-  }
-
-  const currentStore =
-    data?.data?.length > 0 &&
-    data?.data?.find((status) => status.storeId === selectedStore?.storeId);
 
   return (
     <section className="space-y-6">
@@ -51,7 +47,7 @@ export default function Payments() {
         description="Connect and configure payment gateways for"
       />
 
-      {/* <PaymentStatus /> */}
+      <PaymentStatus currentStore={currentStore} />
 
       {/* <div className="grid gap-4 sm:grid-cols-2">
         <div className="border-border bg-card rounded-lg border p-4">
@@ -78,32 +74,6 @@ export default function Payments() {
           </ul>
         </div>
       </div> */}
-
-      {/* store data table */}
-      {data && data?.data && data?.data?.length > 0 && (
-        <div className="mt-6 overflow-x-auto">
-          <table className="min-w-full">
-            <thead>
-              <tr className="border-y border-neutral-200 text-left">
-                <th className="px-4 py-2 text-sm font-medium">Store Name</th>
-                <th className="px-4 py-2 text-sm font-medium">Status</th>
-                <th className="px-4 py-2 text-sm font-medium">Action</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {data?.data?.map((store) => (
-                <StripeRow
-                  key={store?.storeId}
-                  store={store}
-                  token={user?.token}
-                  clientId={user?.data?.clientid}
-                />
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
     </section>
   );
 }

@@ -16,12 +16,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import useAuth from "@/hooks/auth/useAuth";
 import { Spinner } from "@/components/ui/spinner";
 import useGetStorePreference from "../hooks/store/useGetStorePreference";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import useUpdateMutation from "@/hooks/api/useUpdateMutation";
 import {
   createStorePayload,
   fillFormWithStoreData,
 } from "../utils/storeHelpers";
+import usePatchMutaion from "@/hooks/api/usePatchMutaion";
 
 export default function UpdateStore() {
   const { storeId } = useParams();
@@ -29,6 +30,8 @@ export default function UpdateStore() {
 
   const { user } = useAuth();
   const queryClient = useQueryClient();
+
+  const hasFilledForm = useRef(false);
 
   const form = useForm({
     defaultValues: {
@@ -70,15 +73,24 @@ export default function UpdateStore() {
     enabled: !!selectedCountry,
   });
 
-  const { mutate, isPending } = useUpdateMutation({
+  const { mutate, isPending } = usePatchMutaion({
     endpoint: `/store/main/update/${storeId}`,
     token: true,
     clientId: true,
   });
 
   useEffect(() => {
-    fillFormWithStoreData(store, countryData, setValue);
+    if (store && !hasFilledForm.current && store.country) {
+      setValue("country", store.country);
+    }
   }, [store, setValue]);
+
+  useEffect(() => {
+    if (!hasFilledForm.current && store && countryData) {
+      fillFormWithStoreData(store, countryData, setValue);
+      hasFilledForm.current = true;
+    }
+  }, [store, countryData, setValue]);
 
   const onSubmit = (data) => {
     const storePayload = createStorePayload(data);

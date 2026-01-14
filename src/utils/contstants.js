@@ -144,6 +144,11 @@ export const adminSidebarLinks = [
             icon: CornerDownRight,
           },
           {
+            name: "Faq",
+            url: "/support/faq",
+            icon: CornerDownRight,
+          },
+          {
             name: "About",
             url: "/support/about",
             icon: CornerDownRight,

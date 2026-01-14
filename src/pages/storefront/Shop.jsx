@@ -2,9 +2,9 @@ import { useState, useMemo } from "react";
 import { Columns2, Columns3, SlidersHorizontal, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import useGetQuery from "@/hooks/api/useGetQuery";
-import useSelectedStore from "@/hooks/useSelectedStore";
 import { dummyProducts } from "@/features/themes/utils/contstants";
 import ProductCard from "../../components/storefront/cards/products/ProductCard";
+import { useParams } from "react-router";
 
 const gridLayoutMap = {
   2: "grid-cols-1 sm:grid-cols-2",
@@ -12,7 +12,7 @@ const gridLayoutMap = {
 };
 
 export default function ShopPage() {
-  const { selectedStore } = useSelectedStore();
+  const { storeId } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [gridLayout, setGridLayout] = useState(3);
   const [sortBy, setSortBy] = useState("default");
@@ -25,9 +25,9 @@ export default function ShopPage() {
 
   // Fetch products
   const { data: productsData, isLoading } = useGetQuery({
-    endpoint: `/product/store?storeId=${selectedStore?.storeId}&page=${currentPage}&limit=${productsPerPage}`,
-    queryKey: ["shop-products", selectedStore?.storeId, currentPage],
-    enabled: !!selectedStore?.storeId,
+    endpoint: `/product/store?storeId=${storeId}&page=${currentPage}&limit=${productsPerPage}`,
+    queryKey: ["shop-products", storeId, currentPage],
+    enabled: !!storeId,
   });
 
   const products =
@@ -167,7 +167,7 @@ export default function ShopPage() {
           {/* Sidebar Filters - Desktop */}
           <aside
             className={cn(
-              "hidden w-64 flex-shrink-0 lg:block",
+              "hidden w-64 shrink-0 lg:block",
               showFilters && "block",
             )}
           >
