@@ -5,6 +5,7 @@ import useGetQuery from "@/hooks/api/useGetQuery";
 import { dummyProducts } from "@/features/themes/utils/contstants";
 import ProductCard from "../../components/storefront/cards/products/ProductCard";
 import { useParams } from "react-router";
+import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
 
 const gridLayoutMap = {
   2: "grid-cols-1 sm:grid-cols-2",
@@ -29,6 +30,10 @@ export default function ShopPage() {
     queryKey: ["shop-products", storeId, currentPage],
     enabled: !!storeId,
   });
+
+  const { data: storePreference } = useGetStorePreference();
+
+  const currencySymbol = storePreference?.data?.currencySymbol;
 
   const products =
     productsData?.data?.length > 0 ? productsData.data : dummyProducts;
@@ -249,8 +254,14 @@ export default function ShopPage() {
                     className="w-full"
                   />
                   <div className="text-muted-foreground flex items-center justify-between text-sm">
-                    <span>${priceRange[0]}</span>
-                    <span>${priceRange[1]}</span>
+                    <span>
+                      {currencySymbol}
+                      {priceRange[0]}
+                    </span>
+                    <span>
+                      {currencySymbol}
+                      {priceRange[1]}
+                    </span>
                   </div>
                 </div>
               </div>

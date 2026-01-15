@@ -184,4 +184,17 @@ export const breadcrubms = {
     },
     { label: "Faq" },
   ],
+
+  Privacy: [
+    { label: "Home", href: "/" },
+    {
+      label: "Support",
+      dropdown: [
+        { label: "Help Center", href: "/support/help-center" },
+        { label: "Return & Refunds", href: "/support/returns-refunds" },
+        { label: "Terms & Conditions", href: "/support/terms-conditions" },
+      ],
+    },
+    { label: "Privacy Policy" },
+  ],
 };

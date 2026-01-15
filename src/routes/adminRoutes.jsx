@@ -26,6 +26,7 @@ import UpdateProduct from "@/features/admin/pages/UpdateProduct";
 import AddAbout from "@/features/admin/pages/AddAbout";
 import AddFaq from "@/features/admin/pages/AddFaq";
 import BankPayment from "@/features/admin/pages/BankPayment";
+import AddPrivacyPolicy from "@/features/admin/pages/AddPrivacryPolicy";
 
 export const adminRoutes = {
   path: "/",
@@ -107,6 +108,10 @@ export const adminRoutes = {
     {
       path: "/support/terms-conditions",
       element: <TermsConditionsForm />,
+    },
+    {
+      path: "/support/privacy",
+      element: <AddPrivacyPolicy />,
     },
     {
       path: "/support/about",

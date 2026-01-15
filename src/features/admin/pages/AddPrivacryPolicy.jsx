@@ -1,4 +1,4 @@
-import { ChevronLeft, FileQuestionMark, Info } from "lucide-react";
+import { ChevronLeft, FileQuestionMark, Info, Shield } from "lucide-react";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import EmptyStoreState from "../components/EmptyStoreState";
 import PageHeader from "../components/PageHeader";
@@ -17,26 +17,28 @@ import { Spinner } from "@/components/ui/spinner";
 import InfoBanner from "../components/sections/support/InfoBanner";
 import usePatchMutaion from "@/hooks/api/usePatchMutaion";
 
-export default function AddFaq() {
+export default function AddPrivacyPolicy() {
   const queryClient = useQueryClient();
   const { selectedStore } = useSelectedStore();
 
-  const { data: faqContent, isLoading } = useGetQuery({
-    endpoint: `/faq/${selectedStore?.storeId}`,
+  const { data: privacyData, isLoading } = useGetQuery({
+    endpoint: `/privacyPolicy/${selectedStore?.storeId}`,
     token: true,
     clientId: true,
-    queryKey: ["/faq", selectedStore?.storeId],
+    queryKey: ["/privacyPolice", selectedStore?.storeId],
     enabled: !!selectedStore?.storeId,
   });
 
+  console.log(privacyData);
+
   const { mutate, isPending } = usePostMutation({
-    endpoint: `/faq/${selectedStore?.storeId}`,
+    endpoint: `/privacyPolicy/${selectedStore?.storeId}`,
     token: true,
     clientId: true,
   });
 
   const { mutate: updateMutate, isPending: isUpdatePending } = usePatchMutaion({
-    endpoint: `/faq/${faqContent?.data?._id}`,
+    endpoint: `/privacyPolicy/${privacyData?.data?._id}`,
     token: true,
     clientId: true,
   });
@@ -52,62 +54,68 @@ export default function AddFaq() {
 
   const handleContentChange = (content) => {
     setContent(content);
-    setHasUnsavedChanges(content !== faqContent?.data?.faqDescription);
+    setHasUnsavedChanges(content !== privacyData?.data?.description);
   };
 
   useEffect(() => {
     if (
       selectedStore?.storeId &&
       !isLoading &&
-      faqContent?.data?.faqDescription
+      privacyData?.data?.description
     ) {
-      const initialContent = isEmptyHtml(faqContent?.data?.faqDescription)
+      const initialContent = isEmptyHtml(privacyData?.data?.description)
         ? ""
-        : faqContent?.data?.faqDescription;
+        : privacyData?.data?.description;
       setContent(initialContent);
       setHasUnsavedChanges(false);
     } else {
       setContent("");
       setHasUnsavedChanges(false);
     }
-  }, [selectedStore?.storeId, isLoading, faqContent?.data?.faqDescription]);
+  }, [selectedStore?.storeId, isLoading, privacyData?.data?.description]);
 
   const handlePublishContent = () => {
     if (!content?.trim()) {
-      return toast.error("Faq Content can't be empty!");
+      return toast.error("Privacy Policy content can't be empty!");
     }
 
-    const payload = { faqDescription: content };
+    const payload = { description: content };
 
-    if (faqContent?.data?.faqDescription) {
+    if (privacyData?.data?.description) {
       updateMutate(payload, {
         onSuccess: () => {
-          toast.success("Faq content updated!");
+          toast.success("Privacy Policy updated successfully!");
           setHasUnsavedChanges(false);
-          queryClient.invalidateQueries(["/faq", selectedStore?.storeId]);
+          queryClient.invalidateQueries([
+            "/privacy-policy",
+            selectedStore?.storeId,
+          ]);
         },
 
         onError: () => {
-          toast.error("Something went wrong!");
+          toast.error("Failed to update Privacy Policy!");
         },
       });
     } else {
       mutate(payload, {
         onSuccess: () => {
-          toast.success("Faq content created!");
+          toast.success("Privacy Policy created successfully!");
           setHasUnsavedChanges(false);
-          queryClient.invalidateQueries(["/faq", selectedStore?.storeId]);
+          queryClient.invalidateQueries([
+            "/privacy-policy",
+            selectedStore?.storeId,
+          ]);
         },
 
         onError: () => {
-          toast.error("Something went wrong!");
+          toast.error("Failed to create Privacy Policy!");
         },
       });
     }
   };
 
   const isDisabled =
-    faqContent?.data?.faqDescription === content ||
+    privacyData?.data?.description === content ||
     !hasUnsavedChanges ||
     !content.trim() ||
     isPending ||
@@ -125,17 +133,17 @@ export default function AddFaq() {
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <DynamicBreadcrumb items={breadcrubms.Faq} />
+      <DynamicBreadcrumb items={breadcrubms.Privacy} />
 
       {/* Page Header */}
       <PageHeader
-        icon={FileQuestionMark}
-        title="FAQ"
-        description="Create and update FAQ page for"
+        icon={Shield}
+        title="Privacy Policy"
+        description="Create and update Privacy Policy page for"
       />
 
       <div className="bg-card space-y-6 rounded-lg p-5">
-        {faqContent?.data?.faqDescription && <InfoBanner />}
+        {privacyData?.data?.description && <InfoBanner />}
 
         <div className="space-y-2">
           <h2 className="text-sm font-semibold">Article Content</h2>
@@ -204,7 +212,7 @@ export default function AddFaq() {
           >
             {isPending ? (
               <Spinner />
-            ) : faqContent?.data?.faqDescription ? (
+            ) : privacyData?.data?.description ? (
               "Update Article"
             ) : (
               "Publish Article"

@@ -57,7 +57,7 @@ export default function BlogForm({ storeId }) {
     e.preventDefault();
 
     const isFormFilled = Object.values(formData).every(
-      (value) => value.trim() !== ""
+      (value) => value.trim() !== "",
     );
     if (!isFormFilled || !selectedThumbnail) {
       return toast.error("Please fill in all fields!");
@@ -186,19 +186,33 @@ export default function BlogForm({ storeId }) {
                   "underline",
                   "strike",
                 ],
+                ["fontSize", "fontColor", "hiliteColor", "removeFormat"],
+                ["align", "list", "outdent", "indent", "lineHeight"],
                 [
-                  "fontSize",
-                  "fontColor",
-                  "hiliteColor",
-                  "align",
-                  "list",
+                  "blockquote",
+                  "horizontalRule",
+                  "table",
                   "link",
                   "image",
                   "video",
                 ],
-                ["removeFormat", "preview"],
+                ["fullScreen", "showBlocks", "preview"],
               ],
               charCounter: true,
+              charCounterLabel: "Characters:",
+
+              formats: [
+                "p",
+                "div",
+                "h1",
+                "h2",
+                "h3",
+                "h4",
+                "h5",
+                "h6",
+                "blockquote",
+              ],
+              fontSize: [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36],
             }}
           />
         </div>

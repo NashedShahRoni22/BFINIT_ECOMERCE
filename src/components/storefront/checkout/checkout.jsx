@@ -8,18 +8,26 @@ import { useNavigate, useParams } from "react-router";
 import toast from "react-hot-toast";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import useBasePath from "@/hooks/useBasePath";
+import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
 
 export default function CheckoutPage() {
   const { storeId } = useParams();
   const navigate = useNavigate();
   const { customer } = useStorefrontAuth();
   const { cartItems, subtotal, clearCart } = useCart();
+  const { data: storePreference } = useGetStorePreference();
 
   const basePath = useBasePath();
 
   const { data: countries, isLoading: isCountriesLoading } = useGetQuery({
     endpoint: "/api/countries",
     queryKey: ["countries"],
+  });
+
+  const { data: bankDetailsData } = useGetQuery({
+    endpoint: `/bankpayment/public/${storeId}`,
+    queryKey: ["bank-details", storeId],
+    enabled: !!storeId,
   });
 
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -116,8 +124,6 @@ export default function CheckoutPage() {
   const handlePlaceOrder = () => {
     if (!validateForm()) return;
 
-    // setIsProcessing(true);
-
     let requestBody;
 
     if (paymentMethod === "COD") {
@@ -142,7 +148,7 @@ export default function CheckoutPage() {
           discountTotal: 0,
           grandTotal: parseFloat(subtotal.toFixed(2)),
         },
-        currencyCode: currencyCode,
+        currencyCode: storePreference?.data?.currencyCode,
         payment: {
           method: "COD",
         },
@@ -151,16 +157,57 @@ export default function CheckoutPage() {
 
       mutate(requestBody, {
         onSuccess: () => {
-          toast.success("order created");
+          toast.success("Order placed successfully!");
           clearCart();
           navigate(`${basePath}/shop`);
         },
-
         onError: () => {
-          toast.error("order error");
+          toast.error("Failed to place order. Please try again.");
+        },
+      });
+    } else if (paymentMethod === "Bank") {
+      // Bank Transfer Payment
+      requestBody = {
+        products: cartItems.map((item) => ({
+          productId: item.productId,
+          productName: item.productName,
+          hasVariants: item.hasVariants,
+          variant: item.variant,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          discountPrice: item.discountPrice,
+          taxAmount: 0,
+          lineTotal: parseFloat(
+            (item.discountPrice * item.quantity).toFixed(2),
+          ),
+        })),
+        pricingSummary: {
+          subTotal: parseFloat(subtotal.toFixed(2)),
+          shippingCharges: 0,
+          taxTotal: 0,
+          discountTotal: 0,
+          grandTotal: parseFloat(subtotal.toFixed(2)),
+        },
+        currencyCode: storePreference?.data?.currencyCode,
+        payment: {
+          method: "Bank Transfer",
+          status: "Pending", // Order pending until payment confirmed
+        },
+        shippingDetails: formData,
+      };
+
+      mutate(requestBody, {
+        onSuccess: () => {
+          toast.success("Order created! Please complete the bank transfer.");
+          clearCart();
+          navigate(`${basePath}/shop`);
+        },
+        onError: () => {
+          toast.error("Failed to create order. Please try again.");
         },
       });
     } else {
+      // Online Payment (Stripe)
       requestBody = {
         products: cartItems.map((item) => ({
           productId: item.productId,
@@ -178,14 +225,13 @@ export default function CheckoutPage() {
 
       stripeMutate(requestBody, {
         onSuccess: (res) => {
-          toast.success("stripe order created");
+          toast.success("Redirecting to payment gateway...");
           console.log(res);
           clearCart();
           navigate(`${basePath}/shop`);
         },
-
         onError: () => {
-          toast.error("stripe order error");
+          toast.error("Failed to initiate payment. Please try again.");
         },
       });
     }
@@ -212,6 +258,7 @@ export default function CheckoutPage() {
             isCountriesLoading={isCountriesLoading}
             countryData={countryData}
             onCountryChange={handleCountryChange}
+            bankDetails={bankDetailsData?.data}
           />
 
           {/* Right Column - Order Summary */}

@@ -155,6 +155,11 @@ export const adminSidebarLinks = [
             icon: CornerDownRight,
           },
           {
+            name: "Privacy Policy",
+            url: "/support/privacy",
+            icon: CornerDownRight,
+          },
+          {
             name: "Faq",
             url: "/support/faq",
             icon: CornerDownRight,

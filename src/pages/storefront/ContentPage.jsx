@@ -26,7 +26,10 @@ export default function ContentPage({ title, apiEndpoint }) {
 
   // TODO: content api description property name will be just description
   const content =
-    data?.data?.aboutDescription || data?.data?.faqDescription || data?.data;
+    data?.data?.aboutDescription ||
+    data?.data?.faqDescription ||
+    data?.data?.description ||
+    data?.data;
 
   return (
     <div>

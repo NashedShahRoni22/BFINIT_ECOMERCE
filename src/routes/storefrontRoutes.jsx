@@ -14,6 +14,8 @@ import StorefrontThemeProvider from "@/providers/StorefrontThemeProvider";
 import PrivateRoute from "./PrivateRoute";
 import NotFound from "@/pages/storefront/NotFound";
 import Orders from "@/pages/storefront/Orders";
+import Blogs from "@/pages/storefront/Blogs";
+import BlogDetails from "@/pages/storefront/BlogDetails";
 
 export const storeFrontRoutes = {
   path: "/stores/:storeId",
@@ -92,6 +94,23 @@ export const storeFrontRoutes = {
     {
       path: "support/faq",
       element: <ContentPage title="FAQ" apiEndpoint="/faq/public" />,
+    },
+    {
+      path: "support/privacy",
+      element: (
+        <ContentPage
+          title="Privacy Policy"
+          apiEndpoint="/privacypolicy/public"
+        />
+      ),
+    },
+    {
+      path: "blog",
+      element: <Blogs />,
+    },
+    {
+      path: "blog/:id",
+      element: <BlogDetails />,
     },
     {
       path: "checkout",

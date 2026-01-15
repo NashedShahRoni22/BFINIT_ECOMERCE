@@ -35,6 +35,7 @@ import usePostMutation from "@/hooks/api/usePostMutation";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import toast from "react-hot-toast";
 import useGetQuery from "@/hooks/api/useGetQuery";
+import usePatchMutaion from "@/hooks/api/usePatchMutaion";
 
 const fillFormWithBankData = (bankPayment, form) => {
   const { bankName, accountName, accountNumber, routingNumber, swiftCode } =
@@ -57,10 +58,17 @@ export default function BankPayment() {
     token: true,
     clientId: true,
     queryKey: ["bankpayment", selectedStore?.storeId],
+    enabled: !!selectedStore?.storeId,
   });
 
   const { mutate, isPending } = usePostMutation({
     endpoint: `/bankpayment/${selectedStore?.storeId}`,
+    token: true,
+    clientId: true,
+  });
+
+  const { mutate: updateMutate, isPending: isUpdatePending } = usePatchMutaion({
+    endpoint: `/bankpayment/${bankPayment?.data?._id}`,
     token: true,
     clientId: true,
   });
@@ -82,15 +90,27 @@ export default function BankPayment() {
   }, [bankPayment, form]);
 
   const onSubmit = async (data) => {
-    mutate(data, {
-      onSuccess: () => {
-        toast.success("Bank account connected successfully");
-      },
+    if (!bankPayment?.data) {
+      mutate(data, {
+        onSuccess: () => {
+          toast.success("Bank account connected successfully");
+        },
 
-      onError: () => {
-        toast.error("Error connecting bank account");
-      },
-    });
+        onError: () => {
+          toast.error("Error connecting bank account");
+        },
+      });
+    } else {
+      updateMutate(data, {
+        onSuccess: () => {
+          toast.success("Bank account updated successfully");
+        },
+
+        onError: () => {
+          toast.error("Error updating bank account");
+        },
+      });
+    }
   };
 
   return (
@@ -302,8 +322,14 @@ export default function BankPayment() {
 
               {/* Action Buttons */}
               <div className="flex items-center gap-3">
-                <Button type="submit" disabled={isPending} className="text-sm">
-                  {isPending ? "Connecting..." : "Connect Bank Account"}
+                <Button
+                  type="submit"
+                  disabled={isPending || isUpdatePending}
+                  className="text-sm"
+                >
+                  {isPending || isUpdatePending
+                    ? "Connecting..."
+                    : "Connect Bank Account"}
                 </Button>
                 <Button
                   type="button"
