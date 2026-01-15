@@ -117,7 +117,18 @@ export const adminSidebarLinks = [
       {
         icon: CreditCard,
         name: "Payments",
-        url: "/payments",
+        subCategories: [
+          {
+            name: "Stripe",
+            url: "/payments/stripe",
+            icon: CornerDownRight,
+          },
+          {
+            name: "Bank",
+            url: "/payments/bank",
+            icon: CornerDownRight,
+          },
+        ],
       },
       {
         icon: CircleQuestionMark,

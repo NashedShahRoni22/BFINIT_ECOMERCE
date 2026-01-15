@@ -87,8 +87,26 @@ export const breadcrubms = {
     { label: "Edit Product" },
   ],
 
-  Payment: [{ label: "Home", href: "/" }, { label: "Payments" }],
+  // payments
+  StripePayment: [
+    { label: "Home", href: "/" },
+    {
+      label: "Payments",
+      dropdown: [{ label: "Bank", href: "/payments/bank" }],
+    },
+    { label: "Stripe" },
+  ],
 
+  BankPayment: [
+    { label: "Home", href: "/" },
+    {
+      label: "Payments",
+      dropdown: [{ label: "Stripe", href: "/payments/stripe" }],
+    },
+    { label: "Bank" },
+  ],
+
+  // support
   Help: [
     { label: "Home", href: "/" },
     {

@@ -1,13 +1,12 @@
+import { CreditCard } from "lucide-react";
+import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
+import EmptyStoreState from "../components/EmptyStoreState";
+import PageHeader from "../components/PageHeader";
+import PaymentStatus from "../components/sections/stripe-payments/PaymentStatus";
 import useAuth from "@/hooks/auth/useAuth";
 import useGetQuery from "@/hooks/api/useGetQuery";
-import StripeRow from "../components/sections/payments/StripeRow";
-import EmptyStoreState from "../components/EmptyStoreState";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import { breadcrubms } from "@/utils/constants/breadcrumbs";
-import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
-import { CreditCard } from "lucide-react";
-import PageHeader from "../components/PageHeader";
-import PaymentStatus from "../components/sections/payments/PaymentStatus";
 
 export default function Payments() {
   const { user } = useAuth();
@@ -38,13 +37,14 @@ export default function Payments() {
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <DynamicBreadcrumb items={breadcrubms.Payment} />
+      <DynamicBreadcrumb items={breadcrubms.StripePayment} />
 
       {/* Page Header */}
       <PageHeader
         icon={CreditCard}
-        title="Payment Integration"
-        description="Connect and configure payment gateways for"
+        title="Stripe Integration"
+        description="Connect your Stripe account to accept payments and receive payouts"
+        showStoreName={false}
       />
 
       <PaymentStatus currentStore={currentStore} />

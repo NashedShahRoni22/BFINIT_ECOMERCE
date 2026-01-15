@@ -13,7 +13,7 @@ import SeoForm from "@/features/admin/pages/SeoForm";
 import AddBlog from "@/features/admin/pages/AddBlog";
 import ManageBlog from "@/features/admin/pages/ManageBlog";
 import Domains from "@/features/admin/pages/Domains";
-import Payments from "@/features/admin/pages/Payments";
+import StripePayments from "@/features/admin/pages/StripePayments";
 import HelpCenterForm from "@/features/admin/pages/HelpCenterForm";
 import ReturnsRefundsForm from "@/features/admin/pages/ReturnsRefundsForm";
 import TermsConditionsForm from "@/features/admin/pages/TermsConditionsForm";
@@ -25,6 +25,7 @@ import SubCategoryUpdate from "@/features/admin/pages/SubCategoryUpdate";
 import UpdateProduct from "@/features/admin/pages/UpdateProduct";
 import AddAbout from "@/features/admin/pages/AddAbout";
 import AddFaq from "@/features/admin/pages/AddFaq";
+import BankPayment from "@/features/admin/pages/BankPayment";
 
 export const adminRoutes = {
   path: "/",
@@ -88,8 +89,12 @@ export const adminRoutes = {
       element: <Domains />,
     },
     {
-      path: "/payments",
-      element: <Payments />,
+      path: "/payments/stripe",
+      element: <StripePayments />,
+    },
+    {
+      path: "/payments/bank",
+      element: <BankPayment />,
     },
     {
       path: "/support/help-center",
