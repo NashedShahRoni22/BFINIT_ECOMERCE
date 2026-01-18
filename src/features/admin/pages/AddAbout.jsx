@@ -52,34 +52,34 @@ export default function AddAbout() {
 
   const handleContentChange = (content) => {
     setContent(content);
-    setHasUnsavedChanges(content !== aboutContent?.data?.aboutDescription);
+    setHasUnsavedChanges(content !== aboutContent?.data?.description);
   };
 
   useEffect(() => {
     if (
       selectedStore?.storeId &&
       !isLoading &&
-      aboutContent?.data?.aboutDescription
+      aboutContent?.data?.description
     ) {
-      const initialContent = isEmptyHtml(aboutContent?.data?.aboutDescription)
+      const initialContent = isEmptyHtml(aboutContent?.data?.description)
         ? ""
-        : aboutContent?.data?.aboutDescription;
+        : aboutContent?.data?.description;
       setContent(initialContent);
       setHasUnsavedChanges(false);
     } else {
       setContent("");
       setHasUnsavedChanges(false);
     }
-  }, [selectedStore?.storeId, isLoading, aboutContent?.data?.aboutDescription]);
+  }, [selectedStore?.storeId, isLoading, aboutContent?.data?.description]);
 
   const handlePublishContent = () => {
     if (!content?.trim()) {
       return toast.error("About Content can't be empty!");
     }
 
-    const payload = { aboutDescription: content };
+    const payload = { description: content };
 
-    if (aboutContent?.data?.aboutDescription) {
+    if (aboutContent?.data?.description) {
       updateMutate(payload, {
         onSuccess: () => {
           toast.success("About content updated!");
@@ -113,7 +113,7 @@ export default function AddAbout() {
   };
 
   const isDisabled =
-    aboutContent?.data?.aboutDescription === content ||
+    aboutContent?.data?.description === content ||
     !hasUnsavedChanges ||
     !content.trim() ||
     isPending;
@@ -140,7 +140,7 @@ export default function AddAbout() {
       />
 
       <div className="bg-card space-y-6 rounded-lg p-5">
-        {aboutContent?.data?.aboutDescription && <InfoBanner />}
+        {aboutContent?.data?.description && <InfoBanner />}
 
         <div className="space-y-2">
           <h2 className="text-sm font-semibold">Article Content</h2>
@@ -209,7 +209,7 @@ export default function AddAbout() {
           >
             {isPending ? (
               <Spinner />
-            ) : aboutContent?.data?.aboutDescription ? (
+            ) : aboutContent?.data?.description ? (
               "Update Article"
             ) : (
               "Publish Article"

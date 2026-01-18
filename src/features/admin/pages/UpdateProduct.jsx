@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Link, useParams } from "react-router";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
@@ -30,6 +30,8 @@ export default function UpdateProduct() {
   const { productId } = useParams();
   const queryClient = useQueryClient();
   const { selectedStore } = useSelectedStore();
+
+  const isInitializing = useRef(false);
 
   const { data: productDetails, isLoading } = useGetQuery({
     endpoint: `/product/?productId=${productId}`,
@@ -78,16 +80,44 @@ export default function UpdateProduct() {
     },
   });
 
-  const { handleSubmit, reset, watch } = form;
-
-  // Watch category value from form
-  const selectedCategoryName = watch("category");
+  const { handleSubmit, reset } = form;
 
   useEffect(() => {
     if (productDetails?.data && categories && brands) {
-      fillFormWithProductData(productDetails?.data, reset);
+      isInitializing.current = true;
+
+      fillFormWithProductData(productDetails.data, reset);
+
+      const timeoutId = setTimeout(() => {
+        // Set category and brand
+        if (productDetails.data.productCategory) {
+          form.setValue("category", productDetails.data.productCategory);
+        }
+        if (productDetails.data.productBrand) {
+          form.setValue("brand", productDetails.data.productBrand);
+        }
+
+        // Use requestAnimationFrame to wait for next paint
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            // Now subcategory options should be rendered
+            if (productDetails.data.productSubCategory) {
+              form.setValue(
+                "subcategory",
+                productDetails.data.productSubCategory,
+              );
+            }
+            isInitializing.current = false;
+          });
+        });
+      }, 0);
+
+      return () => {
+        clearTimeout(timeoutId);
+        isInitializing.current = false;
+      };
     }
-  }, [productDetails?.data, categories, selectedCategoryName, brands, reset]);
+  }, [productId, productDetails?.data, categories, brands, reset, form]);
 
   const onSubmit = (data) => {
     // validate form
@@ -158,7 +188,7 @@ export default function UpdateProduct() {
           >
             <>
               {/* Product Details */}
-              <ProductDetails form={form} />
+              <ProductDetails form={form} isInitializingRef={isInitializing} />
 
               {/* Product Thumbnail & Gallery Images */}
               <ProductImages form={form} />

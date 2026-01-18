@@ -67,6 +67,7 @@ export const fillFormWithProductData = (product, reset) => {
     variants,
   } = product;
 
+  // Reset all fields
   reset({
     name: productName,
     category: productCategory,

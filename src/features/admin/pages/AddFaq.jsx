@@ -52,34 +52,30 @@ export default function AddFaq() {
 
   const handleContentChange = (content) => {
     setContent(content);
-    setHasUnsavedChanges(content !== faqContent?.data?.faqDescription);
+    setHasUnsavedChanges(content !== faqContent?.data?.description);
   };
 
   useEffect(() => {
-    if (
-      selectedStore?.storeId &&
-      !isLoading &&
-      faqContent?.data?.faqDescription
-    ) {
-      const initialContent = isEmptyHtml(faqContent?.data?.faqDescription)
+    if (selectedStore?.storeId && !isLoading && faqContent?.data?.description) {
+      const initialContent = isEmptyHtml(faqContent?.data?.description)
         ? ""
-        : faqContent?.data?.faqDescription;
+        : faqContent?.data?.description;
       setContent(initialContent);
       setHasUnsavedChanges(false);
     } else {
       setContent("");
       setHasUnsavedChanges(false);
     }
-  }, [selectedStore?.storeId, isLoading, faqContent?.data?.faqDescription]);
+  }, [selectedStore?.storeId, isLoading, faqContent?.data?.description]);
 
   const handlePublishContent = () => {
     if (!content?.trim()) {
       return toast.error("Faq Content can't be empty!");
     }
 
-    const payload = { faqDescription: content };
+    const payload = { description: content };
 
-    if (faqContent?.data?.faqDescription) {
+    if (faqContent?.data?.description) {
       updateMutate(payload, {
         onSuccess: () => {
           toast.success("Faq content updated!");
@@ -107,7 +103,7 @@ export default function AddFaq() {
   };
 
   const isDisabled =
-    faqContent?.data?.faqDescription === content ||
+    faqContent?.data?.description === content ||
     !hasUnsavedChanges ||
     !content.trim() ||
     isPending ||
@@ -135,7 +131,7 @@ export default function AddFaq() {
       />
 
       <div className="bg-card space-y-6 rounded-lg p-5">
-        {faqContent?.data?.faqDescription && <InfoBanner />}
+        {faqContent?.data?.description && <InfoBanner />}
 
         <div className="space-y-2">
           <h2 className="text-sm font-semibold">Article Content</h2>
@@ -204,7 +200,7 @@ export default function AddFaq() {
           >
             {isPending ? (
               <Spinner />
-            ) : faqContent?.data?.faqDescription ? (
+            ) : faqContent?.data?.description ? (
               "Update Article"
             ) : (
               "Publish Article"

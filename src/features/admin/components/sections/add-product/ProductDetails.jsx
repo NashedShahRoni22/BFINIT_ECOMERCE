@@ -28,7 +28,7 @@ import useGetCategories from "@/features/admin/hooks/category/useGetCategories";
 import useGetBrands from "@/features/admin/hooks/brands/useGetBrands";
 import SectionHeader from "./SectionHeader";
 
-export default function ProductDetails({ form }) {
+export default function ProductDetails({ form, isInitializingRef }) {
   // fetch categories
   const { data: categories, isLoading: isCategoriesLoading } =
     useGetCategories();
@@ -58,7 +58,11 @@ export default function ProductDetails({ form }) {
     }
 
     field.onChange(value);
-    form.setValue("subcategory", "");
+
+    // Only clear subcategory if we're NOT initializing
+    if (!isInitializingRef?.current) {
+      form.setValue("subcategory", "");
+    }
   };
 
   // handle subcategory selct onchange hanlder
