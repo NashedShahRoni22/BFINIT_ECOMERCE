@@ -1,18 +1,10 @@
 import { PenSquare } from "lucide-react";
-import BlogForm from "../components/sections/add-blog/BlogForm";
+import EmptyStoreState from "../components/EmptyStoreState";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import PageHeader from "../components/PageHeader";
+import BlogForm from "../components/sections/add-blog/BlogForm";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import EmptyStoreState from "../components/EmptyStoreState";
-
-const BLOGS_BREADCRUMB_ITEMS = [
-  { label: "Home", href: "/" },
-  {
-    label: "Blogs",
-    dropdown: [{ label: "Manage Blog", href: "/blogs/manage" }],
-  },
-  { label: "Add Blog" },
-];
+import { breadcrubms } from "@/utils/constants/breadcrumbs";
 
 export default function AddBlog() {
   const { selectedStore } = useSelectedStore();
@@ -29,7 +21,7 @@ export default function AddBlog() {
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <DynamicBreadcrumb items={BLOGS_BREADCRUMB_ITEMS} />
+      <DynamicBreadcrumb items={breadcrubms.addBlog} />
 
       {/* Page Header */}
       <PageHeader
@@ -39,7 +31,7 @@ export default function AddBlog() {
       />
 
       {/* Blog form */}
-      {selectedStore?.storeId && <BlogForm storeId={selectedStore?.storeId} />}
+      <BlogForm />
     </section>
   );
 }

@@ -27,6 +27,7 @@ import AddAbout from "@/features/admin/pages/AddAbout";
 import AddFaq from "@/features/admin/pages/AddFaq";
 import BankPayment from "@/features/admin/pages/BankPayment";
 import AddPrivacyPolicy from "@/features/admin/pages/AddPrivacryPolicy";
+import OrdersManagement from "@/Test";
 
 export const adminRoutes = {
   path: "/",
@@ -140,6 +141,10 @@ export const adminRoutes = {
     {
       path: "products/edit/:productId",
       element: <UpdateProduct />,
+    },
+    {
+      path: "test",
+      element: <OrdersManagement />,
     },
   ],
 };

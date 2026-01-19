@@ -4,9 +4,11 @@ import useSelectedStore from "@/hooks/useSelectedStore";
 export default function useGetBrands(storeId) {
   const { selectedStore } = useSelectedStore();
 
+  const activeStoreId = storeId || selectedStore?.storeId;
+
   return useGetQuery({
-    endpoint: `/brand/?storeId=${selectedStore?.storeId}`,
-    queryKey: ["brands", selectedStore?.storeId],
-    enabled: !!selectedStore?.storeId,
+    endpoint: `/brand/?storeId=${activeStoreId}`,
+    queryKey: ["brands", activeStoreId],
+    enabled: !!activeStoreId,
   });
 }

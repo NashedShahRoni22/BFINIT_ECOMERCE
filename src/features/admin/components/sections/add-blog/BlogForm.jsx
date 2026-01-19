@@ -1,228 +1,335 @@
-import { useRef, useState } from "react";
-import { useNavigate } from "react-router";
+import { useRef } from "react";
+import { Link, useNavigate } from "react-router";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import SunEditor from "suneditor-react";
-import useAuth from "@/hooks/auth/useAuth";
+import { ChevronLeft, Upload, X } from "lucide-react";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import usePostMutation from "@/hooks/api/usePostMutation";
-import { CircleX, ImagePlus, Trash2, UploadCloud } from "lucide-react";
-import ActionBtn from "../store-form/ActionBtn";
+import useSelectedStore from "@/hooks/useSelectedStore";
 
-export default function BlogForm({ storeId }) {
+const maxFileSize = 2000 * 1024;
+
+const handleFile = (files, onChange) => {
+  const file = files[0];
+  if (!file) return;
+
+  // Validate file type
+  if (!file.type.startsWith("image/")) {
+    return;
+  }
+
+  // Validate file size
+  if (file.size > maxFileSize) {
+    toast.error("File size must be less than 2MB");
+    return;
+  }
+
+  const imageData = {
+    id: crypto.randomUUID(),
+    file: file,
+    preview: URL.createObjectURL(file),
+    name: file.name,
+  };
+
+  onChange(imageData);
+};
+
+export default function BlogForm() {
+  const { selectedStore } = useSelectedStore();
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const thumbnailRef = useRef();
-  const [selectedThumbnail, setSelectedThumbnail] = useState("");
-  const [formData, setFormData] = useState({
-    blogHeading: "",
-    blogCustomUrl: "",
-    blogDescription: "",
-  });
+
+  const imgRef = useRef();
+  const sunEditorRef = useRef();
+
+  const form = useForm();
+  const { handleSubmit } = form;
+
+  const handleFileInput = (e, onChange) => {
+    handleFile(e.target.files, onChange);
+  };
+
+  const handleDescriptionChange = (content) => {
+    form.setValue("blogDescription", content);
+  };
+
+  const removeImage = (onChange, currentImage) => {
+    if (currentImage && currentImage.preview) {
+      URL.revokeObjectURL(currentImage.preview);
+      imgRef.current.value = "";
+    }
+    onChange(null);
+  };
 
   const { mutate, isPending } = usePostMutation({
-    endpoint: `/blog/create/${storeId}`,
-    token: user?.token,
-    clientId: user?.data?.clientid,
+    endpoint: `/blog/create/${selectedStore?.storeId}`,
+    token: true,
+    clientId: true,
   });
 
-  // handle input field change
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const onSumbit = (data) => {
+    const { blogHeading, blogCustomUrl, blogDescription, blogImages } = data;
 
-  // Handle description of suneditor
-  const handleDescriptionChange = (content) => {
-    setFormData((prev) => ({ ...prev, blogDescription: content }));
-  };
-
-  // Update selectedThumbnail image
-  const handleThumbnail = (e) => {
-    const image = e.target.files?.[0];
-    if (image) {
-      setSelectedThumbnail(image);
-    }
-  };
-
-  // Delete selectedThumbnail image & reset previously selected image
-  const deleteThumbnail = () => {
-    setSelectedThumbnail("");
-    // reset previously selected thumbnail
-    if (thumbnailRef.current) {
-      thumbnailRef.current.value = "";
-    }
-  };
-
-  // Handle Add New Blog Form Submit
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-
-    const isFormFilled = Object.values(formData).every(
-      (value) => value.trim() !== "",
-    );
-    if (!isFormFilled || !selectedThumbnail) {
-      return toast.error("Please fill in all fields!");
-    }
+    const blogData = {
+      blogHeading,
+      blogCustomUrl,
+      blogDescription,
+    };
 
     const payload = new FormData();
-    payload.append("blogData", JSON.stringify(formData));
-    payload.append("blogImages", selectedThumbnail);
+    payload.append("blogData", JSON.stringify(blogData));
+    payload.append("blogImages", blogImages.file);
 
     mutate(payload, {
       onSuccess: () => {
-        toast.success("New blog added");
+        toast.success("Blog published successfully!");
         navigate("/blogs/manage");
       },
+
       onError: () => {
-        toast.error("Something went wrong!");
+        toast.error("Failed to publish blog. Please try again.");
       },
     });
   };
 
   return (
-    <form onSubmit={handleFormSubmit}>
-      <div className="flex w-full flex-col gap-8 py-6">
-        {/* Image Upload Container */}
-        <div className="border-primary/40 h-44 flex-col items-center justify-center rounded-lg border border-dashed text-neutral-400">
-          {selectedThumbnail ? (
-            <div className="group relative h-full w-full">
-              <img
-                src={URL.createObjectURL(selectedThumbnail)}
-                alt=""
-                className="h-full w-full object-contain"
-              />
+    <Form {...form}>
+      <form
+        onSubmit={handleSubmit(onSumbit)}
+        className="bg-card space-y-6 space-x-4 rounded-lg border p-5 md:space-y-6 md:space-x-6"
+      >
+        {/* image */}
+        <FormField
+          control={form.control}
+          name="blogImages"
+          rules={{
+            required: "Please add a blog image",
+          }}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-xs">
+                Featured Image <span className="text-destructive">*</span>
+              </FormLabel>
 
-              {/*Add & Delete Button Overlay */}
-              <div className="absolute top-0 left-0 hidden h-full w-full items-center justify-center gap-x-6 bg-black/50 group-hover:flex">
-                {/* add new image button */}
-                <label
-                  htmlFor="thumbnail"
-                  className="border-primary bg-primary hover:bg-primary-hover flex cursor-pointer items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-sm font-medium text-white transition-all"
-                >
-                  <ImagePlus className="text-base" /> <span>New Image</span>
-                </label>
-                {/* delete image button */}
-                <button
-                  onClick={deleteThumbnail}
-                  className="flex items-center gap-1.5 rounded-md border border-red-400 bg-red-50 px-2.5 py-1.5 text-sm font-medium text-red-500 transition-all hover:bg-red-100"
-                >
-                  <Trash2 className="text-base" /> <span>Delete</span>
-                </button>
-              </div>
-            </div>
-          ) : (
-            <>
-              <label
-                htmlFor="thumbnail"
-                className="bg-subtle-white flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-lg"
-              >
-                <UploadCloud className="text-3xl" />
-                <span className="mt-1.5">Upload Thumbnail</span>
-                <div className="mt-1 flex max-w-56 items-center gap-1.5 text-center text-sm md:max-w-full">
-                  <CircleX className="hidden md:block" />
-                  Image should be maximum 2 MB, with a 600 X 400 pixels.
+              <FormControl>
+                <div className="h-80 w-full">
+                  {field.value ? (
+                    <div className="group relative h-full">
+                      <div className="bg-muted relative h-full w-full overflow-hidden rounded-md border">
+                        <img
+                          src={field.value.preview}
+                          alt={field.value?.name}
+                          className="h-full w-full object-cover"
+                        />
+                        <button
+                          onClick={() =>
+                            removeImage(field.onChange, field.value)
+                          }
+                          type="button"
+                          className="bg-destructive text-destructive-foreground absolute top-1.5 right-1.5 flex size-6 items-center justify-center rounded-md shadow-sm transition-opacity hover:cursor-pointer hover:opacity-90 md:opacity-0 md:group-hover:opacity-100"
+                          aria-label="Remove"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      onClick={() => imgRef.current?.click()}
+                      className="bg-muted/25 hover:bg-muted/50 flex h-full flex-col items-center justify-center gap-3 rounded-md border border-dashed p-8 hover:cursor-pointer"
+                    >
+                      <div className="bg-muted rounded-full p-2.5">
+                        <Upload className="size-3.5" />
+                      </div>
+                      <div className="flex flex-col items-center gap-1.5">
+                        <h6 className="text-xs font-medium">Upload Image</h6>
+                        <p className="text-muted-foreground text-xs">
+                          Drag & drop your image here or{" "}
+                          <span className="text-foreground font-medium">
+                            browse
+                          </span>
+                        </p>
+                      </div>
+                      <div className="mt-1 flex flex-col items-center gap-1">
+                        <p className="text-muted-foreground text-xs">
+                          Maximum 2 MB • Recommended: 1200px × 675px (16:9)
+                        </p>
+                        <p className="text-muted-foreground text-xs">
+                          Supported formats: JPG, PNG & WebP
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  {/* hidden file input */}
+                  <input
+                    ref={imgRef}
+                    onChange={(e) => handleFileInput(e, field.onChange)}
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg,image/webp"
+                    className="hidden"
+                  />
                 </div>
-              </label>
-            </>
+              </FormControl>
+
+              <FormMessage className="text-xs" />
+            </FormItem>
           )}
-        </div>
-        {/* Image Upload input tag Default Hidden */}
-        <input
-          ref={thumbnailRef}
-          type="file"
-          name="thumbnail"
-          id="thumbnail"
-          accept="image/*"
-          onChange={handleThumbnail}
-          className="hidden"
         />
 
-        {/* Title field */}
-        <div className="flex w-full flex-col">
-          <label htmlFor="blogHeading" className="text-sm text-gray-600">
-            Blog Title <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
+        {/* title & slug */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+          {/* title */}
+          <FormField
+            control={form.control}
             name="blogHeading"
-            id="blogHeading"
-            required
-            value={formData.blogHeading}
-            onChange={handleInputChange}
-            className="mt-1 mb-2 w-full rounded-md border border-neutral-200 bg-[#f8fafb] px-2 py-1.5 outline-none"
-          />
-
-          {/* Custom URL Filled */}
-          <label htmlFor="blogCustomUrl" className="text-sm text-gray-600">
-            Custom URL <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            name="blogCustomUrl"
-            id="blogCustomUrl"
-            required
-            value={formData.blogCustomUrl}
-            onChange={handleInputChange}
-            className="mt-1 mb-2 w-full rounded-md border border-neutral-200 bg-[#f8fafb] px-2 py-1.5 outline-none"
-          />
-        </div>
-
-        {/* Blog Details Container */}
-        <div>
-          <label className="mb-2 block font-medium text-neutral-700">
-            Details <span className="text-red-500">*</span>
-          </label>
-          <SunEditor
-            onChange={handleDescriptionChange}
-            name="blogDescription"
-            height="220px"
-            setOptions={{
-              buttonList: [
-                [
-                  "undo",
-                  "redo",
-                  "formatBlock",
-                  "bold",
-                  "italic",
-                  "underline",
-                  "strike",
-                ],
-                ["fontSize", "fontColor", "hiliteColor", "removeFormat"],
-                ["align", "list", "outdent", "indent", "lineHeight"],
-                [
-                  "blockquote",
-                  "horizontalRule",
-                  "table",
-                  "link",
-                  "image",
-                  "video",
-                ],
-                ["fullScreen", "showBlocks", "preview"],
-              ],
-              charCounter: true,
-              charCounterLabel: "Characters:",
-
-              formats: [
-                "p",
-                "div",
-                "h1",
-                "h2",
-                "h3",
-                "h4",
-                "h5",
-                "h6",
-                "blockquote",
-              ],
-              fontSize: [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36],
+            rules={{
+              required: "Please enter a blog title",
             }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-xs">
+                  Title <span className="text-destructive">*</span>
+                </FormLabel>
+
+                <FormControl>
+                  <Input
+                    placeholder="e.g., 10 Ways to Style Your Summer Wardrobe"
+                    {...field}
+                  />
+                </FormControl>
+
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+
+          {/* slug */}
+          <FormField
+            control={form.control}
+            name="blogCustomUrl"
+            rules={{
+              required: "Please enter a URL slug",
+            }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-xs">
+                  URL Slug <span className="text-destructive">*</span>
+                </FormLabel>
+
+                <FormControl>
+                  <Input
+                    placeholder="e.g., summer-wardrobe-styling-tips"
+                    {...field}
+                  />
+                </FormControl>
+
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
           />
         </div>
 
-        <div className="col-span-12 mt-12 mb-5 flex items-center justify-center">
-          <ActionBtn type="submit" loading={isPending}>
-            Add New Blog
-          </ActionBtn>
+        {/* description */}
+        <FormField
+          control={form.control}
+          name="blogDescription"
+          rules={{
+            required: "Please enter blog content",
+          }}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-xs">
+                Content <span className="text-destructive">*</span>
+              </FormLabel>
+              <FormControl>
+                <SunEditor
+                  ref={sunEditorRef}
+                  onChange={handleDescriptionChange}
+                  name="blogDescription"
+                  height="220px"
+                  placeholder="Write your blog content here..."
+                  setContents={field.value || ""}
+                  setOptions={{
+                    buttonList: [
+                      [
+                        "undo",
+                        "redo",
+                        "formatBlock",
+                        "bold",
+                        "italic",
+                        "underline",
+                        "strike",
+                      ],
+                      ["fontSize", "fontColor", "hiliteColor", "removeFormat"],
+                      ["align", "list", "outdent", "indent", "lineHeight"],
+                      [
+                        "blockquote",
+                        "horizontalRule",
+                        "table",
+                        "link",
+                        "image",
+                        "video",
+                      ],
+                      ["fullScreen", "showBlocks", "preview"],
+                    ],
+                    charCounter: true,
+                    charCounterLabel: "Characters:",
+
+                    formats: [
+                      "p",
+                      "div",
+                      "h1",
+                      "h2",
+                      "h3",
+                      "h4",
+                      "h5",
+                      "h6",
+                      "blockquote",
+                    ],
+                    fontSize: [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36],
+                  }}
+                />
+              </FormControl>
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
+
+        {/* back & sumbit buttons */}
+        <div className="flex flex-col-reverse gap-4 lg:flex-row lg:justify-between">
+          <Button variant="outline" size="sm" asChild className="text-xs">
+            <Link to="/">
+              <ChevronLeft /> Back to Home
+            </Link>
+          </Button>
+
+          <Button
+            disabled={isPending}
+            type="submit"
+            size="sm"
+            className="min-w-28 text-xs"
+          >
+            {isPending ? (
+              <>
+                <Spinner size="3.5" />
+                Publishing...
+              </>
+            ) : (
+              "Publish Blog"
+            )}
+          </Button>
         </div>
-      </div>
-    </form>
+      </form>
+    </Form>
   );
 }

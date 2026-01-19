@@ -12,12 +12,21 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useParams } from "react-router";
+import useGetQuery from "@/hooks/api/useGetQuery";
 
 export default function PaymentMethod({
   paymentMethod,
   setPaymentMethod,
   bankDetails, // Pass bank details from parent
 }) {
+  const { storeId } = useParams();
+
+  const { data: stripeConfig, isLoading: isStripeConfigLoading } = useGetQuery({
+    endpoint: `/payments/stripe/public/client/${storeId}`,
+    queryKey: ["stripe-client-config", storeId],
+  });
+
   const [copiedField, setCopiedField] = useState(null);
 
   const copyToClipboard = (text, fieldName) => {
@@ -50,15 +59,19 @@ export default function PaymentMethod({
           </div>
 
           {/* Online Payment */}
-          <div className="flex items-center space-x-3 rounded-lg border border-neutral-200 p-4 transition-colors hover:bg-neutral-50">
-            <RadioGroupItem value="Online" id="online" />
-            <Label htmlFor="online" className="flex-1 cursor-pointer">
-              <div className="font-medium">Online Payment</div>
-              <div className="text-sm text-neutral-500">
-                Pay securely online with card or UPI
+          {!isStripeConfigLoading &&
+            stripeConfig?.data?.charges_enabled &&
+            stripeConfig?.data?.payouts_enabled && (
+              <div className="flex items-center space-x-3 rounded-lg border border-neutral-200 p-4 transition-colors hover:bg-neutral-50">
+                <RadioGroupItem value="Online" id="online" />
+                <Label htmlFor="online" className="flex-1 cursor-pointer">
+                  <div className="font-medium">Online Payment</div>
+                  <div className="text-sm text-neutral-500">
+                    Pay securely online with card or UPI
+                  </div>
+                </Label>
               </div>
-            </Label>
-          </div>
+            )}
 
           {/* Bank Transfer */}
           {bankDetails?.isActive && (

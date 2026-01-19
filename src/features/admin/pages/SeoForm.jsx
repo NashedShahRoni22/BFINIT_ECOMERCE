@@ -1,9 +1,9 @@
-import useSelectedStore from "@/hooks/useSelectedStore";
+import { Search } from "lucide-react";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import EmptyStoreState from "../components/EmptyStoreState";
 import PageHeader from "../components/PageHeader";
 import TitleDescriptionForm from "../components/sections/seo-form/TitleDescriptionForm";
-import { Search } from "lucide-react";
+import useSelectedStore from "@/hooks/useSelectedStore";
 
 const SEO_BREADCRUMB_ITEMS = [
   { label: "Home", href: "/" },

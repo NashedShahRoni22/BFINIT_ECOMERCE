@@ -197,4 +197,13 @@ export const breadcrubms = {
     },
     { label: "Privacy Policy" },
   ],
+
+  addBlog: [
+    { label: "Home", href: "/" },
+    {
+      label: "Blogs",
+      dropdown: [{ label: "Manage Blog", href: "/blogs/manage" }],
+    },
+    { label: "Add Blog" },
+  ],
 };

@@ -31,7 +31,7 @@ export default function ThumbnailImage({ form }) {
 
     // Create image object with preview
     const imageData = {
-      id: Date.now(),
+      id: crypto.randomUUID(),
       file: file,
       preview: URL.createObjectURL(file),
       name: file.name,
