@@ -3,7 +3,7 @@ import { Link } from "react-router";
 
 export default function QuickNavs() {
   return (
-    <div className="mt-4 grid w-full max-w-xl grid-cols-3 gap-4">
+    <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {quickNavigationLinks.map((quickNav, index) => (
         <Link
           key={index}

@@ -11,6 +11,7 @@ import {
   Search,
   Palette,
   ShoppingCart,
+  User,
 } from "lucide-react";
 
 export const adminDropdownLinks = [
@@ -86,6 +87,11 @@ export const adminSidebarLinks = [
         icon: Search,
         name: "SEO & Meta",
         url: "/seo-meta",
+      },
+      {
+        icon: User,
+        name: "Customers",
+        url: "/customers",
       },
       {
         icon: Newspaper,
@@ -178,9 +184,8 @@ export const adminSidebarLinks = [
 export const quickNavigationLinks = [
   { name: "Orders", icon: ShoppingCart, url: "/orders" },
   { name: "Products", icon: Package, url: "/products/inventory" },
-  // { name: "Customers", icon: FaUsers, url: "" },
+  { name: "Customers", icon: User, url: "/customers" },
   { name: "Blogs", icon: Newspaper, url: "/blogs/manage" },
-  // { name: "Payments", icon: FaCreditCard, url: "" },
 ];
 
 export const ecommerceTips = [

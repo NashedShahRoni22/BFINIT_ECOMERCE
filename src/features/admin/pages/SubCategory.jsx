@@ -2,8 +2,26 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { CircleX, FolderTree } from "lucide-react";
+import { CircleX, FolderTree, Plus, Layers } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { ScrollArea } from "@/components/ui/scroll-area"; // Assumes you have this shadcn component, otherwise use div with overflow-y-auto
 import SubCategoryList from "../components/sections/sub-category/SubCategoryList";
 import PageHeader from "../components/PageHeader";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
@@ -37,48 +55,45 @@ export default function SubCategory() {
   const [subCategoryInput, setSubCategoryInput] = useState("");
   const [subCategoires, setSubCategories] = useState([]);
 
-  // fetch categories based on storeId
   const { data: categories } = useGetCategories(selectedStore?.storeId);
-  // fetch sub-categories based on storeId & categoryId
   const { data: subCategoriesData } = useGetSubCategories(
     selectedStore?.storeId,
-    selectedCategory,
+    selectedCategory
   );
 
-  // custom hooks to create new sub-category
   const { mutate, isPending } = usePostMutation({
     endpoint: `/subcategory/create/${selectedStore?.storeId}/${selectedCategory}`,
     token: user?.token,
     clientId: user?.data?.clientid,
   });
 
-  // handle category select dropdown
-  const handleCategoryChange = (e) => {
-    setSelectedCategory(e.target.value);
+  const handleCategoryChange = (value) => {
+    setSelectedCategory(value);
   };
 
-  // handle add sub-categories array in local state
   const handleSubCategories = (e) => {
-    if (!subCategoryInput) {
+    if (!subCategoryInput.trim()) {
       return;
     }
 
     if (e.key === "Enter" || e.type === "click") {
       e.preventDefault();
-      setSubCategories([...subCategoires, subCategoryInput]);
-      setSubCategoryInput("");
+      if (!subCategoires.includes(subCategoryInput)) {
+        setSubCategories([...subCategoires, subCategoryInput]);
+        setSubCategoryInput("");
+      } else {
+        toast.error("Sub-category already added to list");
+      }
     }
   };
 
-  // remove sub-category from local subCategories array
   const removeSubCategory = (indexToRemove) => {
     const filteredSubCategories = subCategoires.filter(
-      (_, index) => index !== indexToRemove,
+      (_, index) => index !== indexToRemove
     );
     setSubCategories(filteredSubCategories);
   };
 
-  // Add New Sub-Catgory
   const handleAddSubCategory = () => {
     const subCategoriesObj = {
       subcategories: subCategoires,
@@ -112,148 +127,188 @@ export default function SubCategory() {
 
   return (
     <section className="space-y-6">
-      {/* Breadcrumb Navigation */}
       <DynamicBreadcrumb items={SUBCATEGORY_BREADCRUMB_ITEMS} />
-
-      {/* Page Header */}
       <PageHeader
         icon={FolderTree}
         title="Add Subcategory"
-        description="Create and manage subcategories for"
+        description="Create and manage subcategories for your products"
       />
 
       {selectedStore?.storeId && (
-        <div className="mt-6 grid grid-cols-12 gap-y-12 lg:gap-x-12">
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
           {/* Left Side: Add Sub-Category Form */}
-          <div className="col-span-12 h-fit rounded border border-neutral-200 px-4 py-2 lg:col-span-4">
-            {/* select category */}
-            {categories?.data?.length > 0 && (
-              <>
-                <label htmlFor="category" className="text-sm text-gray-600">
-                  Select Category
-                </label>
-                <select
-                  id="category"
-                  name="category"
-                  value={selectedCategory}
-                  onChange={handleCategoryChange}
-                  className="mt-1 mb-2 w-full rounded-md border border-neutral-200 bg-[#f8fafb] px-2 py-1.5 outline-none"
-                >
-                  <option value="">Select a category</option>
-                  {categories &&
-                    categories?.data &&
-                    categories?.data?.map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                </select>
-              </>
-            )}
-
-            {selectedStore?.storeId && !categories?.data?.length > 0 && (
-              <div className="flex flex-col items-center justify-center px-4 py-6 text-center text-sm text-gray-500">
-                <p className="mb-4">No categories found for this store.</p>
-                <Link
-                  to="/products/category"
-                  className="bg-dashboard-primary hover:bg-dashboard-primary/90 rounded-md px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors"
-                >
-                  Create New Category
-                </Link>
-              </div>
-            )}
-
-            {selectedCategory && categories?.data?.length > 0 && (
-              <div className="mt-4">
-                <label
-                  htmlFor="subCategoryName"
-                  className="text-sm font-medium"
-                >
-                  Sub-Category Name
-                </label>
-                <div className="relative mt-1.5">
-                  <input
-                    type="text"
-                    id="subCategoryName"
-                    name="subCategoryName"
-                    value={subCategoryInput}
-                    onChange={(e) => setSubCategoryInput(e.target.value)}
-                    onKeyDown={handleSubCategories}
-                    className="w-full rounded border border-neutral-200 bg-neutral-50 px-4 py-1 outline-none focus:border-neutral-400"
-                    placeholder="Enter sub-category name"
-                  />
-                  <button
-                    className={`${
-                      subCategoryInput
-                        ? "bg-dashboard-primary"
-                        : "bg-neutral-400"
-                    } absolute top-1/2 right-0 -translate-y-1/2 cursor-pointer rounded-r px-4 py-1 text-white`}
-                    onClick={handleSubCategories}
-                  >
-                    Add
-                  </button>
-                </div>
-                {/* sub-categories */}
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {subCategoires.map((subCat, i) => (
-                    <div
-                      key={i}
-                      className="bg-dashboard-primary/85 hover:bg-dashboard-primary inline-flex items-center gap-1 rounded-lg px-2 py-0.5 text-sm text-white transition-all duration-200 ease-linear"
-                    >
-                      <p>{subCat}</p>
-                      <button
-                        className="cursor-pointer"
-                        onClick={() => removeSubCategory(i)}
+          <div className="col-span-1 md:col-span-12 lg:col-span-4 sticky top-4">
+            <Card className="border-border/60 shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-lg">New Subcategory</CardTitle>
+                <CardDescription>
+                  Select a parent category and define sub-items.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {categories?.data?.length > 0 ? (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="category" className="text-foreground/80">
+                        Parent Category
+                      </Label>
+                      <Select
+                        value={selectedCategory}
+                        onValueChange={handleCategoryChange}
                       >
-                        <CircleX className="text-lg" />
-                      </button>
+                        <SelectTrigger id="category" className="w-full">
+                          <SelectValue placeholder="Select a category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categories?.data?.map((category) => (
+                            <SelectItem key={category.id} value={category.id}>
+                              {category.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
-                  ))}
-                </div>
 
-                <button
-                  disabled={subCategoires.length < 0}
-                  onClick={handleAddSubCategory}
-                  className={`mt-4 flex min-h-10 w-full items-center justify-center rounded px-4 py-2 transition duration-200 ease-in-out ${
-                    subCategoires.length > 0
-                      ? "bg-dashboard-primary/90 hover:bg-dashboard-primary cursor-pointer text-white"
-                      : "bg-neutral-200 text-neutral-600"
-                  }`}
-                >
-                  {isPending ? <Spinner /> : "Add Sub-Category"}
-                </button>
-              </div>
-            )}
+                    {selectedCategory && (
+                      <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="subCategoryName"
+                            className="text-foreground/80"
+                          >
+                            Add Sub-items
+                          </Label>
+                          <div className="relative flex items-center">
+                            <Input
+                              type="text"
+                              id="subCategoryName"
+                              value={subCategoryInput}
+                              onChange={(e) =>
+                                setSubCategoryInput(e.target.value)
+                              }
+                              onKeyDown={handleSubCategories}
+                              placeholder="e.g. Wireless, Gaming..."
+                              className="pr-20"
+                            />
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              disabled={!subCategoryInput}
+                              className="absolute right-1 top-1 h-7 px-3 text-xs font-medium text-dashboard-primary hover:text-dashboard-primary hover:bg-dashboard-primary/10"
+                              onClick={handleSubCategories}
+                            >
+                              ADD
+                            </Button>
+                          </div>
+                          <p className="text-[0.8rem] text-muted-foreground">
+                            Press Enter to add to the list below.
+                          </p>
+                        </div>
+
+                        {/* Staged Tags Area */}
+                        {subCategoires.length > 0 && (
+                          <div className="rounded-md border bg-muted/30 p-3">
+                            <div className="flex flex-wrap gap-2">
+                              {subCategoires.map((subCat, i) => (
+                                <div
+                                  key={i}
+                                  className="group bg-dashboard-primary text-white inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm shadow-sm transition-all hover:shadow-md"
+                                >
+                                  <span>{subCat}</span>
+                                  <button
+                                    className="text-white/70 hover:text-white transition-colors"
+                                    onClick={() => removeSubCategory(i)}
+                                  >
+                                    <CircleX className="h-3.5 w-3.5" />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        <Button
+                          disabled={subCategoires.length === 0 || isPending}
+                          onClick={handleAddSubCategory}
+                          className="w-full bg-dashboard-primary hover:bg-dashboard-primary/90 text-white"
+                        >
+                          {isPending ? (
+                            <div className="flex items-center gap-2">
+                              <Spinner className="text-white" /> Saving...
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2">
+                              <Plus className="h-4 w-4" /> Save Subcategories
+                            </div>
+                          )}
+                        </Button>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-8 text-center border-2 border-dashed rounded-lg">
+                    <Layers className="h-10 w-10 text-muted-foreground/50 mb-3" />
+                    <p className="mb-4 text-sm text-muted-foreground max-w-[200px]">
+                      No categories found. Create a category first.
+                    </p>
+                    <Button variant="outline" asChild>
+                      <Link to="/products/category">Create Category</Link>
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </div>
 
           {/* Right Side: List of Sub-Categories */}
-          <div className="col-span-12 rounded border border-neutral-200 lg:col-span-8">
-            <h3 className="bg-neutral-100 px-4 py-2 font-semibold">
-              All Sub-Categories
-            </h3>
-            {selectedCategory ? (
-              <ul>
-                {subCategoriesData && subCategoriesData?.data?.length > 0 ? (
-                  subCategoriesData?.data?.map((subCategory, i) => (
-                    <SubCategoryList
-                      key={i}
-                      subCategory={subCategory}
-                      categoryId={selectedCategory}
-                      storeId={selectedStore?.storeId}
-                    />
-                  ))
+          <div className="col-span-1 md:col-span-12 lg:col-span-8">
+            <Card className="h-full border-border/60 shadow-sm flex flex-col">
+              <CardHeader className="border-b bg-muted/10 pb-4">
+                <CardTitle className="text-lg">Existing Subcategories</CardTitle>
+                <CardDescription>
+                  {selectedCategory
+                    ? "Manage items within the selected category"
+                    : "Select a category to view and manage items"}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-0 flex-1">
+                {selectedCategory ? (
+                  subCategoriesData && subCategoriesData?.data?.length > 0 ? (
+                    <div className="max-h-[600px] overflow-y-auto custom-scrollbar">
+                      {subCategoriesData?.data?.map((subCategory, i) => (
+                        <SubCategoryList
+                          key={i}
+                          subCategory={subCategory}
+                          categoryId={selectedCategory}
+                          storeId={selectedStore?.storeId}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-16 text-center">
+                      <div className="bg-muted/50 p-4 rounded-full mb-3">
+                        <FolderTree className="h-8 w-8 text-muted-foreground" />
+                      </div>
+                      <h3 className="text-sm font-semibold text-foreground">
+                        No subcategories yet
+                      </h3>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Use the form on the left to add your first one.
+                      </p>
+                    </div>
+                  )
                 ) : (
-                  <div className="px-4 py-6 text-center text-sm text-gray-500">
-                    No sub-categories found for this store. Start by adding a
-                    new one.
+                  <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
+                    <div className="bg-muted/30 p-6 rounded-full">
+                      <Layers className="h-10 w-10 text-muted-foreground/40" />
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Select a category from the dropdown to load data.
+                    </p>
                   </div>
                 )}
-              </ul>
-            ) : (
-              <div className="px-4 py-6 text-center text-sm text-gray-500">
-                Select a category to view sub-categories for this store.
-              </div>
-            )}
+              </CardContent>
+            </Card>
           </div>
         </div>
       )}

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Edit, Trash } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import ReusableModal from "../../modals/ReusableModal";
 import UpdateSubCategoryModal from "../../modals/UpdateSubCategoryModal";
 import DeleteSubCategoryModal from "../../modals/DeleteSubCategoryModal";
@@ -9,59 +10,68 @@ export default function SubCategoryList({ subCategory, categoryId, storeId }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [updatedName, setUpdatedName] = useState(subCategory);
 
-  // close update modal
   const closeUpdateModal = () => {
     setIsUpdateModalOpen(false);
   };
 
-  // close delete modal
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);
   };
 
   return (
-    <>
-      <li className="flex items-center justify-between border-b border-neutral-200 px-4 py-3 text-neutral-700 last:border-b-0 hover:bg-neutral-50">
-        <p className="min-w-fit">{subCategory}</p>
+    // Changed py-4 to py-3 for a tighter UI
+    // Removed the Fragment (<>...</>) wrapper so Modals don't stack as blocks
+    <div className="group flex items-center justify-between border-b border-border/50 px-6 py-3 transition-all hover:bg-muted/40 last:border-b-0">
+      <div className="flex items-center gap-3">
+        <div className="h-2 w-2 rounded-full bg-dashboard-primary/40 group-hover:bg-dashboard-primary transition-colors" />
+        <p className="text-sm font-medium text-foreground">{subCategory}</p>
+      </div>
 
-        <div className="flex items-center gap-4">
-          <button>
-            <Edit
-              className="text-dashboard-primary/75 hover:text-dashboard-primary min-w-fit cursor-pointer text-lg transition-all duration-200 ease-in-out"
-              onClick={() => setIsUpdateModalOpen(true)}
-            />
-          </button>
+      <div className="flex items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity duration-200">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 hover:bg-dashboard-primary/10 hover:text-dashboard-primary"
+          onClick={() => setIsUpdateModalOpen(true)}
+          title="Edit Subcategory"
+        >
+          <Edit className="h-4 w-4" />
+        </Button>
 
-          <button>
-            <Trash
-              className="min-w-fit cursor-pointer text-lg text-red-300 transition-all duration-200 ease-in-out hover:text-red-500"
-              onClick={() => setIsDeleteModalOpen(true)}
-            />
-          </button>
-        </div>
-      </li>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive"
+          onClick={() => setIsDeleteModalOpen(true)}
+          title="Delete Subcategory"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
 
-      {/* update modal */}
-      <ReusableModal isOpen={isUpdateModalOpen} close={closeUpdateModal}>
-        <UpdateSubCategoryModal
-          subCategory={subCategory}
-          updatedName={updatedName}
-          setUpdatedName={setUpdatedName}
-          close={closeUpdateModal}
-          categoryId={categoryId}
-          storeId={storeId}
-        />
-      </ReusableModal>
+        {/* FIX: Modals are placed INSIDE this flex container.
+           This prevents them from creating vertical whitespace 
+           in the main list layout.
+        */}
+        <ReusableModal isOpen={isUpdateModalOpen} close={closeUpdateModal}>
+          <UpdateSubCategoryModal
+            subCategory={subCategory}
+            updatedName={updatedName}
+            setUpdatedName={setUpdatedName}
+            close={closeUpdateModal}
+            categoryId={categoryId}
+            storeId={storeId}
+          />
+        </ReusableModal>
 
-      {/* delete modal */}
-      <ReusableModal isOpen={isDeleteModalOpen} close={closeDeleteModal}>
-        <DeleteSubCategoryModal
-          subCategory={subCategory}
-          close={closeDeleteModal}
-          categoryId={categoryId}
-          storeId={storeId}
-        />
-      </ReusableModal>
-    </>
+        <ReusableModal isOpen={isDeleteModalOpen} close={closeDeleteModal}>
+          <DeleteSubCategoryModal
+            subCategory={subCategory}
+            close={closeDeleteModal}
+            categoryId={categoryId}
+            storeId={storeId}
+          />
+        </ReusableModal>
+      </div>
+    </div>
   );
 }

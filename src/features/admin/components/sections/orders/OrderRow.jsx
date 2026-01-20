@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import toast from "react-hot-toast";
-import { Eye, Package } from "lucide-react";
+import { Eye, Copy, CreditCard, Banknote } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,12 @@ const DELIVERY_STATUSES = [
   { value: "RETURNED", label: "Returned", variant: "destructive" },
 ];
 
+const PAYMENT_STATUS_MAP = {
+  PENDING: { label: "Pending", variant: "secondary" },
+  COMPLETED: { label: "Completed", variant: "default" },
+  FAILED: { label: "Failed", variant: "destructive" },
+};
+
 function getStatusVariant(status, statusList) {
   const found = statusList.find((s) => s.value === status);
   return found ? found.variant : "secondary";
@@ -44,13 +50,47 @@ function getStatusLabel(status, statusList) {
   return found ? found.label : status;
 }
 
-export default function OrderRow({ order, storeId }) {
+function formatDateTime(isoString) {
+  const date = new Date(isoString);
+  const formattedDate = date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+  const formattedTime = date.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
+  return { date: formattedDate, time: formattedTime };
+}
+
+function getPaymentMethodIcon(method) {
+  if (method === 'COD') return Banknote;
+  return CreditCard;
+}
+
+function getPaymentMethodLabel(method) {
+  const methodMap = {
+    'COD': 'Cash On Delivery',
+    'STRIPE': 'Stripe',
+    'CARD': 'Card',
+    'BANK_TRANSFER': 'Bank Transfer',
+  };
+  return methodMap[method] || method;
+}
+
+export default function OrderRow({ order, storeId, currencySymbol = '৳' }) {
   const {
+    _id,
     orderId,
-    OrderStatus: initialOrderStatus,
+    orderStatus: initialOrderStatus,
     deliveryStatus: initialDeliveryStatus,
-    createdDate,
-    createdTime,
+    createdAt,
+    pricingSummary,
+    products,
+    payment,
+    shippingDetails,
   } = order;
 
   const queryClient = useQueryClient();
@@ -58,9 +98,23 @@ export default function OrderRow({ order, storeId }) {
   const [orderStatus, setOrderStatus] = useState(initialOrderStatus);
   const [deliveryStatus, setDeliveryStatus] = useState(initialDeliveryStatus);
 
+  // Format date and time from createdAt
+  const { date: createdDate, time: createdTime } = formatDateTime(createdAt);
+
+  // Calculate total items
+  const totalItems = products?.reduce((sum, product) => sum + product.quantity, 0) || 0;
+
+  // Get grand total
+  const grandTotal = pricingSummary?.grandTotal?.$numberDecimal || "0";
+
+  // Payment info
+  const PaymentIcon = getPaymentMethodIcon(payment?.method);
+  const paymentMethodLabel = getPaymentMethodLabel(payment?.method);
+  const paymentStatus = PAYMENT_STATUS_MAP[payment?.status] || { label: payment?.status, variant: "secondary" };
+
   // custom patch hooks to update order status
   const { mutate: orderMutate, isPending: orderLoading } = usePatchMutaion({
-    endpoint: `/orders/update/order/${orderId}`,
+    endpoint: `/orders/update/order/${_id}`,
     token: user?.token,
     clientId: user?.data?.clientid,
   });
@@ -68,7 +122,7 @@ export default function OrderRow({ order, storeId }) {
   // custom patch hooks to update delivery status
   const { mutate: deliveryMutate, isPending: deliveryLoading } =
     usePatchMutaion({
-      endpoint: `/orders/update/delivery/${orderId}`,
+      endpoint: `/orders/update/delivery/${_id}`,
       token: user?.token,
       clientId: user?.data?.clientid,
     });
@@ -88,6 +142,7 @@ export default function OrderRow({ order, storeId }) {
       },
       onError: () => {
         toast.error("Something went wrong!");
+        setOrderStatus(initialOrderStatus);
       },
     });
   };
@@ -107,30 +162,89 @@ export default function OrderRow({ order, storeId }) {
       },
       onError: () => {
         toast.error("Something went wrong!");
+        setDeliveryStatus(initialDeliveryStatus);
       },
     });
   };
 
+  const copyOrderId = () => {
+    navigator.clipboard.writeText(orderId || _id);
+    toast.success("Order ID copied!");
+  };
+
   return (
-    <tr className="hover:bg-muted/30 transition-colors">
+    <tr className="hover:bg-muted/30 transition-colors border-b border-border">
       {/* Order ID */}
-      <td className="px-4 py-3">
+      <td className="px-4 py-4">
         <div className="flex items-center gap-2">
-          <Package className="text-muted-foreground h-4 w-4 flex-shrink-0" />
-          <span className="text-foreground font-mono text-xs">#{orderId}</span>
+          <span className="text-primary font-medium text-sm">
+            {orderId || `#${_id.slice(-8)}`}
+          </span>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6"
+            onClick={copyOrderId}
+          >
+            <Copy className="h-3 w-3" />
+          </Button>
+        </div>
+      </td>
+
+      {/* Customer */}
+      <td className="px-4 py-4">
+        <div className="flex flex-col">
+          <span className="text-foreground font-medium text-sm">
+            {shippingDetails?.name || 'N/A'}
+          </span>
+          <span className="text-muted-foreground text-xs">
+            {shippingDetails?.email}
+          </span>
+          <span className="text-muted-foreground text-xs">
+            {shippingDetails?.countryPhoneCode}{shippingDetails?.phone}
+          </span>
         </div>
       </td>
 
       {/* Date & Time */}
-      <td className="px-4 py-3">
-        <div className="text-xs">
+      <td className="px-4 py-4">
+        <div className="text-sm">
           <div className="text-foreground font-medium">{createdDate}</div>
-          <div className="text-muted-foreground">{createdTime}</div>
+          <div className="text-muted-foreground text-xs">{createdTime}</div>
+        </div>
+      </td>
+
+      {/* Items */}
+      <td className="px-4 py-4">
+        <span className="text-primary font-medium text-sm">
+          {totalItems} {totalItems === 1 ? 'item' : 'items'}
+        </span>
+      </td>
+
+      {/* Total */}
+      <td className="px-4 py-4">
+        <span className="text-foreground font-semibold text-sm">
+          {currencySymbol}{Number(grandTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        </span>
+      </td>
+
+      {/* Payment */}
+      <td className="px-4 py-4">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-1.5">
+            <PaymentIcon className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-foreground text-xs font-medium">
+              {paymentMethodLabel}
+            </span>
+          </div>
+          <Badge variant={paymentStatus.variant} className="text-xs w-fit">
+            {paymentStatus.label}
+          </Badge>
         </div>
       </td>
 
       {/* Order Status */}
-      <td className="px-4 py-3">
+      <td className="px-4 py-4">
         <div className="flex justify-center">
           <Select
             value={orderStatus}
@@ -165,7 +279,7 @@ export default function OrderRow({ order, storeId }) {
       </td>
 
       {/* Delivery Status */}
-      <td className="px-4 py-3">
+      <td className="px-4 py-4">
         <div className="flex justify-center">
           <Select
             value={deliveryStatus}
@@ -200,10 +314,10 @@ export default function OrderRow({ order, storeId }) {
       </td>
 
       {/* Actions */}
-      <td className="px-4 py-3">
+      <td className="px-4 py-4">
         <div className="flex justify-center">
           <Button variant="ghost" size="sm" asChild className="h-8 text-xs">
-            <Link to={`/orders/${orderId}`}>
+            <Link to={`/orders/${orderId || _id}`}>
               <Eye className="mr-1.5 h-3.5 w-3.5" />
               View
             </Link>

@@ -26,7 +26,7 @@ export default function Orders() {
 
   // fetch orders of selected store
   const { data: orders, isLoading } = useGetQuery({
-    endpoint: `/orders/all/${selectedStore?.storeId}`,
+    endpoint: `/orders/storeorders/${selectedStore?.storeId}`,
     token: user?.token,
     clientId: user?.data?.clientid,
     queryKey: ["orders", selectedStore?.storeId],
@@ -42,7 +42,7 @@ export default function Orders() {
     );
   }
 
-  const hasOrders = orders?.OrdersData && orders.OrdersData.length > 0;
+  const hasOrders = orders?.data && orders?.data.length > 0;
   const noOrdersAvailable =
     orders?.message === "No orders available for this store";
 
@@ -55,7 +55,7 @@ export default function Orders() {
       <PageHeader
         icon={ShoppingCart}
         title="Orders"
-        description="View and manage customer orders for"
+        description="View and manage customer orders"
       />
 
       {/* Loading State */}
@@ -72,42 +72,50 @@ export default function Orders() {
 
       {/* Orders Table */}
       {!isLoading && hasOrders && (
-        <Card>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-border bg-muted/50 border-b">
-                    <th className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
-                      Order ID
-                    </th>
-                    <th className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
-                      Date & Time
-                    </th>
-                    <th className="text-muted-foreground px-4 py-3 text-center text-xs font-medium">
-                      Order Status
-                    </th>
-                    <th className="text-muted-foreground px-4 py-3 text-center text-xs font-medium">
-                      Delivery Status
-                    </th>
-                    <th className="text-muted-foreground px-4 py-3 text-center text-xs font-medium">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-border divide-y">
-                  {orders.OrdersData.map((order) => (
-                    <OrderRow
-                      key={order.orderId}
-                      order={order}
-                      currencySymbol={storePreference?.currencySymbol}
-                      storeId={selectedStore?.storeId}
-                    />
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
+        <Card className="overflow-x-auto p-0">
+          <table className="w-full">
+            <thead>
+              <tr className="border-border bg-muted/50 border-b">
+                <th className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
+                  Order ID
+                </th>
+                <th className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
+                  Customer
+                </th>
+                <th className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
+                  Date & Time
+                </th>
+                <th className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
+                  Items
+                </th>
+                <th className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
+                  Total
+                </th>
+                <th className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
+                  Payment
+                </th>
+                <th className="text-muted-foreground px-4 py-3 text-center text-xs font-medium">
+                  Order Status
+                </th>
+                <th className="text-muted-foreground px-4 py-3 text-center text-xs font-medium">
+                  Delivery Status
+                </th>
+                <th className="text-muted-foreground px-4 py-3 text-center text-xs font-medium">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders?.data.map((order) => (
+                <OrderRow
+                  key={order._id}
+                  order={order}
+                  currencySymbol={storePreference?.currencySymbol}
+                  storeId={selectedStore?.storeId}
+                />
+              ))}
+            </tbody>
+          </table>
         </Card>
       )}
 

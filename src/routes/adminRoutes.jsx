@@ -28,6 +28,7 @@ import AddFaq from "@/features/admin/pages/AddFaq";
 import BankPayment from "@/features/admin/pages/BankPayment";
 import AddPrivacyPolicy from "@/features/admin/pages/AddPrivacryPolicy";
 import OrdersManagement from "@/Test";
+import Customers from "@/features/admin/pages/Customers";
 
 export const adminRoutes = {
   path: "/",
@@ -77,6 +78,10 @@ export const adminRoutes = {
     {
       path: "/seo-meta",
       element: <SeoForm />,
+    },
+    {
+      path: "/customers",
+      element: <Customers />,
     },
     {
       path: "/blogs/add",
