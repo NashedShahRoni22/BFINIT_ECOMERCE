@@ -51,6 +51,7 @@ export default function SelectedStoreProvider({ children }) {
   const value = {
     selectedStore,
     handleSetStore,
+    storeId: selectedStore?.storeId,
   };
 
   return (

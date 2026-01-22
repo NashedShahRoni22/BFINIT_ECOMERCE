@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import usePostMutation from "@/hooks/api/usePostMutation";
 import useSelectedStore from "@/hooks/useSelectedStore";
+import useUpdateMutation from "@/hooks/api/useUpdateMutation";
 
 const maxFileSize = 2000 * 1024;
 
@@ -45,15 +46,46 @@ const handleFile = (files, onChange) => {
   onChange(imageData);
 };
 
-export default function BlogForm() {
+export default function BlogForm({ blogDetails }) {
   const { selectedStore } = useSelectedStore();
   const navigate = useNavigate();
 
   const imgRef = useRef();
   const sunEditorRef = useRef();
 
-  const form = useForm();
-  const { handleSubmit } = form;
+  const form = useForm({
+    defaultValues: {
+      blogImages: null,
+      blogHeading: "",
+      blogCustomUrl: "",
+      blogDescription: "",
+    },
+  });
+
+  const { handleSubmit, reset } = form;
+
+  // Track original image URL for deletion on update
+  const originalImageUrl = useRef(null);
+
+  useEffect(() => {
+    if (blogDetails?.blogId) {
+      const { blogName, blogImage, blogCustomUrl, blogDescription } =
+        blogDetails;
+
+      // Store original image URL for later deletion
+      originalImageUrl.current = blogImage[0];
+
+      reset({
+        blogImages: {
+          preview: `https://ecomback.bfinit.com${blogImage[0]}`,
+          isExisting: true, // Flag to identify existing image
+        },
+        blogHeading: blogName,
+        blogCustomUrl,
+        blogDescription,
+      });
+    }
+  }, [blogDetails, reset]);
 
   const handleFileInput = (e, onChange) => {
     handleFile(e.target.files, onChange);
@@ -64,20 +96,31 @@ export default function BlogForm() {
   };
 
   const removeImage = (onChange, currentImage) => {
-    if (currentImage && currentImage.preview) {
+    if (currentImage && currentImage.preview && !currentImage.isExisting) {
       URL.revokeObjectURL(currentImage.preview);
+    }
+    if (imgRef.current) {
       imgRef.current.value = "";
     }
     onChange(null);
   };
 
-  const { mutate, isPending } = usePostMutation({
+  // Create mutation
+  const { mutate: createMutate, isPending: isCreatePending } = usePostMutation({
     endpoint: `/blog/create/${selectedStore?.storeId}`,
     token: true,
     clientId: true,
   });
 
-  const onSumbit = (data) => {
+  // Update mutation
+  const { mutate: updateMutate, isPending: isUpdatePending } =
+    useUpdateMutation({
+      endpoint: `/blog/update/${blogDetails?.blogId}`,
+      token: true,
+      clientId: true,
+    });
+
+  const onSubmit = (data) => {
     const { blogHeading, blogCustomUrl, blogDescription, blogImages } = data;
 
     const blogData = {
@@ -88,24 +131,55 @@ export default function BlogForm() {
 
     const payload = new FormData();
     payload.append("blogData", JSON.stringify(blogData));
-    payload.append("blogImages", blogImages.file);
 
-    mutate(payload, {
-      onSuccess: () => {
-        toast.success("Blog published successfully!");
-        navigate("/blogs/manage");
-      },
+    // Check if we're updating
+    if (blogDetails?.blogId) {
+      // Only append new image if user selected one
+      if (blogImages?.file) {
+        payload.append("blogImages", blogImages.file);
+        // Include original image URL for deletion as a stringified array
+        payload.append(
+          "deleteImageUrl",
+          JSON.stringify([originalImageUrl.current]),
+        );
+      }
 
-      onError: () => {
-        toast.error("Failed to publish blog. Please try again.");
-      },
-    });
+      updateMutate(payload, {
+        onSuccess: () => {
+          toast.success("Blog updated successfully!");
+          navigate("/blogs/manage");
+        },
+        onError: () => {
+          toast.error("Failed to update blog. Please try again.");
+        },
+      });
+    } else {
+      // Create new blog
+      if (!blogImages?.file) {
+        toast.error("Please add a blog image");
+        return;
+      }
+
+      payload.append("blogImages", blogImages.file);
+
+      createMutate(payload, {
+        onSuccess: () => {
+          toast.success("Blog published successfully!");
+          navigate("/blogs/manage");
+        },
+        onError: () => {
+          toast.error("Failed to publish blog. Please try again.");
+        },
+      });
+    }
   };
+
+  const isPending = isCreatePending || isUpdatePending;
 
   return (
     <Form {...form}>
       <form
-        onSubmit={handleSubmit(onSumbit)}
+        onSubmit={handleSubmit(onSubmit)}
         className="bg-card space-y-6 space-x-4 rounded-lg border p-5 md:space-y-6 md:space-x-6"
       >
         {/* image */}
@@ -113,7 +187,7 @@ export default function BlogForm() {
           control={form.control}
           name="blogImages"
           rules={{
-            required: "Please add a blog image",
+            required: blogDetails?.blogId ? false : "Please add a blog image",
           }}
           render={({ field }) => (
             <FormItem>
@@ -128,7 +202,7 @@ export default function BlogForm() {
                       <div className="bg-muted relative h-full w-full overflow-hidden rounded-md border">
                         <img
                           src={field.value.preview}
-                          alt={field.value?.name}
+                          alt={field.value?.name || "Blog image"}
                           className="h-full w-full object-cover"
                         />
                         <button
@@ -305,11 +379,11 @@ export default function BlogForm() {
           )}
         />
 
-        {/* back & sumbit buttons */}
+        {/* back & submit buttons */}
         <div className="flex flex-col-reverse gap-4 lg:flex-row lg:justify-between">
           <Button variant="outline" size="sm" asChild className="text-xs">
-            <Link to="/">
-              <ChevronLeft /> Back to Home
+            <Link to="/blogs/manage">
+              <ChevronLeft /> Back to Blogs
             </Link>
           </Button>
 
@@ -322,8 +396,10 @@ export default function BlogForm() {
             {isPending ? (
               <>
                 <Spinner size="3.5" />
-                Publishing...
+                {blogDetails?.blogId ? "Updating..." : "Publishing..."}
               </>
+            ) : blogDetails?.blogId ? (
+              "Update Blog"
             ) : (
               "Publish Blog"
             )}

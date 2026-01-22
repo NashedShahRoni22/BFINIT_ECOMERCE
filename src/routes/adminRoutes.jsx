@@ -29,6 +29,7 @@ import BankPayment from "@/features/admin/pages/BankPayment";
 import AddPrivacyPolicy from "@/features/admin/pages/AddPrivacryPolicy";
 import OrdersManagement from "@/Test";
 import Customers from "@/features/admin/pages/Customers";
+import UpdateBlog from "@/features/admin/pages/UpdateBlog";
 
 export const adminRoutes = {
   path: "/",
@@ -86,6 +87,10 @@ export const adminRoutes = {
     {
       path: "/blogs/add",
       element: <AddBlog />,
+    },
+    {
+      path: "/blogs/edit/:id",
+      element: <UpdateBlog />,
     },
     {
       path: "/blogs/manage",
