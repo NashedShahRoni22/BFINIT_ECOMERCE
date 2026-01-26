@@ -1,7 +1,6 @@
 import {
   MessageCircleQuestionMark,
   Store,
-  CircleQuestionMark,
   CornerDownRight,
   CreditCard,
   Globe,
@@ -12,6 +11,10 @@ import {
   Palette,
   ShoppingCart,
   User,
+  Scale,
+  LifeBuoy,
+  Building2,
+  Users,
 } from "lucide-react";
 
 export const adminDropdownLinks = [
@@ -72,10 +75,23 @@ export const adminSidebarLinks = [
           },
         ],
       },
+    ],
+  },
+
+  // sales
+  {
+    groupName: "sales",
+    links: [
       {
         icon: ShoppingCart,
         name: "Orders",
         url: "/orders",
+      },
+
+      {
+        icon: Users,
+        name: "Customers",
+        url: "/customers",
       },
     ],
   },
@@ -88,11 +104,7 @@ export const adminSidebarLinks = [
         name: "SEO & Meta",
         url: "/seo-meta",
       },
-      {
-        icon: User,
-        name: "Customers",
-        url: "/customers",
-      },
+
       {
         icon: Newspaper,
         name: "Blogs",
@@ -137,39 +149,51 @@ export const adminSidebarLinks = [
         ],
       },
       {
-        icon: CircleQuestionMark,
-        name: "Support",
+        icon: Scale,
+        name: "Legal",
         subCategories: [
-          {
-            name: "Help Center",
-            url: "/support/help-center",
-            icon: CornerDownRight,
-          },
-          {
-            name: "How to Buy",
-            url: "/support/how-to-buy",
-            icon: CornerDownRight,
-          },
-          {
-            name: "Returns & Refunds",
-            url: "/support/returns-refunds",
-            icon: CornerDownRight,
-          },
-          {
-            name: "Terms & Conditions",
-            url: "/support/terms-conditions",
-            icon: CornerDownRight,
-          },
           {
             name: "Privacy Policy",
             url: "/support/privacy",
             icon: CornerDownRight,
           },
           {
-            name: "Faq",
+            name: "Legal & Terms",
+            url: "/support/terms-conditions",
+            icon: CornerDownRight,
+          },
+        ],
+      },
+      {
+        icon: LifeBuoy,
+        name: "Support",
+        subCategories: [
+          {
+            name: "Customer Support",
+            url: "/support/help-center",
+            icon: CornerDownRight,
+          },
+          {
+            name: "FAQ",
             url: "/support/faq",
             icon: CornerDownRight,
           },
+          {
+            name: "Shopping Guide",
+            url: "/support/how-to-buy",
+            icon: CornerDownRight,
+          },
+          {
+            name: "Return Policy",
+            url: "/support/returns-refunds",
+            icon: CornerDownRight,
+          },
+        ],
+      },
+      {
+        icon: Building2,
+        name: "Company",
+        subCategories: [
           {
             name: "About",
             url: "/support/about",

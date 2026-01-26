@@ -87,6 +87,9 @@ export const breadcrubms = {
     { label: "Edit Product" },
   ],
 
+  // marketing
+  customers: [{ label: "Home", href: "/" }, { label: "Customers" }],
+
   // payments
   StripePayment: [
     { label: "Home", href: "/" },

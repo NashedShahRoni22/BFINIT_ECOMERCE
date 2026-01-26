@@ -1,25 +1,24 @@
-import React from "react";
 import useAuth from "@/hooks/auth/useAuth";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import EmptyStoreState from "../components/EmptyStoreState";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
-import { User } from "lucide-react";
+import { Search, Users } from "lucide-react";
 import PageHeader from "../components/PageHeader";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-
-const CUSTOMERS_BREADCRUMB_ITEMS = [
-  { label: "Home", href: "/" },
-  { label: "Customers" },
-];
+import { breadcrubms } from "@/utils/constants/breadcrumbs";
+import CustomerTable from "../components/sections/customers/CustomerTable";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import EmptyState from "../components/EmptyState";
+import CustomersToolsSkeleton from "../components/skeletons/CustomersToolsSkeleton";
+import CustomersTableSkeleton from "../components/skeletons/CustomersTableSkeleton";
 
 export default function Customers() {
   const { user } = useAuth();
   const { selectedStore } = useSelectedStore();
 
   // fetch customers of selected store
-  const { data: customers, isLoading } = useGetQuery({
+  const { data: customersData, isLoading } = useGetQuery({
     endpoint: `/store/customers/all/${selectedStore?.storeId}`,
     token: user?.token,
     clientId: user?.data?.clientid,
@@ -27,92 +26,73 @@ export default function Customers() {
     enabled: !!selectedStore?.storeId && !!user?.token,
   });
 
+  const [search, setSearch] = useState("");
+  const hasCustomers = customersData?.length > 0;
+
+  let content = null;
+
   if (!selectedStore) {
     return (
       <EmptyStoreState
-        title="No customers Yet"
-        description="Create your store to start receiving and managing customer orders."
+        title="No Store Selected"
+        description="Select a store to view and manage your customer accounts and information."
       />
     );
   }
 
-  const hasCustomers = customers && customers?.length > 0;
-  const noCustomersAvailable =
-    customers?.message === "No customers available for this store";
+  if (isLoading) {
+    content = (
+      <>
+        <CustomersToolsSkeleton />
+        <CustomersTableSkeleton />
+      </>
+    );
+  }
+
+  if (!isLoading && hasCustomers) {
+    content = (
+      <>
+        <div className="flex items-center justify-end gap-4 px-5">
+          <div className="relative w-full max-w-72">
+            <Search className="text-muted-foreground absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2" />
+            <Input
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search customers..."
+              value={search}
+              className="pl-7 placeholder:text-xs md:text-xs"
+            />
+          </div>
+        </div>
+
+        <CustomerTable customersData={customersData} />
+      </>
+    );
+  }
+
+  if (!isLoading && !hasCustomers) {
+    content = (
+      <EmptyState
+        icon={Users}
+        title="No customers yet"
+        description="Customers will appear here once they create an account or make their first purchase"
+      />
+    );
+  }
+
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <DynamicBreadcrumb items={CUSTOMERS_BREADCRUMB_ITEMS} />
+      <DynamicBreadcrumb items={breadcrubms.customers} />
 
       {/* Page Header */}
       <PageHeader
-        icon={User}
+        icon={Users}
         title="Customers"
-        description="View and manage customer orders"
+        description="View customer accounts registered to your store"
       />
 
-      {/* Loading State */}
-      {isLoading && (
-        <Card>
-          <CardContent className="space-y-4 p-6">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-16 w-full" />
-            <Skeleton className="h-16 w-full" />
-            <Skeleton className="h-16 w-full" />
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Customers Table */}
-      {!isLoading && hasCustomers && (
-        <Card className="overflow-x-auto p-0">
-          <table className="w-full">
-            <thead>
-              <tr className="border-border bg-muted/50 border-b">
-                <th className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
-                  Date
-                </th>
-                <th className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
-                  Name
-                </th>
-                <th className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
-                  Email
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {customers?.map((customer, index) => (
-                <tr
-                  key={index}
-                  className="border-border hover:bg-muted/40 border-b last:border-b-0"
-                >
-                  <td className="px-4 py-4 text-xs text-muted-foreground">{customer.createdAt}</td>
-                  <td className="px-4 py-4 text-xs text-muted-foreground">{customer.name}</td>
-                  <td className="px-4 py-4 text-xs text-muted-foreground">{customer.email}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Card>
-      )}
-
-      {/* No Customers Message */}
-      {!isLoading && noCustomersAvailable && (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center px-4 py-16">
-            <div className="bg-muted mb-4 rounded-full p-4">
-              <User className="text-muted-foreground h-8 w-8" />
-            </div>
-            <h3 className="text-foreground mb-2 text-lg font-medium">
-              No customers yet
-            </h3>
-            <p className="text-muted-foreground max-w-md text-center text-sm">
-              You haven't received any orders yet. When you do, they'll appear
-              here.
-            </p>
-          </CardContent>
-        </Card>
-      )}
+      {/* content */}
+      <div className="bg-card space-y-6 rounded-lg py-5">{content}</div>
     </section>
   );
 }

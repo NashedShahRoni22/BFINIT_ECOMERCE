@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
-import { Package, PackageOpen, Plus, Search, Settings2 } from "lucide-react";
+import { Package, PackageOpen, Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import useSelectedStore from "@/hooks/useSelectedStore";
