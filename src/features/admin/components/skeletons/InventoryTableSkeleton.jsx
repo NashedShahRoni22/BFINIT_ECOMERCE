@@ -10,7 +10,7 @@ import {
 
 export default function InventoryTableSkeleton() {
   return (
-    <div className="overflow-hidden rounded-md">
+    <div className="overflow-hidden">
       <Table>
         <TableHeader className="bg-muted hover:bg-muted">
           <TableRow>

@@ -1,21 +1,23 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Columns2, Columns3, SlidersHorizontal, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import { dummyProducts } from "@/features/themes/utils/contstants";
 import ProductCard from "../../components/storefront/cards/products/ProductCard";
-import { useParams } from "react-router";
+import { useParams, useSearchParams } from "react-router";
 import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
 import useGetCategories from "@/features/admin/hooks/category/useGetCategories";
 import useGetBrands from "@/features/admin/hooks/brands/useGetBrands";
 
 const gridLayoutMap = {
-  2: "grid-cols-1 sm:grid-cols-2",
+  2: "grid-cols-1 md:grid-cols-2 lg:grid-cols-2",
   3: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
 };
 
 export default function ShopPage() {
   const { storeId } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [gridLayout, setGridLayout] = useState(3);
   const [sortBy, setSortBy] = useState("default");
@@ -24,17 +26,26 @@ export default function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubcategories, setSelectedSubcategories] = useState([]);
   const [selectedBrands, setSelectedBrands] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const productsPerPage = 20;
+
+  // Get search query from URL on mount
+  useEffect(() => {
+    const urlSearch = searchParams.get("search");
+    if (urlSearch) {
+      setSearchQuery(urlSearch);
+    }
+  }, [searchParams]);
 
   const { data: categoriesData, isLoading: isCategoriesLoading } =
     useGetCategories(storeId);
   const { data: brandsData, isLoading: isBrandsLoading } =
     useGetBrands(storeId);
 
-  // Fetch products
+  // Fetch products with search query
   const { data: productsData, isLoading } = useGetQuery({
-    endpoint: `/product/store?storeId=${storeId}&page=${currentPage}&limit=${productsPerPage}`,
-    queryKey: ["shop-products", storeId, currentPage],
+    endpoint: `/product/store?storeId=${storeId}&page=${currentPage}&limit=${productsPerPage}${searchQuery ? `&search=${searchQuery}` : ""}`,
+    queryKey: ["shop-products", storeId, currentPage, searchQuery],
     enabled: !!storeId,
   });
 
@@ -155,6 +166,13 @@ export default function ShopPage() {
     setSelectedBrands([]);
     setPriceRange([0, 10000]);
     setSortBy("default");
+    setSearchQuery("");
+    setSearchParams({}); // Clear URL search params
+  };
+
+  const clearSearchQuery = () => {
+    setSearchQuery("");
+    setSearchParams({}); // Clear URL search params
   };
 
   const hasActiveFilters =
@@ -162,7 +180,8 @@ export default function ShopPage() {
     selectedSubcategories.length > 0 ||
     selectedBrands.length > 0 ||
     priceRange[0] !== 0 ||
-    priceRange[1] !== 10000;
+    priceRange[1] !== 10000 ||
+    searchQuery;
 
   // Filter sidebar component
   const FilterSidebar = ({ isMobile = false }) => (
@@ -287,11 +306,14 @@ export default function ShopPage() {
       <div className="bg-muted/30 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <h1 className="mb-3 text-3xl font-bold sm:text-4xl">
-            Shop All Products
+            {searchQuery
+              ? `Search Results for "${searchQuery}"`
+              : "Shop All Products"}
           </h1>
           <p className="text-muted-foreground mx-auto max-w-2xl text-base sm:text-lg">
-            Discover our complete collection of quality products curated just
-            for you.
+            {searchQuery
+              ? `Found ${filteredProducts.length} ${filteredProducts.length === 1 ? "product" : "products"} matching your search`
+              : "Discover our complete collection of quality products curated just for you."}
           </p>
         </div>
       </div>
@@ -369,6 +391,15 @@ export default function ShopPage() {
                 <span className="text-muted-foreground text-sm">
                   Active filters:
                 </span>
+                {searchQuery && (
+                  <button
+                    onClick={clearSearchQuery}
+                    className="bg-primary/10 text-primary flex items-center gap-1 rounded-full px-3 py-1 text-xs"
+                  >
+                    Search: {searchQuery}
+                    <X className="h-3 w-3" />
+                  </button>
+                )}
                 {selectedCategory && (
                   <button
                     onClick={() => handleCategorySelect(selectedCategory)}
@@ -439,7 +470,9 @@ export default function ShopPage() {
                   No products found
                 </h3>
                 <p className="text-muted-foreground mb-6">
-                  Try adjusting your filters to see more results
+                  {searchQuery
+                    ? `No products match "${searchQuery}". Try different keywords or adjust your filters.`
+                    : "Try adjusting your filters to see more results"}
                 </p>
                 {hasActiveFilters && (
                   <button
