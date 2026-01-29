@@ -12,12 +12,12 @@ import { useState } from "react";
 import EmptyState from "../components/EmptyState";
 import CustomersToolsSkeleton from "../components/skeletons/CustomersToolsSkeleton";
 import CustomersTableSkeleton from "../components/skeletons/CustomersTableSkeleton";
+import useDebounce from "@/hooks/useDebounce";
 
 export default function Customers() {
   const { user } = useAuth();
   const { selectedStore } = useSelectedStore();
 
-  // fetch customers of selected store
   const { data: customersData, isLoading } = useGetQuery({
     endpoint: `/store/customers/all/${selectedStore?.storeId}`,
     token: user?.token,
@@ -27,7 +27,21 @@ export default function Customers() {
   });
 
   const [search, setSearch] = useState("");
-  const hasCustomers = customersData?.length > 0;
+
+  const debouncedSearch = useDebounce(search);
+
+  const filteredCustomers =
+    customersData?.filter((customer) => {
+      const searchTerm = debouncedSearch?.trim();
+      if (!searchTerm) return true;
+
+      return (
+        customer?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer?.email?.toLowerCase().includes(searchTerm?.toLowerCase())
+      );
+    }) ?? [];
+
+  const hasCustomers = filteredCustomers?.length > 0;
 
   let content = null;
 
@@ -64,7 +78,7 @@ export default function Customers() {
           </div>
         </div>
 
-        <CustomerTable customersData={customersData} />
+        <CustomerTable customersData={filteredCustomers} />
       </>
     );
   }
@@ -73,25 +87,26 @@ export default function Customers() {
     content = (
       <EmptyState
         icon={Users}
-        title="No customers yet"
-        description="Customers will appear here once they create an account or make their first purchase"
+        title={debouncedSearch ? "No customers found" : "No customers yet"}
+        description={
+          debouncedSearch
+            ? `No customers match "${debouncedSearch}"`
+            : "Customers will appear here when they sign up or make a purchase"
+        }
       />
     );
   }
 
   return (
     <section className="space-y-6">
-      {/* Breadcrumb Navigation */}
       <DynamicBreadcrumb items={breadcrubms.customers} />
 
-      {/* Page Header */}
       <PageHeader
         icon={Users}
         title="Customers"
         description="View customer accounts registered to your store"
       />
 
-      {/* content */}
       <div className="bg-card space-y-6 rounded-lg py-5">{content}</div>
     </section>
   );

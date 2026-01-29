@@ -10,13 +10,24 @@ import CategoryToolbar from "../components/sections/category/CategoryToolbar";
 import CategoryItem from "../components/sections/category/CategoryItem";
 import EmptyState from "../components/EmptyState";
 import AddCategoryDialog from "../components/modals/AddCategoryDialog";
+import useDebounce from "@/hooks/useDebounce";
 
 export default function Category() {
   const { selectedStore } = useSelectedStore();
+  const { data: categories } = useGetCategories();
 
+  const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const { data: categories } = useGetCategories();
+  const debouncedSearch = useDebounce(search);
+
+  const filteredCategories =
+    categories?.data?.filter((category) => {
+      const searchTerm = debouncedSearch?.trim();
+      if (!searchTerm) return true;
+
+      return category.name.toLowerCase().includes(searchTerm.toLowerCase());
+    }) ?? [];
 
   if (!selectedStore) {
     return (
@@ -29,10 +40,8 @@ export default function Category() {
 
   return (
     <section className="space-y-6">
-      {/* Breadcrumb Navigation */}
       <DynamicBreadcrumb items={breadcrubms.Category} />
 
-      {/* Page Header */}
       <PageHeader
         icon={FolderPlus}
         title="Add Category"
@@ -40,26 +49,37 @@ export default function Category() {
       />
 
       <div className="bg-card space-y-6 rounded-lg p-5">
-        <CategoryToolbar onOpen={() => setDialogOpen(true)} />
+        <CategoryToolbar
+          search={search}
+          setSearch={setSearch}
+          onOpen={() => setDialogOpen(true)}
+        />
 
-        {categories && categories?.data?.length > 0 ? (
+        {filteredCategories?.length > 0 ? (
           <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-            {categories?.data?.map((category) => (
+            {filteredCategories?.map((category) => (
               <CategoryItem key={category?.id} category={category} />
             ))}
           </div>
         ) : (
           <EmptyState
             icon={FolderOpen}
-            title="No categories found"
-            description="Organize your products by creating categories"
+            title={
+              debouncedSearch
+                ? "No categories match your search"
+                : "No categories found"
+            }
+            description={
+              debouncedSearch
+                ? `No results for "${debouncedSearch}"`
+                : "Organize your products by creating categories"
+            }
             actionLabel="Add Category"
             onAction={() => setDialogOpen(true)}
           />
         )}
       </div>
 
-      {/* Category modal */}
       <AddCategoryDialog
         dialogOpen={dialogOpen}
         setDialogOpen={setDialogOpen}

@@ -1,11 +1,8 @@
-import { useState } from "react";
 import { Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export default function CategoryToolbar({ onOpen }) {
-  const [search, setSearch] = useState("");
-
+export default function CategoryToolbar({ search, setSearch, onOpen }) {
   return (
     <div className="flex items-center justify-end gap-4">
       <div className="relative w-full max-w-72">
