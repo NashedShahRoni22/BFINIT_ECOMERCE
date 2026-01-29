@@ -39,25 +39,34 @@ export default function StoreSwitcherDropdown() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="ghost"
+          variant="outline"
           size="sm"
-          className="group flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 transition-all duration-200"
+          className="group hover:bg-accent flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 shadow-none transition-all"
         >
           {isLoading ? (
             <>
-              <Store className="text-muted-foreground h-3.5 w-3.5" />
-              <Loader2 className="text-muted-foreground h-3.5 w-3.5 animate-spin" />
+              <Store className="text-muted-foreground h-4 w-4" />
+              <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
             </>
           ) : (
             <>
-              <Store className="text-foreground h-3.5 w-3.5 shrink-0 transition-colors" />
-              <span className="hidden max-w-[120px] truncate text-xs font-medium sm:block">
+              <div className="bg-muted flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded border">
+                {selectedStore?.storeLogo ? (
+                  <img
+                    src={`https://ecomback.bfinit.com${selectedStore.storeLogo}`}
+                    alt=""
+                    className="h-full w-full object-contain"
+                  />
+                ) : (
+                  <Store className="text-muted-foreground h-3.5 w-3.5" />
+                )}
+              </div>
+
+              <span className="max-w-[120px] truncate text-sm font-medium">
                 {selectedStore?.storeName || "Select store"}
               </span>
-              <ChevronDown
-                size={14}
-                className="text-muted-foreground shrink-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-              />
+
+              <ChevronDown className="text-muted-foreground h-4 w-4 shrink-0 transition-transform group-data-[state=open]:rotate-180" />
             </>
           )}
         </Button>
@@ -70,11 +79,9 @@ export default function StoreSwitcherDropdown() {
             <h3 className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
               Your Stores
             </h3>
-            {stores?.data?.length > 0 && (
-              <span className="text-muted-foreground text-xs font-medium">
-                {stores.data.length}/{storeLimit}
-              </span>
-            )}
+            <span className="text-muted-foreground text-xs font-medium">
+              {stores?.data?.length || 0} of {storeLimit}
+            </span>
           </div>
         </DropdownMenuLabel>
 
