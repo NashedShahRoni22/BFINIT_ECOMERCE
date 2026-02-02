@@ -1,37 +1,48 @@
 import { ShoppingCart } from "lucide-react";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import PageHeader from "../components/PageHeader";
-import OrderRow from "../components/sections/orders/OrderRow";
 import useAuth from "@/hooks/auth/useAuth";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import useGetStorePreference from "../hooks/store/useGetStorePreference";
 import EmptyStoreState from "../components/EmptyStoreState";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-
-const ORDERS_BREADCRUMB_ITEMS = [
-  { label: "Home", href: "/" },
-  { label: "Orders" },
-];
+import { breadcrubms } from "@/utils/constants/breadcrumbs";
+import OrdersTableSkeleton from "../components/skeletons/OrdersTableSkeleton";
+import OrdersTable from "../components/sections/orders/OrdersTable";
+import OrdersToolbar from "../components/sections/orders/OrdersToolbar";
+import { useState } from "react";
+import useDebounce from "@/hooks/useDebounce";
+import OrdersToolsSkeleton from "../components/skeletons/OrdersToolsSkeleton";
+import EmptyState from "../components/EmptyState";
 
 export default function Orders() {
   const { user } = useAuth();
   const { selectedStore } = useSelectedStore();
 
-  // fetch store preference
-  const { data: storePreference } = useGetStorePreference(
-    selectedStore?.storeId,
-  );
-
-  // fetch orders of selected store
   const { data: orders, isLoading } = useGetQuery({
     endpoint: `/orders/storeorders/${selectedStore?.storeId}`,
     token: user?.token,
     clientId: user?.data?.clientid,
     queryKey: ["orders", selectedStore?.storeId],
     enabled: !!selectedStore?.storeId && !!user?.token,
+    staleTime: 2 * 60 * 1000,
   });
+
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search);
+
+  const filteredOrders =
+    orders?.data?.filter((order) => {
+      const searchTerm = debouncedSearch?.trim()?.toLowerCase();
+      if (!searchTerm) return true;
+
+      return (
+        order?.orderId?.toLowerCase().includes(searchTerm) ||
+        order?.shippingDetails?.name?.toLowerCase().includes(searchTerm) ||
+        order?.shippingDetails?.email?.toLowerCase().includes(searchTerm)
+      );
+    }) ?? [];
+
+  let content = null;
 
   if (!selectedStore) {
     return (
@@ -42,100 +53,52 @@ export default function Orders() {
     );
   }
 
-  const hasOrders = orders?.data && orders?.data.length > 0;
-  const noOrdersAvailable =
-    orders?.message === "No orders available for this store";
+  if (isLoading) {
+    content = (
+      <>
+        <OrdersToolsSkeleton />
+        <OrdersTableSkeleton />
+      </>
+    );
+  }
+
+  if (!isLoading && filteredOrders?.length > 0) {
+    content = (
+      <>
+        <OrdersToolbar search={search} setSearch={setSearch} />
+        <OrdersTable orders={filteredOrders} />
+      </>
+    );
+  }
+
+  if (!isLoading && !filteredOrders?.length > 0) {
+    content = (
+      <>
+        <OrdersToolbar search={search} setSearch={setSearch} />
+        <EmptyState
+          icon={ShoppingCart}
+          title={debouncedSearch ? "No orders found" : "No orders yet"}
+          description={
+            debouncedSearch
+              ? `No orders match "${debouncedSearch}"`
+              : "Orders will appear here when customers make a purchase"
+          }
+        />
+      </>
+    );
+  }
 
   return (
     <section className="space-y-6">
-      {/* Breadcrumb Navigation */}
-      <DynamicBreadcrumb items={ORDERS_BREADCRUMB_ITEMS} />
+      <DynamicBreadcrumb items={breadcrubms.orders} />
 
-      {/* Page Header */}
       <PageHeader
         icon={ShoppingCart}
         title="Orders"
         description="View and manage customer orders"
       />
 
-      {/* Loading State */}
-      {isLoading && (
-        <Card>
-          <CardContent className="space-y-4 p-6">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-16 w-full" />
-            <Skeleton className="h-16 w-full" />
-            <Skeleton className="h-16 w-full" />
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Orders Table */}
-      {!isLoading && hasOrders && (
-        <Card className="overflow-x-auto p-0">
-          <table className="w-full">
-            <thead>
-              <tr className="border-border bg-muted/50 border-b">
-                <th className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
-                  Order ID
-                </th>
-                <th className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
-                  Customer
-                </th>
-                <th className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
-                  Date & Time
-                </th>
-                <th className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
-                  Items
-                </th>
-                <th className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
-                  Total
-                </th>
-                <th className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
-                  Payment
-                </th>
-                <th className="text-muted-foreground px-4 py-3 text-center text-xs font-medium">
-                  Order Status
-                </th>
-                <th className="text-muted-foreground px-4 py-3 text-center text-xs font-medium">
-                  Delivery Status
-                </th>
-                <th className="text-muted-foreground px-4 py-3 text-center text-xs font-medium">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders?.data.map((order) => (
-                <OrderRow
-                  key={order._id}
-                  order={order}
-                  currencySymbol={storePreference?.currencySymbol}
-                  storeId={selectedStore?.storeId}
-                />
-              ))}
-            </tbody>
-          </table>
-        </Card>
-      )}
-
-      {/* No Orders Message */}
-      {!isLoading && noOrdersAvailable && (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center px-4 py-16">
-            <div className="bg-muted mb-4 rounded-full p-4">
-              <ShoppingCart className="text-muted-foreground h-8 w-8" />
-            </div>
-            <h3 className="text-foreground mb-2 text-lg font-medium">
-              No orders yet
-            </h3>
-            <p className="text-muted-foreground max-w-md text-center text-sm">
-              You haven't received any orders yet. When you do, they'll appear
-              here.
-            </p>
-          </CardContent>
-        </Card>
-      )}
+      <div className="bg-card space-y-6 rounded-lg pt-5">{content} </div>
     </section>
   );
 }

@@ -3,11 +3,10 @@ import useSelectedStore from "@/hooks/useSelectedStore";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import EmptyStoreState from "../components/EmptyStoreState";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
-import { Search, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import { breadcrubms } from "@/utils/constants/breadcrumbs";
 import CustomerTable from "../components/sections/customers/CustomerTable";
-import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import EmptyState from "../components/EmptyState";
 import CustomersToolsSkeleton from "../components/skeletons/CustomersToolsSkeleton";
@@ -25,6 +24,7 @@ export default function Customers() {
     clientId: user?.data?.clientid,
     queryKey: ["customers", selectedStore?.storeId],
     enabled: !!selectedStore?.storeId && !!user?.token,
+    staleTime: Infinity,
   });
 
   const [search, setSearch] = useState("");
@@ -100,7 +100,7 @@ export default function Customers() {
         description="View customer accounts registered to your store"
       />
 
-      <div className="bg-card space-y-6 rounded-lg py-5">{content}</div>
+      <div className="bg-card space-y-6 rounded-lg pt-5">{content}</div>
     </section>
   );
 }

@@ -27,7 +27,7 @@ export default function CustomersTableSkeleton() {
         </TableHeader>
 
         <TableBody>
-          {[...Array(4)].map((_, index) => (
+          {[...Array(5)].map((_, index) => (
             <TableRow key={index}>
               {/* checkbox */}
               <TableCell className="w-12">

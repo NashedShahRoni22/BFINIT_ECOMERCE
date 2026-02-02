@@ -87,7 +87,14 @@ export const breadcrubms = {
     { label: "Edit Product" },
   ],
 
-  // marketing
+  // ============================================================================
+  // Sales
+  // ============================================================================
+
+  /** Breadcrumb for orders listing and management */
+  orders: [{ label: "Home", href: "/" }, { label: "Orders" }],
+
+  /** Breadcrumb for customers listing */
   customers: [{ label: "Home", href: "/" }, { label: "Customers" }],
 
   // payments

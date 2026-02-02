@@ -14,6 +14,11 @@ import {
 } from "@/components/ui/select";
 import useAuth from "@/hooks/auth/useAuth";
 import usePatchMutaion from "@/hooks/api/usePatchMutaion";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { Checkbox } from "@/components/ui/checkbox";
+import { formatPrice } from "@/utils/formatPrice";
+import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
+import useSelectedStore from "@/hooks/useSelectedStore";
 
 // Status configurations matching API format
 const ORDER_STATUSES = [
@@ -52,35 +57,35 @@ function getStatusLabel(status, statusList) {
 
 function formatDateTime(isoString) {
   const date = new Date(isoString);
-  const formattedDate = date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
+  const formattedDate = date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
   });
-  const formattedTime = date.toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true
+  const formattedTime = date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
   });
   return { date: formattedDate, time: formattedTime };
 }
 
 function getPaymentMethodIcon(method) {
-  if (method === 'COD') return Banknote;
+  if (method === "COD") return Banknote;
   return CreditCard;
 }
 
 function getPaymentMethodLabel(method) {
   const methodMap = {
-    'COD': 'Cash On Delivery',
-    'STRIPE': 'Stripe',
-    'CARD': 'Card',
-    'BANK_TRANSFER': 'Bank Transfer',
+    COD: "Cash On Delivery",
+    STRIPE: "Stripe",
+    CARD: "Card",
+    BANK_TRANSFER: "Bank Transfer",
   };
   return methodMap[method] || method;
 }
 
-export default function OrderRow({ order, storeId, currencySymbol = '৳' }) {
+export default function OrderRow({ order }) {
   const {
     _id,
     orderId,
@@ -93,6 +98,12 @@ export default function OrderRow({ order, storeId, currencySymbol = '৳' }) {
     shippingDetails,
   } = order;
 
+  const { selectedStore } = useSelectedStore();
+
+  const { data: storePreference } = useGetStorePreference();
+
+  const currencySymbol = storePreference?.currencySymbol;
+
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const [orderStatus, setOrderStatus] = useState(initialOrderStatus);
@@ -102,7 +113,8 @@ export default function OrderRow({ order, storeId, currencySymbol = '৳' }) {
   const { date: createdDate, time: createdTime } = formatDateTime(createdAt);
 
   // Calculate total items
-  const totalItems = products?.reduce((sum, product) => sum + product.quantity, 0) || 0;
+  const totalItems =
+    products?.reduce((sum, product) => sum + product.quantity, 0) || 0;
 
   // Get grand total
   const grandTotal = pricingSummary?.grandTotal?.$numberDecimal || "0";
@@ -110,7 +122,10 @@ export default function OrderRow({ order, storeId, currencySymbol = '৳' }) {
   // Payment info
   const PaymentIcon = getPaymentMethodIcon(payment?.method);
   const paymentMethodLabel = getPaymentMethodLabel(payment?.method);
-  const paymentStatus = PAYMENT_STATUS_MAP[payment?.status] || { label: payment?.status, variant: "secondary" };
+  const paymentStatus = PAYMENT_STATUS_MAP[payment?.status] || {
+    label: payment?.status,
+    variant: "secondary",
+  };
 
   // custom patch hooks to update order status
   const { mutate: orderMutate, isPending: orderLoading } = usePatchMutaion({
@@ -138,7 +153,7 @@ export default function OrderRow({ order, storeId, currencySymbol = '৳' }) {
     orderMutate(payload, {
       onSuccess: () => {
         toast.success("Order status updated!");
-        queryClient.invalidateQueries(["orders", storeId]);
+        queryClient.invalidateQueries(["orders", selectedStore?.storeId]);
       },
       onError: () => {
         toast.error("Something went wrong!");
@@ -158,7 +173,7 @@ export default function OrderRow({ order, storeId, currencySymbol = '৳' }) {
     deliveryMutate(payload, {
       onSuccess: () => {
         toast.success("Delivery status updated!");
-        queryClient.invalidateQueries(["orders", storeId]);
+        queryClient.invalidateQueries(["orders", selectedStore?.storeId]);
       },
       onError: () => {
         toast.error("Something went wrong!");
@@ -173,157 +188,140 @@ export default function OrderRow({ order, storeId, currencySymbol = '৳' }) {
   };
 
   return (
-    <tr className="hover:bg-muted/30 transition-colors border-b border-border">
-      {/* Order ID */}
-      <td className="px-4 py-4">
+    <TableRow>
+      <TableCell className="w-10 border border-l-0">
+        <Checkbox />
+      </TableCell>
+
+      <TableCell className="max-w-xs truncate border text-xs font-medium">
         <div className="flex items-center gap-2">
-          <span className="text-primary font-medium text-sm">
-            {orderId || `#${_id.slice(-8)}`}
-          </span>
+          <span>{orderId}</span>
           <Button
-            variant="ghost"
-            size="icon"
-            className="h-6 w-6"
             onClick={copyOrderId}
+            size="icon"
+            variant="ghost"
+            className="size-4 shrink-0"
           >
-            <Copy className="h-3 w-3" />
+            <Copy />
           </Button>
         </div>
-      </td>
+      </TableCell>
 
-      {/* Customer */}
-      <td className="px-4 py-4">
-        <div className="flex flex-col">
-          <span className="text-foreground font-medium text-sm">
-            {shippingDetails?.name || 'N/A'}
+      <TableCell className="max-w-xs border text-xs">
+        <div className="flex flex-col gap-1">
+          <span className="text-foreground font-medium">
+            {shippingDetails?.name || "N/A"}
           </span>
-          <span className="text-muted-foreground text-xs">
+          <span className="text-muted-foreground">
             {shippingDetails?.email}
           </span>
-          <span className="text-muted-foreground text-xs">
-            {shippingDetails?.countryPhoneCode}{shippingDetails?.phone}
+          <span className="text-muted-foreground">
+            {shippingDetails?.countryPhoneCode}
+            {shippingDetails?.phone}
           </span>
         </div>
-      </td>
+      </TableCell>
 
-      {/* Date & Time */}
-      <td className="px-4 py-4">
-        <div className="text-sm">
-          <div className="text-foreground font-medium">{createdDate}</div>
-          <div className="text-muted-foreground text-xs">{createdTime}</div>
+      <TableCell className="border text-xs">
+        <div className="flex flex-col gap-0.5">
+          <span className="font-medium">{createdDate}</span>
+          <span className="text-muted-foreground">{createdTime}</span>
         </div>
-      </td>
+      </TableCell>
 
-      {/* Items */}
-      <td className="px-4 py-4">
-        <span className="text-primary font-medium text-sm">
-          {totalItems} {totalItems === 1 ? 'item' : 'items'}
-        </span>
-      </td>
+      <TableCell className="border text-xs font-medium">
+        {totalItems} {totalItems === 1 ? "item" : "items"}
+      </TableCell>
 
-      {/* Total */}
-      <td className="px-4 py-4">
-        <span className="text-foreground font-semibold text-sm">
-          {currencySymbol}{Number(grandTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-        </span>
-      </td>
+      <TableCell className="border text-xs font-medium">
+        {formatPrice(grandTotal, currencySymbol)}
+      </TableCell>
 
-      {/* Payment */}
-      <td className="px-4 py-4">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-1.5">
-            <PaymentIcon className="h-3.5 w-3.5 text-muted-foreground" />
-            <span className="text-foreground text-xs font-medium">
-              {paymentMethodLabel}
-            </span>
-          </div>
-          <Badge variant={paymentStatus.variant} className="text-xs w-fit">
-            {paymentStatus.label}
-          </Badge>
+      <TableCell className="border text-xs">
+        <div className="flex items-center gap-1.5">
+          <PaymentIcon className="text-muted-foreground h-3.5 w-3.5 shrink-0" />
+          <span className="font-medium">{paymentMethodLabel}</span>
         </div>
-      </td>
+      </TableCell>
 
-      {/* Order Status */}
-      <td className="px-4 py-4">
-        <div className="flex justify-center">
-          <Select
-            value={orderStatus}
-            onValueChange={updateOrderStatus}
-            disabled={orderLoading}
-          >
-            <SelectTrigger className="border-border h-8 w-32 text-xs">
-              <SelectValue>
-                <Badge
-                  variant={getStatusVariant(orderStatus, ORDER_STATUSES)}
-                  className="text-xs"
-                >
-                  {getStatusLabel(orderStatus, ORDER_STATUSES)}
+      <TableCell className="border text-xs">
+        <Badge variant={paymentStatus.variant} className="text-xs font-normal">
+          {paymentStatus.label}
+        </Badge>
+      </TableCell>
+
+      <TableCell className="border text-xs">
+        <Select
+          value={orderStatus}
+          onValueChange={updateOrderStatus}
+          disabled={orderLoading}
+        >
+          <SelectTrigger className="w-33 border text-xs">
+            <SelectValue>
+              <Badge
+                variant={getStatusVariant(orderStatus, ORDER_STATUSES)}
+                className="text-xs font-normal"
+              >
+                {getStatusLabel(orderStatus, ORDER_STATUSES)}
+              </Badge>
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {ORDER_STATUSES.map((status) => (
+              <SelectItem
+                key={status.value}
+                value={status.value}
+                className="text-xs"
+              >
+                <Badge variant={status.variant} className="text-xs font-normal">
+                  {status.label}
                 </Badge>
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {ORDER_STATUSES.map((status) => (
-                <SelectItem
-                  key={status.value}
-                  value={status.value}
-                  className="text-xs"
-                >
-                  <Badge variant={status.variant} className="text-xs">
-                    {status.label}
-                  </Badge>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </td>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </TableCell>
 
-      {/* Delivery Status */}
-      <td className="px-4 py-4">
-        <div className="flex justify-center">
-          <Select
-            value={deliveryStatus}
-            onValueChange={updateDeliveryStatus}
-            disabled={deliveryLoading}
-          >
-            <SelectTrigger className="border-border h-8 w-36 text-xs">
-              <SelectValue>
-                <Badge
-                  variant={getStatusVariant(deliveryStatus, DELIVERY_STATUSES)}
-                  className="text-xs"
-                >
-                  {getStatusLabel(deliveryStatus, DELIVERY_STATUSES)}
+      <TableCell className="border text-xs">
+        <Select
+          value={deliveryStatus}
+          onValueChange={updateDeliveryStatus}
+          disabled={deliveryLoading}
+        >
+          <SelectTrigger className="w-40 border text-xs">
+            <SelectValue>
+              <Badge
+                variant={getStatusVariant(deliveryStatus, DELIVERY_STATUSES)}
+                className="text-xs font-normal"
+              >
+                {getStatusLabel(deliveryStatus, DELIVERY_STATUSES)}
+              </Badge>
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {DELIVERY_STATUSES.map((status) => (
+              <SelectItem
+                key={status.value}
+                value={status.value}
+                className="text-xs"
+              >
+                <Badge variant={status.variant} className="text-xs font-normal">
+                  {status.label}
                 </Badge>
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {DELIVERY_STATUSES.map((status) => (
-                <SelectItem
-                  key={status.value}
-                  value={status.value}
-                  className="text-xs"
-                >
-                  <Badge variant={status.variant} className="text-xs">
-                    {status.label}
-                  </Badge>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </td>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </TableCell>
 
-      {/* Actions */}
-      <td className="px-4 py-4">
-        <div className="flex justify-center">
-          <Button variant="ghost" size="sm" asChild className="h-8 text-xs">
-            <Link to={`/orders/${orderId || _id}`}>
-              <Eye className="mr-1.5 h-3.5 w-3.5" />
-              View
-            </Link>
-          </Button>
-        </div>
-      </td>
-    </tr>
+      <TableCell className="border text-xs">
+        <Button variant="ghost" size="sm" asChild className="text-xs">
+          <Link to={`/orders/${_id}`}>
+            <Eye />
+            View
+          </Link>
+        </Button>
+      </TableCell>
+    </TableRow>
   );
 }
