@@ -77,7 +77,7 @@ export default function ProfileDropdown() {
         <DropdownMenuSeparator />
 
         {/* Account Management */}
-        <DropdownMenuItem asChild>
+        {/* <DropdownMenuItem asChild>
           <Link
             to="/accounts"
             className="flex cursor-pointer items-center gap-2"
@@ -87,7 +87,7 @@ export default function ProfileDropdown() {
           </Link>
         </DropdownMenuItem>
 
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator /> */}
 
         {/* Dynamic Navigation Links */}
         {adminDropdownLinks.map((link) => (

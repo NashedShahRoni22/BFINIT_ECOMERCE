@@ -77,8 +77,8 @@ export default function NewDomain() {
         </div>
 
         {/* Next Step Info */}
-        <Alert variant="info">
-          <AlertCircle className="h-3.5 w-3.5" />
+        <Alert>
+          <AlertCircle />
           <AlertTitle className="text-xs">Next Step</AlertTitle>
           <AlertDescription className="text-xs">
             After purchasing your domain, come back here to connect it to your

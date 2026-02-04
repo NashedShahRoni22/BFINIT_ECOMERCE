@@ -14,9 +14,9 @@ export default function CustomersTableSkeleton() {
       <Table>
         <TableHeader className="bg-muted hover:bg-muted">
           <TableRow>
-            <TableHead className="w-12">
+            {/* <TableHead className="w-12">
               <div className="bg-card size-4 rounded"></div>
-            </TableHead>
+            </TableHead> */}
 
             {Array.from({ length: 3 }).map((_, i) => (
               <TableHead key={i}>
@@ -30,9 +30,9 @@ export default function CustomersTableSkeleton() {
           {[...Array(5)].map((_, index) => (
             <TableRow key={index}>
               {/* checkbox */}
-              <TableCell className="w-12">
+              {/* <TableCell className="w-12">
                 <div className="bg-muted size-4 rounded"></div>
-              </TableCell>
+              </TableCell> */}
 
               {/* name */}
               <TableCell>

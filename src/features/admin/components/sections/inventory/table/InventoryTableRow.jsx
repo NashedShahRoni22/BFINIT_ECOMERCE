@@ -87,9 +87,9 @@ export default function InventoryTableRow({ product }) {
   return (
     <>
       <TableRow>
-        <TableCell className="w-10 border border-l-0">
+        {/* <TableCell className="w-10 border border-l-0">
           <Checkbox />
-        </TableCell>
+        </TableCell> */}
 
         {/* product */}
         <TableCell className="border">

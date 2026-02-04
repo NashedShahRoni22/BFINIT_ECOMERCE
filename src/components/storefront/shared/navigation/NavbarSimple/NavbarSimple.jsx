@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 import { Search, ShoppingCart, User, Menu } from "lucide-react";
 import {
   Popover,
@@ -14,6 +14,7 @@ import useCart from "@/hooks/useCart";
 import useStorefrontAuth from "@/hooks/auth/useStorefrontAuth";
 import MobileNav from "./MobileNav";
 import SearchOverlay from "./SearchOverlay";
+import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
 
 const navLinks = [
   { name: "Home", href: "" },
@@ -25,6 +26,9 @@ const navLinks = [
 export default function NavbarSimple({ content }) {
   const { customer, handleLogout } = useStorefrontAuth();
   const { totalItems } = useCart();
+
+  const { storeId } = useParams();
+  const { data } = useGetStorePreference(storeId);
 
   const basePath = useBasePath();
 
@@ -77,7 +81,7 @@ export default function NavbarSimple({ content }) {
             {/* Logo - Centered on mobile, left on desktop */}
             <div className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0">
               <Link to={basePath} className="text-xl font-bold sm:text-2xl">
-                {content.logoText}
+                {data?.storeName}
               </Link>
             </div>
 
@@ -198,6 +202,7 @@ export default function NavbarSimple({ content }) {
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
         <MobileNav
+          data={data}
           content={content}
           navLinks={navLinks}
           setMobileMenuOpen={setMobileMenuOpen}

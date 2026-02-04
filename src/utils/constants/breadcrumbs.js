@@ -30,7 +30,7 @@ export const breadcrubms = {
     { label: "Category" },
   ],
 
-  Subcategory: [
+  subcategory: [
     { label: "Home", href: "/" },
     {
       label: "Products",
@@ -96,6 +96,13 @@ export const breadcrubms = {
 
   /** Breadcrumb for customers listing */
   customers: [{ label: "Home", href: "/" }, { label: "Customers" }],
+
+  // ============================================================================
+  // Settings
+  // ============================================================================
+
+  /** Breadcrumb for domain managment */
+  domain: [{ label: "Home", href: "/" }, { label: "Domain" }],
 
   // payments
   StripePayment: [

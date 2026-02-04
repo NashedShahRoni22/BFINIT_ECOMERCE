@@ -13,9 +13,9 @@ export default function InventoryTable({ products }) {
     <Table>
       <TableHeader className="bg-card hover:bg-transparent">
         <TableRow>
-          <TableHead className="h-12 w-10 border border-l-0 text-xs font-semibold">
+          {/* <TableHead className="h-12 w-10 border border-l-0 text-xs font-semibold">
             <Checkbox />
-          </TableHead>
+          </TableHead> */}
           <TableHead className="border text-xs font-semibold">
             Product
           </TableHead>

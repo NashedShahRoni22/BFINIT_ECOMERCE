@@ -23,11 +23,11 @@ export const adminDropdownLinks = [
     name: "Stores",
     url: "/stores",
   },
-  {
-    icon: MessageCircleQuestionMark,
-    name: "Help Center",
-    url: "/",
-  },
+  // {
+  //   icon: MessageCircleQuestionMark,
+  //   name: "Help Center",
+  //   url: "/",
+  // },
 ];
 
 export const adminSidebarLinks = [

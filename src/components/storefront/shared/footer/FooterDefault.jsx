@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 import {
   Mail,
   Phone,
@@ -11,14 +11,15 @@ import {
 } from "lucide-react";
 import useBasePath from "@/hooks/useBasePath";
 import { footerLinks } from "@/features/themes/utils/contstants";
-
-const extractStoreName = (copyrightText) => {
-  const match = copyrightText.match(/©\s+\d{4}\s+(.+?)\./);
-  return match ? match[1].trim() : "";
-};
+import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
 
 export default function FooterDefault({ content }) {
+  const { storeId } = useParams();
+  const { data } = useGetStorePreference(storeId);
+
   const basePath = useBasePath();
+
+  const fullAddress = `${data?.storeAddress} ${data?.country}`;
 
   const {
     description,
@@ -42,9 +43,7 @@ export default function FooterDefault({ content }) {
         <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5 lg:gap-12">
           {/* Company Info */}
           <div className="lg:col-span-2">
-            <h3 className="mb-3 text-lg font-semibold">
-              {extractStoreName(copyright)}
-            </h3>
+            <h3 className="mb-3 text-lg font-semibold">{data?.storeName}</h3>
             <p className="text-muted-foreground mb-6 max-w-md text-sm leading-relaxed">
               {description}
             </p>
@@ -53,24 +52,24 @@ export default function FooterDefault({ content }) {
             {showContactInfo && (
               <div className="space-y-3 text-sm">
                 <a
-                  href={`mailto:${contact?.email}`}
+                  href={`mailto:${data?.storeEmail}`}
                   className="text-muted-foreground hover: flex items-center gap-2 transition-colors"
                 >
                   <Mail className="h-4 w-4 shrink-0" />
-                  <span>{contact?.email}</span>
+                  <span>{data?.storeEmail}</span>
                 </a>
 
                 <a
-                  href={`tel:${contact?.mobile}`}
+                  href={`tel:${data?.storePhone}`}
                   className="text-muted-foreground hover: flex items-center gap-2 transition-colors"
                 >
                   <Phone className="h-4 w-4 shrink-0" />
-                  <span>{contact?.mobile}</span>
+                  <span>{data?.storePhone}</span>
                 </a>
 
                 <div className="text-muted-foreground flex items-start gap-2">
                   <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
-                  <span className="leading-relaxed">{contact?.address}</span>
+                  <span className="leading-relaxed">{fullAddress}</span>
                 </div>
               </div>
             )}
@@ -168,7 +167,7 @@ export default function FooterDefault({ content }) {
           <div className="mb-6 flex flex-col items-center justify-between gap-4 md:flex-row">
             {/* Copyright */}
             <p className="text-muted-foreground text-center text-sm md:text-left">
-              {copyright}
+              © 2026 {data?.storeName}. All rights reserved.
             </p>
 
             {/* Social Links */}

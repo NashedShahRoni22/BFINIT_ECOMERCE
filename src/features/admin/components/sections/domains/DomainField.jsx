@@ -98,10 +98,10 @@ export default function DomainField({ form, isDomainIntegrated, data }) {
 
         {/* Inactive Domain Alert */}
         {isDomainIntegrated && !isActive && (
-          <Alert variant="warning" className="mt-5">
+          <Alert className="mt-5">
             <AlertCircle />
-            <AlertTitle>Domain Not Active</AlertTitle>
-            <AlertDescription>
+            <AlertTitle className="text-xs">Domain Not Active</AlertTitle>
+            <AlertDescription className="text-xs">
               This domain is currently turned off. Your store is not accessible
               via this domain. Use the toggle switch above to activate it.
             </AlertDescription>

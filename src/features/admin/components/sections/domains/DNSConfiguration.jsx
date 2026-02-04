@@ -1,6 +1,7 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, BookOpen, Clipboard, Clock, Info } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { AlertCircle, ArrowRight, Clipboard, Clock } from "lucide-react";
 import toast from "react-hot-toast";
 import { Link } from "react-router";
 
@@ -17,17 +18,15 @@ export default function DNSConfiguration({ data }) {
         <div className="space-y-0.5">
           <h3 className="text-sm font-semibold">DNS Configuration</h3>
           <p className="text-muted-foreground text-xs">
-            Add these records to your domain&apos;s DNS settings. You&apos;ll
-            need to add these records in your domain registrar&apos;s control
-            panel
+            Add these records to your Cloudflare DNS settings. Your domain must
+            be managed through Cloudflare for this setup to work.
           </p>
         </div>
 
         {/* section collapse toggle button */}
-        <Button variant="outline" size="sm" asChild className="text-xs">
+        <Button variant="link" size="sm" asChild className="text-xs">
           <Link to="/help/domain-setup">
-            <BookOpen />
-            Setup Guide
+            View Complete Guide <ArrowRight />
           </Link>
         </Button>
       </div>
@@ -46,19 +45,33 @@ export default function DNSConfiguration({ data }) {
 
         {/* required records */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold">Required DNS Records</h3>
+          <h3 className="text-sm font-semibold">
+            Cloudflare DNS Records Setup
+          </h3>
 
-          {/* A RECORD */}
+          {/* Record 1 Root Domain */}
           <div className="border-border bg-card rounded-lg border p-5">
-            <h4 className="text-xs font-semibold">Record 1: A Record</h4>
+            <h4 className="text-xs font-semibold">Record 1: Root Domain (@)</h4>
             <p className="text-muted-foreground mt-1 text-xs">
-              Points your domain to our server
+              Points yourdomain.com to your store
             </p>
 
-            <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
               <div className="space-y-2">
                 <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-                  HOST/NAME
+                  Type
+                </p>
+                <div className="flex items-center gap-2">
+                  <div className="border-border bg-muted flex-1 rounded-md border px-3 py-2 font-mono text-xs">
+                    CNAME
+                  </div>
+                </div>
+                <p className="text-muted-foreground text-xs">Record type</p>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+                  NAME
                 </p>
                 <div className="flex items-center gap-2">
                   <div className="border-border bg-muted flex-1 rounded-md border px-3 py-2 font-mono text-xs">
@@ -75,92 +88,13 @@ export default function DNSConfiguration({ data }) {
                   </Button>
                 </div>
                 <p className="text-muted-foreground text-xs">
-                  Use &apos;@&apos; for root domain
+                  Use @ for root domain
                 </p>
               </div>
 
               <div className="space-y-2">
                 <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-                  VALUE/POINTS TO
-                </p>
-                <div className="flex items-center gap-2">
-                  <div className="border-border bg-muted flex-1 rounded-md border px-3 py-2 font-mono text-xs">
-                    {data?.dnsData?.aRecord}
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 shrink-0"
-                    onClick={() => handleTextCopy(data?.dnsData?.aRecord)}
-                  >
-                    <Clipboard className="h-4 w-4" />
-                  </Button>
-                </div>
-                <p className="text-muted-foreground text-xs">
-                  Bfinit&apos;s server IP
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-                  TTL
-                </p>
-                <div className="flex items-center gap-2">
-                  <div className="border-border bg-muted flex-1 rounded-md border px-3 py-2 font-mono text-xs">
-                    3600
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 shrink-0"
-                    onClick={() => handleTextCopy("3600")}
-                  >
-                    <Clipboard className="h-4 w-4" />
-                  </Button>
-                </div>
-                <p className="text-muted-foreground text-xs">
-                  Can be automatic
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* CNAME Record */}
-          <div className="border-border bg-card rounded-lg border p-5">
-            <h4 className="text-xs font-semibold">Record 2: CNAME Record</h4>
-            <p className="text-muted-foreground mt-1 text-xs">
-              Connects your www subdomain
-            </p>
-
-            <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-              <div className="space-y-2">
-                <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-                  HOST/NAME
-                </p>
-                <div className="flex items-center gap-2">
-                  <div className="border-border bg-muted flex-1 rounded-md border px-3 py-2 font-mono text-xs">
-                    www
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 shrink-0"
-                    onClick={() => handleTextCopy("www")}
-                  >
-                    <Clipboard className="h-4 w-4" />
-                  </Button>
-                </div>
-                <p className="text-muted-foreground text-xs">
-                  Enables www.yourdomain.com
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-                  VALUE/POINTS TO
+                  Target
                 </p>
                 <div className="flex items-center gap-2">
                   <div className="border-border bg-muted flex-1 rounded-md border px-3 py-2 font-mono text-xs">
@@ -177,31 +111,104 @@ export default function DNSConfiguration({ data }) {
                   </Button>
                 </div>
                 <p className="text-muted-foreground text-xs">
-                  Points to Bfinit hosting
+                  Points to Bfinit server
                 </p>
               </div>
 
               <div className="space-y-2">
                 <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-                  TTL
+                  Proxy Status
+                </p>
+                <div className="flex items-center gap-2 px-3 py-2">
+                  <Switch
+                    defaultChecked
+                    disabled
+                    className="disabled:cursor-default disabled:opacity-100 data-[state=checked]:bg-[#f6821f]"
+                  />
+                </div>
+                <p className="text-muted-foreground text-xs">Must be enabled</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Record 2 for subdomain */}
+          <div className="border-border bg-card rounded-lg border p-5">
+            <h4 className="text-xs font-semibold">Record 2: WWW Subdomain</h4>
+            <p className="text-muted-foreground mt-1 text-xs">
+              Points www.yourdomain.com to your store
+            </p>
+
+            <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+                  Type
                 </p>
                 <div className="flex items-center gap-2">
                   <div className="border-border bg-muted flex-1 rounded-md border px-3 py-2 font-mono text-xs">
-                    Default
+                    CNAME
+                  </div>
+                </div>
+                <p className="text-muted-foreground text-xs">Record type</p>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+                  NAME
+                </p>
+                <div className="flex items-center gap-2">
+                  <div className="border-border bg-muted flex-1 rounded-md border px-3 py-2 font-mono text-xs">
+                    www
                   </div>
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
                     className="h-9 w-9 shrink-0"
-                    onClick={() => handleTextCopy("default")}
+                    onClick={() => handleTextCopy("www")}
                   >
                     <Clipboard className="h-4 w-4" />
                   </Button>
                 </div>
                 <p className="text-muted-foreground text-xs">
-                  Can be automatic
+                  Enables www subdomain
                 </p>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+                  Target
+                </p>
+                <div className="flex items-center gap-2">
+                  <div className="border-border bg-muted flex-1 rounded-md border px-3 py-2 font-mono text-xs">
+                    {data?.dnsData?.cName}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 shrink-0"
+                    onClick={() => handleTextCopy(data?.dnsData?.cName)}
+                  >
+                    <Clipboard className="h-4 w-4" />
+                  </Button>
+                </div>
+                <p className="text-muted-foreground text-xs">
+                  Points to Bfinit server
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+                  Proxy Status
+                </p>
+                <div className="flex items-center gap-2 px-3 py-2">
+                  <Switch
+                    defaultChecked
+                    disabled
+                    className="disabled:cursor-default disabled:opacity-100 data-[state=checked]:bg-[#f6821f]"
+                  />
+                </div>
+                <p className="text-muted-foreground text-xs">Must be enabled</p>
               </div>
             </div>
           </div>
@@ -210,12 +217,12 @@ export default function DNSConfiguration({ data }) {
           <Alert variant="info">
             <AlertCircle />
             <AlertTitle className="text-xs">
-              Need help adding these DNS records?
+              Need help setting up Cloudflare DNS?
             </AlertTitle>
             <AlertDescription className="text-xs">
               <p>
-                We&apos;ve created step-by-step guides for popular domain
-                providers to help you connect your domain.
+                View our complete guide for adding these records in your
+                Cloudflare dashboard.
               </p>
 
               {/* Provider Quick Links */}
@@ -226,35 +233,10 @@ export default function DNSConfiguration({ data }) {
                   asChild
                   className="px-0 text-xs"
                 >
-                  <Link to="/help/domain-setup">Complete Setup Guide →</Link>
+                  <Link to="/help/domain-setup">
+                    View Cloudflare Setup Guide →
+                  </Link>
                 </Button>
-                {/* <span className="text-muted-foreground">|</span>
-                <Button
-                  variant="link"
-                  size="sm"
-                  className="text-primary hover:text-primary/80 h-auto p-0"
-                  asChild
-                >
-                  <Link to="/help/domain-setup/godaddy">GoDaddy</Link>
-                </Button>
-                <span className="text-muted-foreground">|</span>
-                <Button
-                  variant="link"
-                  size="sm"
-                  className="text-primary hover:text-primary/80 h-auto p-0"
-                  asChild
-                >
-                  <Link to="/help/domain-setup/namecheap">Namecheap</Link>
-                </Button>
-                <span className="text-muted-foreground">|</span>
-                <Button
-                  variant="link"
-                  size="sm"
-                  className="text-primary hover:text-primary/80 h-auto p-0"
-                  asChild
-                >
-                  <Link to="/help/domain-setup/cloudflare">Cloudflare</Link>
-                </Button> */}
               </div>
             </AlertDescription>
           </Alert>

@@ -189,9 +189,9 @@ export default function OrderRow({ order }) {
 
   return (
     <TableRow>
-      <TableCell className="w-10 border border-l-0">
+      {/* <TableCell className="w-10 border border-l-0">
         <Checkbox />
-      </TableCell>
+      </TableCell> */}
 
       <TableCell className="max-w-xs truncate border text-xs font-medium">
         <div className="flex items-center gap-2">

@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { ScrollArea } from "@/components/ui/scroll-area"; // Assumes you have this shadcn component, otherwise use div with overflow-y-auto
 import SubCategoryList from "../components/sections/sub-category/SubCategoryList";
 import PageHeader from "../components/PageHeader";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
@@ -31,20 +30,7 @@ import usePostMutation from "@/hooks/api/usePostMutation";
 import useAuth from "@/hooks/auth/useAuth";
 import useGetSubCategories from "../hooks/category/useGetSubCategories";
 import EmptyStoreState from "../components/EmptyStoreState";
-
-const SUBCATEGORY_BREADCRUMB_ITEMS = [
-  { label: "Home", href: "/" },
-  {
-    label: "Products",
-    dropdown: [
-      { label: "Category", href: "/products/category" },
-      { label: "Brands", href: "/products/brands" },
-      { label: "Add Product", href: "/products/add-product" },
-      { label: "Inventory", href: "/products/inventory" },
-    ],
-  },
-  { label: "Subcategory" },
-];
+import { breadcrubms } from "@/utils/constants/breadcrumbs";
 
 export default function SubCategory() {
   const queryClient = useQueryClient();
@@ -55,10 +41,10 @@ export default function SubCategory() {
   const [subCategoryInput, setSubCategoryInput] = useState("");
   const [subCategoires, setSubCategories] = useState([]);
 
-  const { data: categories } = useGetCategories(selectedStore?.storeId);
+  const { data: categories } = useGetCategories();
   const { data: subCategoriesData } = useGetSubCategories(
     selectedStore?.storeId,
-    selectedCategory
+    selectedCategory,
   );
 
   const { mutate, isPending } = usePostMutation({
@@ -89,7 +75,7 @@ export default function SubCategory() {
 
   const removeSubCategory = (indexToRemove) => {
     const filteredSubCategories = subCategoires.filter(
-      (_, index) => index !== indexToRemove
+      (_, index) => index !== indexToRemove,
     );
     setSubCategories(filteredSubCategories);
   };
@@ -127,17 +113,39 @@ export default function SubCategory() {
 
   return (
     <section className="space-y-6">
-      <DynamicBreadcrumb items={SUBCATEGORY_BREADCRUMB_ITEMS} />
+      <DynamicBreadcrumb items={breadcrubms.subcategory} />
+
       <PageHeader
         icon={FolderTree}
         title="Add Subcategory"
         description="Create and manage subcategories for your products"
       />
 
+      {/* categories */}
+      {/* <div className="bg-card rounded-lg border">
+        <div className="space-y-1 border-b p-5">
+          <h2 className="text-sm font-semibold">Categories</h2>
+          <p className="text-muted-foreground text-xs">Select a category</p>
+        </div>
+
+        <div className="space-y-2 divide-y px-5 py-2.5">
+          {categories?.data?.map((category) => (
+            <button key={category.id} className="flex items-center gap-2">
+              <img
+                src={`https://ecomback.bfinit.com${category.image}`}
+                alt={category.name}
+                className="size-12 object-contain"
+              />
+              <p>{category.name}</p>
+            </button>
+          ))}
+        </div>
+      </div> */}
+
       {selectedStore?.storeId && (
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+        <div className="mt-6 grid grid-cols-1 items-start gap-6 md:grid-cols-12">
           {/* Left Side: Add Sub-Category Form */}
-          <div className="col-span-1 md:col-span-12 lg:col-span-4 sticky top-4">
+          <div className="sticky top-4 col-span-1 md:col-span-12 lg:col-span-4">
             <Card className="border-border/60 shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg">New Subcategory</CardTitle>
@@ -170,7 +178,7 @@ export default function SubCategory() {
                     </div>
 
                     {selectedCategory && (
-                      <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                      <div className="animate-in fade-in slide-in-from-top-2 space-y-4 duration-300">
                         <div className="space-y-2">
                           <Label
                             htmlFor="subCategoryName"
@@ -194,29 +202,29 @@ export default function SubCategory() {
                               size="sm"
                               variant="ghost"
                               disabled={!subCategoryInput}
-                              className="absolute right-1 top-1 h-7 px-3 text-xs font-medium text-dashboard-primary hover:text-dashboard-primary hover:bg-dashboard-primary/10"
+                              className="text-dashboard-primary hover:text-dashboard-primary hover:bg-dashboard-primary/10 absolute top-1 right-1 h-7 px-3 text-xs font-medium"
                               onClick={handleSubCategories}
                             >
                               ADD
                             </Button>
                           </div>
-                          <p className="text-[0.8rem] text-muted-foreground">
+                          <p className="text-muted-foreground text-[0.8rem]">
                             Press Enter to add to the list below.
                           </p>
                         </div>
 
                         {/* Staged Tags Area */}
                         {subCategoires.length > 0 && (
-                          <div className="rounded-md border bg-muted/30 p-3">
+                          <div className="bg-muted/30 rounded-md border p-3">
                             <div className="flex flex-wrap gap-2">
                               {subCategoires.map((subCat, i) => (
                                 <div
                                   key={i}
-                                  className="group bg-dashboard-primary text-white inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm shadow-sm transition-all hover:shadow-md"
+                                  className="group bg-dashboard-primary inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm text-white shadow-sm transition-all hover:shadow-md"
                                 >
                                   <span>{subCat}</span>
                                   <button
-                                    className="text-white/70 hover:text-white transition-colors"
+                                    className="text-white/70 transition-colors hover:text-white"
                                     onClick={() => removeSubCategory(i)}
                                   >
                                     <CircleX className="h-3.5 w-3.5" />
@@ -230,7 +238,7 @@ export default function SubCategory() {
                         <Button
                           disabled={subCategoires.length === 0 || isPending}
                           onClick={handleAddSubCategory}
-                          className="w-full bg-dashboard-primary hover:bg-dashboard-primary/90 text-white"
+                          className="bg-dashboard-primary hover:bg-dashboard-primary/90 w-full text-white"
                         >
                           {isPending ? (
                             <div className="flex items-center gap-2">
@@ -246,9 +254,9 @@ export default function SubCategory() {
                     )}
                   </>
                 ) : (
-                  <div className="flex flex-col items-center justify-center py-8 text-center border-2 border-dashed rounded-lg">
-                    <Layers className="h-10 w-10 text-muted-foreground/50 mb-3" />
-                    <p className="mb-4 text-sm text-muted-foreground max-w-[200px]">
+                  <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed py-8 text-center">
+                    <Layers className="text-muted-foreground/50 mb-3 h-10 w-10" />
+                    <p className="text-muted-foreground mb-4 max-w-[200px] text-sm">
                       No categories found. Create a category first.
                     </p>
                     <Button variant="outline" asChild>
@@ -262,19 +270,21 @@ export default function SubCategory() {
 
           {/* Right Side: List of Sub-Categories */}
           <div className="col-span-1 md:col-span-12 lg:col-span-8">
-            <Card className="h-full border-border/60 shadow-sm flex flex-col">
-              <CardHeader className="border-b bg-muted/10 pb-4">
-                <CardTitle className="text-lg">Existing Subcategories</CardTitle>
+            <Card className="border-border/60 flex h-full flex-col shadow-sm">
+              <CardHeader className="bg-muted/10 border-b pb-4">
+                <CardTitle className="text-lg">
+                  Existing Subcategories
+                </CardTitle>
                 <CardDescription>
                   {selectedCategory
                     ? "Manage items within the selected category"
                     : "Select a category to view and manage items"}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="p-0 flex-1">
+              <CardContent className="flex-1 p-0">
                 {selectedCategory ? (
                   subCategoriesData && subCategoriesData?.data?.length > 0 ? (
-                    <div className="max-h-[600px] overflow-y-auto custom-scrollbar">
+                    <div className="custom-scrollbar max-h-[600px] overflow-y-auto">
                       {subCategoriesData?.data?.map((subCategory, i) => (
                         <SubCategoryList
                           key={i}
@@ -286,23 +296,23 @@ export default function SubCategory() {
                     </div>
                   ) : (
                     <div className="flex flex-col items-center justify-center py-16 text-center">
-                      <div className="bg-muted/50 p-4 rounded-full mb-3">
-                        <FolderTree className="h-8 w-8 text-muted-foreground" />
+                      <div className="bg-muted/50 mb-3 rounded-full p-4">
+                        <FolderTree className="text-muted-foreground h-8 w-8" />
                       </div>
-                      <h3 className="text-sm font-semibold text-foreground">
+                      <h3 className="text-foreground text-sm font-semibold">
                         No subcategories yet
                       </h3>
-                      <p className="text-sm text-muted-foreground mt-1">
+                      <p className="text-muted-foreground mt-1 text-sm">
                         Use the form on the left to add your first one.
                       </p>
                     </div>
                   )
                 ) : (
-                  <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
-                    <div className="bg-muted/30 p-6 rounded-full">
-                      <Layers className="h-10 w-10 text-muted-foreground/40" />
+                  <div className="flex flex-col items-center justify-center space-y-3 py-20 text-center">
+                    <div className="bg-muted/30 rounded-full p-6">
+                      <Layers className="text-muted-foreground/40 h-10 w-10" />
                     </div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-muted-foreground text-sm">
                       Select a category from the dropdown to load data.
                     </p>
                   </div>

@@ -15,9 +15,9 @@ export default function OrdersTableSkeleton() {
         <TableHeader className="bg-muted hover:bg-muted">
           <TableRow>
             {/* Checkbox column */}
-            <TableHead className="w-10 border border-l-0">
+            {/* <TableHead className="w-10 border border-l-0">
               <div className="bg-card size-4 rounded"></div>
-            </TableHead>
+            </TableHead> */}
 
             {/* Order ID */}
             <TableHead className="border">
@@ -75,9 +75,9 @@ export default function OrdersTableSkeleton() {
           {Array.from({ length: 5 }).map((_, index) => (
             <TableRow key={index}>
               {/* Checkbox */}
-              <TableCell className="w-10 border border-l-0">
+              {/* <TableCell className="w-10 border border-l-0">
                 <div className="bg-muted size-4 rounded"></div>
-              </TableCell>
+              </TableCell> */}
 
               {/* Order ID */}
               <TableCell className="max-w-xs border">

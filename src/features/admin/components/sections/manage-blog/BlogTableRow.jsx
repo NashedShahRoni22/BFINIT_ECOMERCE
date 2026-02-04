@@ -47,9 +47,9 @@ export default function BlogTableRow({ blog }) {
   return (
     <>
       <TableRow>
-        <TableCell className="w-10 border border-l-0">
+        {/* <TableCell className="w-10 border border-l-0">
           <Checkbox />
-        </TableCell>
+        </TableCell> */}
 
         <TableCell className="border">
           <div className="flex items-start gap-3">

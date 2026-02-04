@@ -18,11 +18,7 @@ import DomainOwnership from "../components/sections/domains/DomainOwnership";
 import NewDomain from "../components/sections/domains/NewDomain";
 import DomainField from "../components/sections/domains/DomainField";
 import EmptyStoreState from "../components/EmptyStoreState";
-
-const DOMAIN_BREADCRUMB_ITEMS = [
-  { label: "Home", href: "/" },
-  { label: "Domain" },
-];
+import { breadcrubms } from "@/utils/constants/breadcrumbs";
 
 export default function Domains() {
   const queryClient = useQueryClient();
@@ -132,10 +128,8 @@ export default function Domains() {
 
   return (
     <div className="space-y-6">
-      {/* Breadcrumb Navigation */}
-      <DynamicBreadcrumb items={DOMAIN_BREADCRUMB_ITEMS} />
+      <DynamicBreadcrumb items={breadcrubms.domain} />
 
-      {/* Page Header */}
       <PageHeader
         icon={Globe}
         title="Domain Settings"

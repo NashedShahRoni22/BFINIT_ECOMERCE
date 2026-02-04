@@ -13,9 +13,9 @@ export default function CustomerTable({ customersData }) {
     <Table>
       <TableHeader className="bg-card hover:bg-transparent">
         <TableRow>
-          <TableHead className="h-12 w-10 border border-l-0 text-xs font-semibold">
+          {/* <TableHead className="h-12 w-10 border border-l-0 text-xs font-semibold">
             <Checkbox />
-          </TableHead>
+          </TableHead> */}
           <TableHead className="border text-xs font-semibold">Name</TableHead>
           <TableHead className="border text-xs font-semibold">Email</TableHead>
           <TableHead className="border text-xs font-semibold">
@@ -27,9 +27,9 @@ export default function CustomerTable({ customersData }) {
       <TableBody>
         {customersData.map((customer) => (
           <TableRow>
-            <TableCell className="w-10 border border-l-0">
+            {/* <TableCell className="w-10 border border-l-0">
               <Checkbox />
-            </TableCell>
+            </TableCell> */}
 
             <TableCell
               title={customer.name}
