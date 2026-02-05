@@ -262,13 +262,19 @@ export default function SignUpPage() {
         {/* Terms */}
         <p className="mt-6 text-center text-xs text-neutral-500">
           By signing up, you agree to our{" "}
-          <a href="/terms" className="underline hover:text-neutral-700">
+          <Link
+            to={`${basePath}/support/terms-and-conditions`}
+            className="underline hover:text-neutral-700"
+          >
             Terms of Service
-          </a>{" "}
+          </Link>{" "}
           and{" "}
-          <a href="/privacy" className="underline hover:text-neutral-700">
+          <Link
+            to={`${basePath}/support/privacy`}
+            className="underline hover:text-neutral-700"
+          >
             Privacy Policy
-          </a>
+          </Link>
         </p>
       </div>
     </div>

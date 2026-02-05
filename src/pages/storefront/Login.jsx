@@ -223,13 +223,19 @@ export default function Login() {
         {/* Terms */}
         <p className="text-muted-foreground mt-6 text-center text-xs">
           By logging in, you agree to our{" "}
-          <a href="/terms" className="hover:text-foreground underline">
+          <Link
+            to={`${basePath}/support/terms-and-conditions`}
+            className="hover:text-foreground underline"
+          >
             Terms of Service
-          </a>{" "}
+          </Link>{" "}
           and{" "}
-          <a href="/privacy" className="hover:text-foreground underline">
+          <Link
+            to={`${basePath}/support/privacy`}
+            className="hover:text-foreground underline"
+          >
             Privacy Policy
-          </a>
+          </Link>
         </p>
       </div>
     </div>
