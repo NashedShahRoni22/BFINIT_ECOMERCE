@@ -6,6 +6,9 @@ import useAuth from "@/hooks/auth/useAuth";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import useGetStores from "../hooks/store/useGetStores";
 import StoreCard from "../components/sections/stores/StoreCard";
+import StatCards from "../components/sections/home/StatCards";
+import RecentOrders from "../components/sections/home/RecentOrders";
+import ActionItems from "../components/sections/home/ActionItems";
 
 export default function Home() {
   const { user } = useAuth();
@@ -62,6 +65,16 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Stat Cards */}
+      <StatCards />
+
+      {/* recent orders and actions */}
+      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <RecentOrders />
+
+        <ActionItems />
+      </div>
+
       {/* Stores Management Section */}
       <div className="mt-8">
         <div>
@@ -89,7 +102,7 @@ export default function Home() {
       </div>
 
       {/* Quick Navigation Section */}
-      <div className="mt-8">
+      {/* <div className="mt-8">
         <div>
           <h2 className="text-lg font-bold text-gray-900">Quick Navigation</h2>
           <p className="mt-0.5 text-sm text-gray-500">
@@ -98,7 +111,7 @@ export default function Home() {
         </div>
 
         <QuickNavs />
-      </div>
+      </div> */}
 
       {/* Quick Tips Section */}
       <div className="mt-8">

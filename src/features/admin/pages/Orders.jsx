@@ -1,8 +1,6 @@
 import { ShoppingCart } from "lucide-react";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import PageHeader from "../components/PageHeader";
-import useAuth from "@/hooks/auth/useAuth";
-import useGetQuery from "@/hooks/api/useGetQuery";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import EmptyStoreState from "../components/EmptyStoreState";
 import { breadcrubms } from "@/utils/constants/breadcrumbs";
@@ -13,19 +11,12 @@ import { useState } from "react";
 import useDebounce from "@/hooks/useDebounce";
 import OrdersToolsSkeleton from "../components/skeletons/OrdersToolsSkeleton";
 import EmptyState from "../components/EmptyState";
+import useGetOrders from "../hooks/orders/useGetOrders";
 
 export default function Orders() {
-  const { user } = useAuth();
   const { selectedStore } = useSelectedStore();
 
-  const { data: orders, isLoading } = useGetQuery({
-    endpoint: `/orders/storeorders/${selectedStore?.storeId}`,
-    token: user?.token,
-    clientId: user?.data?.clientid,
-    queryKey: ["orders", selectedStore?.storeId],
-    enabled: !!selectedStore?.storeId && !!user?.token,
-    staleTime: 2 * 60 * 1000,
-  });
+  const { data: orders, isLoading } = useGetOrders();
 
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search);

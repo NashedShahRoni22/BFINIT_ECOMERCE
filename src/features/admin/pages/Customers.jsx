@@ -1,6 +1,4 @@
-import useAuth from "@/hooks/auth/useAuth";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import useGetQuery from "@/hooks/api/useGetQuery";
 import EmptyStoreState from "../components/EmptyStoreState";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import { Users } from "lucide-react";
@@ -13,19 +11,12 @@ import CustomersToolsSkeleton from "../components/skeletons/CustomersToolsSkelet
 import CustomersTableSkeleton from "../components/skeletons/CustomersTableSkeleton";
 import useDebounce from "@/hooks/useDebounce";
 import CustomerToolbar from "../components/sections/customers/CustomerToolbar";
+import useGetCustomer from "../hooks/customers/useGetCustomer";
 
 export default function Customers() {
-  const { user } = useAuth();
   const { selectedStore } = useSelectedStore();
 
-  const { data: customersData, isLoading } = useGetQuery({
-    endpoint: `/store/customers/all/${selectedStore?.storeId}`,
-    token: user?.token,
-    clientId: user?.data?.clientid,
-    queryKey: ["customers", selectedStore?.storeId],
-    enabled: !!selectedStore?.storeId && !!user?.token,
-    staleTime: Infinity,
-  });
+  const { data: customersData, isLoading } = useGetCustomer();
 
   const [search, setSearch] = useState("");
 
