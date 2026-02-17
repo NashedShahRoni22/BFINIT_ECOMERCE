@@ -16,18 +16,21 @@ import NotFound from "@/pages/storefront/NotFound";
 import Blogs from "@/pages/storefront/Blogs";
 import BlogDetails from "@/pages/storefront/BlogDetails";
 import Orders from "@/pages/storefront/Orders";
+import CountryProvider from "@/providers/CountryProvider";
 
 export const themeEditorRoutes = {
   path: "/stores/:storeId/theme-editor",
   element: (
     <PrivateRoute>
-      <ThemeEditorProvider>
-        <StorefrontAuthProvider>
-          <CartProvider>
-            <ThemeEditorLayout />
-          </CartProvider>
-        </StorefrontAuthProvider>
-      </ThemeEditorProvider>
+      <CountryProvider>
+        <ThemeEditorProvider>
+          <StorefrontAuthProvider>
+            <CartProvider>
+              <ThemeEditorLayout />
+            </CartProvider>
+          </StorefrontAuthProvider>
+        </ThemeEditorProvider>
+      </CountryProvider>
     </PrivateRoute>
   ),
   children: [

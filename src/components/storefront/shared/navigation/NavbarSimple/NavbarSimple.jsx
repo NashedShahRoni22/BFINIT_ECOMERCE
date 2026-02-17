@@ -15,6 +15,10 @@ import useStorefrontAuth from "@/hooks/auth/useStorefrontAuth";
 import MobileNav from "./MobileNav";
 import SearchOverlay from "./SearchOverlay";
 import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
+import useCountry from "@/hooks/useCountry";
+import { getDefaultCountry } from "@/utils/currencyHelpers";
+import { useMemo } from "react";
+import CountrySwitcher from "./CountrySwitcher";
 
 const navLinks = [
   { name: "Home", href: "" },
@@ -24,17 +28,20 @@ const navLinks = [
 ];
 
 export default function NavbarSimple({ content }) {
-  const { customer, handleLogout } = useStorefrontAuth();
-  const { totalItems } = useCart();
-
   const { storeId } = useParams();
-  const { data } = useGetStorePreference(storeId);
-
   const basePath = useBasePath();
+  const { totalItems } = useCart();
+  const { selectedCountry, saveCountry } = useCountry();
+  const { customer, handleLogout } = useStorefrontAuth();
+
+  const { data } = useGetStorePreference(storeId);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
+
+  const countries = useMemo(() => data?.countries || [], [data?.countries]);
+  const defaultCountry = getDefaultCountry(data);
 
   // Close mobile menu when resizing to desktop
   useEffect(() => {
@@ -60,6 +67,10 @@ export default function NavbarSimple({ content }) {
       document.body.style.overflow = "";
     };
   }, [mobileMenuOpen, searchOpen]);
+
+  const handleCountryChange = (country) => {
+    saveCountry(country);
+  };
 
   return (
     <>
@@ -100,6 +111,14 @@ export default function NavbarSimple({ content }) {
 
             {/* Right side icons */}
             <div className="flex items-center gap-1">
+              {/* Country Switcher - Desktop only */}
+              {countries.length > 0 && (
+                <CountrySwitcher
+                  handleCountryChange={handleCountryChange}
+                  data={data}
+                />
+              )}
+
               {/* Search - Icon only on mobile, expandable on desktop */}
               <Button
                 variant="ghost"
@@ -206,6 +225,10 @@ export default function NavbarSimple({ content }) {
           content={content}
           navLinks={navLinks}
           setMobileMenuOpen={setMobileMenuOpen}
+          countries={countries}
+          selectedCountry={selectedCountry}
+          defaultCountry={defaultCountry}
+          onCountryChange={handleCountryChange}
         />
       )}
 

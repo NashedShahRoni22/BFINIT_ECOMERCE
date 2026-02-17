@@ -19,7 +19,7 @@ import { formatPrice } from "@/utils/formatPrice";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import ConfirmationDialog from "../../../modals/ConfirmationDialog";
 
-export default function InventoryTableRow({ product }) {
+export default function InventoryTableRow({ product, selectedCountry }) {
   const queryClient = useQueryClient();
   const { data: storePreference } = useGetStorePreference();
   const { selectedStore } = useSelectedStore();
@@ -37,20 +37,30 @@ export default function InventoryTableRow({ product }) {
     productDiscount,
     variants,
     productId,
+    pricing,
   } = product || {};
+
+  const currencySymbol =
+    selectedCountry?.currency_symbol || storePreference?.currencySymbol;
+  const price = productPrice || pricing?.productPrice;
+  const discount = productDiscount || pricing?.discountPrice;
+
+  const totalVariants =
+    (variants &&
+      variants?.attributes?.reduce((acc, attribute) => {
+        return acc + attribute?.value?.length;
+      }, 0)) ||
+    (pricing &&
+      pricing?.variants &&
+      pricing?.variants?.attributes?.reduce((acc, attribute) => {
+        return acc + attribute?.value?.length;
+      }, 0));
 
   const { mutate, isPending } = useDeleteMutation({
     endpoint: `/product/delete/${productId}`,
     token: true,
     clientId: true,
   });
-
-  const currencySymbol = storePreference?.currencySymbol;
-  const totalVariants =
-    variants &&
-    variants?.attributes?.reduce((acc, attribute) => {
-      return acc + attribute?.value?.length;
-    }, 0);
 
   // Handle product delete
   const handleProductDelete = () => {
@@ -131,11 +141,11 @@ export default function InventoryTableRow({ product }) {
 
         {/* price */}
         <TableCell className="space-x-2 border text-xs">
-          <span>{formatPrice(productPrice, currencySymbol)}</span>
+          <span>{formatPrice(price, currencySymbol)}</span>
 
-          {productDiscount > 0 && (
+          {discount > 0 && (
             <span className="text-muted-foreground line-through">
-              {formatPrice(productDiscount, currencySymbol)}
+              {formatPrice(discount, currencySymbol)}
             </span>
           )}
         </TableCell>

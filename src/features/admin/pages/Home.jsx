@@ -76,7 +76,7 @@ export default function Home() {
       </div>
 
       {/* Stores Management Section */}
-      <div className="mt-8">
+      {/* <div className="mt-8">
         <div>
           <h2 className="text-lg font-bold text-gray-900">Your Stores</h2>
           <p className="mt-0.5 text-sm text-gray-500">
@@ -84,7 +84,6 @@ export default function Home() {
           </p>
         </div>
 
-        {/* stores grid container */}
         <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {stores &&
             stores?.data &&
@@ -99,7 +98,7 @@ export default function Home() {
             <StoreLimitCard createdStore={stores?.data?.length} />
           )}
         </div>
-      </div>
+      </div> */}
 
       {/* Quick Navigation Section */}
       {/* <div className="mt-8">

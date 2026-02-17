@@ -17,7 +17,6 @@ import useAuth from "@/hooks/auth/useAuth";
 import { Spinner } from "@/components/ui/spinner";
 import useGetStorePreference from "../hooks/store/useGetStorePreference";
 import { useEffect, useRef } from "react";
-import useUpdateMutation from "@/hooks/api/useUpdateMutation";
 import {
   createStorePayload,
   fillFormWithStoreData,
@@ -36,11 +35,8 @@ export default function UpdateStore() {
   const form = useForm({
     defaultValues: {
       country: "",
+      countries: [],
       address: "",
-      currency_name: "",
-      currency_code: "",
-      currency_symbol: "",
-      phone_code: "",
       time_zone: "",
       name: "",
       email: "",
@@ -50,10 +46,17 @@ export default function UpdateStore() {
       twitter: "",
       instagram: "",
       youtube: "",
+      logo: null,
+      favicon: null,
     },
   });
 
   const { setValue } = form;
+
+  // Watch the countries array to detect default country changes
+  const countries = form.watch("countries");
+  const defaultCountry = countries?.find((c) => c.isDefault) || countries?.[0];
+
   const selectedCountry = useWatch({
     control: form.control,
     name: "country",
@@ -62,14 +65,23 @@ export default function UpdateStore() {
   const { data: store, isLoading: isStoreLoading } =
     useGetStorePreference(storeId);
 
-  const { data: countries, isLoading } = useGetQuery({
+  const { data: countriesList, isLoading } = useGetQuery({
     endpoint: "/api/countries",
     queryKey: ["countries"],
   });
 
-  const { data: countryData, isLoading: isCountryLoading } = useGetQuery({
+  // Fetch country data for the default country (for backward compatibility)
+  // This will refetch whenever the default country changes
+  const { data: countryData } = useGetQuery({
+    endpoint: `/api/countries/${defaultCountry?.country_name}`,
+    queryKey: ["country", defaultCountry?.country_name],
+    enabled: !!defaultCountry?.country_name && !defaultCountry?.phone_code, // Only fetch if phone_code is missing
+  });
+
+  // Fetch country data when user is selecting a NEW country to add
+  const { data: newCountryData, isLoading: isNewCountryLoading } = useGetQuery({
     endpoint: `/api/countries/${selectedCountry}`,
-    queryKey: ["country", selectedCountry],
+    queryKey: ["country", "new", selectedCountry],
     enabled: !!selectedCountry,
   });
 
@@ -79,20 +91,63 @@ export default function UpdateStore() {
     clientId: true,
   });
 
+  // Fill form with existing store data
   useEffect(() => {
-    if (store && !hasFilledForm.current && store.country) {
-      setValue("country", store.country);
-    }
-  }, [store, setValue]);
+    if (!hasFilledForm.current && store && !isStoreLoading) {
+      const hasOldFormat = store.country && !store.countries;
 
+      if (hasOldFormat) {
+        // Old format - wait for countryData
+        return;
+      } else if (store.countries) {
+        // New multi-country format - fill form directly
+        fillFormWithStoreData(store, null, setValue);
+        hasFilledForm.current = true;
+      }
+    }
+  }, [store, isStoreLoading, setValue]);
+
+  // Handle old format migration (only if needed)
   useEffect(() => {
-    if (!hasFilledForm.current && store && countryData) {
+    if (
+      !hasFilledForm.current &&
+      store &&
+      countryData &&
+      store.country &&
+      !store.countries
+    ) {
       fillFormWithStoreData(store, countryData, setValue);
       hasFilledForm.current = true;
     }
   }, [store, countryData, setValue]);
 
+  // Update phone code when default country changes and countryData is fetched
+  useEffect(() => {
+    if (
+      hasFilledForm.current &&
+      countryData &&
+      defaultCountry &&
+      !defaultCountry.phone_code
+    ) {
+      // Update the default country with the fetched phone_code
+      const updatedCountries = countries.map((c) =>
+        c.isDefault ? { ...c, phone_code: countryData.phone_code } : c,
+      );
+      setValue("countries", updatedCountries);
+    }
+  }, [countryData, defaultCountry, countries, setValue, hasFilledForm]);
+
   const onSubmit = (data) => {
+    if (!data.countries || data.countries.length === 0) {
+      form.setError("country", {
+        type: "manual",
+        message: "Please add at least one country",
+      });
+      return;
+    }
+
+    form.clearErrors("country");
+
     const storePayload = createStorePayload(data);
 
     mutate(storePayload, {
@@ -103,6 +158,7 @@ export default function UpdateStore() {
           "stores",
           user?.data?.clientid,
         ]);
+        queryClient.invalidateQueries(["store", "preference", storeId]);
         navigate("/stores");
       },
 
@@ -135,16 +191,12 @@ export default function UpdateStore() {
             <Location
               form={form}
               isLoading={isLoading}
-              countries={countries}
-              isCountryLoading={isCountryLoading}
-              countryData={countryData}
+              countries={countriesList}
+              isCountryLoading={isNewCountryLoading}
+              countryData={newCountryData}
             />
 
-            <StoreInfo
-              form={form}
-              countryData={countryData}
-              isLoading={isCountryLoading}
-            />
+            <StoreInfo form={form} />
 
             <Social form={form} />
           </fieldset>
@@ -152,14 +204,14 @@ export default function UpdateStore() {
           {/* submit buttons */}
           <div className="flex flex-col-reverse gap-4 lg:flex-row lg:justify-between">
             <Button variant="outline" size="sm" asChild className="text-xs">
-              <Link to="/">
-                <ChevronLeft /> Back to Home
+              <Link to="/stores">
+                <ChevronLeft /> Back to Stores
               </Link>
             </Button>
 
             <Button
               type="submit"
-              disabled={isPending}
+              disabled={isPending || isStoreLoading}
               size="sm"
               className="text-xs"
             >

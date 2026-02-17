@@ -12,26 +12,28 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { Minus, Plus, ShoppingCart } from "lucide-react";
 import useCart from "@/hooks/useCart";
+import useCountry from "@/hooks/useCountry";
+import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
 
 export default function VariantSelectorModal({ open, onClose, product }) {
+  const { data: storePreference } = useGetStorePreference();
   const { addToCart } = useCart();
+  const { selectedCountry } = useCountry();
 
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
-  const handleClose = () => {
-    setSelectedVariant(null);
-    setQuantity(1);
-    onClose();
-  };
-
-  const handleAddToCart = () => {
-    addToCart(product, quantity, selectedVariant);
-    handleClose();
-  };
+  const currencySymbol =
+    selectedCountry?.currency_symbol || storePreference?.data?.currencySymbol;
+  const price = product?.pricing?.productPrice || product?.price;
+  const newFormattedVariants = product?.pricing?.variants?.attributes;
 
   const getVariantPrice = (variant) => {
-    if (!product.variants.useDefaultPricing && variant.price) {
+    if (
+      newFormattedVariants?.length > 0 &&
+      product?.pricing?.variants?.useDefaultPricing &&
+      variant?.price
+    ) {
       const price = parseFloat(variant.price.$numberDecimal || variant.price);
       const discount = variant.discountPrice
         ? parseFloat(
@@ -41,7 +43,42 @@ export default function VariantSelectorModal({ open, onClose, product }) {
       return discount > 0 ? discount : price;
     }
 
-    return product.productPrice;
+    if (!product?.variants?.useDefaultPricing && variant?.price) {
+      const price = parseFloat(
+        variant?.price?.$numberDecimal || variant?.price,
+      );
+      const discount = variant?.discountPrice
+        ? parseFloat(
+            variant?.discountPrice?.$numberDecimal || variant?.discountPrice,
+          )
+        : 0;
+      return discount > 0 ? discount : price;
+    }
+
+    return product?.pricing?.productPrice || product?.productPrice;
+  };
+
+  const getAttributeName = (variant) => {
+    const attributes =
+      newFormattedVariants || product?.variants?.attributes || [];
+    const attribute = attributes.find((attr) =>
+      attr.value.some((v) => v._id === variant._id),
+    );
+    return attribute?.name || null;
+  };
+
+  const handleClose = () => {
+    setSelectedVariant(null);
+    setQuantity(1);
+    onClose();
+  };
+
+  const handleAddToCart = () => {
+    const attributeName = selectedVariant
+      ? getAttributeName(selectedVariant)
+      : null;
+    addToCart(product, quantity, selectedVariant, attributeName);
+    handleClose();
   };
 
   return (
@@ -62,68 +99,71 @@ export default function VariantSelectorModal({ open, onClose, product }) {
             <div>
               <h3 className="font-semibold">{product.productName}</h3>
               <p className="text-muted-foreground text-sm">
-                {formatPrice(product.productPrice)}
+                {formatPrice(price, currencySymbol)}
               </p>
             </div>
           </div>
 
           {/* Variant Selection */}
-          {product.variants?.attributes?.map((attribute, attrIndex) => (
-            <div key={attrIndex} className="space-y-3">
-              <Label className="text-base">
-                {attribute.name}
-                {attribute.required && (
-                  <span className="text-destructive ml-1">*</span>
-                )}
-              </Label>
+          {!newFormattedVariants?.length > 0 &&
+            product.variants?.attributes?.map((attribute, attrIndex) => (
+              <div key={attrIndex} className="space-y-3">
+                <Label className="text-base">
+                  {attribute.name}
+                  {attribute.required && (
+                    <span className="text-destructive ml-1">*</span>
+                  )}
+                </Label>
 
-              <RadioGroup
-                value={selectedVariant?.sku || ""}
-                onValueChange={(sku) => {
-                  const variant = attribute.value.find((v) => v.sku === sku);
-                  setSelectedVariant(variant);
-                }}
-              >
-                {attribute.value?.map((variant) => {
-                  const variantPrice = getVariantPrice(variant);
-                  const isOutOfStock = false; // TODO: fix this variant logic with actual stock
+                <RadioGroup
+                  value={selectedVariant?.sku || ""}
+                  onValueChange={(sku) => {
+                    const variant = attribute.value.find((v) => v.sku === sku);
+                    setSelectedVariant(variant);
+                  }}
+                >
+                  {attribute.value?.map((variant) => {
+                    const variantPrice = getVariantPrice(variant);
+                    const isOutOfStock = false;
 
-                  return (
-                    <div
-                      key={variant.sku}
-                      className={`border-border flex items-center justify-between rounded-lg border p-3 ${
-                        isOutOfStock ? "opacity-50" : ""
-                      }`}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <RadioGroupItem
-                          value={variant.sku}
-                          id={variant.sku}
-                          disabled={isOutOfStock}
-                        />
-                        <Label
-                          htmlFor={variant.sku}
-                          className={`cursor-pointer ${
-                            isOutOfStock ? "cursor-not-allowed" : ""
-                          }`}
-                        >
-                          <div className="flex flex-col">
-                            <span className="font-medium">{variant.name}</span>
-                            {variant.image?.length > 0 && (
-                              <span className="text-muted-foreground text-xs">
-                                Has image
+                    return (
+                      <div
+                        key={variant.sku}
+                        className={`border-border flex items-center justify-between rounded-lg border p-3 ${
+                          isOutOfStock ? "opacity-50" : ""
+                        }`}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <RadioGroupItem
+                            value={variant.sku}
+                            id={variant.sku}
+                            disabled={isOutOfStock}
+                          />
+                          <Label
+                            htmlFor={variant.sku}
+                            className={`cursor-pointer ${
+                              isOutOfStock ? "cursor-not-allowed" : ""
+                            }`}
+                          >
+                            <div className="flex flex-col">
+                              <span className="font-medium">
+                                {variant.name}
                               </span>
-                            )}
-                          </div>
-                        </Label>
-                      </div>
+                              {variant.image?.length > 0 && (
+                                <span className="text-muted-foreground text-xs">
+                                  Has image
+                                </span>
+                              )}
+                            </div>
+                          </Label>
+                        </div>
 
-                      <div className="text-right">
-                        <p className="font-semibold">
-                          {formatPrice(variantPrice)}
-                        </p>
-                        {/* TODO: fix this status after stock track feature */}
-                        {/* {isOutOfStock ? (
+                        <div className="text-right">
+                          <p className="font-semibold">
+                            {formatPrice(variantPrice)}
+                          </p>
+                          {/* TODO: fix this status after stock track feature */}
+                          {/* {isOutOfStock ? (
                           <p className="text-destructive text-xs">
                             Out of stock
                           </p>
@@ -132,13 +172,81 @@ export default function VariantSelectorModal({ open, onClose, product }) {
                             {variant.stock} in stock
                           </p>
                         )} */}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </RadioGroup>
-            </div>
-          ))}
+                    );
+                  })}
+                </RadioGroup>
+              </div>
+            ))}
+
+          {/* New formated variant selection modal */}
+          {newFormattedVariants?.length > 0 &&
+            newFormattedVariants?.map((attribute, attrIndex) => (
+              <div key={attrIndex} className="space-y-3">
+                <Label className="text-base">
+                  {attribute.name}
+                  {attribute.required && (
+                    <span className="text-destructive ml-1">*</span>
+                  )}
+                </Label>
+
+                <RadioGroup
+                  value={selectedVariant?.sku || ""}
+                  onValueChange={(sku) => {
+                    const variant = attribute.value.find((v) => v.sku === sku);
+                    setSelectedVariant(variant);
+                  }}
+                >
+                  {attribute.value?.map((variant) => {
+                    const variantPrice = getVariantPrice(variant);
+                    const isOutOfStock = false;
+
+                    return (
+                      <div
+                        key={variant.sku}
+                        className={`border-border flex items-center justify-between rounded-lg border p-3 ${
+                          isOutOfStock ? "opacity-50" : ""
+                        }`}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <RadioGroupItem
+                            value={variant.sku}
+                            id={variant.sku}
+                            disabled={isOutOfStock}
+                          />
+                          <Label
+                            htmlFor={variant.sku}
+                            className={`cursor-pointer ${
+                              isOutOfStock ? "cursor-not-allowed" : ""
+                            }`}
+                          >
+                            <div className="flex flex-col">
+                              <span className="font-medium">
+                                {variant.name}
+                              </span>
+                              {variant.image?.length > 0 && (
+                                <span className="text-muted-foreground text-xs">
+                                  Has image
+                                </span>
+                              )}
+                            </div>
+                          </Label>
+                        </div>
+
+                        {variantPrice > 0 && (
+                          <div className="text-right">
+                            <p className="font-semibold">
+                              {formatPrice(variantPrice, currencySymbol)}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </RadioGroup>
+              </div>
+            ))}
 
           {/* Quantity Selector */}
           <div className="space-y-2">

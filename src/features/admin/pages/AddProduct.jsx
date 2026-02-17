@@ -10,19 +10,30 @@ import { cn } from "@/lib/utils";
 import { transformProductForApi } from "@/utils/productMapper";
 import ProductDetails from "../components/sections/add-product/ProductDetails";
 import ProductImages from "../components/sections/add-product/product-images/ProductImages";
-import Variants from "../components/sections/add-product/Variants/Variants";
-import Pricing from "../components/sections/add-product/Pricing";
+import CountryPricing from "../components/sections/add-product/Pricing";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import PageHeader from "../components/PageHeader";
 import usePostMutation from "@/hooks/api/usePostMutation";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import { validateVariants } from "@/utils/productValidation";
+import {
+  validateCountryPricing,
+  validateVariants,
+} from "@/utils/productValidation";
 import EmptyStoreState from "../components/EmptyStoreState";
 import { breadcrubms } from "@/utils/constants/breadcrumbs";
+import useGetStorePreference from "../hooks/store/useGetStorePreference";
+import { useMemo } from "react";
 
 export default function AddProduct() {
   const { selectedStore } = useSelectedStore();
+  const { data: storePreference } = useGetStorePreference();
+
   const storeId = selectedStore?.storeId;
+  const countries = useMemo(
+    () => storePreference?.countries || [],
+    [storePreference?.countries],
+  );
+
   const form = useForm({
     defaultValues: {
       name: "",
@@ -30,11 +41,8 @@ export default function AddProduct() {
       category: "",
       subcategory: "",
       short_description: "",
-      price: "",
-      variants: {
-        enabled: false,
-        attributes: [],
-      },
+      description: "",
+      pricing: [],
       flash_sale: false,
       flash_sale_end_date: null,
       flash_sale_show_countdown: false,
@@ -45,36 +53,31 @@ export default function AddProduct() {
       featured: false,
       limited_stock: false,
       limited_stock_threshold: 10,
-      tax: false,
     },
   });
   const { handleSubmit } = form;
 
-  // Add Product POST Mutation Hook
   const { mutate, isPending } = usePostMutation({
     endpoint: `/product/create/${storeId}`,
     token: true,
     clientId: true,
   });
 
-  // Handle Product Add Submit Form
   const onSubmit = (data) => {
-    // validate form
-    if (!validateVariants(data, form)) {
+    // CORRECT: Pass full data object and form instance
+    if (!validateCountryPricing(data, form)) {
+      // Validation failed, error is already set on form
       return;
     }
 
     const formData = new FormData();
-
     const productData = transformProductForApi(data);
     formData.append("productData", JSON.stringify(productData));
 
-    // Add thumbnail image (required)
     if (data?.thumbnail?.file) {
       formData.append("thumbnailImage", data.thumbnail.file);
     }
 
-    // Add gallery images (optional)
     if (data?.gallery && data?.gallery?.length > 0) {
       data.gallery.forEach((image) => {
         if (image?.file) {
@@ -83,15 +86,22 @@ export default function AddProduct() {
       });
     }
 
-    // Add variant images (optional)
-    if (data.variants.enabled && data.variants.attributes) {
-      data.variants.attributes.forEach((attr, attrIndex) => {
-        attr.values.forEach((value, valueIndex) => {
-          if (value.image) {
-            const fieldName = `variants[attributes][${attrIndex}][value][${valueIndex}]`;
-            formData.append(fieldName, value.image);
-          }
-        });
+    // Handle variant images for all countries
+    if (data.pricing) {
+      data.pricing.forEach((countryPricing, pricingIndex) => {
+        if (
+          countryPricing.variants?.enabled &&
+          countryPricing.variants?.attributes
+        ) {
+          countryPricing.variants.attributes.forEach((attr, attrIndex) => {
+            attr.values.forEach((value, valueIndex) => {
+              if (value.image) {
+                const fieldName = `pricing[${pricingIndex}][variants][attributes][${attrIndex}][value][${valueIndex}]`;
+                formData.append(fieldName, value.image);
+              }
+            });
+          });
+        }
       });
     }
 
@@ -117,17 +127,13 @@ export default function AddProduct() {
 
   return (
     <section className="space-y-6">
-      {/* Breadcrumb Navigation */}
       <DynamicBreadcrumb items={breadcrubms.Add_Product} />
-
-      {/* Page Header */}
       <PageHeader
         icon={PackagePlus}
         title="Add Product"
         description="Create a new product for"
       />
 
-      {/* product form */}
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <fieldset
@@ -136,20 +142,13 @@ export default function AddProduct() {
           >
             {storeId && (
               <>
-                {/* Product Details */}
                 <ProductDetails form={form} />
-
-                {/* Product Thumbnail & Gallery Images */}
                 <ProductImages form={form} />
 
-                {/* Pricing */}
-                <Pricing form={form} />
+                {/* NEW: Country-Based Pricing & Variants */}
+                <CountryPricing form={form} countries={countries} />
 
-                {/* Product Status */}
                 <ProductStatus form={form} />
-
-                {/* Product Variants */}
-                <Variants form={form} />
               </>
             )}
           </fieldset>
@@ -161,35 +160,22 @@ export default function AddProduct() {
               </Link>
             </Button>
 
-            {/* show submit and save as draft button when store is selected */}
             {storeId && (
-              <div className="flex flex-col-reverse gap-4 lg:flex-row">
-                {/* TODO: implement save as draft. it will be silent save automatically */}
-                {/* <Button
-                  disabled={isPending}
-                  type="button"
-                  variant="outline"
-                  size="lg"
-                >
-                  Save as Draft
-                </Button> */}
-
-                <Button
-                  disabled={isPending}
-                  type="submit"
-                  size="sm"
-                  className="min-w-[101px] text-xs"
-                >
-                  {isPending ? (
-                    <>
-                      <Spinner size="3.5" />
-                      Saving...
-                    </>
-                  ) : (
-                    "Save Product"
-                  )}
-                </Button>
-              </div>
+              <Button
+                disabled={isPending}
+                type="submit"
+                size="sm"
+                className="min-w-[101px] text-xs"
+              >
+                {isPending ? (
+                  <>
+                    <Spinner size="3.5" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Product"
+                )}
+              </Button>
             )}
           </div>
         </form>

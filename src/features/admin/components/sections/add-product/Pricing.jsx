@@ -1,35 +1,113 @@
-import { useEffect, useRef, useState } from "react";
-import { ChevronUp } from "lucide-react";
+import { useState, useCallback, useMemo } from "react";
+import { ChevronUp, Globe, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { CollapsibleTrigger } from "@radix-ui/react-collapsible";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import SectionHeader from "./SectionHeader";
-import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
-import { Spinner } from "@/components/ui/spinner";
+import CountryPricingForm from "./CountryPricingForm";
+import CountryVariants from "./CountryVariants";
 
-export default function Pricing({ form }) {
-  const { data, isLoading } = useGetStorePreference();
-
-  const prefixRef = useRef(null);
-
+export default function CountryPricing({ form, countries = [] }) {
   const [isOpen, setIsOpen] = useState(true);
-  const [prefixWidth, setPrefixWidth] = useState(0);
+  const [activeCountryTab, setActiveCountryTab] = useState(
+    countries.find((c) => c.isDefault)?._id || countries[0]?._id,
+  );
 
-  useEffect(() => {
-    if (prefixRef.current) {
-      setPrefixWidth(prefixRef.current.offsetWidth);
-    }
-  }, []);
+  // Get default country data structure
+  const getDefaultCountryData = useCallback(
+    (countryId) => ({
+      countryId,
+      productPrice: "",
+      productCost: "",
+      discountPrice: "",
+      shippingCharges: "",
+      tax: false,
+      status: true,
+      variants: {
+        enabled: false,
+        useDefaultPricing: true,
+        attributes: [],
+      },
+    }),
+    [],
+  );
+
+  // Get current pricing data from form
+  const currentPricing = form.watch("pricing") || [];
+
+  // Find or create country data
+  const getCountryData = useCallback(
+    (countryId) => {
+      const existing = currentPricing.find((p) => p.countryId === countryId);
+      return existing || getDefaultCountryData(countryId);
+    },
+    [currentPricing, getDefaultCountryData],
+  );
+
+  // Update country pricing - directly updates form
+  const updateCountryPricing = useCallback(
+    (countryId, field, value) => {
+      const currentPricing = form.getValues("pricing") || [];
+
+      // Find existing country data or create new
+      const existingIndex = currentPricing.findIndex(
+        (p) => p.countryId === countryId,
+      );
+
+      if (existingIndex >= 0) {
+        // Update existing
+        const updated = [...currentPricing];
+        updated[existingIndex] = {
+          ...updated[existingIndex],
+          [field]: value,
+        };
+        form.setValue("pricing", updated, { shouldValidate: false });
+      } else {
+        // Add new
+        const newCountryData = {
+          ...getDefaultCountryData(countryId),
+          [field]: value,
+        };
+        form.setValue("pricing", [...currentPricing, newCountryData], {
+          shouldValidate: false,
+        });
+      }
+    },
+    [form, getDefaultCountryData],
+  );
+
+  // Check if country has data
+  const hasDataForCountry = useCallback(
+    (countryId) => {
+      const data = currentPricing.find((p) => p.countryId === countryId);
+      return (
+        data &&
+        (data.productPrice ||
+          data.productCost ||
+          data.discountPrice ||
+          data.variants?.enabled)
+      );
+    },
+    [currentPricing],
+  );
+
+  if (countries.length === 0) {
+    return (
+      <div className="bg-card rounded-lg border p-5">
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle className="text-xs">No Countries Configured</AlertTitle>
+          <AlertDescription className="text-xs">
+            Please configure countries in your store settings before adding
+            products.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
 
   return (
     <Collapsible
@@ -37,14 +115,14 @@ export default function Pricing({ form }) {
       onOpenChange={setIsOpen}
       className="bg-card rounded-lg border p-5"
     >
-      {/* header */}
+      {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <SectionHeader
-          title="Pricing"
-          description="Set product pricing, compare prices and cost calculations"
+          title="Country-Based Pricing & Variants"
+          description="Set different prices and variants for each country your store operates in"
         />
 
-        {/* section collapse toggle button */}
+        {/* Section collapse toggle button */}
         <CollapsibleTrigger asChild>
           <Button
             type="button"
@@ -61,162 +139,60 @@ export default function Pricing({ form }) {
         </CollapsibleTrigger>
       </div>
 
-      {/* main pricing input field */}
-      <CollapsibleContent className="mt-4 grid grid-cols-1 gap-4 md:mt-6 md:grid-cols-2 md:gap-6">
-        {/* price */}
-        <FormField
-          control={form.control}
-          name="price"
-          rules={{ required: "Price is required" }}
-          render={({ field, fieldState }) => (
-            <FormItem>
-              <FormLabel className="text-xs">
-                Price <span className="text-destructive">*</span>
-              </FormLabel>
-              <FormControl>
-                <div className="relative flex items-center">
-                  <span
-                    ref={prefixRef}
-                    className="text-muted-foreground pointer-events-none absolute left-3 text-sm"
+      <CollapsibleContent className="mt-6">
+        {/* Country Tabs */}
+        <Tabs
+          value={activeCountryTab}
+          onValueChange={setActiveCountryTab}
+          className="w-full"
+        >
+          <TabsList className="bg-muted inline-flex h-auto w-full justify-start gap-2 overflow-x-auto rounded-lg p-1">
+            {countries.map((country) => (
+              <TabsTrigger
+                key={country._id}
+                value={country._id}
+                className="data-[state=active]:bg-background relative flex shrink-0 items-center gap-2 rounded-md px-3 py-2 text-xs transition-all"
+              >
+                <Globe className="h-3 w-3" />
+                <span>{country.country_name}</span>
+                {country.isDefault && (
+                  <Badge
+                    variant="secondary"
+                    className="ml-1 h-4 px-1 text-[10px]"
                   >
-                    {isLoading ? <Spinner /> : data?.data?.currencySymbol}
-                  </span>
-                  <Input
-                    {...field}
-                    type="number"
-                    placeholder="0.00"
-                    style={{ paddingLeft: `${prefixWidth + 20}px` }}
-                  />
-                </div>
-              </FormControl>
-              {/* conditional error */}
-              {fieldState.error ? (
-                <FormMessage className="text-xs" />
-              ) : (
-                <p className="text-muted-foreground text-xs">
-                  The price customers will pay
-                </p>
-              )}
-            </FormItem>
-          )}
-        />
-
-        {/* compare at price */}
-        <FormField
-          control={form.control}
-          name="discount"
-          rules={{
-            validate: (value) => {
-              if (!value) return true; // Optional field
-              const price = parseFloat(form.getValues("price"));
-              const comparePrice = parseFloat(value);
-
-              if (comparePrice && comparePrice <= price) {
-                return "Compare at price must be higher than selling price";
-              }
-              return true;
-            },
-          }}
-          render={({ field, fieldState }) => {
-            const price = form.watch("price");
-            const compareAtPrice = field.value;
-            const showWarning =
-              compareAtPrice && parseFloat(compareAtPrice) <= parseFloat(price);
-
-            return (
-              <FormItem>
-                <FormLabel className="text-xs">Compare at Price</FormLabel>
-                <FormControl>
-                  <div className="relative flex items-center">
-                    <span className="text-muted-foreground absolute left-3 text-sm">
-                      {isLoading ? <Spinner /> : data?.data?.currencySymbol}
-                    </span>
-                    <Input
-                      {...field}
-                      type="number"
-                      placeholder="0.00"
-                      className={`${showWarning ? "border-warning" : ""}`}
-                      style={{ paddingLeft: `${prefixWidth + 20}px` }}
-                    />
-                  </div>
-                </FormControl>
-
-                {/* Show either error, warning, or help text */}
-                {fieldState.error ? (
-                  <FormMessage className="text-xs" />
-                ) : showWarning ? (
-                  <p className="text-warning text-xs">
-                    Compare at price should be higher than selling price ($
-                    {price}) to show a discount
-                  </p>
-                ) : (
-                  <p className="text-muted-foreground text-xs">
-                    Original price for discount display (optional, must be
-                    higher than price)
-                  </p>
+                    Default
+                  </Badge>
                 )}
-              </FormItem>
-            );
-          }}
-        />
+                {hasDataForCountry(country._id) && (
+                  <span className="bg-primary absolute top-1 right-1 h-1.5 w-1.5 rounded-full" />
+                )}
+              </TabsTrigger>
+            ))}
+          </TabsList>
 
-        {/* TODO: make it available when inventory track is available */}
-        {/* per item cost */}
-        {/* <FormField
-          control={form.control}
-          name="cost"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-xs">Cost per Item</FormLabel>
-              <FormControl>
-                <div className="relative flex items-center">
-                  <p className="text-muted-foreground absolute left-3 text-sm">
-                    {isLoading ? <Spinner /> : data?.data?.currencySymbol}
-                  </p>
-                  <Input
-                    {...field}
-                    type="number"
-                    placeholder="0.00"
-                    style={{ paddingLeft: `${prefixWidth + 20}px` }}
-                  />
-                </div>
-              </FormControl>
-              <p className="text-muted-foreground text-xs">
-                Your cost to acquire/produce this item (for profit calculations,
-                not shown to customers)
-              </p>
-            </FormItem>
-          )}
-        /> */}
+          {countries.map((country) => (
+            <TabsContent
+              key={country._id}
+              value={country._id}
+              className="mt-6 space-y-6"
+            >
+              {/* Pricing Section */}
+              <CountryPricingForm
+                country={country}
+                data={getCountryData(country._id)}
+                onUpdate={updateCountryPricing}
+              />
 
-        {/* TODO: make it uncomment when shipping based pricing added charge tax */}
-        {/* <div className="flex flex-col items-start">
-          <FormField
-            control={form.control}
-            name="tax"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-xs">Tax</FormLabel>
-                <FormControl>
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="tax"
-                      checked={field.value || false}
-                      onCheckedChange={(checked) => field.onChange(checked)}
-                      className="size-4 cursor-pointer"
-                    />
-                    <Label
-                      htmlFor="tax"
-                      className="text-muted-foreground font-normal"
-                    >
-                      Charge tax on this product
-                    </Label>
-                  </div>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        </div> */}
+              {/* Variants Section */}
+              <CountryVariants
+                country={country}
+                data={getCountryData(country._id)}
+                onUpdate={updateCountryPricing}
+                form={form}
+              />
+            </TabsContent>
+          ))}
+        </Tabs>
       </CollapsibleContent>
     </Collapsible>
   );

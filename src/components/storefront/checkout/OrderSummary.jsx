@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { formatPrice } from "@/utils/formatPrice";
 import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
+import useCountry from "@/hooks/useCountry";
 
 export default function OrderSummary({
   subtotal,
@@ -11,9 +12,11 @@ export default function OrderSummary({
   handlePlaceOrder,
   cartItems,
 }) {
+  const { selectedCountry } = useCountry();
   const { data: storePreference } = useGetStorePreference();
 
-  const currencySymbol = storePreference?.data?.currencySymbol;
+  const currencySymbol =
+    selectedCountry?.currency_symbol || storePreference?.data?.currencySymbol;
 
   return (
     <div className="lg:col-span-1">

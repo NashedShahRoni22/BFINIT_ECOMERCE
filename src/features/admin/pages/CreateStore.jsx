@@ -29,6 +29,7 @@ export default function CreateStore() {
   const form = useForm({
     defaultValues: {
       country: "",
+      countries: [],
       address: "",
       currency_name: "",
       currency_code: "",
@@ -69,6 +70,16 @@ export default function CreateStore() {
   });
 
   const onSubmit = (data) => {
+    if (!data.countries || data.countries.length === 0) {
+      form.setError("country", {
+        type: "manual",
+        message: "Please add at least one country",
+      });
+      return;
+    }
+
+    form.clearErrors("country");
+
     const storePayload = createStorePayload(data);
 
     mutate(storePayload, {
@@ -123,11 +134,7 @@ export default function CreateStore() {
               countryData={countryData}
             />
 
-            <StoreInfo
-              form={form}
-              countryData={countryData}
-              isLoading={isCountryLoading}
-            />
+            <StoreInfo form={form} />
 
             <Social form={form} />
           </fieldset>

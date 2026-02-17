@@ -8,6 +8,7 @@ import { useParams, useSearchParams } from "react-router";
 import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
 import useGetCategories from "@/features/admin/hooks/category/useGetCategories";
 import useGetBrands from "@/features/admin/hooks/brands/useGetBrands";
+import useCountry from "@/hooks/useCountry";
 
 const gridLayoutMap = {
   2: "grid-cols-1 md:grid-cols-2 lg:grid-cols-2",
@@ -17,6 +18,9 @@ const gridLayoutMap = {
 export default function ShopPage() {
   const { storeId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const { selectedCountry, isLoading: isSelectedCountryLoading } = useCountry();
+  const countryName = selectedCountry?.country_name;
 
   const [currentPage, setCurrentPage] = useState(1);
   const [gridLayout, setGridLayout] = useState(3);
@@ -44,9 +48,9 @@ export default function ShopPage() {
 
   // Fetch products with search query
   const { data: productsData, isLoading } = useGetQuery({
-    endpoint: `/product/store?storeId=${storeId}&page=${currentPage}&limit=${productsPerPage}${searchQuery ? `&search=${searchQuery}` : ""}`,
-    queryKey: ["shop-products", storeId, currentPage, searchQuery],
-    enabled: !!storeId,
+    endpoint: `/product/store?storeId=${storeId}&countryName=${countryName}&page=${currentPage}&limit=${productsPerPage}${searchQuery ? `&search=${searchQuery}` : ""}`,
+    queryKey: ["shop-products", storeId, currentPage, searchQuery, countryName],
+    enabled: !!storeId && !!countryName && !isSelectedCountryLoading,
   });
 
   const { data: storePreference } = useGetStorePreference();
@@ -58,15 +62,11 @@ export default function ShopPage() {
   const totalPages = productsData?.totalPages || 1;
 
   // Get categories and brands from API
-  const categories = categoriesData?.data || [];
-  const brands = brandsData?.data || [];
-
-  // Get subcategories for selected category
-  const availableSubcategories = useMemo(() => {
-    if (!selectedCategory) return [];
-    const category = categories.find((cat) => cat.id === selectedCategory);
-    return category?.subcategory || [];
-  }, [selectedCategory, categories]);
+  const categories = useMemo(
+    () => categoriesData?.data || [],
+    [categoriesData?.data],
+  );
+  const brands = useMemo(() => brandsData?.data || [], [brandsData]);
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {
@@ -82,8 +82,10 @@ export default function ShopPage() {
 
     // Subcategory filter
     if (selectedSubcategories.length > 0) {
-      filtered = filtered.filter((p) =>
-        selectedSubcategories.includes(p.productSubCategory),
+      filtered = filtered.filter(
+        (p) =>
+          p.productSubCategory &&
+          selectedSubcategories.includes(p.productSubCategory),
       );
     }
 
@@ -92,13 +94,19 @@ export default function ShopPage() {
       const brandNames = selectedBrands.map(
         (id) => brands.find((b) => b.id === id)?.name,
       );
-      filtered = filtered.filter((p) => brandNames.includes(p.productBrand));
+      filtered = filtered.filter(
+        (p) => p.productBrand && brandNames.includes(p.productBrand),
+      );
     }
 
     // Price filter
     filtered = filtered.filter((p) => {
-      const price = p.productPrice;
-      return price >= priceRange[0] && price <= priceRange[1];
+      const price =
+        p.pricing?.productPrice ||
+        p.pricingData?.productPrice?.$numberDecimal ||
+        0;
+      const priceNum = typeof price === "string" ? parseFloat(price) : price;
+      return priceNum >= priceRange[0] && priceNum <= priceRange[1];
     });
 
     // Sorting

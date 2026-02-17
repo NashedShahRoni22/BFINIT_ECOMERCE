@@ -6,6 +6,7 @@ import { formatPrice } from "@/utils/formatPrice";
 import StatCardsSkeleton from "../../skeletons/StatCardsSkeleton";
 import useGetCustomer from "@/features/admin/hooks/customers/useGetCustomer";
 import { formatNumber } from "@/utils/formatNumber";
+import { getCurrencySymbol } from "@/utils/currencyHelpers";
 
 export default function StatCards() {
   const { data: storePreference, isLoading: isStorePreferenceLoading } =
@@ -13,7 +14,7 @@ export default function StatCards() {
   const { data: orders, isLoading: isOrdersLoading } = useGetOrders();
   const { data: customers, isLoading: isCustomersLoading } = useGetCustomer();
 
-  const currencySymbol = storePreference?.data?.currencySymbol;
+  const currencySymbol = getCurrencySymbol(storePreference);
   const totalCustomers = customers?.length || 0;
   const totalOrders = orders?.data?.length || 0;
 

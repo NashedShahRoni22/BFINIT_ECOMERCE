@@ -12,6 +12,7 @@ import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePrefe
 import { formatPrice } from "@/utils/formatPrice";
 import { Link } from "react-router";
 import { ShoppingBag } from "lucide-react";
+import { getCurrencySymbol } from "@/utils/currencyHelpers";
 
 const DELIVERY_STATUSES = {
   PENDING: "Pending",
@@ -44,7 +45,7 @@ export default function RecentOrders() {
   const { data: storePreference } = useGetStorePreference();
   const { data: orders } = useGetOrders();
 
-  const currencySymbol = storePreference?.data?.currencySymbol;
+  const currencySymbol = getCurrencySymbol(storePreference);
   const hasOrders = orders?.data && orders.data.length > 0;
 
   return (
@@ -105,7 +106,7 @@ export default function RecentOrders() {
                 </TableCell>
                 <TableCell className="py-3.5 font-medium">
                   {formatPrice(
-                    order?.pricingSummary?.grandTotal?.$numberDecimal,
+                    order?.pricingSummary?.grandTotal,
                     currencySymbol,
                   )}
                 </TableCell>

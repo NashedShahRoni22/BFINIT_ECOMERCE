@@ -10,18 +10,23 @@ import SectionHeader from "../add-product/SectionHeader";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 
-export default function StoreInfo({ form, countryData, isLoading }) {
+export default function StoreInfo({ form }) {
   const phoneCodePrefixRef = useRef();
   const [prefixWidth, setPrefixWidth] = useState(0);
+
+  // Get phone code from default country in countries array
+  const countries = form.watch("countries");
+  const defaultCountry = countries?.find((c) => c.isDefault) || countries?.[0];
+  const phoneCode = defaultCountry?.phone_code || "+1";
 
   useEffect(() => {
     if (phoneCodePrefixRef.current) {
       setPrefixWidth(phoneCodePrefixRef.current.offsetWidth);
     }
-  }, [countryData, isLoading]);
+  }, [phoneCode, countries]);
 
   return (
-    <div className="bg-card p-5 rounded-lg">
+    <div className="bg-card rounded-lg p-5">
       <SectionHeader
         title="Store Information"
         description="Enter your store name and contact details for customer communication"
@@ -91,7 +96,7 @@ export default function StoreInfo({ form, countryData, isLoading }) {
                     ref={phoneCodePrefixRef}
                     className="text-muted-foreground pointer-events-none absolute left-3 text-sm"
                   >
-                    {isLoading ? <Spinner /> : countryData?.phone_code || "+1"}
+                    {!phoneCode ? <Spinner /> : phoneCode}
                   </span>
                   <Input
                     type="tel"
@@ -118,7 +123,7 @@ export default function StoreInfo({ form, countryData, isLoading }) {
                     ref={phoneCodePrefixRef}
                     className="text-muted-foreground pointer-events-none absolute left-3 text-sm"
                   >
-                    {isLoading ? <Spinner /> : countryData?.phone_code || "+1"}
+                    {!phoneCode ? <Spinner /> : phoneCode}
                   </span>
 
                   <Input

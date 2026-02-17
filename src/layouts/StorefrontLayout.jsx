@@ -6,6 +6,7 @@ import Footer from "@/components/storefront/Footer";
 import useGetStoreMeta from "@/hooks/useGetStoreMeta";
 import useTheme from "@/hooks/useTheme";
 import { updateStoreMeta } from "@/utils/meta";
+import CountrySelectModal from "@/components/storefront/modals/CountrySelectModal";
 
 export default function StorefrontLayout() {
   const { storeId } = useParams();
@@ -23,6 +24,7 @@ export default function StorefrontLayout() {
 
   return (
     <main>
+      <CountrySelectModal />
       <Header />
       <Outlet />
       <Footer />

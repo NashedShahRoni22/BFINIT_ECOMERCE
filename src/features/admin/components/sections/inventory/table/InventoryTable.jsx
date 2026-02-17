@@ -8,7 +8,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import InventoryTableRow from "./InventoryTableRow";
 
-export default function InventoryTable({ products }) {
+export default function InventoryTable({ products, selectedCountry }) {
   return (
     <Table>
       <TableHeader className="bg-card hover:bg-transparent">
@@ -35,7 +35,11 @@ export default function InventoryTable({ products }) {
 
       <TableBody>
         {products.map((product) => (
-          <InventoryTableRow key={product._id} product={product} />
+          <InventoryTableRow
+            key={product._id}
+            product={product}
+            selectedCountry={selectedCountry}
+          />
         ))}
       </TableBody>
     </Table>

@@ -7,6 +7,7 @@ import PreviewModeBar from "@/features/themes/components/layout/PreviewModeBar";
 import ThemeEditorHeader from "@/features/themes/components/layout/ThemeEditorHeader";
 import ThemeEditorSidebar from "@/features/themes/components/layout/ThemeEditorSidebar";
 import useTheme from "@/hooks/useTheme";
+import CountrySelectModal from "@/components/storefront/modals/CountrySelectModal";
 
 export default function ThemeEditorLayout() {
   const { isPreviewMode } = useTheme();
@@ -23,6 +24,7 @@ export default function ThemeEditorLayout() {
 
         {/* canvas site preview */}
         <Canvas isPreviewMode={isPreviewMode}>
+          <CountrySelectModal />
           <Header />
           <Outlet />
           <Footer />

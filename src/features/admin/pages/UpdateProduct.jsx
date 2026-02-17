@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Link, useParams } from "react-router";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
@@ -12,26 +12,32 @@ import ProductDetails from "../components/sections/add-product/ProductDetails";
 import useGetCategories from "../hooks/category/useGetCategories";
 import useGetBrands from "../hooks/brands/useGetBrands";
 import ProductImages from "../components/sections/add-product/product-images/ProductImages";
-import Pricing from "../components/sections/add-product/Pricing";
+import CountryPricing from "../components/sections/add-product/Pricing"; // UPDATED
 import ProductStatus from "../components/sections/add-product/product-status/ProductStatus";
-import Variants from "../components/sections/add-product/Variants/Variants";
 import { fillFormWithProductData } from "../utils/productHelper";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import { validateVariants } from "@/utils/productValidation";
+import { validateCountryPricing } from "@/utils/productValidation"; // UPDATED
 import { transformProductForApi } from "@/utils/productMapper";
 import usePatchMutaion from "@/hooks/api/usePatchMutaion";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import EmptyStoreState from "../components/EmptyStoreState";
+import useGetStorePreference from "../hooks/store/useGetStorePreference";
 
 export default function UpdateProduct() {
   const { productId } = useParams();
   const queryClient = useQueryClient();
   const { selectedStore } = useSelectedStore();
+  const { data: storePreference } = useGetStorePreference();
 
   const isInitializing = useRef(false);
+
+  const countries = useMemo(
+    () => storePreference?.countries || [],
+    [storePreference?.countries],
+  );
 
   const { data: productDetails, isLoading } = useGetQuery({
     endpoint: `/product/?productId=${productId}`,
@@ -59,8 +65,7 @@ export default function UpdateProduct() {
       description: "",
       thumbnail: null,
       gallery: [],
-      price: "",
-      discount: "",
+      pricing: [], // UPDATED: Array for country-based pricing
       best_seller: false,
       best_seller_threshold: 50,
       featured: false,
@@ -71,19 +76,13 @@ export default function UpdateProduct() {
       flash_sale_end_date: null,
       limited_stock: false,
       limited_stock_threshold: 10,
-      variants: {
-        enabled: false,
-        useDefaultPricing: true,
-        attributes: [],
-      },
-      tax: false,
     },
   });
 
   const { handleSubmit, reset } = form;
 
   useEffect(() => {
-    if (productDetails?.data && categories && brands) {
+    if (productDetails?.data && categories && brands && countries.length > 0) {
       isInitializing.current = true;
 
       fillFormWithProductData(productDetails.data, reset);
@@ -117,12 +116,20 @@ export default function UpdateProduct() {
         isInitializing.current = false;
       };
     }
-  }, [productId, productDetails?.data, categories, brands, reset, form]);
+  }, [
+    productId,
+    productDetails?.data,
+    categories,
+    brands,
+    countries,
+    reset,
+    form,
+  ]);
 
   const onSubmit = (data) => {
-    // validate form
-    if (!validateVariants(data, form)) {
-      return toast.error("form submit error");
+    // UPDATED: Validate country pricing
+    if (!validateCountryPricing(data, form)) {
+      return; // Error already set on form
     }
 
     const formData = new FormData();
@@ -137,12 +144,28 @@ export default function UpdateProduct() {
 
     // Handle gallery images
     if (data.gallery && data.gallery.length > 0) {
-      // Separate new uploads from existing images
       const newGalleryImages = data.gallery.filter((img) => img.file);
-
-      // Append new images
       newGalleryImages.forEach((image) => {
         formData.append("productImages", image.file);
+      });
+    }
+
+    // UPDATED: Handle variant images for all countries
+    if (data.pricing) {
+      data.pricing.forEach((countryPricing, pricingIndex) => {
+        if (
+          countryPricing.variants?.enabled &&
+          countryPricing.variants?.attributes
+        ) {
+          countryPricing.variants.attributes.forEach((attr, attrIndex) => {
+            attr.values.forEach((value, valueIndex) => {
+              if (value.image) {
+                const fieldName = `pricing[${pricingIndex}][variants][attributes][${attrIndex}][value][${valueIndex}]`;
+                formData.append(fieldName, value.image);
+              }
+            });
+          });
+        }
       });
     }
 
@@ -168,10 +191,8 @@ export default function UpdateProduct() {
 
   return (
     <section className="space-y-6">
-      {/* Breadcrumb Navigation */}
       <DynamicBreadcrumb items={breadcrubms.Update_Product} />
 
-      {/* Page Header */}
       <PageHeader
         icon={Package}
         title="Edit Product"
@@ -179,7 +200,6 @@ export default function UpdateProduct() {
         showStoreName={false}
       />
 
-      {/* Product Form */}
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <fieldset
@@ -187,20 +207,13 @@ export default function UpdateProduct() {
             className={cn("space-y-6", isPending && "pointer-events-none")}
           >
             <>
-              {/* Product Details */}
               <ProductDetails form={form} isInitializingRef={isInitializing} />
-
-              {/* Product Thumbnail & Gallery Images */}
               <ProductImages form={form} />
 
-              {/* Pricing */}
-              <Pricing form={form} />
+              {/* UPDATED: Use CountryPricing instead of Pricing + Variants */}
+              <CountryPricing form={form} countries={countries} />
 
-              {/* Product Status */}
               <ProductStatus form={form} />
-
-              {/* Product Variants */}
-              <Variants form={form} isEditMode={true} />
             </>
           </fieldset>
 

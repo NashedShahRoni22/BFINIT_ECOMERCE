@@ -1,17 +1,18 @@
-import { useContext } from "react";
 import { Link, useNavigate } from "react-router";
 import { Minus, Plus, X, ShoppingBag, ArrowRight, Tag } from "lucide-react";
-import { CartContext } from "@/context/CartContext";
 import useBasePath from "../../hooks/useBasePath";
 import useStorefrontAuth from "@/hooks/auth/useStorefrontAuth";
 import { Button } from "@/components/ui/button";
 import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
 import { formatPrice } from "@/utils/formatPrice";
+import useCountry from "@/hooks/useCountry";
+import useCart from "@/hooks/useCart";
 
 export default function Cart() {
   const navigate = useNavigate();
+  const basePath = useBasePath();
+  const { selectedCountry } = useCountry();
   const { customer } = useStorefrontAuth();
-
   const {
     cartItems,
     removeFromCart,
@@ -20,12 +21,12 @@ export default function Cart() {
     subtotal,
     totalSavings,
     getItemPrice,
-  } = useContext(CartContext);
+  } = useCart();
 
   const { data: storePreference } = useGetStorePreference();
-  const currencySymbol = storePreference?.data?.currencySymbol;
 
-  const basePath = useBasePath();
+  const currencySymbol =
+    selectedCountry?.currency_symbol || storePreference?.data?.currencySymbol;
 
   if (cartItems.length === 0) {
     return (

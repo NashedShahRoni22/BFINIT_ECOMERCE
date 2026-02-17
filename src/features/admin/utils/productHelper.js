@@ -4,7 +4,7 @@ const getTransformedVariants = (variants) => {
   if (variants?.enabled) {
     return {
       enabled: variants.enabled,
-      useDefaultPricing: variants.useDefaultPricing,
+      useDefaultPricing: variants?.useDefaultPricing,
       attributes: variants.attributes.map((attr) => ({
         id: attr.id || attr._id,
         name: attr.name,
@@ -13,9 +13,9 @@ const getTransformedVariants = (variants) => {
           id: val.id || val._id,
           name: val.name,
           sku: val.sku,
-          price: val.price,
-          discountPrice: val.discountPrice,
-          stock: val.stock,
+          price: val.price?.toString() || "",
+          discountPrice: val.discountPrice?.toString() || "",
+          stock: val.stock?.toString() || "",
           status: val.status,
           image:
             val.image && val.image.length > 0
@@ -52,8 +52,9 @@ export const fillFormWithProductData = (product, reset) => {
     productDescription,
     thumbnailImage,
     productImage,
-    productPrice,
-    productDiscount,
+    productPrice, // OLD: Single price - kept for backward compatibility
+    productDiscount, // OLD: Single discount - kept for backward compatibility
+    pricing, // NEW: Array of country-based pricing
     best_seller,
     best_seller_threshold,
     featured,
@@ -64,8 +65,21 @@ export const fillFormWithProductData = (product, reset) => {
     flash_sale_end_date,
     limited_stock,
     limited_stock_threshold,
-    variants,
+    variants, // OLD: Single variants object - kept for backward compatibility
   } = product;
+
+  // Transform pricing array if it exists (NEW multi-country format)
+  const transformedPricing =
+    pricing?.map((countryPricing) => ({
+      countryId: countryPricing.countryId,
+      productPrice: countryPricing.productPrice?.toString() || "",
+      productCost: countryPricing.productCost?.toString() || "",
+      discountPrice: countryPricing.discountPrice?.toString() || "",
+      shippingCharges: countryPricing.shippingCharges?.toString() || "",
+      tax: countryPricing.tax || false,
+      status: countryPricing.status ?? true,
+      variants: getTransformedVariants(countryPricing.variants),
+    })) || [];
 
   // Reset all fields
   reset({
@@ -91,9 +105,17 @@ export const fillFormWithProductData = (product, reset) => {
           isExisting: true,
         }))
       : [],
+
+    // NEW: Country-based pricing array
+    pricing: transformedPricing,
+
+    // OLD: Keep these for backward compatibility (if pricing array doesn't exist)
     price: productPrice,
     discount:
       productDiscount && parseInt(productDiscount) > 0 ? productDiscount : "",
+    variants: getTransformedVariants(variants),
+
+    // Product status fields
     best_seller,
     best_seller_threshold,
     featured,
@@ -104,6 +126,5 @@ export const fillFormWithProductData = (product, reset) => {
     flash_sale_end_date,
     limited_stock,
     limited_stock_threshold,
-    variants: getTransformedVariants(variants),
   });
 };

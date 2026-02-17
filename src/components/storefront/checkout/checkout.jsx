@@ -9,15 +9,16 @@ import toast from "react-hot-toast";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import useBasePath from "@/hooks/useBasePath";
 import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
+import useCountry from "@/hooks/useCountry";
 
 export default function CheckoutPage() {
   const { storeId } = useParams();
   const navigate = useNavigate();
-  const { customer } = useStorefrontAuth();
-  const { cartItems, subtotal, clearCart } = useCart();
-  const { data: storePreference } = useGetStorePreference();
-
   const basePath = useBasePath();
+  const { selectedCountry: storeSelectedCountry } = useCountry();
+  const { cartItems, subtotal, clearCart } = useCart();
+  const { customer } = useStorefrontAuth();
+  const { data: storePreference } = useGetStorePreference();
 
   const { data: countries, isLoading: isCountriesLoading } = useGetQuery({
     endpoint: "/api/countries",
@@ -40,7 +41,7 @@ export default function CheckoutPage() {
   });
 
   const { mutate, isPending } = usePostMutation({
-    endpoint: `/v2/store/global/orders/create/cod`,
+    endpoint: `/orders/create/cod`,
     customerToken: customer?.token,
     customerId: customer?.data?.customerId,
     storeId,
@@ -131,6 +132,7 @@ export default function CheckoutPage() {
         products: cartItems.map((item) => ({
           productId: item.productId,
           productName: item.productName,
+          countryId: storeSelectedCountry._id,
           hasVariants: item.hasVariants,
           variant: item.variant,
           quantity: item.quantity,

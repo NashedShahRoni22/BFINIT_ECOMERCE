@@ -10,27 +10,31 @@ import { Label } from "@/components/ui/label";
 import useCart from "@/hooks/useCart";
 import { formatPrice } from "@/utils/formatPrice";
 import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
+import useCountry from "@/hooks/useCountry";
 
 export default function ProductDetails() {
-  const { productId } = useParams();
+  const { productId, storeId } = useParams();
   const navigate = useNavigate();
+  const { selectedCountry, isLoading: countryLoading } = useCountry();
   const { addToCart } = useCart();
-
   const { data: storePreference } = useGetStorePreference();
-
-  const { data, isLoading } = useGetQuery({
-    endpoint: `/product/?productId=${productId}`,
-    queryKey: ["product", productId],
-    enabled: !!productId,
-  });
-
-  const currencySymbol = storePreference?.data?.currencySymbol;
-  const product = data?.data;
 
   const [selectedImage, setSelectedImage] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [selectedVariants, setSelectedVariants] = useState({});
   const [currentVariantData, setCurrentVariantData] = useState(null);
+
+  const countryName = selectedCountry?.country_name;
+  const currencySymbol =
+    selectedCountry?.currency_symbol || storePreference?.data?.currencySymbol;
+
+  const { data, isLoading } = useGetQuery({
+    endpoint: `/product/individualCountryProduct/?productId=${productId}&countryName=${countryName}&storeId=${storeId}`,
+    queryKey: ["product", productId, countryName, storeId],
+    enabled: !!productId && !!countryName && !!storeId && !countryLoading,
+  });
+
+  const product = data?.data;
 
   // Initialize selected image when product loads
   useEffect(() => {
@@ -114,9 +118,13 @@ export default function ProductDetails() {
   };
 
   const getCurrentPrice = () => {
+    if (product?.pricing?.length > 0) {
+      return formatPrice(product?.pricing[0]?.productPrice, currencySymbol);
+    }
+
     if (
       product?.variants?.enabled &&
-      !product.variants.useDefaultPricing &&
+      !product?.variants?.useDefaultPricing &&
       currentVariantData
     ) {
       return formatPrice(
@@ -128,9 +136,14 @@ export default function ProductDetails() {
   };
 
   const getDiscountPrice = () => {
+    if (product?.pricing?.length > 0) {
+      const discount = parseFloat(product?.pricing[0]?.discountPrice);
+      return discount > 0 ? discount : null;
+    }
+
     if (
       product?.variants?.enabled &&
-      !product.variants.useDefaultPricing &&
+      !product?.variants?.useDefaultPricing &&
       currentVariantData
     ) {
       const discount = parseFloat(
@@ -251,23 +264,6 @@ export default function ProductDetails() {
             {/* Title and Rating */}
             <div>
               <h1 className="text-3xl font-bold">{product.productName}</h1>
-              <div className="mt-2 flex items-center gap-2">
-                <div className="flex items-center">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-4 w-4 ${
-                        i < Math.floor(product.rating)
-                          ? "fill-warning text-warning"
-                          : "fill-muted text-muted"
-                      }`}
-                    />
-                  ))}
-                </div>
-                <span className="text-muted-foreground text-sm">
-                  ({product.rating.toFixed(1)})
-                </span>
-              </div>
             </div>
 
             {/* Short Description */}
@@ -285,7 +281,7 @@ export default function ProductDetails() {
                 <span className="text-4xl font-bold">{getCurrentPrice()}</span>
                 {getDiscountPrice() && (
                   <span className="text-muted-foreground text-xl line-through">
-                    {getDiscountPrice().toFixed(2)}
+                    {formatPrice(getDiscountPrice(), currencySymbol)}
                   </span>
                 )}
               </div>
@@ -338,7 +334,7 @@ export default function ProductDetails() {
                               />
                             )}
                             <span>{option.name}</span>
-                            {!product.variants.useDefaultPricing &&
+                            {!product?.variants?.useDefaultPricing &&
                               parseFloat(option.price.$numberDecimal) > 0 && (
                                 <span className="text-muted-foreground text-xs">
                                   +$
@@ -353,6 +349,68 @@ export default function ProductDetails() {
                     </RadioGroup>
                   </div>
                 ))}
+              </div>
+            )}
+
+            {product?.pricing?.[0]?.variants?.enabled && (
+              <div className="space-y-4">
+                {product?.pricing?.[0]?.variants?.attributes.map(
+                  (attribute) => (
+                    <div key={attribute._id} className="space-y-2">
+                      <Label className="text-base font-semibold">
+                        {attribute.name}
+                        {attribute.required && (
+                          <span className="text-destructive ml-1">*</span>
+                        )}
+                      </Label>
+                      <RadioGroup
+                        value={selectedVariants[attribute.name] || ""}
+                        onValueChange={(value) =>
+                          handleVariantChange(attribute.name, value)
+                        }
+                        className="flex flex-wrap gap-2"
+                      >
+                        {attribute.value.map((option) => (
+                          <div key={option._id}>
+                            <RadioGroupItem
+                              value={option.name}
+                              id={option._id}
+                              className="peer sr-only"
+                              disabled={!option.status}
+                            />
+                            <Label
+                              htmlFor={option._id}
+                              className={`border-border hover:bg-accent peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 flex cursor-pointer items-center gap-2 rounded-md border-2 px-4 py-2 ${
+                                !option.status
+                                  ? "cursor-not-allowed opacity-50"
+                                  : ""
+                              }`}
+                            >
+                              {option.image?.[0] && (
+                                <img
+                                  src={`https://ecomback.bfinit.com${option.image[0]}`}
+                                  alt={option.name}
+                                  className="h-6 w-6 rounded object-cover"
+                                />
+                              )}
+                              <span>{option.name}</span>
+                              {!product?.pricing?.[0]?.variants
+                                ?.useDefaultPricing &&
+                                parseFloat(option.price.$numberDecimal) > 0 && (
+                                  <span className="text-muted-foreground text-xs">
+                                    +$
+                                    {parseFloat(
+                                      option.price.$numberDecimal,
+                                    ).toFixed(2)}
+                                  </span>
+                                )}
+                            </Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    </div>
+                  ),
+                )}
               </div>
             )}
 

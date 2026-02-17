@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   FormControl,
   FormField,
@@ -5,7 +6,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import SectionHeader from "../add-product/SectionHeader";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -13,14 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Info } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
-import { useEffect } from "react";
+import { X, Plus, Globe } from "lucide-react";
+import SectionHeader from "../add-product/SectionHeader";
 
 export default function Location({
   form,
@@ -29,54 +26,151 @@ export default function Location({
   isCountryLoading,
   countryData,
 }) {
-  const { setValue } = form;
+  const { watch, setValue } = form;
+  const selectedCountries = watch("countries") || [];
+  const selectedCountry = watch("country");
 
+  // Auto-fill currency data when country is selected
   useEffect(() => {
-    if (countryData) {
-      setValue("currency_name", countryData?.currency_name);
-      setValue("currency_code", countryData?.currency_code);
-      setValue("currency_symbol", countryData?.currency_symbol);
-      setValue("time_zone", countryData?.timezone);
-      setValue("phone_code", countryData?.phone_code);
+    if (countryData && selectedCountry) {
+      // Check if this country already exists in the array
+      const countryExists = selectedCountries.some(
+        (c) => c.country_name === selectedCountry,
+      );
+
+      if (!countryExists) {
+        const newCountry = {
+          country_name: selectedCountry,
+          currency_name: countryData?.currency_name || "",
+          currency_code: countryData?.currency_code || "",
+          currency_symbol: countryData?.currency_symbol || "",
+          phone_code: countryData?.phone_code || "", // Add phone_code
+          isDefault: selectedCountries.length === 0,
+        };
+
+        setValue("countries", [...selectedCountries, newCountry]);
+        setValue("country", ""); // Reset selector
+      }
     }
-  }, [countryData, setValue]);
+  }, [countryData, selectedCountry, selectedCountries, setValue]);
+
+  const handleRemoveCountry = (index) => {
+    const updatedCountries = selectedCountries.filter((_, i) => i !== index);
+
+    // If removed country was default and there are others, make first one default
+    if (selectedCountries[index].isDefault && updatedCountries.length > 0) {
+      updatedCountries[0].isDefault = true;
+    }
+
+    setValue("countries", updatedCountries);
+  };
+
+  const handleSetDefault = (index) => {
+    const updatedCountries = selectedCountries.map((country, i) => ({
+      ...country,
+      isDefault: i === index,
+    }));
+    setValue("countries", updatedCountries);
+  };
+
+  // Available countries (not yet selected)
+  const availableCountries = countries?.filter(
+    (country) => !selectedCountries.some((c) => c.country_name === country),
+  );
 
   return (
     <div className="bg-card rounded-lg p-5">
       <SectionHeader
         title="Location"
-        description="Select your country and business address. Currency will be set automatically"
+        description="Select countries where you operate and provide your business address"
       />
 
-      <div className="mt-4 grid grid-cols-1 items-start gap-4 md:mt-6 md:gap-6">
+      <div className="mt-4 space-y-4 md:mt-6">
+        {/* Selected Countries Display */}
+        {selectedCountries.length > 0 && (
+          <div className="space-y-3">
+            <p className="text-muted-foreground text-xs font-medium">
+              Selected Countries
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {selectedCountries.map((country, index) => (
+                <div
+                  key={index}
+                  className="bg-muted/50 border-border flex items-center gap-2 rounded-md border px-3 py-1.5"
+                >
+                  <Globe className="text-muted-foreground size-3.5" />
+                  <span className="text-xs font-medium">
+                    {country.country_name}
+                  </span>
+                  <span className="text-muted-foreground text-xs">
+                    {country.currency_code} ({country.currency_symbol})
+                  </span>
+                  {country.isDefault && (
+                    <Badge className="h-5 text-xs">Default</Badge>
+                  )}
+                  {!country.isDefault && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-5 px-2 text-xs"
+                      onClick={() => handleSetDefault(index)}
+                    >
+                      Set Default
+                    </Button>
+                  )}
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="hover:bg-destructive/10 hover:text-destructive -mr-1 ml-1 size-5"
+                    onClick={() => handleRemoveCountry(index)}
+                    disabled={selectedCountries.length === 1}
+                  >
+                    <X className="size-3" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Add Country Select */}
         <FormField
           control={form.control}
           name="country"
-          rules={{
-            required: "Please select your country",
-          }}
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-xs">
-                Country <span className="text-destructive">*</span>
+                Add Country{" "}
+                {selectedCountries.length === 0 && (
+                  <span className="text-destructive">*</span>
+                )}
               </FormLabel>
               <FormControl>
                 <Select
                   onValueChange={(value) => field.onChange(value)}
                   value={field.value}
-                  disabled={isLoading}
+                  disabled={isLoading || isCountryLoading}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue
-                      placeholder={
-                        isLoading ? "Loading countries..." : "Select country"
-                      }
-                    />
+                    <div className="flex items-center gap-2">
+                      <Plus className="size-4" />
+                      <SelectValue
+                        placeholder={
+                          isLoading
+                            ? "Loading countries..."
+                            : availableCountries?.length === 0
+                              ? "All countries added"
+                              : "Select a country to add"
+                        }
+                      />
+                    </div>
                   </SelectTrigger>
                   <SelectContent>
                     {!isLoading &&
-                      countries?.length > 0 &&
-                      countries?.map((country) => (
+                      availableCountries?.length > 0 &&
+                      availableCountries.map((country) => (
                         <SelectItem key={country} value={country}>
                           {country}
                         </SelectItem>
@@ -89,25 +183,7 @@ export default function Location({
           )}
         />
 
-        <div className="bg-muted/50 border-border flex items-center gap-2 rounded-md border px-3 py-2">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Info className="text-muted-foreground size-4 shrink-0" />
-            </TooltipTrigger>
-            <TooltipContent>Automatically set based on country</TooltipContent>
-          </Tooltip>
-          <p className="text-xs">
-            <span className="font-medium">Currency: </span>
-            <span>
-              {isCountryLoading
-                ? "Loading..."
-                : `${countryData?.currency_code || "USD"} - ${
-                    countryData?.currency_name || "United States Dollar"
-                  } (${countryData?.currency_symbol || "$"})`}
-            </span>
-          </p>
-        </div>
-
+        {/* Business Address */}
         <FormField
           control={form.control}
           name="address"
@@ -117,14 +193,18 @@ export default function Location({
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-xs">
-                Address <span className="text-destructive">*</span>
+                Business Address <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Street address, City, State/Province, Postal Code"
                   {...field}
+                  rows={3}
                 />
               </FormControl>
+              <p className="text-muted-foreground text-xs">
+                This address will be used for all countries
+              </p>
               <FormMessage className="text-xs" />
             </FormItem>
           )}

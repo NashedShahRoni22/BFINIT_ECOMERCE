@@ -12,14 +12,22 @@ import {
 import useBasePath from "@/hooks/useBasePath";
 import { footerLinks } from "@/features/themes/utils/contstants";
 import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
+import { getDefaultCountry } from "@/utils/currencyHelpers";
+import useCountry from "@/hooks/useCountry";
+import { useMemo } from "react";
+import FooterCountrySwitcher from "./FooterCountrySwitcher";
 
 export default function FooterDefault({ content }) {
   const { storeId } = useParams();
+  const { saveCountry } = useCountry();
   const { data } = useGetStorePreference(storeId);
+
+  const countries = useMemo(() => data?.countries || [], [data?.countries]);
+  const defaultCountry = getDefaultCountry(data);
 
   const basePath = useBasePath();
 
-  const fullAddress = `${data?.storeAddress} ${data?.country}`;
+  const fullAddress = `${data?.storeAddress}, ${data?.country ? data?.country : defaultCountry?.country_name}`;
 
   const {
     description,
@@ -35,6 +43,10 @@ export default function FooterDefault({ content }) {
   const activeSocialLinks = Object.entries(socialLinks)?.filter(
     ([_, url]) => url && url.trim() !== "",
   );
+
+  const handleCountryChange = (country) => {
+    saveCountry(country);
+  };
 
   return (
     <footer className="bg-card border-border border-t">
@@ -163,63 +175,72 @@ export default function FooterDefault({ content }) {
         <div className="border-border border-t"></div>
 
         {/* Bottom Footer */}
-        <div className="pt-8">
-          <div className="mb-6 flex flex-col items-center justify-between gap-4 md:flex-row">
+        <div className="flex flex-col items-center justify-between gap-4 pt-8 md:flex-row">
+          {/* Left side: Copyright + Country Switcher */}
+          <div className="flex flex-col items-center gap-3 md:flex-row md:items-center md:gap-6">
             {/* Copyright */}
             <p className="text-muted-foreground text-center text-sm md:text-left">
               © 2026 {data?.storeName}. All rights reserved.
             </p>
 
-            {/* Social Links */}
-            {showSocialLinks && activeSocialLinks?.length > 0 && (
-              <div className="flex items-center gap-4">
-                {socialLinks?.facebook && (
-                  <a
-                    href={socialLinks?.facebook}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover: transition-colors"
-                    aria-label="Facebook"
-                  >
-                    <Facebook className="h-5 w-5" />
-                  </a>
-                )}
-                {socialLinks?.twitter && (
-                  <a
-                    href={socialLinks?.twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover: transition-colors"
-                    aria-label="Twitter"
-                  >
-                    <Twitter className="h-5 w-5" />
-                  </a>
-                )}
-                {socialLinks?.instagram && (
-                  <a
-                    href={socialLinks?.instagram}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover: transition-colors"
-                    aria-label="Instagram"
-                  >
-                    <Instagram className="h-5 w-5" />
-                  </a>
-                )}
-                {socialLinks?.youtube && (
-                  <a
-                    href={socialLinks?.youtube}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover: transition-colors"
-                    aria-label="LinkedIn"
-                  >
-                    <Youtube className="h-5 w-5" />
-                  </a>
-                )}
-              </div>
+            {/* Country Switcher Dropdown */}
+            {countries?.length > 0 && (
+              <FooterCountrySwitcher
+                handleCountryChange={handleCountryChange}
+                data={data}
+              />
             )}
           </div>
+
+          {/* Social Links */}
+          {showSocialLinks && activeSocialLinks?.length > 0 && (
+            <div className="flex items-center gap-4">
+              {socialLinks?.facebook && (
+                <Link
+                  to={socialLinks?.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="h-5 w-5" />
+                </Link>
+              )}
+              {socialLinks?.twitter && (
+                <Link
+                  to={socialLinks?.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="Twitter"
+                >
+                  <Twitter className="h-5 w-5" />
+                </Link>
+              )}
+              {socialLinks?.instagram && (
+                <Link
+                  to={socialLinks?.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="h-5 w-5" />
+                </Link>
+              )}
+              {socialLinks?.youtube && (
+                <Link
+                  to={socialLinks?.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="YouTube"
+                >
+                  <Youtube className="h-5 w-5" />
+                </Link>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </footer>

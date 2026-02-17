@@ -4,6 +4,7 @@ import useGetQuery from "@/hooks/api/useGetQuery";
 import { cn } from "@/lib/utils";
 import { dummyProducts } from "@/features/themes/utils/contstants";
 import useTheme from "@/hooks/useTheme";
+import useCountry from "@/hooks/useCountry";
 
 const gridColsMap = {
   2: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2",
@@ -14,6 +15,9 @@ const gridColsMap = {
 export default function ProductGrid({ content }) {
   const { storeId } = useParams();
   const { isEditorMode } = useTheme();
+  const { selectedCountry, isLoading } = useCountry();
+
+  const countryName = selectedCountry?.country_name;
 
   const isManualProduct = content?.productSource?.type === "manual";
   const manualProductIds = isManualProduct ? content?.productSource?.value : [];
@@ -24,15 +28,20 @@ export default function ProductGrid({ content }) {
   const { data: manualProducts } = useGetQuery({
     endpoint: `/product/store/batches?ids=${idsQuery}&limit=${
       content?.productsToShow || 8
-    }`,
-    queryKey: ["manual-products", idsQuery],
-    enabled: !!idsQuery && !!content?.productsToShow && hasManualProducts,
+    }&countryName=${countryName}`,
+    queryKey: ["manual-products", idsQuery, countryName],
+    enabled:
+      !!idsQuery &&
+      !!content?.productsToShow &&
+      !!countryName &&
+      hasManualProducts &&
+      !isLoading,
   });
 
   const { data: allProducts } = useGetQuery({
-    endpoint: `/product/store?storeId=${storeId}`,
-    queryKey: ["products", "list", storeId],
-    enabled: !!storeId && !isManualProduct,
+    endpoint: `/product/store?storeId=${storeId}&countryName=${countryName}`,
+    queryKey: ["products", "list", storeId, countryName],
+    enabled: !!storeId && !isManualProduct && !!countryName && !isLoading,
   });
 
   const mainProducts = isManualProduct

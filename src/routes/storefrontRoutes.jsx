@@ -16,17 +16,20 @@ import NotFound from "@/pages/storefront/NotFound";
 import Orders from "@/pages/storefront/Orders";
 import Blogs from "@/pages/storefront/Blogs";
 import BlogDetails from "@/pages/storefront/BlogDetails";
+import CountryProvider from "@/providers/CountryProvider";
 
 export const storeFrontRoutes = {
   path: "/stores/:storeId",
   element: (
-    <StorefrontThemeProvider>
-      <StorefrontAuthProvider>
-        <CartProvider>
-          <StorefrontLayout />
-        </CartProvider>
-      </StorefrontAuthProvider>
-    </StorefrontThemeProvider>
+    <CountryProvider>
+      <StorefrontThemeProvider>
+        <StorefrontAuthProvider>
+          <CartProvider>
+            <StorefrontLayout />
+          </CartProvider>
+        </StorefrontAuthProvider>
+      </StorefrontThemeProvider>
+    </CountryProvider>
   ),
   children: [
     {

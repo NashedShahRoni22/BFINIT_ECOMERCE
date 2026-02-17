@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { ShoppingCart, Heart, Eye, Star, Image, Settings2 } from "lucide-react";
+import { ShoppingCart, Eye, Star, Image, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useBasePath from "@/hooks/useBasePath";
 import { formatPrice } from "@/utils/formatPrice";
@@ -8,6 +8,7 @@ import { getDiscountPercent } from "@/utils/products";
 import useCart from "@/hooks/useCart";
 import VariantSelectorModal from "../../modals/VariantSelectorModal";
 import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
+import useCountry from "@/hooks/useCountry";
 
 export default function ProductCard({ product }) {
   const {
@@ -25,8 +26,10 @@ export default function ProductCard({ product }) {
     flash_sale,
     limited_stock,
     variants,
+    pricing,
   } = product || {};
 
+  const { selectedCountry } = useCountry();
   const { data: storePreference } = useGetStorePreference();
 
   const { addToCart } = useCart();
@@ -34,18 +37,25 @@ export default function ProductCard({ product }) {
 
   const [showVariantModal, setShowVariantModal] = useState(false);
 
-  const currencySymbol = storePreference?.data?.currencySymbol;
+  const currencySymbol =
+    selectedCountry?.currency_symbol || storePreference?.data?.currencySymbol;
   const originalPrice = productPrice?.$numberDecimal
     ? productPrice?.$numberDecimal
-    : productPrice;
+    : productPrice || pricing?.productPrice;
 
   const originalDiscount = productDiscount?.$numberDecimal
     ? productDiscount?.$numberDecimal
-    : productDiscount;
+    : productDiscount || pricing?.discountPrice;
 
-  const hasVariants = variants?.enabled && variants?.attributes?.length > 0;
+  const hasVariants =
+    (pricing?.variants?.enabled && pricing?.variants?.attributes?.length > 0) ||
+    (variants?.enabled && variants?.attributes?.length > 0);
+
   const hasRequiredVariants =
-    hasVariants && variants.attributes.some((attr) => attr.required === true);
+    (hasVariants &&
+      pricing?.variants?.attributes.some((attr) => attr.required === true)) ||
+    (hasVariants &&
+      variants?.attributes.some((attr) => attr.required === true));
 
   const discountPercent = getDiscountPercent(originalPrice, originalDiscount);
 
@@ -206,17 +216,8 @@ export default function ProductCard({ product }) {
               onClick={handleAddToCart}
               className="hover:bg-primary/90 h-9 gap-1.5 px-3 text-xs font-medium"
             >
-              {hasRequiredVariants ? (
-                <>
-                  <Settings2 className="h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">Options</span>
-                </>
-              ) : (
-                <>
-                  <ShoppingCart className="h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">Add</span>
-                </>
-              )}
+              <ShoppingCart className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Add</span>
             </Button>
           </div>
         </div>
