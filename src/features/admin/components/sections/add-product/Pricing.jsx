@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { ChevronUp, Globe, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
@@ -10,11 +10,24 @@ import SectionHeader from "./SectionHeader";
 import CountryPricingForm from "./CountryPricingForm";
 import CountryVariants from "./CountryVariants";
 
-export default function CountryPricing({ form, countries = [] }) {
+export default function CountryPricing({ form, countries = [], resetKey }) {
   const [isOpen, setIsOpen] = useState(true);
   const [activeCountryTab, setActiveCountryTab] = useState(
     countries.find((c) => c.isDefault)?._id || countries[0]?._id,
   );
+
+  useEffect(() => {
+    if (resetKey === 0) return;
+    const defaultCountry = countries.find((c) => c.isDefault) || countries[0];
+    setActiveCountryTab(defaultCountry?._id);
+  }, [resetKey]);
+
+  useEffect(() => {
+    if (countries.length > 0 && !activeCountryTab) {
+      const defaultCountry = countries.find((c) => c.isDefault) || countries[0];
+      setActiveCountryTab(defaultCountry._id);
+    }
+  }, [countries]);
 
   // Get default country data structure
   const getDefaultCountryData = useCallback(
@@ -151,7 +164,7 @@ export default function CountryPricing({ form, countries = [] }) {
               <TabsTrigger
                 key={country._id}
                 value={country._id}
-                className="data-[state=active]:bg-background relative flex shrink-0 items-center gap-2 rounded-md px-3 py-2 text-xs transition-all"
+                className="data-[state=active]:bg-background relative flex shrink-0 cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-xs transition-all"
               >
                 <Globe className="h-3 w-3" />
                 <span>{country.country_name}</span>
@@ -179,6 +192,7 @@ export default function CountryPricing({ form, countries = [] }) {
               {/* Pricing Section */}
               <CountryPricingForm
                 country={country}
+                form={form}
                 data={getCountryData(country._id)}
                 onUpdate={updateCountryPricing}
               />
@@ -189,6 +203,7 @@ export default function CountryPricing({ form, countries = [] }) {
                 data={getCountryData(country._id)}
                 onUpdate={updateCountryPricing}
                 form={form}
+                resetKey={resetKey}
               />
             </TabsContent>
           ))}

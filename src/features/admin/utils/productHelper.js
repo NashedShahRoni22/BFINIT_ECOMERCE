@@ -70,16 +70,21 @@ export const fillFormWithProductData = (product, reset) => {
 
   // Transform pricing array if it exists (NEW multi-country format)
   const transformedPricing =
-    pricing?.map((countryPricing) => ({
-      countryId: countryPricing.countryId,
-      productPrice: countryPricing.productPrice?.toString() || "",
-      productCost: countryPricing.productCost?.toString() || "",
-      discountPrice: countryPricing.discountPrice?.toString() || "",
-      shippingCharges: countryPricing.shippingCharges?.toString() || "",
-      tax: countryPricing.tax || false,
-      status: countryPricing.status ?? true,
-      variants: getTransformedVariants(countryPricing.variants),
-    })) || [];
+    pricing?.map((countryPricing) => {
+      const discountVal = parseFloat(countryPricing.discountPrice);
+
+      return {
+        countryId: countryPricing.countryId,
+        productPrice: countryPricing.productPrice?.toString() || "",
+        productCost: countryPricing.productCost?.toString() || "",
+        discountPrice:
+          !isNaN(discountVal) && discountVal > 0 ? discountVal.toString() : "",
+        shippingCharges: countryPricing.shippingCharges?.toString() || "",
+        tax: countryPricing.tax || false,
+        status: countryPricing.status ?? true,
+        variants: getTransformedVariants(countryPricing.variants),
+      };
+    }) || [];
 
   // Reset all fields
   reset({

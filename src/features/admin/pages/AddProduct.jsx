@@ -22,7 +22,7 @@ import {
 import EmptyStoreState from "../components/EmptyStoreState";
 import { breadcrubms } from "@/utils/constants/breadcrumbs";
 import useGetStorePreference from "../hooks/store/useGetStorePreference";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 export default function AddProduct() {
   const { selectedStore } = useSelectedStore();
@@ -33,6 +33,8 @@ export default function AddProduct() {
     () => storePreference?.countries || [],
     [storePreference?.countries],
   );
+
+  const [resetKey, setResetKey] = useState(0);
 
   const form = useForm({
     defaultValues: {
@@ -62,6 +64,11 @@ export default function AddProduct() {
     token: true,
     clientId: true,
   });
+
+  const onInvalid = () => {
+    const data = form.getValues();
+    validateCountryPricing(data, form);
+  };
 
   const onSubmit = (data) => {
     // CORRECT: Pass full data object and form instance
@@ -96,7 +103,7 @@ export default function AddProduct() {
           countryPricing.variants.attributes.forEach((attr, attrIndex) => {
             attr.values.forEach((value, valueIndex) => {
               if (value.image) {
-                const fieldName = `pricing[${pricingIndex}][variants][attributes][${attrIndex}][value][${valueIndex}]`;
+                const fieldName = `variants[${pricingIndex}][attributes][${attrIndex}][value][${valueIndex}]`;
                 formData.append(fieldName, value.image);
               }
             });
@@ -109,6 +116,7 @@ export default function AddProduct() {
       onSuccess: (res) => {
         toast.success(res?.message);
         form.reset();
+        setResetKey((prev) => prev + 1);
       },
       onError: (err) => {
         toast.error(err?.message);
@@ -135,7 +143,10 @@ export default function AddProduct() {
       />
 
       <Form {...form}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form
+          onSubmit={handleSubmit(onSubmit, onInvalid)}
+          className="space-y-6"
+        >
           <fieldset
             disabled={isPending}
             className={cn("space-y-6", isPending && "pointer-events-none")}
@@ -144,10 +155,11 @@ export default function AddProduct() {
               <>
                 <ProductDetails form={form} />
                 <ProductImages form={form} />
-
-                {/* NEW: Country-Based Pricing & Variants */}
-                <CountryPricing form={form} countries={countries} />
-
+                <CountryPricing
+                  form={form}
+                  countries={countries}
+                  resetKey={resetKey}
+                />
                 <ProductStatus form={form} />
               </>
             )}

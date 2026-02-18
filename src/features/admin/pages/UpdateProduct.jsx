@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
@@ -33,6 +33,7 @@ export default function UpdateProduct() {
   const { data: storePreference } = useGetStorePreference();
 
   const isInitializing = useRef(false);
+  const [resetKey, setResetKey] = useState(0);
 
   const countries = useMemo(
     () => storePreference?.countries || [],
@@ -209,10 +210,11 @@ export default function UpdateProduct() {
             <>
               <ProductDetails form={form} isInitializingRef={isInitializing} />
               <ProductImages form={form} />
-
-              {/* UPDATED: Use CountryPricing instead of Pricing + Variants */}
-              <CountryPricing form={form} countries={countries} />
-
+              <CountryPricing
+                form={form}
+                countries={countries}
+                resetKey={resetKey}
+              />
               <ProductStatus form={form} />
             </>
           </fieldset>

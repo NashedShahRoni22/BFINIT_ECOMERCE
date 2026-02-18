@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -6,8 +6,17 @@ import { Separator } from "@/components/ui/separator";
 import toast from "react-hot-toast";
 import CountryAttributeCard from "./CountryAttributeCard";
 import CountryVariantsTable from "./CountryVariantsTable";
+import { useFormState } from "react-hook-form";
 
-export default function CountryVariants({ country, data, onUpdate }) {
+export default function CountryVariants({
+  country,
+  data,
+  onUpdate,
+  form,
+  resetKey,
+}) {
+  const { errors } = useFormState({ control: form.control });
+
   // Local state for UI only - sync happens immediately through onUpdate
   const [variantsEnabled, setVariantsEnabled] = useState(
     data.variants?.enabled || false,
@@ -16,6 +25,28 @@ export default function CountryVariants({ country, data, onUpdate }) {
   const [useDefaultPricing, setUseDefaultPricing] = useState(
     data.variants?.useDefaultPricing ?? true,
   );
+
+  useEffect(() => {
+    if (data.variants?.enabled && data.variants?.attributes?.length > 0) {
+      setVariantsEnabled(data.variants.enabled);
+      setAttributes(data.variants.attributes);
+      setUseDefaultPricing(data.variants.useDefaultPricing ?? true);
+    }
+  }, [data.variants?.enabled, data.variants?.attributes?.length]);
+
+  // reset all local state of variant related thing when form get submitted successfully
+  useEffect(() => {
+    if (resetKey === 0) return;
+    setVariantsEnabled(false);
+    setAttributes([]);
+    setUseDefaultPricing(true);
+
+    onUpdate(country._id, "variants", {
+      enabled: false,
+      useDefaultPricing: true,
+      attributes: [],
+    });
+  }, [resetKey]);
 
   // Sync variants to parent immediately
   const syncVariants = useCallback(
@@ -37,7 +68,7 @@ export default function CountryVariants({ country, data, onUpdate }) {
         {
           id: Date.now(),
           name: "",
-          required: false,
+          required: true,
           values: [],
         },
       ];
@@ -52,10 +83,12 @@ export default function CountryVariants({ country, data, onUpdate }) {
   };
 
   const addAttribute = useCallback(() => {
+    form.clearErrors("variants");
+
     const newAttribute = {
       id: Date.now(),
       name: "",
-      required: false,
+      required: true,
       values: [],
     };
 
@@ -83,7 +116,7 @@ export default function CountryVariants({ country, data, onUpdate }) {
     const newAttrs = [...attributes, newAttribute];
     setAttributes(newAttrs);
     syncVariants(variantsEnabled, useDefaultPricing, newAttrs);
-  }, [attributes, variantsEnabled, useDefaultPricing, syncVariants]);
+  }, [attributes, variantsEnabled, useDefaultPricing, syncVariants, form]);
 
   const deleteAttribute = (id) => {
     const newAttrs = attributes.filter((attr) => attr.id !== id);
@@ -92,6 +125,7 @@ export default function CountryVariants({ country, data, onUpdate }) {
   };
 
   const updateAttributeName = (id, name) => {
+    form.clearErrors("variants");
     const newAttrs = attributes.map((attr) =>
       attr.id === id ? { ...attr, name } : attr,
     );
@@ -108,6 +142,8 @@ export default function CountryVariants({ country, data, onUpdate }) {
   };
 
   const addValues = (id, inputValue) => {
+    form.clearErrors("variants");
+
     if (!inputValue.trim()) return;
 
     const newValueStrings = inputValue
@@ -313,6 +349,10 @@ export default function CountryVariants({ country, data, onUpdate }) {
             No variant attributes added yet.
           </p>
         </div>
+      )}
+
+      {errors.variants && (
+        <p className="text-destructive text-xs">{errors.variants.message}</p>
       )}
 
       {/* Variants Table */}

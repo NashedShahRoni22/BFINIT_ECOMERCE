@@ -1,10 +1,11 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
+import { useFormState } from "react-hook-form";
 
-export default function CountryPricingForm({ country, data, onUpdate }) {
+export default function CountryPricingForm({ country, form, data, onUpdate }) {
+  const { errors } = useFormState({ control: form.control });
   const prefixRef = useRef(null);
   const [prefixWidth, setPrefixWidth] = useState(0);
 
@@ -18,8 +19,12 @@ export default function CountryPricingForm({ country, data, onUpdate }) {
   const handlePriceChange = useCallback(
     (field, value) => {
       onUpdate(country._id, field, value);
+
+      if (field === "productPrice" && value && parseFloat(value) > 0) {
+        form.clearErrors("pricing");
+      }
     },
-    [country._id, onUpdate],
+    [country._id, onUpdate, form],
   );
 
   const validateComparePrice = (comparePrice) => {
@@ -80,9 +85,16 @@ export default function CountryPricingForm({ country, data, onUpdate }) {
               className="text-sm"
             />
           </div>
-          <p className="text-muted-foreground text-xs">
-            The price customers will pay
-          </p>
+
+          {errors.pricing ? (
+            <p className="text-destructive mt-1.5 text-xs">
+              {errors.pricing.message}
+            </p>
+          ) : (
+            <p className="text-muted-foreground text-xs">
+              The price customers will pay
+            </p>
+          )}
         </div>
 
         {/* Compare at Price (Discount Price) */}
