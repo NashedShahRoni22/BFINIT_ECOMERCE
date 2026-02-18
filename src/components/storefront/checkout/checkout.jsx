@@ -122,6 +122,8 @@ export default function CheckoutPage() {
     return Object.keys(newErrors).length === 0;
   };
 
+  console.log(cartItems);
+
   const handlePlaceOrder = () => {
     if (!validateForm()) return;
 

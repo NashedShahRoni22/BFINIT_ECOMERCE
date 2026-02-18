@@ -77,6 +77,7 @@ export default function VariantSelectorModal({ open, onClose, product }) {
     const attributeName = selectedVariant
       ? getAttributeName(selectedVariant)
       : null;
+    console.log(selectedVariant);
     addToCart(product, quantity, selectedVariant, attributeName);
     handleClose();
   };
