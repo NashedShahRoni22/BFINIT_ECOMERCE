@@ -17,7 +17,6 @@ import usePatchMutaion from "@/hooks/api/usePatchMutaion";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { formatPrice } from "@/utils/formatPrice";
-import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
 import useSelectedStore from "@/hooks/useSelectedStore";
 
 // Status configurations matching API format
@@ -96,13 +95,10 @@ export default function OrderRow({ order }) {
     products,
     payment,
     shippingDetails,
+    currencySymbol,
   } = order;
 
   const { selectedStore } = useSelectedStore();
-
-  const { data: storePreference } = useGetStorePreference();
-
-  const currencySymbol = storePreference?.currencySymbol;
 
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -117,7 +113,7 @@ export default function OrderRow({ order }) {
     products?.reduce((sum, product) => sum + product.quantity, 0) || 0;
 
   // Get grand total
-  const grandTotal = pricingSummary?.grandTotal?.$numberDecimal || "0";
+  const grandTotal = pricingSummary?.grandTotal || "0";
 
   // Payment info
   const PaymentIcon = getPaymentMethodIcon(payment?.method);
