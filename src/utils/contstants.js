@@ -1,5 +1,4 @@
 import {
-  MessageCircleQuestionMark,
   Store,
   CornerDownRight,
   CreditCard,
@@ -38,6 +37,11 @@ export const adminSidebarLinks = [
         icon: House,
         name: "Home",
         url: "/",
+      },
+      {
+        icon: Store,
+        name: "Stores",
+        url: "/stores",
       },
       {
         icon: Palette,
