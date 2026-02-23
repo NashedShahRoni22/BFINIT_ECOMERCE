@@ -18,7 +18,7 @@ import { Spinner } from "@/components/ui/spinner";
 import useGetStorePreference from "../hooks/store/useGetStorePreference";
 import { useEffect, useRef } from "react";
 import {
-  createStorePayload,
+  createPartialStorePayload,
   fillFormWithStoreData,
 } from "../utils/storeHelpers";
 import usePatchMutaion from "@/hooks/api/usePatchMutaion";
@@ -51,7 +51,8 @@ export default function UpdateStore() {
     },
   });
 
-  const { setValue } = form;
+  const { setValue, reset } = form;
+  const { dirtyFields } = form.formState;
 
   // Watch the countries array to detect default country changes
   const countries = form.watch("countries");
@@ -101,11 +102,11 @@ export default function UpdateStore() {
         return;
       } else if (store.countries) {
         // New multi-country format - fill form directly
-        fillFormWithStoreData(store, null, setValue);
+        fillFormWithStoreData(store, null, reset);
         hasFilledForm.current = true;
       }
     }
-  }, [store, isStoreLoading, setValue]);
+  }, [store, isStoreLoading, reset]);
 
   // Handle old format migration (only if needed)
   useEffect(() => {
@@ -116,10 +117,10 @@ export default function UpdateStore() {
       store.country &&
       !store.countries
     ) {
-      fillFormWithStoreData(store, countryData, setValue);
+      fillFormWithStoreData(store, countryData, reset);
       hasFilledForm.current = true;
     }
-  }, [store, countryData, setValue]);
+  }, [store, countryData, reset]);
 
   // Update phone code when default country changes and countryData is fetched
   useEffect(() => {
@@ -145,10 +146,24 @@ export default function UpdateStore() {
       });
       return;
     }
-
     form.clearErrors("country");
 
-    const storePayload = createStorePayload(data);
+    const countriesChanged =
+      data.countries.length !== store?.countries?.length ||
+      data.countries.some((c) => !c._id);
+
+    const hasChanges =
+      Object.keys(dirtyFields).length > 0 ||
+      data?.logo?.file instanceof File ||
+      data?.favicon?.file instanceof File ||
+      countriesChanged;
+
+    if (!hasChanges) {
+      toast("No changes to save.");
+      return;
+    }
+
+    const storePayload = createPartialStorePayload(dirtyFields, data);
 
     mutate(storePayload, {
       onSuccess: () => {
@@ -161,10 +176,8 @@ export default function UpdateStore() {
         queryClient.invalidateQueries(["store", "preference", storeId]);
         navigate("/stores");
       },
-
       onError: (error) => {
         toast.error(error?.message || "Failed to update store");
-        console.error("Store update error:", error);
       },
     });
   };

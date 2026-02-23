@@ -38,6 +38,9 @@ export default function FooterDefault({ content }) {
     queryKey: ["stripe-client-config", storeId],
   });
 
+  const date = new Date();
+  const year = date.getFullYear();
+
   const isStripeConnected =
     !isStripeConfigLoading &&
     stripeConfig?.data?.charges_enabled &&
@@ -179,7 +182,7 @@ export default function FooterDefault({ content }) {
           {/* Left: Copyright + Country Switcher */}
           <div className="flex flex-col items-center gap-3 md:flex-row md:items-center md:gap-6">
             <p className="text-muted-foreground text-center text-sm md:text-left">
-              © 2026 {data?.storeName}. All rights reserved.
+              © {year} {data?.storeName}. All rights reserved.
             </p>
 
             {countries?.length > 0 && (

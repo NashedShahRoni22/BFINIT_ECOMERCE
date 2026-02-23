@@ -87,7 +87,7 @@ export default function GalleryImages({ form }) {
     // Create a temporary input for this specific slot
     const input = document.createElement("input");
     input.type = "file";
-    input.accept = "image/*";
+    input.accept = "image/png,image/jpeg,image/jpg";
     input.multiple = index === (currentGallery?.length || 0); // Allow multiple only for new slot
     input.onchange = (e) => {
       if (e.target.files && e.target.files.length > 0) {

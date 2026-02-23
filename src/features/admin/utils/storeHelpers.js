@@ -67,21 +67,18 @@ export const cleanAddress = (address) => {
   return cleanedAddress;
 };
 
-export const fillFormWithStoreData = (store, countryData, setValue) => {
+export const fillFormWithStoreData = (store, countryData, reset) => {
   if (!store) return;
 
-  // Check if store has new multi-country format
   const hasMultiCountry =
     store?.countries &&
     Array.isArray(store.countries) &&
     store.countries.length > 0;
 
-  // Get default country
   const defaultCountry = hasMultiCountry
     ? store.countries.find((c) => c.isDefault) || store.countries[0]
     : null;
 
-  // Get phone code - priority: default country > countryData
   const phoneCode = defaultCountry?.phone_code || countryData?.phone_code;
 
   const formValues = {
@@ -95,13 +92,13 @@ export const fillFormWithStoreData = (store, countryData, setValue) => {
     time_zone: store?.timeZone,
     twitter: store?.storeTwitterLink || "",
     youtube: store?.storeYoutubeLink || "",
+    country: "",
   };
 
-  // Handle logo and favicon (these are URLs from API, not files)
   if (store?.storeLogo) {
     formValues.logo = {
       preview: `https://ecomback.bfinit.com/${store.storeLogo}`,
-      file: null, // No file initially, just the preview URL
+      file: null,
     };
   }
 
@@ -112,36 +109,79 @@ export const fillFormWithStoreData = (store, countryData, setValue) => {
     };
   }
 
-  // Handle multi-country format
   if (hasMultiCountry) {
-    // Store already has countries array - use it directly
     formValues.countries = store.countries.map((country) => ({
+      _id: country._id, // preserve ID
       country_name: country.country_name,
       currency_name: country.currency_name,
       currency_code: country.currency_code,
       currency_symbol: country.currency_symbol,
-      phone_code: country.phone_code || phoneCode, // Fallback to phoneCode if missing
+      phone_code: country.phone_code || phoneCode,
       isDefault: country.isDefault,
     }));
   } else if (store?.country) {
-    // Old single-country format - migrate to multi-country
     formValues.countries = [
       {
         country_name: store.country,
         currency_name: store.currencyName,
         currency_code: store.currencyCode,
         currency_symbol: store.currencySymbol,
-        phone_code: phoneCode, // Include phone_code in migration
+        phone_code: phoneCode,
         isDefault: true,
       },
     ];
   } else {
-    // No country data at all - initialize empty
     formValues.countries = [];
   }
 
-  // Set all form values
-  Object.entries(formValues).forEach(([key, value]) => {
-    setValue(key, value);
+  // Use reset so RHF sets the baseline for dirty tracking
+  reset(formValues);
+};
+
+export const createPartialStorePayload = (dirtyData, allData) => {
+  const defaultCountry =
+    allData?.countries?.find((c) => c.isDefault) || allData?.countries?.[0];
+  const phoneCode = defaultCountry?.phone_code || "";
+
+  // Field map: form key → storeData key (with optional transform)
+  const fieldMap = {
+    name: () => ({ storeName: allData.name }),
+    email: () => ({ storeEmail: allData.email }),
+    address: () => ({ storeAddress: allData.address }),
+    time_zone: () => ({ timeZone: allData.time_zone }),
+    mobile: () => ({ storePhone: `${phoneCode}${allData.mobile}` }),
+    telephone: () => ({
+      storeTelephone: allData.telephone
+        ? `${phoneCode}${allData.telephone}`
+        : "",
+    }),
+    facebook: () => ({ storeFacebookLink: allData.facebook || "" }),
+    twitter: () => ({ storeTwitterLink: allData.twitter || "" }),
+    instagram: () => ({ storeInstagramLink: allData.instagram || "" }),
+    youtube: () => ({ storeYoutubeLink: allData.youtube || "" }),
+  };
+
+  // Build storeData with only dirty fields
+  const storeData = {};
+  Object.keys(dirtyData).forEach((key) => {
+    if (fieldMap[key]) {
+      Object.assign(storeData, fieldMap[key]());
+    }
   });
+
+  // Always include countries (for upsert/ID preservation)
+  storeData.countries = allData.countries;
+
+  const formData = new FormData();
+  formData.append("storeData", JSON.stringify(storeData));
+
+  // Files only if actually changed
+  if (allData?.logo?.file instanceof File) {
+    formData.append("storeLogo", allData.logo.file);
+  }
+  if (allData?.favicon?.file instanceof File) {
+    formData.append("storeFavicon", allData.favicon.file);
+  }
+
+  return formData;
 };
