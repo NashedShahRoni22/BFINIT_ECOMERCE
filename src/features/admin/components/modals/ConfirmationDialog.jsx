@@ -41,6 +41,7 @@ export default function ConfirmationDialog({
   isLoading = false,
   loadingText = "Processing",
   variant = "destructive",
+  children,
 }) {
   const config = VARIANT_CONFIG[variant];
   const Icon = config.icon;
@@ -80,6 +81,8 @@ export default function ConfirmationDialog({
             </div>
           </div>
         </DialogHeader>
+
+        {children && <div className="mt-4">{children}</div>}
 
         <div className="mt-9 flex items-center justify-end gap-3">
           <Button

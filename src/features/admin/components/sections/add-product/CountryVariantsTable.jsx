@@ -125,7 +125,7 @@ export default function CountryVariantsTable({
             className="cursor-pointer text-xs"
             onClick={() => handlePricingToggle(!useDefaultPricing)}
           >
-            {useDefaultPricing ? "Default Pricing" : "Custom Pricing"}
+            Default Pricing
           </Label>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import useGetQuery from "@/hooks/api/useGetQuery";
-import { Minus, Plus, ShoppingCart, Heart, Share2, Star } from "lucide-react";
+import { Minus, Plus, ShoppingCart, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -36,6 +36,9 @@ export default function ProductDetails() {
 
   const product = data?.data;
 
+  // Single source of truth for variant data — always from pricing[0].variants
+  const productVariants = product?.pricing?.[0]?.variants;
+
   // Initialize selected image when product loads
   useEffect(() => {
     if (product?.thumbnailImage) {
@@ -45,9 +48,9 @@ export default function ProductDetails() {
 
   // Initialize default variant selections
   useEffect(() => {
-    if (product?.variants?.enabled && product?.variants?.attributes) {
+    if (productVariants?.enabled && productVariants?.attributes) {
       const defaultSelections = {};
-      product.variants.attributes.forEach((attr) => {
+      productVariants.attributes.forEach((attr) => {
         if (attr.required && attr.value?.length > 0) {
           defaultSelections[attr.name] = attr.value[0].name;
         }
@@ -56,19 +59,19 @@ export default function ProductDetails() {
     }
   }, [product]);
 
-  // Update current variant data based on selections
+  // Update currentVariantData whenever selectedVariants changes
   useEffect(() => {
-    if (!product?.variants?.enabled) return;
+    if (!productVariants?.enabled) return;
 
-    const selectedAttribute = Object.values(selectedVariants)[0];
-    if (selectedAttribute) {
-      const attr = product.variants.attributes.find((a) =>
-        a.value.some((v) => v.name === selectedAttribute),
+    const selectedAttributeValue = Object.values(selectedVariants)[0];
+    if (selectedAttributeValue) {
+      const attr = productVariants.attributes.find((a) =>
+        a.value.some((v) => v.name === selectedAttributeValue),
       );
       const variantValue = attr?.value.find(
-        (v) => v.name === selectedAttribute,
+        (v) => v.name === selectedAttributeValue,
       );
-      setCurrentVariantData(variantValue);
+      setCurrentVariantData(variantValue ?? null);
     }
   }, [selectedVariants, product]);
 
@@ -79,7 +82,7 @@ export default function ProductDetails() {
     }));
 
     // Update image if variant has one
-    const attr = product.variants.attributes.find(
+    const attr = productVariants?.attributes?.find(
       (a) => a.name === attributeName,
     );
     const value = attr?.value.find((v) => v.name === valueName);
@@ -89,68 +92,70 @@ export default function ProductDetails() {
   };
 
   const canAddToCart = () => {
-    if (!product?.variants?.enabled) return true;
+    if (!productVariants?.enabled) return true;
 
-    const requiredAttributes = product.variants.attributes.filter(
+    const requiredAttributes = productVariants.attributes.filter(
       (attr) => attr.required,
     );
     return requiredAttributes.every((attr) => selectedVariants[attr.name]);
   };
 
-  const handleAddToCart = () => {
-    if (!canAddToCart()) {
-      alert("Please select all required options");
-      return;
+  /**
+   * Mirrors VariantSelectorModal's getVariantPrice logic.
+   * Falls back to product price if variant price is 0 or missing.
+   */
+  const getVariantPrice = (variant) => {
+    if (!productVariants?.useDefaultPricing && variant?.price) {
+      const variantPrice = parseFloat(
+        variant.price?.$numberDecimal || variant.price || 0,
+      );
+      const variantDiscount = parseFloat(
+        variant.discountPrice?.$numberDecimal || variant.discountPrice || 0,
+      );
+
+      if (variantPrice > 0) {
+        return variantDiscount > 0 ? variantDiscount : variantPrice;
+      }
     }
 
-    // Get the selected variant data if variants are enabled
-    const selectedVariant = product.variants?.enabled
-      ? currentVariantData
-      : null;
-
-    // Get the attribute name (first selected variant's attribute name)
-    const attributeName = product.variants?.enabled
-      ? Object.keys(selectedVariants)[0]
-      : null;
-
-    // Call addToCart with correct parameters
-    addToCart(product, quantity, selectedVariant, attributeName);
+    // Fallback: use product-level price
+    return (
+      product?.pricing?.[0]?.productPrice ||
+      product?.productPrice?.$numberDecimal ||
+      product?.productPrice ||
+      0
+    );
   };
 
   const getCurrentPrice = () => {
-    if (product?.pricing?.length > 0) {
-      return formatPrice(product?.pricing[0]?.productPrice, currencySymbol);
+    if (productVariants?.enabled && currentVariantData) {
+      return formatPrice(getVariantPrice(currentVariantData), currencySymbol);
     }
 
-    if (
-      product?.variants?.enabled &&
-      !product?.variants?.useDefaultPricing &&
-      currentVariantData
-    ) {
-      return formatPrice(
-        currentVariantData.price.$numberDecimal,
-        currencySymbol,
-      );
+    if (product?.pricing?.length > 0) {
+      return formatPrice(product.pricing[0].productPrice, currencySymbol);
     }
+
     return formatPrice(product?.productPrice || 0, currencySymbol);
   };
 
   const getDiscountPrice = () => {
-    if (product?.pricing?.length > 0) {
-      const discount = parseFloat(product?.pricing[0]?.discountPrice);
-      return discount > 0 ? discount : null;
-    }
-
     if (
-      product?.variants?.enabled &&
-      !product?.variants?.useDefaultPricing &&
+      productVariants?.enabled &&
+      !productVariants?.useDefaultPricing &&
       currentVariantData
     ) {
       const discount = parseFloat(
-        currentVariantData.discountPrice.$numberDecimal,
+        currentVariantData.discountPrice?.$numberDecimal || 0,
       );
       return discount > 0 ? discount : null;
     }
+
+    if (product?.pricing?.length > 0) {
+      const discount = parseFloat(product.pricing[0].discountPrice);
+      return discount > 0 ? discount : null;
+    }
+
     const discount = parseFloat(product?.productDiscount?.$numberDecimal || 0);
     return discount > 0 ? discount : null;
   };
@@ -164,6 +169,23 @@ export default function ProductDetails() {
       );
     }
     return null;
+  };
+
+  const handleAddToCart = () => {
+    if (!canAddToCart()) {
+      alert("Please select all required options");
+      return;
+    }
+
+    if (productVariants?.enabled) {
+      // Mirror VariantSelectorModal: pass currentVariantData as selectedVariant
+      // and resolve the attribute name from the selected variant
+      const attributeName = Object.keys(selectedVariants)[0] ?? null;
+
+      addToCart(product, quantity, currentVariantData, attributeName);
+    } else {
+      addToCart(product, quantity, null, null);
+    }
   };
 
   if (isLoading) {
@@ -261,7 +283,7 @@ export default function ProductDetails() {
 
           {/* Product Info */}
           <div className="space-y-6">
-            {/* Title and Rating */}
+            {/* Title */}
             <div>
               <h1 className="text-3xl font-bold">{product.productName}</h1>
             </div>
@@ -292,10 +314,10 @@ export default function ProductDetails() {
 
             <Separator />
 
-            {/* Variants */}
-            {product.variants?.enabled && (
+            {/* Variants — single block using productVariants (pricing[0].variants) */}
+            {productVariants?.enabled && productVariants?.attributes && (
               <div className="space-y-4">
-                {product.variants.attributes.map((attribute) => (
+                {productVariants.attributes.map((attribute) => (
                   <div key={attribute._id} className="space-y-2">
                     <Label className="text-base font-semibold">
                       {attribute.name}
@@ -334,83 +356,12 @@ export default function ProductDetails() {
                               />
                             )}
                             <span>{option.name}</span>
-                            {!product?.variants?.useDefaultPricing &&
-                              parseFloat(option.price.$numberDecimal) > 0 && (
-                                <span className="text-muted-foreground text-xs">
-                                  +$
-                                  {parseFloat(
-                                    option.price.$numberDecimal,
-                                  ).toFixed(2)}
-                                </span>
-                              )}
                           </Label>
                         </div>
                       ))}
                     </RadioGroup>
                   </div>
                 ))}
-              </div>
-            )}
-
-            {product?.pricing?.[0]?.variants?.enabled && (
-              <div className="space-y-4">
-                {product?.pricing?.[0]?.variants?.attributes.map(
-                  (attribute) => (
-                    <div key={attribute._id} className="space-y-2">
-                      <Label className="text-base font-semibold">
-                        {attribute.name}
-                        {attribute.required && (
-                          <span className="text-destructive ml-1">*</span>
-                        )}
-                      </Label>
-                      <RadioGroup
-                        value={selectedVariants[attribute.name] || ""}
-                        onValueChange={(value) =>
-                          handleVariantChange(attribute.name, value)
-                        }
-                        className="flex flex-wrap gap-2"
-                      >
-                        {attribute.value.map((option) => (
-                          <div key={option._id}>
-                            <RadioGroupItem
-                              value={option.name}
-                              id={option._id}
-                              className="peer sr-only"
-                              disabled={!option.status}
-                            />
-                            <Label
-                              htmlFor={option._id}
-                              className={`border-border hover:bg-accent peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 flex cursor-pointer items-center gap-2 rounded-md border-2 px-4 py-2 ${
-                                !option.status
-                                  ? "cursor-not-allowed opacity-50"
-                                  : ""
-                              }`}
-                            >
-                              {option.image?.[0] && (
-                                <img
-                                  src={`https://ecomback.bfinit.com${option.image[0]}`}
-                                  alt={option.name}
-                                  className="h-6 w-6 rounded object-cover"
-                                />
-                              )}
-                              <span>{option.name}</span>
-                              {!product?.pricing?.[0]?.variants
-                                ?.useDefaultPricing &&
-                                parseFloat(option.price.$numberDecimal) > 0 && (
-                                  <span className="text-muted-foreground text-xs">
-                                    +$
-                                    {parseFloat(
-                                      option.price.$numberDecimal,
-                                    ).toFixed(2)}
-                                  </span>
-                                )}
-                            </Label>
-                          </div>
-                        ))}
-                      </RadioGroup>
-                    </div>
-                  ),
-                )}
               </div>
             )}
 
@@ -453,9 +404,6 @@ export default function ProductDetails() {
                 <ShoppingCart className="mr-2 h-5 w-5" />
                 Add to Cart
               </Button>
-              {/* <Button size="lg" variant="outline">
-                <Heart className="h-5 w-5" />
-              </Button> */}
             </div>
 
             {/* Additional Info */}
