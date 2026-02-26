@@ -19,6 +19,7 @@ import {
 import useAuth from "@/hooks/auth/useAuth";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useGetStores from "@/features/admin/hooks/store/useGetStores";
+import { useEffect } from "react";
 
 export default function StoreSwitcherDropdown() {
   const { data: stores, isLoading } = useGetStores();
@@ -28,6 +29,25 @@ export default function StoreSwitcherDropdown() {
 
   const storeLimit = user?.data?.storeLimit || 0;
   const hasStores = stores?.data?.length > 0;
+
+  useEffect(() => {
+    if (!stores?.data || !selectedStore) return;
+
+    const freshStore = stores.data.find(
+      (s) => s.storeId === selectedStore.storeId,
+    );
+
+    if (!freshStore) return;
+
+    // Check if any field differs and sync if so
+    const hasChanged = Object.keys(freshStore).some(
+      (key) => freshStore[key] !== selectedStore[key],
+    );
+
+    if (hasChanged) {
+      handleSetStore(freshStore);
+    }
+  }, [stores?.data]);
 
   const handleStoreCreate = () => {
     navigate("/stores/create");

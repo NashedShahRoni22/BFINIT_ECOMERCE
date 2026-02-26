@@ -8,7 +8,7 @@ import Cart from "@/pages/storefront/Cart";
 import Contact from "@/pages/storefront/Contact";
 import Shop from "@/pages/storefront/Shop";
 import Signup from "@/pages/storefront/Signup";
-import CheckoutPage from "@/components/storefront/checkout/checkout";
+import Checkout from "@/components/storefront/checkout/Checkout";
 import Login from "@/pages/storefront/Login";
 import ContentPage from "@/pages/storefront/ContentPage";
 import StorefrontAuthProvider from "@/providers/StorefrontAuthProvider";
@@ -76,7 +76,7 @@ export const themeEditorRoutes = {
       path: "checkout",
       element: (
         <PrivateRoute role="customer">
-          <CheckoutPage />
+          <Checkout />
         </PrivateRoute>
       ),
     },

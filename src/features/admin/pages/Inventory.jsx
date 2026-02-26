@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router";
 import { Package, PackageOpen, Plus, Search, Globe } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -30,6 +30,7 @@ export default function Inventory() {
   const { data: storePreference } = useGetStorePreference();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const prevStoreId = useRef(selectedStore?.storeId);
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const debouncedSearch = useDebounce(search);
   const currentPage = parseInt(searchParams.get("page") || "1", 10);
@@ -49,6 +50,18 @@ export default function Inventory() {
   const [selectedCountryName, setSelectedCountryName] = useState(
     searchParams.get("country") || defaultCountry?.country_name || "",
   );
+
+  useEffect(() => {
+    // Skip on initial mount
+    if (prevStoreId.current === selectedStore?.storeId) return;
+
+    prevStoreId.current = selectedStore?.storeId;
+
+    // Clear stale params from previous store
+    setSearch("");
+    setSelectedCountryName(defaultCountry?.country_name || "");
+    setSearchParams({}, { replace: true });
+  }, [selectedStore?.storeId]);
 
   // Update URL when country changes
   useEffect(() => {

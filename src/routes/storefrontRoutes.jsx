@@ -1,4 +1,4 @@
-import Checkout from "@/components/storefront/checkout/checkout";
+import Checkout from "@/components/storefront/checkout/Checkout";
 import StorefrontLayout from "@/layouts/StorefrontLayout";
 import Cart from "@/pages/storefront/Cart";
 import Contact from "@/pages/storefront/Contact";

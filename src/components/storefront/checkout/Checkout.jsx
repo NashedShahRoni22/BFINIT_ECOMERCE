@@ -11,7 +11,7 @@ import useBasePath from "@/hooks/useBasePath";
 import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
 import useCountry from "@/hooks/useCountry";
 
-export default function CheckoutPage() {
+export default function Checkout() {
   const { storeId } = useParams();
   const navigate = useNavigate();
   const basePath = useBasePath();
@@ -172,6 +172,7 @@ export default function CheckoutPage() {
           status: "PENDING",
         },
         shippingDetails: formData,
+        paymentMethod: "COD",
       };
 
       mutate(requestBody, {
@@ -190,29 +191,47 @@ export default function CheckoutPage() {
         products: cartItems.map((item) => ({
           productId: item.productId,
           productName: item.productName,
-          hasVariants: item.hasVariants,
-          variant: item.variant,
+          countryId: storeSelectedCountry._id,
+          hasVariants: item.hasVariants || false,
+          ...(item?.variant?.attributeId && {
+            variants: [
+              {
+                attributeId: item?.variant?.attributeId,
+                attributeName: item?.variant?.name,
+                valueId: item?.variant?.value?.id,
+                valueName: item?.variant?.value?.name,
+                sku: item?.selectedVariant?.sku,
+                price:
+                  parseFloat(item?.selectedVariant?.price?.$numberDecimal) > 0
+                    ? parseFloat(item?.selectedVariant?.price?.$numberDecimal)
+                    : parseFloat(item?.actualPrice),
+              },
+            ],
+          }),
           quantity: item.quantity,
           unitPrice: item.unitPrice,
           discountPrice: item.discountPrice,
           taxAmount: 0,
+          shippingCharge: 0,
           lineTotal: parseFloat(
             (item.discountPrice * item.quantity).toFixed(2),
           ),
         })),
         pricingSummary: {
           subTotal: parseFloat(subtotal.toFixed(2)),
-          shippingCharges: 0,
+          shippingTotal: 0,
           taxTotal: 0,
           discountTotal: 0,
           grandTotal: parseFloat(subtotal.toFixed(2)),
         },
         currencyCode: storePreference?.data?.currencyCode,
+        currencySymbol: storeSelectedCountry?.currency_symbol,
         payment: {
           method: "Bank Transfer",
-          status: "Pending", // Order pending until payment confirmed
+          status: "PENDING",
         },
         shippingDetails: formData,
+        paymentMethod: "BankTransfer",
       };
 
       mutate(requestBody, {

@@ -44,6 +44,13 @@ const PAYMENT_STATUS_MAP = {
   FAILED: { label: "Failed", variant: "destructive" },
 };
 
+const MANUAL_PAYMENT_STATUSES = [
+  { value: "PENDING", label: "Pending", variant: "secondary" },
+  { value: "PAID", label: "Paid", variant: "default" },
+  { value: "FAILED", label: "Failed", variant: "destructive" },
+  { value: "REFUNDED", label: "Refunded", variant: "secondary" },
+];
+
 function getStatusVariant(status, statusList) {
   const found = statusList.find((s) => s.value === status);
   return found ? found.variant : "secondary";
@@ -79,7 +86,7 @@ function getPaymentMethodLabel(method) {
     COD: "Cash On Delivery",
     STRIPE: "Stripe",
     CARD: "Card",
-    BANK_TRANSFER: "Bank Transfer",
+    BankTransfer: "Bank Transfer",
   };
   return methodMap[method] || method;
 }
@@ -102,8 +109,14 @@ export default function OrderRow({ order }) {
 
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const [currentPaymentStatus, setCurrentPaymentStatus] = useState(
+    payment?.status,
+  );
   const [orderStatus, setOrderStatus] = useState(initialOrderStatus);
   const [deliveryStatus, setDeliveryStatus] = useState(initialDeliveryStatus);
+
+  const isManualPayment = ["COD", "BankTransfer"].includes(payment?.method);
+  const paymentStatusOptions = isManualPayment ? MANUAL_PAYMENT_STATUSES : [];
 
   // Format date and time from createdAt
   const { date: createdDate, time: createdTime } = formatDateTime(createdAt);
@@ -137,6 +150,29 @@ export default function OrderRow({ order }) {
       token: user?.token,
       clientId: user?.data?.clientid,
     });
+
+  const { mutate: paymentMutate, isPending: paymentLoading } = usePatchMutaion({
+    endpoint: `/orders/update/payment/${_id}`,
+    token: user?.token,
+    clientId: user?.data?.clientid,
+  });
+
+  const updatePaymentStatus = (value) => {
+    setCurrentPaymentStatus(value);
+    paymentMutate(
+      { paymentStatus: value },
+      {
+        onSuccess: () => {
+          toast.success("Payment status updated!");
+          queryClient.invalidateQueries(["orders", selectedStore?.storeId]);
+        },
+        onError: () => {
+          toast.error("Something went wrong!");
+          setCurrentPaymentStatus(payment?.status);
+        },
+      },
+    );
+  };
 
   // function to update order status
   const updateOrderStatus = (value) => {
@@ -241,9 +277,50 @@ export default function OrderRow({ order }) {
       </TableCell>
 
       <TableCell className="border text-xs">
-        <Badge variant={paymentStatus.variant} className="text-xs font-normal">
-          {paymentStatus.label}
-        </Badge>
+        {isManualPayment ? (
+          <Select
+            value={currentPaymentStatus}
+            onValueChange={updatePaymentStatus}
+            disabled={paymentLoading}
+          >
+            <SelectTrigger className="w-40 border text-xs">
+              <SelectValue>
+                <Badge
+                  variant={getStatusVariant(
+                    currentPaymentStatus,
+                    paymentStatusOptions,
+                  )}
+                  className="text-xs font-normal"
+                >
+                  {getStatusLabel(currentPaymentStatus, paymentStatusOptions)}
+                </Badge>
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {paymentStatusOptions.map((status) => (
+                <SelectItem
+                  key={status.value}
+                  value={status.value}
+                  className="text-xs"
+                >
+                  <Badge
+                    variant={status.variant}
+                    className="text-xs font-normal"
+                  >
+                    {status.label}
+                  </Badge>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        ) : (
+          <Badge
+            variant={paymentStatus.variant}
+            className="text-xs font-normal"
+          >
+            {paymentStatus.label}
+          </Badge>
+        )}
       </TableCell>
 
       <TableCell className="border text-xs">

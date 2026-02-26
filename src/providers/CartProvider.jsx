@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router";
+import { useLocation, useParams } from "react-router";
 import toast from "react-hot-toast";
 import { CartContext } from "@/context/CartContext";
 
 export default function CartProvider({ children }) {
+  const { storeId } = useParams();
   const location = useLocation();
   const isPreviewMode = location.pathname.includes("/theme-editor");
 
@@ -12,7 +13,7 @@ export default function CartProvider({ children }) {
 
   // Load cart from localStorage on mount
   useEffect(() => {
-    const savedCart = localStorage.getItem("cart");
+    const savedCart = localStorage.getItem(`store_${storeId}_cart`);
     if (savedCart) {
       try {
         setCartItems(JSON.parse(savedCart));
@@ -20,16 +21,16 @@ export default function CartProvider({ children }) {
         console.error("Failed to load cart:", error);
       }
     }
-  }, []);
+  }, [storeId]);
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
     if (cartItems.length > 0) {
-      localStorage.setItem("cart", JSON.stringify(cartItems));
+      localStorage.setItem(`store_${storeId}_cart`, JSON.stringify(cartItems));
     } else {
-      localStorage.removeItem("cart");
+      localStorage.removeItem(`store_${storeId}_cart`);
     }
-  }, [cartItems]);
+  }, [cartItems, storeId]);
 
   /**
    * Generate unique cart item ID
@@ -215,7 +216,7 @@ export default function CartProvider({ children }) {
    */
   const clearCart = () => {
     setCartItems([]);
-    localStorage.removeItem("cart");
+    localStorage.removeItem(`store_${storeId}_cart`);
     toast.success("Cart cleared");
   };
 
