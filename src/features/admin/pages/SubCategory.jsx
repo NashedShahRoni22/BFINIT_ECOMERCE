@@ -145,7 +145,7 @@ export default function SubCategory() {
       {selectedStore?.storeId && (
         <div className="mt-6 grid grid-cols-1 items-start gap-6 md:grid-cols-12">
           {/* Left Side: Add Sub-Category Form */}
-          <div className="sticky top-4 col-span-1 md:col-span-12 lg:col-span-4">
+          <div className="top-4 col-span-1 md:sticky md:col-span-12 lg:col-span-4">
             <Card className="border-border/60 shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg">New Subcategory</CardTitle>

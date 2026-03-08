@@ -131,15 +131,6 @@ export default function AdminSidebar({ showSideNav, toggleSideNav }) {
           {/* User Menu Items - IMPROVED */}
           {showUserMenu && (
             <div className="mt-1.5 space-y-0.5 px-1">
-              <Link
-                to="/accounts"
-                onClick={toggleSideNav}
-                className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50"
-              >
-                <UserCircle className="h-4 w-4 text-slate-600" />
-                <span>My Profile</span>
-              </Link>
-
               {adminDropdownLinks.map((link, i) => (
                 <Link
                   key={i}
