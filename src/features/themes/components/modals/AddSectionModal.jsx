@@ -40,7 +40,7 @@ export default function AddSectionModal({ isOpen, onClose, onAddSection }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-4xl! w-full">
+      <DialogContent className="w-full max-w-4xl!">
         <DialogHeader>
           <DialogTitle>Add Section</DialogTitle>
           <p className="text-muted-foreground text-sm">
@@ -90,8 +90,15 @@ export default function AddSectionModal({ isOpen, onClose, onAddSection }) {
                         : "border-muted"
                     }`}
                   >
-                    <div className="mb-3 flex h-24 w-full items-center justify-center rounded-lg bg-gray-100 text-5xl">
+                    {/* <div className="mb-3 flex h-24 w-full items-center justify-center rounded-lg bg-gray-100 text-5xl">
                       {template.thumbnail}
+                    </div> */}
+                    <div className="mb-3 flex h-24 w-full items-center justify-center rounded-lg bg-gray-100 text-5xl">
+                      <img
+                        src={template.thumbnail}
+                        alt="section thumbnail"
+                        className="max-h-full max-w-full"
+                      />
                     </div>
                     <h3 className="font-semibold">{template.name}</h3>
                     <p className="text-muted-foreground mt-1 text-sm">

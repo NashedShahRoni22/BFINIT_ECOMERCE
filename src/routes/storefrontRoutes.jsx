@@ -17,6 +17,7 @@ import Orders from "@/pages/storefront/Orders";
 import Blogs from "@/pages/storefront/Blogs";
 import BlogDetails from "@/pages/storefront/BlogDetails";
 import CountryProvider from "@/providers/CountryProvider";
+import TestHome from "@/pages/storefront/TestHome";
 
 export const storeFrontRoutes = {
   path: "/stores/:storeId",
@@ -39,6 +40,10 @@ export const storeFrontRoutes = {
     {
       index: true,
       element: <Home />,
+    },
+    {
+      path: "testHome",
+      element: <TestHome />,
     },
     {
       path: "shop",

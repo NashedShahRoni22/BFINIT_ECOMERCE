@@ -5,7 +5,8 @@ export const sectionTemplates = {
       name: "Announcement Bar",
       description:
         "Top banner for promotions, announcements, and important messages",
-      thumbnail: "📢",
+      thumbnail:
+        "https://res.cloudinary.com/dxn0qc49a/image/upload/v1777186524/nav_announce_bar_odnjmj.png",
       singleInstance: true,
       defaultContent: {
         message: "Free shipping on orders over $50 | Shop now and save!",
@@ -25,7 +26,8 @@ export const sectionTemplates = {
       id: "nav-simple",
       name: "Simple Navigation",
       description: "Clean navigation bar with logo and links",
-      thumbnail: "🧭",
+      thumbnail:
+        "https://res.cloudinary.com/dxn0qc49a/image/upload/v1777188466/simpleNavbar_ltqovp.png",
       singleInstance: true, // Only one navbar allowed
       defaultContent: {
         logoText: "My Store",
@@ -46,7 +48,8 @@ export const sectionTemplates = {
       id: "hero-default",
       name: "Hero with Background",
       description: "Hero section with background image",
-      thumbnail: "🖼️",
+      thumbnail:
+        "https://res.cloudinary.com/dxn0qc49a/image/upload/v1777188666/hero_xwfxsu.png",
       singleInstance: false, // Only one hero allowed
       defaultContent: {
         title: "Discover Your Next Favorite Thing",
@@ -92,7 +95,8 @@ export const sectionTemplates = {
       id: "product-grid",
       name: "Product Grid",
       description: "Display products in a grid layout",
-      thumbnail: "🛍️",
+      thumbnail:
+        "https://res.cloudinary.com/dxn0qc49a/image/upload/v1777188817/productPreview_rkxbez.png",
       singleInstance: false,
       defaultContent: {
         title: "Featured Products",
@@ -210,7 +214,8 @@ export const sectionTemplates = {
       name: "Complete Footer",
       description:
         "Comprehensive footer with company information, navigation columns, contact details, and social media integration",
-      thumbnail: "🔗",
+      thumbnail:
+        "https://res.cloudinary.com/dxn0qc49a/image/upload/v1777188893/footer_qa25tn.png",
       singleInstance: true,
       defaultContent: {
         contact: {
