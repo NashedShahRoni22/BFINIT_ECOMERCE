@@ -2,7 +2,12 @@ import { patchApi } from "@/services/api/patchApi";
 import { useMutation } from "@tanstack/react-query";
 import useAuth from "../auth/useAuth";
 
-export default function usePatchMutaion({ endpoint, token, clientId }) {
+export default function usePatchMutaion({
+  endpoint,
+  token,
+  clientId,
+  newBaseUrl = false,
+}) {
   const { user } = useAuth();
 
   return useMutation({
@@ -12,6 +17,7 @@ export default function usePatchMutaion({ endpoint, token, clientId }) {
         token && user?.token,
         clientId && user?.data?.clientid,
         payload,
+        newBaseUrl,
       ),
   });
 }

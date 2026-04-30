@@ -4,10 +4,8 @@ import {
   ChevronDown,
   Store,
   LogOut,
-  UserCircle,
   FileDown,
   BookOpen,
-  CircleX,
   X,
 } from "lucide-react";
 import toast from "react-hot-toast";

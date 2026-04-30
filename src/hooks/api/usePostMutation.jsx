@@ -9,6 +9,7 @@ export default function usePostMutation({
   clientId = null,
   customerId = null,
   storeId = null,
+  newBaseUrl = false,
 }) {
   const { user } = useAuth();
 
@@ -23,6 +24,7 @@ export default function usePostMutation({
         customerId,
         storeId,
         payload,
+        newBaseUrl,
       ),
   });
 }

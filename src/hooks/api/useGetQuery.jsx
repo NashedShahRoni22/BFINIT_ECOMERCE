@@ -9,13 +9,19 @@ export default function useGetQuery({
   queryKey,
   enabled,
   staleTime = 0,
+  newBaseUrl = false,
 }) {
   const { user } = useAuth();
 
   return useQuery({
     queryKey,
     queryFn: () =>
-      getApi(endpoint, token && user?.token, clientId && user?.data?.clientid),
+      getApi(
+        endpoint,
+        token && user?.token,
+        clientId && user?.data?.clientid,
+        newBaseUrl,
+      ),
     enabled,
     staleTime,
   });

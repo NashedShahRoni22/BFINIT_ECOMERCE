@@ -1,6 +1,7 @@
 import { handleUnauthorized } from "@/lib/auth";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
+const NEW_BASE_URL = import.meta.env.VITE_NEW_BASE_URL;
 
 export const postApi = async (
   endpoint,
@@ -9,7 +10,9 @@ export const postApi = async (
   customerId,
   storeId,
   payload,
+  newBaseUrl = false,
 ) => {
+  const BASE_URL = newBaseUrl ? NEW_BASE_URL : baseUrl;
   const isFormData = payload instanceof FormData;
 
   const headers = {
@@ -20,7 +23,7 @@ export const postApi = async (
     ...(storeId && { storeid: storeId }),
   };
 
-  const res = await fetch(baseUrl + endpoint, {
+  const res = await fetch(BASE_URL + endpoint, {
     method: "POST",
     headers,
     body: isFormData ? payload : JSON.stringify(payload),

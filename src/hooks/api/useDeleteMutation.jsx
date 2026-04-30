@@ -2,7 +2,12 @@ import { useMutation } from "@tanstack/react-query";
 import { deleteApi } from "@/services/api/deleteApi";
 import useAuth from "../auth/useAuth";
 
-export default function useDeleteMutation({ endpoint, token, clientId }) {
+export default function useDeleteMutation({
+  endpoint,
+  token,
+  clientId,
+  newBaseUrl = false,
+}) {
   const { user } = useAuth();
 
   return useMutation({
@@ -11,7 +16,8 @@ export default function useDeleteMutation({ endpoint, token, clientId }) {
         endpoint,
         token && user?.token,
         clientId && user?.data?.clientid,
-        payLoad
+        payLoad,
+        newBaseUrl,
       ),
   });
 }

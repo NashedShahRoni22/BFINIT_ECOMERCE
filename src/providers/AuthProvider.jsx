@@ -3,6 +3,7 @@ import { AuthContext } from "@/context/AuthContext";
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
   useEffect(() => {
     const localAuthInfo = localStorage.getItem("authInfo");
@@ -21,6 +22,8 @@ export default function AuthProvider({ children }) {
   const authInfo = {
     user,
     setUser,
+    isSuperAdmin,
+    setIsSuperAdmin,
   };
 
   return (

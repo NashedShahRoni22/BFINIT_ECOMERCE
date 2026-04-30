@@ -30,6 +30,10 @@ import AddPrivacyPolicy from "@/features/admin/pages/AddPrivacryPolicy";
 import OrdersManagement from "@/Test";
 import Customers from "@/features/admin/pages/Customers";
 import UpdateBlog from "@/features/admin/pages/UpdateBlog";
+import Packages from "@/features/admin/pages/Packages";
+import PackageForm from "@/features/admin/pages/PackageForm";
+import PackageBankAccounts from "@/features/admin/pages/PackageBankAccounts";
+import PlatformBankForm from "@/features/admin/components/sections/packageBankAcc/PlatformBankForm";
 
 export const adminRoutes = {
   path: "/",
@@ -96,6 +100,33 @@ export const adminRoutes = {
       path: "/blogs/manage",
       element: <ManageBlog />,
     },
+
+    // === Super Admin Packages ===
+    {
+      path: "/packages",
+      element: <Packages />,
+    },
+    {
+      path: "/packages/add-package",
+      element: <PackageForm />,
+    },
+    {
+      path: "/packages/edit/:id",
+      element: <PackageForm />,
+    },
+    {
+      path: "/bank-accounts",
+      element: <PackageBankAccounts />,
+    },
+    {
+      path: "/bank-accounts/add",
+      element: <PlatformBankForm />,
+    },
+    {
+      path: "/bank-accounts/edit/:id",
+      element: <PlatformBankForm />,
+    },
+
     {
       path: "/domains",
       element: <Domains />,

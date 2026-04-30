@@ -14,6 +14,8 @@ import {
   LifeBuoy,
   Building2,
   Users,
+  Crown,
+  Landmark,
 } from "lucide-react";
 
 export const adminDropdownLinks = [
@@ -124,6 +126,23 @@ export const adminSidebarLinks = [
             icon: CornerDownRight,
           },
         ],
+      },
+    ],
+  },
+
+  // super admin
+  {
+    groupName: "super admin",
+    links: [
+      {
+        icon: Crown,
+        name: "Packages",
+        url: "/packages",
+      },
+      {
+        icon: Landmark,
+        name: "Bank Accounts",
+        url: "/bank-accounts",
       },
     ],
   },

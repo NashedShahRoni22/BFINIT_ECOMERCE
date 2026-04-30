@@ -98,6 +98,19 @@ export const breadcrubms = {
   customers: [{ label: "Home", href: "/" }, { label: "Customers" }],
 
   // ============================================================================
+  // Super Admin
+  // ============================================================================
+  packages: [{ label: "Home", href: "/" }, { label: "Pacakges" }],
+  addPackage: [{ label: "Home", href: "/" }, { label: "Add Pacakge" }],
+  editPackage: [{ label: "Home", href: "/" }, { label: "Edit Pacakge" }],
+
+  packagesBankAcc: [{ label: "Home", href: "/" }, { label: "Bank Accounts" }],
+  addPlatformBank: [
+    { label: "Home", href: "/" },
+    { label: "Add Bank Account" },
+  ],
+
+  // ============================================================================
   // Settings
   // ============================================================================
 
