@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ChevronLeft, Crown, Plus, Trash2, X } from "lucide-react";
-import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
-import PageHeader from "../components/PageHeader";
+import { ChevronLeft, Crown, Plus, Trash2 } from "lucide-react";
+import DynamicBreadcrumb from "../../admin/components/DynamicBreadcrumb";
+import PageHeader from "../../admin/components/PageHeader";
 import { breadcrubms } from "@/utils/constants/breadcrumbs";
 import {
   Form,
@@ -26,9 +26,22 @@ import {
   emptyDefaults,
   emptyPeriod,
   transformPackageData,
-} from "../utils/packagesHelper";
+} from "../../admin/utils/packagesHelper";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import usePatchMutaion from "@/hooks/api/usePatchMutaion";
+import {
+  closestCenter,
+  DndContext,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import SortablePackageDescItem from "../../admin/components/list/SortablePackageDescItem";
 
 export default function PackageForm() {
   const { id } = useParams();
@@ -57,6 +70,20 @@ export default function PackageForm() {
     endpoint: `/api/v1/package/update/${id}`,
     newBaseUrl: true,
   });
+
+  // Add sensors near your other hooks in PackageForm
+  const sensors = useSensors(useSensor(PointerSensor));
+
+  // Add this handler near handleDescRemove
+  const handleDescReorder = (event, field) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = field.value.findIndex((_, i) => `desc-${i}` === active.id);
+    const newIndex = field.value.findIndex((_, i) => `desc-${i}` === over.id);
+
+    field.onChange(arrayMove(field.value, oldIndex, newIndex));
+  };
 
   const isLoading = isCreating || isDataLoading || isUpdating;
   const btnLabel = isEditMode ? "Update" : "Save";
@@ -289,27 +316,32 @@ export default function PackageForm() {
                         />
                         {Array.isArray(field.value) &&
                           field.value.length > 0 && (
-                            <ul className="mt-2 space-y-1.5">
-                              {field.value.map((item, index) => (
-                                <li
-                                  key={index}
-                                  className="bg-muted/40 flex items-center gap-2 rounded-md border p-2"
-                                >
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      handleDescRemove(index, field)
-                                    }
-                                    className="text-muted-foreground hover:text-destructive ml-2 shrink-0 cursor-pointer"
-                                  >
-                                    <X className="h-3.5 w-3.5" />
-                                  </button>
-                                  <span className="text-secondary-foreground text-xs">
-                                    {item}
-                                  </span>
-                                </li>
-                              ))}
-                            </ul>
+                            <DndContext
+                              sensors={sensors}
+                              collisionDetection={closestCenter}
+                              onDragEnd={(event) =>
+                                handleDescReorder(event, field)
+                              }
+                            >
+                              <SortableContext
+                                items={field.value.map((_, i) => `desc-${i}`)}
+                                strategy={verticalListSortingStrategy}
+                              >
+                                <ul className="mt-2 space-y-1.5">
+                                  {field.value.map((item, index) => (
+                                    <SortablePackageDescItem
+                                      key={`desc-${index}`}
+                                      id={`desc-${index}`}
+                                      item={item}
+                                      index={index}
+                                      onRemove={(i) =>
+                                        handleDescRemove(i, field)
+                                      }
+                                    />
+                                  ))}
+                                </ul>
+                              </SortableContext>
+                            </DndContext>
                           )}
                       </div>
                     </FormControl>

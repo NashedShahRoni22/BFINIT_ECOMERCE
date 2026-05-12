@@ -1,9 +1,9 @@
 import { Crown, Plus } from "lucide-react";
 import { Link } from "react-router";
-import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
-import PageHeader from "../components/PageHeader";
-import PackageStats from "../components/sections/packages/PackageStats";
-import PackageList from "../components/sections/packages/PackageList";
+import DynamicBreadcrumb from "../../admin/components/DynamicBreadcrumb";
+import PageHeader from "../../admin/components/PageHeader";
+import PackageStats from "../../admin/components/sections/packages/PackageStats";
+import PackageList from "../../admin/components/sections/packages/PackageList";
 import { Button } from "@/components/ui/button";
 import { breadcrubms } from "@/utils/constants/breadcrumbs";
 import useGetQuery from "@/hooks/api/useGetQuery";
