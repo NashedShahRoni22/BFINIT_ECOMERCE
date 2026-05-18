@@ -13,8 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import usePostMutation from "@/hooks/api/usePostMutation";
-import PageHeader from "../../PageHeader";
-import DynamicBreadcrumb from "../../DynamicBreadcrumb";
+import PageHeader from "../../../../admin/components/PageHeader";
+import DynamicBreadcrumb from "../../../../admin/components/DynamicBreadcrumb";
 import { breadcrubms } from "@/utils/constants/breadcrumbs";
 import { Link, useParams } from "react-router";
 import useGetQuery from "@/hooks/api/useGetQuery";
@@ -26,7 +26,7 @@ import usePatchMutaion from "@/hooks/api/usePatchMutaion";
 import toast from "react-hot-toast";
 import { Spinner } from "@/components/ui/spinner";
 
-export default function PlatformBankForm() {
+export default function BankForm() {
   const { id } = useParams();
   const isEditMode = !!id;
 
@@ -257,7 +257,7 @@ export default function PlatformBankForm() {
             {/* Actions */}
             <div className="flex flex-col-reverse gap-4 lg:flex-row lg:justify-between">
               <Button variant="outline" size="sm" asChild className="text-xs">
-                <Link to="/">
+                <Link to="/super-admin/packages">
                   <ChevronLeft /> Back to Home
                 </Link>
               </Button>

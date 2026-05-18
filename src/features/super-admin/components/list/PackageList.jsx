@@ -1,4 +1,4 @@
-import PackageCard from "../../cards/PackageCard";
+import PackageCard from "../cards/PackageCard";
 
 export default function PackageList({ data = [] }) {
   return (

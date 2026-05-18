@@ -7,6 +7,17 @@ import {
 } from "@/components/ui/table";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import BankAccountRow from "./BankAccountRow";
+import { cn } from "@/lib/utils";
+
+const tableHeaders = [
+  "Bank name",
+  "Account name",
+  "Account no.",
+  "Routing no.",
+  "Swift code",
+  "Status",
+  "Actions",
+];
 
 export default function BankAccountsTable({ data }) {
   return (
@@ -15,13 +26,17 @@ export default function BankAccountsTable({ data }) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="text-xs">Bank name</TableHead>
-              <TableHead className="text-xs">Account name</TableHead>
-              <TableHead className="text-xs">Account no.</TableHead>
-              <TableHead className="text-xs">Routing no.</TableHead>
-              <TableHead className="text-xs">Swift code</TableHead>
-              <TableHead className="text-xs">Status</TableHead>
-              <TableHead className="text-right text-xs">Actions</TableHead>
+              {tableHeaders.map((header, index) => (
+                <TableHead
+                  key={index}
+                  className={cn(
+                    "text-xs",
+                    index === tableHeaders?.length - 1 && "text-right",
+                  )}
+                >
+                  {header}
+                </TableHead>
+              ))}
             </TableRow>
           </TableHeader>
           <TableBody>

@@ -1,4 +1,3 @@
-import { lazy, Suspense } from "react";
 import AdminLayout from "@/layouts/AdminLayout";
 import PrivateRoute from "./PrivateRoute";
 import Home from "@/features/admin/pages/Home";
@@ -31,14 +30,8 @@ import AddPrivacyPolicy from "@/features/admin/pages/AddPrivacryPolicy";
 import OrdersManagement from "@/Test";
 import Customers from "@/features/admin/pages/Customers";
 import UpdateBlog from "@/features/admin/pages/UpdateBlog";
-import PackageBankAccounts from "@/features/admin/pages/PackageBankAccounts";
-import PlatformBankForm from "@/features/admin/components/sections/packageBankAcc/PlatformBankForm";
-
-// Super Admin Pages
-const Packages = lazy(() => import("@/features/super-admin/pages/Packages"));
-const PackageForm = lazy(
-  () => import("@/features/super-admin/pages/PackageForm"),
-);
+import PackageBankAccounts from "@/features/super-admin/pages/BankAccounts";
+import PlatformBankForm from "@/features/super-admin/components/sections/bank-accounts/BankForm";
 
 export const adminRoutes = {
   path: "/",
@@ -107,30 +100,6 @@ export const adminRoutes = {
     },
 
     // === Super Admin Pages ===
-    {
-      path: "/packages",
-      element: (
-        <Suspense fallback={<div>Loading...</div>}>
-          <Packages />
-        </Suspense>
-      ),
-    },
-    {
-      path: "/packages/add-package",
-      element: (
-        <Suspense fallback={<div>Loading...</div>}>
-          <PackageForm />
-        </Suspense>
-      ),
-    },
-    {
-      path: "/packages/edit/:id",
-      element: (
-        <Suspense fallback={<div>Loading...</div>}>
-          <PackageForm />
-        </Suspense>
-      ),
-    },
     {
       path: "/bank-accounts",
       element: <PackageBankAccounts />,

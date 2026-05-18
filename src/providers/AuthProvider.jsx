@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AuthContext } from "@/context/AuthContext";
 
 export default function AuthProvider({ children }) {
@@ -13,15 +13,22 @@ export default function AuthProvider({ children }) {
     }
   });
 
-  const [isSuperAdmin, setIsSuperAdmin] = useState(
-    () => user?.data?.clientid === "67e4421bb493fa950c961b74",
-  );
+  const token = user?.token ?? null;
+  const isSuperAdmin = user?.data?.role === "superadmin";
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("authInfo", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("authInfo");
+    }
+  }, [user]);
 
   const authInfo = {
+    token,
     user,
-    setUser,
     isSuperAdmin,
-    setIsSuperAdmin,
+    setUser,
   };
 
   return (

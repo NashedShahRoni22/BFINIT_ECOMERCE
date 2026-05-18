@@ -91,20 +91,13 @@ export default function PackageForm() {
 
   // ── Description tag helpers ──────────────────────────────────────────────
   const handleDescKeyDown = (e, field) => {
-    if (e.key === "Enter" || e.key === ",") {
+    if (e.key === "Enter") {
       e.preventDefault();
-      const trimmed = descInput.trim().replace(/,$/, "");
-      if (!trimmed) return;
+      const trimmed = descInput.trim();
+      if (!trimmed || field.value.includes(trimmed)) return;
 
-      const newItems = trimmed
-        .split(",")
-        .map((s) => s.trim())
-        .filter((s) => s !== "" && !field.value.includes(s));
-
-      if (newItems.length > 0) {
-        field.onChange([...(field.value || []), ...newItems]);
-        setDescInput("");
-      }
+      field.onChange([...(field.value || []), trimmed]);
+      setDescInput("");
     }
   };
 
@@ -141,6 +134,8 @@ export default function PackageForm() {
         ? { max_storage: Number(max_storage) }
         : { max_storage: null }),
       subscription_periods: subscription_periods.map((p) => ({
+        ...(p.id !== undefined && { id: p.id }),
+        ...(p.package_id !== undefined && { package_id: p.package_id }),
         price: Number(p.price),
         duration: Number(p.duration),
         offer_percentage:
@@ -309,7 +304,7 @@ export default function PackageForm() {
                     <FormControl>
                       <div className="space-y-2">
                         <Input
-                          placeholder="Press Enter or comma to add multiple at once (e.g., Unlimited visits monthly)"
+                          placeholder="Press Enter to add a description item (e.g., Unlimited visits monthly)"
                           value={descInput}
                           onChange={(e) => setDescInput(e.target.value)}
                           onKeyDown={(e) => handleDescKeyDown(e, field)}
@@ -588,7 +583,7 @@ export default function PackageForm() {
 
           <div className="flex flex-col-reverse gap-4 lg:flex-row lg:justify-between">
             <Button variant="outline" size="sm" asChild className="text-xs">
-              <Link to="/">
+              <Link to="/super-admin/packages">
                 <ChevronLeft /> Back to Home
               </Link>
             </Button>

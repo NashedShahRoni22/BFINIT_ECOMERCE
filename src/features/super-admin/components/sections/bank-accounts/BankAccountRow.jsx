@@ -12,7 +12,7 @@ import {
 import useDeleteMutation from "@/hooks/api/useDeleteMutation";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import ConfirmationDialog from "../../modals/ConfirmationDialog";
+import ConfirmationDialog from "../../../../admin/components/modals/ConfirmationDialog";
 
 export default function BankAccountRow({ account }) {
   const queryClient = useQueryClient();
@@ -71,7 +71,7 @@ export default function BankAccountRow({ account }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-7 w-7" asChild>
-                  <Link to={`/bank-accounts/edit/${account.id}`}>
+                  <Link to={`/super-admin/bank-accounts/edit/${account.id}`}>
                     <Pencil className="h-3.5 w-3.5" />
                   </Link>
                 </Button>

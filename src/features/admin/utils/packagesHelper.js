@@ -31,6 +31,8 @@ export const transformPackageData = (data) => {
     subscription_periods:
       data?.subscription_periods?.length > 0
         ? data?.subscription_periods.map((p) => ({
+            id: p?.id ?? undefined,
+            package_id: p?.package_id ?? undefined,
             price: p?.price ?? "",
             duration: p?.duration ?? "",
             offer_percentage: p?.offer_percentage ?? "",

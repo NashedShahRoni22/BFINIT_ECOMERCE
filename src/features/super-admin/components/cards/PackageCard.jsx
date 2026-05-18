@@ -1,11 +1,17 @@
+import { useState } from "react";
 import { Link } from "react-router";
 import { Minus } from "lucide-react";
+import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
 import { cn } from "@/lib/utils";
 
 export default function PackageCard({ pack }) {
+  const queryClient = useQueryClient();
+
   const {
     id,
     package_name,
@@ -19,14 +25,35 @@ export default function PackageCard({ pack }) {
     subscription_periods = [],
   } = pack;
 
+  const [isActive, setIsActive] = useState(is_active);
   const monthlyPrice = subscription_periods.find((p) => p.duration === 1);
   const yearlyPlan = subscription_periods.find((p) => p.duration === 12);
+
+  const { mutate, isPending } = usePatchMutation({
+    endpoint: `/api/v1/package/status-toggle/${id}`,
+  });
+
+  const handleStatusToggle = () => {
+    mutate(null, {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries([
+          "/api/v1/package/get-all-admin",
+          "packages",
+        ]);
+        toast.success(data?.message);
+        setIsActive((prev) => !prev);
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    });
+  };
 
   return (
     <div
       className={cn(
         "bg-card flex flex-col rounded-md border p-4",
-        !is_active && "opacity-60",
+        !isActive && "opacity-60",
       )}
     >
       <div className="flex-1">
@@ -40,7 +67,11 @@ export default function PackageCard({ pack }) {
             )}
             <span className="text-sm font-medium">{package_name}</span>
           </div>
-          <Switch checked={is_active} />
+          <Switch
+            disabled={isPending}
+            checked={isActive}
+            onCheckedChange={handleStatusToggle}
+          />
         </div>
 
         {/* Status row */}
@@ -48,11 +79,11 @@ export default function PackageCard({ pack }) {
           <span
             className={cn(
               "size-1.5 shrink-0 rounded-full",
-              is_active ? "bg-success" : "bg-destructive",
+              isActive ? "bg-success" : "bg-destructive",
             )}
           />
           <span className="text-muted-foreground text-xs">
-            {is_active ? "Active" : "Inactive"}
+            {isActive ? "Active" : "Inactive"}
           </span>
           {subscription_periods.length > 0 && (
             <>
@@ -128,12 +159,13 @@ export default function PackageCard({ pack }) {
         <Separator className="my-4" />
 
         <Button
+          disabled={!isActive}
           variant="outline"
           size="sm"
           className="w-full rounded text-xs"
           asChild
         >
-          <Link to={`/packages/edit/${id}`}>Edit</Link>
+          <Link to={`/super-admin/packages/edit/${id}`}>Edit</Link>
         </Button>
       </div>
     </div>

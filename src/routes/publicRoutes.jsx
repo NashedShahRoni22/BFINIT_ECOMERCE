@@ -1,4 +1,4 @@
-import Login from "@/features/admin/pages/Login";
+import Login from "@/features/auth/pages/Login";
 import DomainIntegrationGuide from "@/features/Help-Guieds/Domain/DomainIntegrationGuide";
 
 export const publicRoutes = [

@@ -1,4 +1,4 @@
-import PackageStatCard from "../../cards/PackageStatCard";
+import PackageStatCard from "../cards/PackageStatCard";
 
 export default function PackageStats({ data = [] }) {
   const totalPackages = data?.length;
