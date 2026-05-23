@@ -19,7 +19,6 @@ import ReturnsRefundsForm from "@/features/admin/pages/ReturnsRefundsForm";
 import TermsConditionsForm from "@/features/admin/pages/TermsConditionsForm";
 import HowToBuyForm from "@/features/admin/pages/HowToBuyForm";
 import Stores from "@/features/admin/pages/Stores";
-import CreateStore from "@/features/admin/pages/CreateStore";
 import UpdateStore from "@/features/admin/pages/UpdateStore";
 import SubCategoryUpdate from "@/features/admin/pages/SubCategoryUpdate";
 import UpdateProduct from "@/features/admin/pages/UpdateProduct";
@@ -32,11 +31,12 @@ import Customers from "@/features/admin/pages/Customers";
 import UpdateBlog from "@/features/admin/pages/UpdateBlog";
 import PackageBankAccounts from "@/features/super-admin/pages/BankAccounts";
 import PlatformBankForm from "@/features/super-admin/components/sections/bank-accounts/BankForm";
+import StoreForm from "@/features/admin/components/sections/store/StoreForm";
 
 export const adminRoutes = {
   path: "/",
   element: (
-    <PrivateRoute>
+    <PrivateRoute role="user">
       <AdminLayout />
     </PrivateRoute>
   ),
@@ -98,21 +98,6 @@ export const adminRoutes = {
       path: "/blogs/manage",
       element: <ManageBlog />,
     },
-
-    // === Super Admin Pages ===
-    {
-      path: "/bank-accounts",
-      element: <PackageBankAccounts />,
-    },
-    {
-      path: "/bank-accounts/add",
-      element: <PlatformBankForm />,
-    },
-    {
-      path: "/bank-accounts/edit/:id",
-      element: <PlatformBankForm />,
-    },
-
     {
       path: "/domains",
       element: <Domains />,
@@ -159,7 +144,7 @@ export const adminRoutes = {
     },
     {
       path: "stores/create",
-      element: <CreateStore />,
+      element: <StoreForm />,
     },
     {
       path: "stores/edit/:storeId",

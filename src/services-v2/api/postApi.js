@@ -1,12 +1,17 @@
 import { BASE_URL } from "@/utils/api-config";
 
-export const postApi = async ({ endpoint, payload }) => {
+export const postApi = async ({ endpoint, payload, token }) => {
+  const isFormData = payload instanceof FormData;
+
+  const headers = {
+    ...(!isFormData && { "Content-Type": "application/json" }),
+    ...(token && { Authorization: `Bearer ${token}` }),
+  };
+
   const res = await fetch(`${BASE_URL}${endpoint}`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
+    headers,
+    body: isFormData ? payload : JSON.stringify(payload),
   });
 
   const data = await res.json();

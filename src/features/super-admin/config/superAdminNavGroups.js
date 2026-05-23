@@ -1,6 +1,6 @@
 import { ClipboardList, Crown, Landmark } from "lucide-react";
 
-export const sidebarItems = [
+export const superAdminNavGroups = [
   {
     groupName: "Main",
     links: [

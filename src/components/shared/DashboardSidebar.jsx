@@ -21,7 +21,7 @@ import useGetStores from "@/features/admin/hooks/store/useGetStores";
 export default function DashboardSidebar({
   showSideNav,
   toggleSideNav,
-  navItems,
+  navGroups,
 }) {
   const { user, isSuperAdmin } = useAuth();
   const navigate = useNavigate();
@@ -260,7 +260,7 @@ export default function DashboardSidebar({
 
       {/* Navigation Links */}
       <nav className="flex flex-1 flex-col gap-1.5">
-        {navItems.map((group, groupIndex) => (
+        {navGroups.map((group, groupIndex) => (
           <div key={groupIndex}>
             <p className="my-2.5 px-4 text-[10px] font-medium tracking-wider text-[#9CA3AF] uppercase">
               {group.groupName}

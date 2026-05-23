@@ -1,8 +1,8 @@
-import { Suspense, useState } from "react";
-import { Outlet } from "react-router";
-import DashboardSidebar from "@/components/shared/DashboardSidebar";
+import { Suspense, useEffect, useState } from "react";
+import { Outlet, ScrollRestoration } from "react-router";
 import DashboardNavbar from "@/components/shared/DashboardNavbar";
-import { sidebarItems } from "@/features/super-admin/config/sidebarItems";
+import DashboardSidebar from "@/components/shared/DashboardSidebar";
+import { superAdminNavGroups } from "@/features/super-admin/config/superAdminNavGroups";
 
 export default function SuperAdminLayout() {
   const [showSideNav, setShowSideNav] = useState(false);
@@ -11,8 +11,18 @@ export default function SuperAdminLayout() {
     setShowSideNav((prev) => !prev);
   };
 
+  useEffect(() => {
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    };
+  }, []);
+
   return (
-    <>
+    <div className="font-inter h-dvh w-full overflow-hidden">
       <DashboardNavbar
         showSideNav={showSideNav}
         setShowSideNav={setShowSideNav}
@@ -23,7 +33,7 @@ export default function SuperAdminLayout() {
         <DashboardSidebar
           showSideNav={showSideNav}
           toggleSideNav={toggleSideNav}
-          navItems={sidebarItems}
+          navGroups={superAdminNavGroups}
         />
 
         {/* Scrollable Content */}
@@ -33,6 +43,8 @@ export default function SuperAdminLayout() {
           </Suspense>
         </div>
       </div>
-    </>
+
+      <ScrollRestoration />
+    </div>
   );
 }

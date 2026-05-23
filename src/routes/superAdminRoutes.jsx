@@ -1,5 +1,5 @@
-import OrderDetails from "@/features/super-admin/pages/OrderDetails";
 import { lazy, Suspense } from "react";
+import PrivateRoute from "./PrivateRoute";
 const SuperAdminLayout = lazy(() => import("@/layouts/SuperAdminLayout"));
 const Packages = lazy(() => import("@/features/super-admin/pages/Packages"));
 const PackageForm = lazy(
@@ -13,13 +13,18 @@ const BankForm = lazy(
     import("@/features/super-admin/components/sections/bank-accounts/BankForm"),
 );
 const Orders = lazy(() => import("@/features/super-admin/pages/Orders"));
+const OrderDetails = lazy(
+  () => import("@/features/super-admin/pages/OrderDetails"),
+);
 
 export const superAdminRoutes = {
   path: "/super-admin",
   element: (
-    <Suspense fallback={<div>Loading...</div>}>
-      <SuperAdminLayout />
-    </Suspense>
+    <PrivateRoute role="superadmin">
+      <Suspense fallback={<div>Loading...</div>}>
+        <SuperAdminLayout />
+      </Suspense>
+    </PrivateRoute>
   ),
   children: [
     { path: "packages", element: <Packages /> },

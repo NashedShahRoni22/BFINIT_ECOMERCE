@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { Globe, Plus, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   FormControl,
   FormField,
@@ -6,240 +8,156 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
-import { X, Plus, Globe } from "lucide-react";
 import SectionHeader from "../add-product/SectionHeader";
-import CountryRemoveModal from "../../modals/CountryRemoveModal";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 
-export default function Location({
-  form,
-  isLoading,
-  countries,
-  isCountryLoading,
-  countryData,
-}) {
-  const { watch, setValue } = form;
-  const selectedCountries = watch("countries") || [];
-  const selectedCountry = watch("country");
-
-  const [removeDialog, setRemoveDialog] = useState({
-    open: false,
-    country: null,
-    index: null,
+export default function Location({ form }) {
+  const { data: countries, isLoading } = useGetQuery({
+    endpoint: "/api/v1/country",
+    enabled: true,
+    queryKey: ["countries"],
   });
 
-  // Auto-fill currency data when country is selected
-  useEffect(() => {
-    if (countryData && selectedCountry) {
-      // Check if this country already exists in the array
-      const countryExists = selectedCountries.some(
-        (c) => c.country_name === selectedCountry,
-      );
+  const selectedCountries = form.watch("countries");
+  const defaultCountryId = form.watch("default_country_id");
 
-      if (!countryExists) {
-        const newCountry = {
-          country_name: selectedCountry,
-          currency_name: countryData?.currency_name || "",
-          currency_code: countryData?.currency_code || "",
-          currency_symbol: countryData?.currency_symbol || "",
-          phone_code: countryData?.phone_code || "", // Add phone_code
-          isDefault: selectedCountries.length === 0,
-        };
-
-        setValue("countries", [...selectedCountries, newCountry]);
-        setValue("country", ""); // Reset selector
-      }
-    }
-  }, [countryData, selectedCountry, selectedCountries, setValue]);
-
-  const performRemove = (index) => {
-    const updatedCountries = selectedCountries.filter((_, i) => i !== index);
-    if (selectedCountries[index].isDefault && updatedCountries.length > 0) {
-      updatedCountries[0].isDefault = true;
-    }
-    setValue("countries", updatedCountries);
-  };
-
-  const handleRemoveClick = (index) => {
-    const country = selectedCountries[index];
-
-    if (country._id) {
-      // Existing country — show warning dialog
-      setRemoveDialog({ open: true, country, index });
-    } else {
-      // Newly added (no _id) — remove directly, no warning needed
-      performRemove(index);
-    }
-  };
-
-  const handleConfirmRemove = () => {
-    performRemove(removeDialog.index);
-    setRemoveDialog({ open: false, country: null, index: null });
-  };
-
-  const handleSetDefault = (index) => {
-    const updatedCountries = selectedCountries.map((country, i) => ({
-      ...country,
-      isDefault: i === index,
-    }));
-    setValue("countries", updatedCountries);
-  };
-
-  // Available countries (not yet selected)
-  const availableCountries = countries?.filter(
-    (country) => !selectedCountries.some((c) => c.country_name === country),
+  const availableCountries = countries?.data?.filter(
+    (country) =>
+      !selectedCountries?.find(
+        (selectedCountry) => selectedCountry?.id === country?.id,
+      ),
   );
 
+  const handleAddCountry = (countryId) => {
+    const country = countries?.data?.find((c) => c.id === Number(countryId));
+    if (!country) return;
+
+    const alreadyAdded = selectedCountries.some((c) => c.id === country.id);
+    if (alreadyAdded) return;
+
+    const updated = [...selectedCountries, country];
+    form.setValue("countries", updated, { shouldValidate: true });
+
+    if (updated.length === 1) {
+      form.setValue("default_country_id", country.id);
+    }
+  };
+
+  const handleRemoveCountry = (countryId) => {
+    const updated = selectedCountries.filter((c) => c.id !== countryId);
+    form.setValue("countries", updated, { shouldValidate: true });
+
+    const currentDefault = form.getValues("default_country_id");
+    if (currentDefault === countryId && updated.length > 0) {
+      form.setValue("default_country_id", updated[0].id);
+    }
+  };
+
+  const handleSetDefault = (countryId) => {
+    form.setValue("default_country_id", countryId);
+  };
+
   return (
-    <>
-      <div className="bg-card rounded-lg p-5">
-        <SectionHeader
-          title="Location"
-          description="Select countries where you operate and provide your business address"
-        />
-
-        <div className="mt-4 space-y-4 md:mt-6">
-          {/* Selected Countries Display */}
-          {selectedCountries.length > 0 && (
-            <div className="space-y-3">
-              <p className="text-muted-foreground text-xs font-medium">
-                Selected Countries
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {selectedCountries.map((country, index) => (
-                  <div
-                    key={index}
-                    className="bg-muted/50 border-border flex items-center gap-2 rounded-md border px-3 py-1.5"
-                  >
-                    <Globe className="text-muted-foreground size-3.5" />
-                    <span className="text-xs font-medium">
-                      {country.country_name}
-                    </span>
-                    <span className="text-muted-foreground text-xs">
-                      {country.currency_code} ({country.currency_symbol})
-                    </span>
-                    {country.isDefault && (
-                      <Badge className="h-5 text-xs">Default</Badge>
-                    )}
-                    {!country.isDefault && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="h-5 px-2 text-xs"
-                        onClick={() => handleSetDefault(index)}
-                      >
-                        Set Default
-                      </Button>
-                    )}
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="hover:bg-destructive/10 hover:text-destructive -mr-1 ml-1 size-5"
-                      onClick={() => handleRemoveClick(index)}
-                      disabled={selectedCountries.length === 1}
-                    >
-                      <X className="size-3" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Add Country Select */}
-          <FormField
-            control={form.control}
-            name="country"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-xs">
-                  Add Country{" "}
-                  {selectedCountries.length === 0 && (
-                    <span className="text-destructive">*</span>
-                  )}
-                </FormLabel>
-                <FormControl>
-                  <Select
-                    onValueChange={(value) => field.onChange(value)}
-                    value={field.value}
-                    disabled={isLoading || isCountryLoading}
-                  >
-                    <SelectTrigger className="w-full">
-                      <div className="flex items-center gap-2">
-                        <Plus className="size-4" />
-                        <SelectValue
-                          placeholder={
-                            isLoading
-                              ? "Loading countries..."
-                              : availableCountries?.length === 0
-                                ? "All countries added"
-                                : "Select a country to add"
-                          }
-                        />
-                      </div>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {!isLoading &&
-                        availableCountries?.length > 0 &&
-                        availableCountries.map((country) => (
-                          <SelectItem key={country} value={country}>
-                            {country}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-
-          {/* Business Address */}
-          <FormField
-            control={form.control}
-            name="address"
-            rules={{
-              required: "Please enter your business address",
-            }}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-xs">
-                  Business Address <span className="text-destructive">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Street address, City, State/Province, Postal Code"
-                    {...field}
-                    rows={3}
-                  />
-                </FormControl>
-                <p className="text-muted-foreground text-xs">
-                  This address will be used for all countries
-                </p>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-        </div>
-      </div>
-
-      <CountryRemoveModal
-        open={removeDialog.open}
-        setOpen={(open) => setRemoveDialog((prev) => ({ ...prev, open }))}
-        country={removeDialog.country}
-        onConfirm={handleConfirmRemove}
+    <div className="bg-card rounded-lg p-5">
+      <SectionHeader
+        title="Location"
+        description="Select countries where you operate and provide your business address"
       />
-    </>
+
+      <div className="mt-4 space-y-4 md:mt-6">
+        {/* selected countries */}
+        {selectedCountries.length > 0 && (
+          <div>
+            <p className="text-muted-foreground mb-2 text-xs">
+              Selected Countries
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {selectedCountries.map((country) => (
+                <div
+                  key={country.id}
+                  className="flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs"
+                >
+                  <Globe className="text-muted-foreground size-3" />
+                  <span>{country.name}</span>
+                  <span className="text-muted-foreground">
+                    {country.abbreviation}
+                  </span>
+                  {defaultCountryId === country.id ? (
+                    <Badge className="text-[10px]">Default</Badge>
+                  ) : (
+                    <Button
+                      onClick={() => handleSetDefault(country.id)}
+                      type="button"
+                      variant="link"
+                      className="text-muted-foreground h-auto p-0 text-[10px]"
+                    >
+                      Set Default
+                    </Button>
+                  )}
+                  <Button
+                    onClick={() => handleRemoveCountry(country.id)}
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    className="hover:text-destructive size-4 hover:bg-transparent"
+                  >
+                    <X className="size-3" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Add Country Select */}
+        <FormField
+          control={form.control}
+          name="countries"
+          rules={{
+            validate: (value) =>
+              value?.length > 0 || "Please add at least one country",
+          }}
+          render={() => (
+            <FormItem>
+              <FormLabel>
+                Add Country <span className="text-destructive">*</span>
+              </FormLabel>
+              <FormControl>
+                <Select
+                  onValueChange={handleAddCountry}
+                  disabled={isLoading}
+                  value={null}
+                >
+                  <SelectTrigger className="w-full">
+                    <div className="flex items-center gap-2">
+                      <Plus size={16} className="shrink-0" />
+                      <span className="text-muted-foreground text-sm">
+                        {isLoading
+                          ? "Loading countries..."
+                          : "Select a country to add"}
+                      </span>
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableCountries?.map((country) => (
+                      <SelectItem key={country?.id} value={country?.id}>
+                        {country?.name} {country?.abbreviation}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+    </div>
   );
 }

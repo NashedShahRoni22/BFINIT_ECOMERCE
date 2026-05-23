@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Outlet, ScrollRestoration } from "react-router";
-import AdminNavbar from "@/features/admin/components/layout/AdminNavbar";
-import AdminSidebar from "@/features/admin/components/layout/AdminSidebar";
+import DashboardNavbar from "@/components/shared/DashboardNavbar";
+import DashboardSidebar from "@/components/shared/DashboardSidebar";
 import StoreSelectionModal from "@/features/admin/components/modals/StoreSelectionModal";
+import { adminNavGroups } from "@/features/admin/config/adminNavGroups";
 
 export default function AdminLayout() {
   const [showSideNav, setShowSideNav] = useState(false);
@@ -27,15 +28,22 @@ export default function AdminLayout() {
       <StoreSelectionModal />
 
       {/* Fixed Top Bar */}
-      <AdminNavbar showSideNav={showSideNav} setShowSideNav={setShowSideNav} />
+      <DashboardNavbar
+        showSideNav={showSideNav}
+        setShowSideNav={setShowSideNav}
+      />
 
       {/* Layout Body (Sidebar + Main Content) */}
       <div className="flex h-dvh pt-[55px]">
         {/* Sidebar */}
-        <AdminSidebar showSideNav={showSideNav} toggleSideNav={toggleSideNav} />
+        <DashboardSidebar
+          showSideNav={showSideNav}
+          toggleSideNav={toggleSideNav}
+          navGroups={adminNavGroups}
+        />
 
         {/* Scrollable Content */}
-        <div className="custom-scrollbar flex-1 overflow-y-auto rounded-2xl bg-[#F9FAFB] p-5">
+        <div className="custom-scrollbar bg-muted/50 flex-1 overflow-y-auto rounded-2xl p-5">
           <Outlet />
         </div>
       </div>

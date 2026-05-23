@@ -1,43 +1,20 @@
 export const createStorePayload = (data) => {
-  // Get the default country for phone codes
-  const defaultCountry =
-    data?.countries?.find((c) => c.isDefault) || data?.countries?.[0];
-  const phoneCode = defaultCountry?.phone_code || data?.phone_code || "";
-
-  const storeData = {
-    storeName: data?.name,
-    storeEmail: data?.email,
-
-    // Multi-country support - this is the new format
-    countries: data?.countries || [],
-
-    // Keep old fields for backward compatibility (using default country data)
-    currencySymbol: defaultCountry?.currency_symbol || data?.currency_symbol,
-    currencyCode: defaultCountry?.currency_code || data?.currency_code,
-    currencyName: defaultCountry?.currency_name || data?.currency_name,
-    country: defaultCountry?.country_name || data?.country,
-
-    storePhone: `${phoneCode}${data?.mobile}`,
-    storeTelephone: data?.telephone ? `${phoneCode}${data?.telephone}` : "",
-    storeAddress: `${data?.address}`,
-    storeFacebookLink: data?.facebook || "",
-    storeTwitterLink: data?.twitter || "",
-    storeYoutubeLink: data?.youtube || "",
-    storeInstagramLink: data?.instagram || "",
-    storeTheme: "default",
-    productType: "fashion",
-    timeZone: data?.time_zone,
-  };
-
   const formData = new FormData();
-  formData.append("storeData", JSON.stringify(storeData));
 
-  // Only append files if they exist and are File objects
-  if (data?.logo?.file instanceof File) {
-    formData.append("storeLogo", data.logo.file);
+  formData.append("name", data.name);
+  formData.append("tenant_id", 4); // TODO: make this id dynamic
+  formData.append("is_active", data.is_active);
+
+  data.countries.forEach((country) => {
+    formData.append("country_ids", country.id);
+  });
+
+  if (data?.logo?.file) {
+    formData.append("logo", data.logo.file);
   }
-  if (data?.favicon?.file instanceof File) {
-    formData.append("storeFavicon", data.favicon.file);
+
+  if (data?.favicon?.file) {
+    formData.append("favicon", data.favicon.file);
   }
 
   return formData;

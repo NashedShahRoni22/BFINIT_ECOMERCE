@@ -7,7 +7,6 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import Branding from "../components/sections/store/Branding";
-import Location from "../components/sections/store/Location";
 import StoreInfo from "../components/sections/store/StoreInfo";
 import Social from "../components/sections/store/Social";
 import { breadcrubms } from "@/utils/constants/breadcrumbs";
@@ -201,13 +200,13 @@ export default function UpdateStore() {
           >
             <Branding form={form} />
 
-            <Location
+            {/* <Location
               form={form}
               isLoading={isLoading}
               countries={countriesList}
               isCountryLoading={isNewCountryLoading}
               countryData={newCountryData}
-            />
+            /> */}
 
             <StoreInfo form={form} />
 

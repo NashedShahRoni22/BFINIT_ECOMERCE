@@ -52,7 +52,7 @@ export default function StoreInfo({ form }) {
           )}
         />
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="email"
           rules={{
@@ -137,7 +137,7 @@ export default function StoreInfo({ form }) {
               <FormMessage className="text-xs" />
             </FormItem>
           )}
-        />
+        /> */}
       </div>
     </div>
   );

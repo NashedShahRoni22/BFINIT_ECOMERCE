@@ -1,13 +1,14 @@
 import { Navigate, useLocation } from "react-router";
+import useAuth from "@/hooks/auth/useAuth";
 import useBasePath from "@/hooks/useBasePath";
 
-export default function PrivateRoute({ children, role = "admin" }) {
-  const accessToken = localStorage.getItem("authInfo");
+export default function PrivateRoute({ children, role = "" }) {
+  const { user } = useAuth();
   const customerAccessToken = localStorage.getItem("customerAuthInfo");
   const location = useLocation();
   const basePath = useBasePath();
 
-  // Customer authentication
+  // customer authentication
   if (role === "customer") {
     return customerAccessToken ? (
       children
@@ -20,10 +21,13 @@ export default function PrivateRoute({ children, role = "admin" }) {
     );
   }
 
-  // Admin authentication (default)
-  return accessToken ? (
-    children
-  ) : (
-    <Navigate to="/login" replace state={{ from: location.pathname }} />
-  );
+  if (!user?.token) {
+    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+  }
+
+  if (user?.data?.role !== role) {
+    return <Navigate to="/unauthorized" replace />;
+  }
+
+  return children;
 }

@@ -28,6 +28,14 @@ export default function useLogin() {
           setUser(authInfo);
           toast.success("Login Successfull");
           navigate("/super-admin/packages");
+        } else if (
+          data?.message === "login Successfull" &&
+          data?.data?.role === "user"
+        ) {
+          const authInfo = { token: data?.token, data: data?.data };
+          setUser(authInfo);
+          toast.success("Login Successfull");
+          navigate("/");
         }
       },
 

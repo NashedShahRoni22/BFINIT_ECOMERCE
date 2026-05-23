@@ -5,13 +5,18 @@ import OrdersTable from "../components/sections/orders/OrdersTable";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import { breadcrubms } from "../utils/constants/breadcrumbs";
 import OrdersTableSkeleton from "@/components/skeletons/OrdersTableSkeleton";
+import TablePagination from "@/components/shared/TablePagination";
+import { useSearchParams } from "react-router";
 
 export default function Orders() {
+  const [searchParams] = useSearchParams();
+  const page = searchParams.get("page") || 1;
+
   const { data, isLoading } = useGetQuery({
-    endpoint: "/api/v1/package-order/all-orders-for-admin",
+    endpoint: `/api/v1/package-order/all-orders-for-admin?page=${page}`,
     enabled: true,
     isTokenRequired: true,
-    queryKey: ["orders"],
+    queryKey: ["orders", page],
   });
 
   let content = null;
@@ -24,6 +29,9 @@ export default function Orders() {
     content = (
       <div className="bg-card">
         <OrdersTable orders={data?.data} />
+        <div className="border-t py-3">
+          <TablePagination meta={data?.meta} itemLabel="orders" />
+        </div>
       </div>
     );
   }
