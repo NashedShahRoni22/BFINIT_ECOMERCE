@@ -49,7 +49,7 @@ export const sectionTemplates = {
       name: "Hero with Background",
       description: "Hero section with background image",
       thumbnail:
-        "https://res.cloudinary.com/dxn0qc49a/image/upload/v1777188666/hero_xwfxsu.png",
+        "https://res.cloudinary.com/dxn0qc49a/image/upload/q_auto/f_auto/v1777272141/hero_bg_img_bhink7.webp",
       singleInstance: false, // Only one hero allowed
       defaultContent: {
         title: "Discover Your Next Favorite Thing",
@@ -96,7 +96,7 @@ export const sectionTemplates = {
       name: "Product Grid",
       description: "Display products in a grid layout",
       thumbnail:
-        "https://res.cloudinary.com/dxn0qc49a/image/upload/v1777188817/productPreview_rkxbez.png",
+        "https://res.cloudinary.com/dxn0qc49a/image/upload/q_auto/f_auto/v1777283006/products_grid_screenshot_qz7acq.webp",
       singleInstance: false,
       defaultContent: {
         title: "Featured Products",

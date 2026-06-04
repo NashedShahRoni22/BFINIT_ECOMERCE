@@ -46,7 +46,8 @@ export const dummyProducts = [
     productDiscount: 50,
     tax: false,
     tags: ["wireless", "bluetooth", "noise-cancelling"],
-    thumbnailImage: "",
+    thumbnailImage:
+      "https://res.cloudinary.com/dxn0qc49a/image/upload/q_auto/f_auto/v1777273003/headset_is9bir.webp",
     productImage: [],
     flash_sale: true,
     rating: 4.5,
@@ -85,7 +86,8 @@ export const dummyProducts = [
     productDiscount: 0,
     tax: false,
     tags: ["fitness", "smartwatch", "gps"],
-    thumbnailImage: "",
+    thumbnailImage:
+      "https://res.cloudinary.com/dxn0qc49a/image/upload/q_auto/f_auto/v1777274726/smart_watch_wlpgif.jpg",
     productImage: [],
     flash_sale: false,
     rating: 4.8,
@@ -152,7 +154,8 @@ export const dummyProducts = [
     productDiscount: 10,
     tax: false,
     tags: ["charger", "usb-c", "fast-charging"],
-    thumbnailImage: "",
+    thumbnailImage:
+      "https://res.cloudinary.com/dxn0qc49a/image/upload/q_auto/f_auto/v1777275285/use-type-c_osfmdh.webp",
     productImage: [],
     flash_sale: true,
     rating: 4.6,
@@ -191,7 +194,8 @@ export const dummyProducts = [
     productDiscount: 80,
     tax: false,
     tags: ["camera", "4k", "waterproof", "action"],
-    thumbnailImage: "",
+    thumbnailImage:
+      "https://res.cloudinary.com/dxn0qc49a/image/upload/q_auto/f_auto/v1777275598/4k_camera_dyeb70.webp",
     productImage: [],
     flash_sale: false,
     rating: 4.7,
@@ -258,7 +262,8 @@ export const dummyProducts = [
     productDiscount: 150,
     tax: true,
     tags: ["smartphone", "5g", "flagship"],
-    thumbnailImage: "",
+    thumbnailImage:
+      "https://res.cloudinary.com/dxn0qc49a/image/upload/v1777275969/smartphone_lepwqj.webp",
     productImage: [],
     flash_sale: true,
     rating: 4.9,

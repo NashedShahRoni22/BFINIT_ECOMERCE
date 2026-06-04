@@ -25,7 +25,7 @@ export default function StorefrontLayout() {
   return (
     <main>
       <CountrySelectModal />
-      <Header />
+      {/* <Header /> */}
       <Outlet />
       <Footer />
       <ScrollRestoration />

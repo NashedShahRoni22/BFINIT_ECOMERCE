@@ -5,7 +5,6 @@ export default function useGetStorePreference(storeId) {
   const { selectedStore } = useSelectedStore();
 
   const activeStoreId = storeId || selectedStore?.storeId;
-  console.log("active store id", activeStoreId);
 
   return useGetQuery({
     endpoint: `/store/preference/?storeId=${activeStoreId}`,

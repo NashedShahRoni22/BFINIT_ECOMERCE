@@ -97,7 +97,7 @@ export default function Cart() {
                 >
                   <div className="flex gap-4">
                     {/* Product Image */}
-                    <div className="bg-muted relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-md lg:h-32 lg:w-32">
+                    <div className="bg-muted relative h-24 w-24 shrink-0 overflow-hidden rounded-md lg:h-32 lg:w-32">
                       <img
                         src={`https://ecomback.bfinit.com${item.thumbnailImage}`}
                         alt={item.productName}

@@ -99,7 +99,7 @@ export default function ThemeLibrary() {
             className="group overflow-hidden rounded-lg border bg-white transition-shadow hover:shadow-lg"
           >
             {/* Theme preview image */}
-            <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+            <div className="relative aspect-4/3 overflow-hidden bg-gray-100">
               <img
                 src={theme.preview}
                 alt={theme.name}

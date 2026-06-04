@@ -6,7 +6,7 @@ import useCountry from "@/hooks/useCountry";
 
 export default function CountrySelectModal() {
   const { storeId } = useParams();
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const { selectedCountry, saveCountry } = useCountry();
   const { data: storePreference, isLoading } = useGetStorePreference(storeId);
 

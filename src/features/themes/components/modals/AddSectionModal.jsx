@@ -97,7 +97,7 @@ export default function AddSectionModal({ isOpen, onClose, onAddSection }) {
                       <img
                         src={template.thumbnail}
                         alt="section thumbnail"
-                        className="max-h-full max-w-full"
+                        className="max-h-full w-full rounded-lg object-cover"
                       />
                     </div>
                     <h3 className="font-semibold">{template.name}</h3>
