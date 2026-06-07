@@ -16,7 +16,7 @@ import usePostMutation from "@/hooks/api/usePostMutation";
 import PageHeader from "../../../../admin/components/PageHeader";
 import DynamicBreadcrumb from "../../../../admin/components/DynamicBreadcrumb";
 import { breadcrubms } from "@/utils/constants/breadcrumbs";
-import { Link, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import {
   emptyDefaults,
@@ -27,6 +27,7 @@ import toast from "react-hot-toast";
 import { Spinner } from "@/components/ui/spinner";
 
 export default function BankForm() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const isEditMode = !!id;
 
@@ -62,6 +63,7 @@ export default function BankForm() {
         onSuccess: (res) => {
           toast.success(res?.message);
           form.reset(emptyDefaults);
+          navigate("/super-admin/bank-accounts");
         },
         onError: (err) => {
           toast.error(err?.message);
@@ -74,6 +76,7 @@ export default function BankForm() {
     update(data, {
       onSuccess: (res) => {
         toast.success(res?.message);
+        navigate("/super-admin/bank-accounts");
       },
       onError: (err) => {
         toast.error(err?.message);

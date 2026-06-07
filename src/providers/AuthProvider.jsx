@@ -14,7 +14,10 @@ export default function AuthProvider({ children }) {
   });
 
   const token = user?.token ?? null;
-  const isSuperAdmin = user?.data?.role === "superadmin";
+
+  const isSuperAdmin = user?.data?.roles.find(
+    (role) => role.role_name === "Super Admin",
+  );
 
   useEffect(() => {
     if (user) {

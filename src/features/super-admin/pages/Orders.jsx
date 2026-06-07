@@ -29,7 +29,7 @@ export default function Orders() {
     content = (
       <div className="bg-card">
         <OrdersTable orders={data?.data} />
-        <div className="border-t py-3">
+        <div className="py-3">
           <TablePagination meta={data?.meta} itemLabel="orders" />
         </div>
       </div>

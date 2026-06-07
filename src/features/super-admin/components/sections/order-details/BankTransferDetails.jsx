@@ -34,7 +34,7 @@ export default function BankTransferDetails({ orderDetails = {} }) {
             />
             Payment info
           </CardTitle>
-          <Badge variant="outline" className="text-xs font-normal">
+          <Badge variant="neutral" className="text-xs font-normal">
             Bank transfer
           </Badge>
         </div>

@@ -7,6 +7,7 @@ import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 import { breadcrubms } from "../utils/constants/breadcrumbs";
 import PageHeader from "@/components/shared/PageHeader";
 import BankAccountsTableSkeleton from "@/components/skeletons/BankAccountsTableSkeleton";
+import EmptyState from "@/components/shared/EmptyState";
 
 export default function PackageBankAccounts() {
   const { data, isLoading } = useGetQuery({
@@ -21,28 +22,40 @@ export default function PackageBankAccounts() {
     content = <BankAccountsTableSkeleton />;
   }
 
-  if (data?.success) {
-    content = <BankAccountsTable data={data?.data} />;
+  if (data?.success && data?.data?.length > 0) {
+    content = (
+      <>
+        <DynamicBreadcrumb items={breadcrubms.bank_accounts} />
+
+        <div className="flex items-center justify-between">
+          <PageHeader
+            icon={Landmark}
+            title="Bank Accounts"
+            description="Manage bank accounts shown on the e-Bfinit"
+          />
+          <Button size="sm" asChild className="shrink-0 text-xs">
+            <Link to="/super-admin/bank-accounts/new">
+              <Plus /> Add Bank Account
+            </Link>
+          </Button>
+        </div>
+
+        <BankAccountsTable data={data?.data} />
+      </>
+    );
   }
 
-  return (
-    <section className="space-y-6">
-      <DynamicBreadcrumb items={breadcrubms.bank_accounts} />
+  if (!data?.data?.length > 0) {
+    content = (
+      <EmptyState
+        icon={Landmark}
+        title="No Bank Accounts Added Yet"
+        description="Add a bank account to start receiving payments."
+        actionText="Add Bank Account"
+        actionPath="/super-admin/bank-accounts/new"
+      />
+    );
+  }
 
-      <div className="flex items-center justify-between">
-        <PageHeader
-          icon={Landmark}
-          title="Bank Accounts"
-          description="Manage bank accounts shown on the e-Bfinit"
-        />
-        <Button size="sm" asChild className="shrink-0 text-xs">
-          <Link to="/super-admin/bank-accounts/new">
-            <Plus /> Add Bank Account
-          </Link>
-        </Button>
-      </div>
-
-      {content}
-    </section>
-  );
+  return <section className="space-y-6">{content}</section>;
 }

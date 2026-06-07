@@ -8,6 +8,10 @@ export default function PrivateRoute({ children, role = "" }) {
   const location = useLocation();
   const basePath = useBasePath();
 
+  const isSuperAdmin = user?.data?.roles?.find(
+    (r) => r.role_name === "Super Admin" && r.scope === "platform",
+  );
+
   // customer authentication
   if (role === "customer") {
     return customerAccessToken ? (
@@ -25,7 +29,7 @@ export default function PrivateRoute({ children, role = "" }) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
 
-  if (user?.data?.role !== role) {
+  if (role === "superadmin" && !isSuperAdmin) {
     return <Navigate to="/unauthorized" replace />;
   }
 

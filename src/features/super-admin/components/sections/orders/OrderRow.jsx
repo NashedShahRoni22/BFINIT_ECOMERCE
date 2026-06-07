@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Building2, CreditCard } from "lucide-react";
+import { Bitcoin, Building2, CreditCard } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
@@ -10,6 +10,7 @@ import { orderStatusVariantConfig } from "@/features/super-admin/utils/constants
 const paymentConfig = {
   stripe: { label: "Stripe", icon: CreditCard },
   bank_transfer: { label: "Bank Transfer", icon: Building2 },
+  solana: { label: "Crypto", icon: Bitcoin },
 };
 
 export default function OrderRow({ order }) {
@@ -59,7 +60,7 @@ export default function OrderRow({ order }) {
 
       <TableCell className="border">
         <span className="flex items-center gap-1.5 text-xs">
-          <MethodIcon size={14} className="shrink-0" />
+          {MethodIcon && <MethodIcon size={14} className="shrink-0" />}
           {method?.label}
         </span>
       </TableCell>

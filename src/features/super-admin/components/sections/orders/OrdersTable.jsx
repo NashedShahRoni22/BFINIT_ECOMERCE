@@ -32,7 +32,7 @@ export default function OrdersTable({ orders = [] }) {
 
       <TableBody>
         {orders?.map((order) => (
-          <OrderRow order={order} />
+          <OrderRow key={order.id} order={order} />
         ))}
       </TableBody>
     </Table>

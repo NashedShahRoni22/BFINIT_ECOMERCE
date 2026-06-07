@@ -64,7 +64,7 @@ export default function TablePagination({ meta, itemLabel = "items" }) {
   const pageNumbers = getPageNumbers(totalPages, currentPage);
 
   return (
-    <div className="flex items-center justify-between gap-4 px-5">
+    <div className="flex items-center justify-between gap-4 px-2">
       <p
         className="text-muted-foreground text-xs whitespace-nowrap"
         aria-live="polite"

@@ -19,23 +19,26 @@ export default function useLogin() {
           return;
         }
 
-        // redirect super admin
-        if (
-          data?.message === "login Successfull" &&
-          data?.data?.role === "superadmin"
-        ) {
-          const authInfo = { token: data?.token, data: data?.data };
+        // detect role and redirect accordingly
+        if (data?.message === "Login successful") {
+          const roles = data?.data?.data?.roles || [];
+          const isSuperAdmin = roles.find(
+            (role) => role.role_name === "Super Admin",
+          );
+
+          const authInfo = {
+            token: data?.data?.token,
+            data: data?.data?.data,
+          };
+
           setUser(authInfo);
           toast.success("Login Successfull");
-          navigate("/super-admin/packages");
-        } else if (
-          data?.message === "login Successfull" &&
-          data?.data?.role === "user"
-        ) {
-          const authInfo = { token: data?.token, data: data?.data };
-          setUser(authInfo);
-          toast.success("Login Successfull");
-          navigate("/");
+
+          if (isSuperAdmin) {
+            navigate("/super-admin/packages");
+          } else {
+            navigate("/");
+          }
         }
       },
 

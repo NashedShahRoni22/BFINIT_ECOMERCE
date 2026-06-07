@@ -59,18 +59,15 @@ export default function ApprovalCard({ orderDetails = {} }) {
             <Button
               onClick={handlePaymentApproval}
               disabled={approved_by || isPending}
-              variant="outline"
               size="sm"
-              className="text-success border-success/40 hover:bg-success/10 hover:text-success min-w-41"
             >
               {icon} {label}
             </Button>
 
             <Button
               disabled={approved_by || isPending}
-              variant="outline"
+              variant="destructive"
               size="sm"
-              className="text-destructive border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
             >
               <X size={14} />
               Reject payment
