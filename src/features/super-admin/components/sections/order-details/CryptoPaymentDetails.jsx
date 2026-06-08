@@ -1,6 +1,7 @@
-import { Bitcoin } from "lucide-react";
+import { Bitcoin, Info } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const PAYMENT_DETAILS = [
   { label: "Wallet address", value: "7xL...Pub" },
@@ -36,6 +37,14 @@ export default function CryptoPaymentDetails() {
             </div>
           ))}
         </div>
+
+        <Alert variant="info" className="mt-4 [&>svg]:translate-y-0">
+          <Info />
+          <AlertDescription className="text-xs">
+            Payment processed automatically via Crypto. No manual verification
+            required.
+          </AlertDescription>
+        </Alert>
       </CardContent>
     </Card>
   );

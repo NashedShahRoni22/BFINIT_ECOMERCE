@@ -18,12 +18,15 @@ export default function EmptyState({
         <h3 className="text-sm font-semibold">{title}</h3>
         <p className="text-muted-foreground max-w-sm text-xs">{description}</p>
       </div>
-      <Button asChild size="sm" className="text-xs">
-        <Link to={actionPath}>
-          <Plus className="h-3.5 w-3.5" />
-          {actionText}
-        </Link>
-      </Button>
+
+      {actionText && actionPath && (
+        <Button asChild size="sm" className="text-xs">
+          <Link to={actionPath}>
+            <Plus className="h-3.5 w-3.5" />
+            {actionText}
+          </Link>
+        </Button>
+      )}
     </div>
   );
 }

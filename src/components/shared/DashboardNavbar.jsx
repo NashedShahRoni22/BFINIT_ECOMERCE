@@ -7,7 +7,7 @@ import useAuth from "@/hooks/auth/useAuth";
 import logo from "@/assets/logo/bfinit.png";
 
 export default function DashboardNavbar({ showSideNav, setShowSideNav }) {
-  const { user, isSuperAdmin } = useAuth();
+  const { isSuperAdmin } = useAuth();
 
   const homePageUrl = isSuperAdmin ? "/super-admin/packages" : "/";
 

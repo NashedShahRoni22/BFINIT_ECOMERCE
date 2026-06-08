@@ -13,6 +13,8 @@ const paymentComponents = {
 };
 
 export default function OrderDetailGrid({ orderDetails }) {
+  const isBankTransfer = orderDetails?.payment_method === "bank_transfer";
+
   const PaymentDetails =
     paymentComponents[orderDetails?.payment_method] || null;
 
@@ -25,8 +27,8 @@ export default function OrderDetailGrid({ orderDetails }) {
       </div>
 
       <div className="col-span-4 flex flex-col gap-4">
-        {PaymentDetails && <PaymentDetails />}
-        <ApprovalCard orderDetails={orderDetails} />
+        {PaymentDetails && <PaymentDetails orderDetails={orderDetails} />}
+        {isBankTransfer && <ApprovalCard orderDetails={orderDetails} />}
       </div>
     </div>
   );

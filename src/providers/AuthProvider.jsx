@@ -15,7 +15,7 @@ export default function AuthProvider({ children }) {
 
   const token = user?.token ?? null;
 
-  const isSuperAdmin = user?.data?.roles.find(
+  const isSuperAdmin = user?.data?.roles.some(
     (role) => role.role_name === "Super Admin",
   );
 
