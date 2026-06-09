@@ -5,11 +5,15 @@ import { ExternalLink, FilePenLine, RefreshCcw, Trash2 } from "lucide-react";
 import React from "react";
 import { NavLink } from "react-router";
 import { Separator } from "@/components/ui/separator";
+import StoreCardSkeleton from "./StoreCardSkeleton";
 
 export default function StoreCard() {
-  const isActive = true;
+  const isActive = false;
+  const loading = true
   return (
-    <div className="flex items-center gap-10">
+    <>
+    {
+        loading ? <StoreCardSkeleton/> : <div className="flex items-center gap-10">
       <Card
         className={`relative w-full max-w-xs px-6 py-4 ${isActive && "border border-black"}`}
       >
@@ -118,5 +122,7 @@ export default function StoreCard() {
         </div>
       </Card>
     </div>
+    }
+    </>
   );
 }
