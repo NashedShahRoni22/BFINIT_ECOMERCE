@@ -2,24 +2,25 @@ import { Link } from "react-router";
 import { Plus, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
+import EmptyState from "@/components/shared/EmptyState";
 import PageHeader from "../components/PageHeader";
 import StoreCard from "../components/sections/stores/StoreCard";
-import useAuth from "@/hooks/auth/useAuth";
-import useGetStores from "../hooks/store/useGetStores";
 import { breadcrubms } from "@/utils/constants/breadcrumbs";
-import useSelectedStore from "@/hooks/useSelectedStore";
-import EmptyStoreState from "../components/EmptyStoreState";
+import useGetStores from "../hooks/useGetStores";
 
 export default function Stores() {
-  const { user } = useAuth();
-  const { selectedStore } = useSelectedStore();
-  const { data: stores } = useGetStores();
+  const { data, isLoading } = useGetStores();
 
-  if (!selectedStore) {
+  const stores = data?.data?.data ?? [];
+
+  if (!stores?.length > 0) {
     return (
-      <EmptyStoreState
-        title="No Stores Created Yet"
+      <EmptyState
+        icon={Store}
+        title="No Store Found"
         description="Get started by creating your first online store. You can manage multiple stores from this dashboard."
+        actionText="Create Your First Store"
+        actionPath="/stores/create"
       />
     );
   }
@@ -39,24 +40,24 @@ export default function Stores() {
         </div>
 
         <div className="flex items-center gap-4 pb-2">
-          <span className="text-muted-foreground text-sm">
+          {/* <span className="text-muted-foreground text-sm">
             <span className="font-semibold">{stores?.data?.length || 0}</span>/
             {user?.data?.storeLimit || 0} stores
-          </span>
+          </span> */}
 
-          {user?.data?.storeLimit > stores?.data?.length && (
+          {/* {user?.data?.storeLimit > stores?.data?.length && (
             <Button size="sm" asChild className="text-xs">
               <Link to="/stores/create">
                 <Plus />
                 New Store
               </Link>
             </Button>
-          )}
+          )} */}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {stores?.data?.map((store) => (
+      <div className="grid gap-6">
+        {stores?.map((store) => (
           <StoreCard key={store?.storeId} store={store} />
         ))}
       </div>

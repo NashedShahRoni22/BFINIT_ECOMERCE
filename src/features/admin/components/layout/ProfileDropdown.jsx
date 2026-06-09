@@ -23,7 +23,7 @@ import { adminDropdownLinks } from "@/utils/contstants";
 export default function ProfileDropdown() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { handleSetStore } = useSelectedStore();
+  const { clearStore } = useSelectedStore();
 
   const userData = user?.data?.user;
   const nameShorthand = userData?.name
@@ -33,8 +33,7 @@ export default function ProfileDropdown() {
 
   const handleLogOut = () => {
     localStorage.removeItem("authInfo");
-    localStorage.removeItem("store");
-    handleSetStore(null);
+    clearStore();
     toast.success("Logged out successfully");
     navigate("/login");
   };

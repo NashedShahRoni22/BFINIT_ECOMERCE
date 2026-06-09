@@ -7,7 +7,7 @@ import { adminDropdownLinks } from "@/utils/contstants";
 import useAuth from "@/hooks/auth/useAuth";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import useGetStores from "@/features/admin/hooks/store/useGetStores";
+import useGetStores from "@/features/admin/hooks/useGetStores";
 import GuidePrompt from "@/features/admin/components/GuidePrompt";
 
 export default function DashboardSidebar({
@@ -33,7 +33,7 @@ export default function DashboardSidebar({
 
   // Fetch stores
   const { data: stores } = useGetStores();
-  const { selectedStore, handleSetStore } = useSelectedStore();
+  const { selectedStore, selectStore } = useSelectedStore();
 
   // handle dropdown toggle on click
   const toggleDropdown = (groupIndex, linkIndex) => {
@@ -61,7 +61,7 @@ export default function DashboardSidebar({
   };
 
   const handleStoreSwitch = (store) => {
-    handleSetStore(store);
+    selectStore(store);
     setShowStoreMenu(false);
   };
 

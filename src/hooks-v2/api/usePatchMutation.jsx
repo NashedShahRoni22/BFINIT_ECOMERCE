@@ -5,6 +5,7 @@ import { patchApi } from "@/services-v2/api/patchApi";
 export default function usePatchMutation({
   endpoint = "",
   isTokenRequired = false,
+  ...options
 }) {
   const { token } = useAuth();
 
@@ -15,5 +16,6 @@ export default function usePatchMutation({
         payload,
         token: isTokenRequired ? token : null,
       }),
+    ...options,
   });
 }

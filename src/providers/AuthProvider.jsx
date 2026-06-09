@@ -14,6 +14,10 @@ export default function AuthProvider({ children }) {
   });
 
   const token = user?.token ?? null;
+  const userData = user?.data?.user ?? null;
+  const userRoles = user?.data?.roles ?? [];
+  const packages = user?.data?.packageStatus ?? [];
+  const lastPackageStatus = user?.data?.lastPackageStatus ?? null;
 
   const isSuperAdmin = user?.data?.roles.some(
     (role) => role.role_name === "Super Admin",
@@ -29,6 +33,10 @@ export default function AuthProvider({ children }) {
 
   const authInfo = {
     token,
+    userData,
+    userRoles,
+    packages,
+    lastPackageStatus,
     user,
     isSuperAdmin,
     setUser,

@@ -14,7 +14,7 @@ export default function useGetQuery({
   return useQuery({
     queryFn: () => getApi({ endpoint, token: isTokenRequired ? token : null }),
     enabled: enabled && !!endpoint,
-    queryKey: [endpoint, ...queryKey],
+    queryKey: [...queryKey],
     ...options,
   });
 }

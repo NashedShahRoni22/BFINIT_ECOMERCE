@@ -4,7 +4,7 @@ import QuickTips from "../components/sections/home/QuickTips";
 import StoreLimitCard from "../components/sections/home/StoreLimitCard";
 import useAuth from "@/hooks/auth/useAuth";
 import useGetQuery from "@/hooks/api/useGetQuery";
-import useGetStores from "../hooks/store/useGetStores";
+import useGetStores from "../hooks/useGetStores";
 import StoreCard from "../components/sections/stores/StoreCard";
 import StatCards from "../components/sections/home/StatCards";
 import RecentOrders from "../components/sections/home/RecentOrders";

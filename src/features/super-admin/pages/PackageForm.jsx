@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { ChevronLeft, Crown, Plus, Trash2 } from "lucide-react";
 import DynamicBreadcrumb from "../../admin/components/DynamicBreadcrumb";
 import PageHeader from "../../admin/components/PageHeader";
-import { breadcrubms } from "@/utils/constants/breadcrumbs";
 import {
   Form,
   FormControl,
@@ -22,6 +21,7 @@ import toast from "react-hot-toast";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
+import { breadcrubms } from "@/utils/constants/breadcrumbs";
 import {
   emptyDefaults,
   emptyPeriod,
@@ -51,30 +51,17 @@ export default function PackageForm() {
     endpoint: `/api/v1/package/get/${id}`,
     enabled: !!id,
     newBaseUrl: true,
-    queryKey: ["package_details", id],
+    queryKey: ["package", id],
   });
 
   const form = useForm({
     values: isEditMode ? transformPackageData(data?.data) : emptyDefaults,
   });
   const { handleSubmit, watch, setValue } = form;
-
   const [descInput, setDescInput] = useState("");
-
-  const { mutate, isPending: isCreating } = usePostMutation({
-    endpoint: "/api/v1/package/create",
-    newBaseUrl: true,
-  });
-
-  const { mutate: update, isPending: isUpdating } = usePatchMutaion({
-    endpoint: `/api/v1/package/update/${id}`,
-    newBaseUrl: true,
-  });
-
-  // Add sensors near your other hooks in PackageForm
   const sensors = useSensors(useSensor(PointerSensor));
+  const periods = watch("subscription_periods");
 
-  // Add this handler near handleDescRemove
   const handleDescReorder = (event, field) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -85,11 +72,6 @@ export default function PackageForm() {
     field.onChange(arrayMove(field.value, oldIndex, newIndex));
   };
 
-  const isLoading = isCreating || isDataLoading || isUpdating;
-  const btnLabel = isEditMode ? "Update" : "Save";
-  const btnLoadingLabel = isEditMode ? "Updating..." : "Saving...";
-
-  // ── Description tag helpers ──────────────────────────────────────────────
   const handleDescKeyDown = (e, field) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -105,9 +87,6 @@ export default function PackageForm() {
     field.onChange(field.value.filter((_, i) => i !== index));
   };
 
-  // ── Subscription periods helpers ─────────────────────────────────────────
-  const periods = watch("subscription_periods");
-
   const addPeriod = () => {
     setValue("subscription_periods", [...periods, { ...emptyPeriod }]);
   };
@@ -119,7 +98,16 @@ export default function PackageForm() {
     );
   };
 
-  // ── Submit ────────────────────────────────────────────────────────────────
+  const { mutate, isPending: isCreating } = usePostMutation({
+    endpoint: "/api/v1/package/create",
+    newBaseUrl: true,
+  });
+
+  const { mutate: update, isPending: isUpdating } = usePatchMutaion({
+    endpoint: `/api/v1/package/update/${id}`,
+    newBaseUrl: true,
+  });
+
   const onSubmit = (data) => {
     const { product_limit, max_storage, subscription_periods, ...rest } = data;
 
@@ -170,6 +158,10 @@ export default function PackageForm() {
       },
     });
   };
+
+  const isLoading = isCreating || isDataLoading || isUpdating;
+  const btnLabel = isEditMode ? "Update" : "Save";
+  const btnLoadingLabel = isEditMode ? "Updating..." : "Saving...";
 
   return (
     <section className="space-y-6">

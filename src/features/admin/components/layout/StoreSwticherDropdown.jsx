@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import useAuth from "@/hooks/auth/useAuth";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import useGetStores from "@/features/admin/hooks/store/useGetStores";
+import useGetStores from "@/features/admin/hooks/useGetStores";
 import { useEffect } from "react";
 
 export default function StoreSwitcherDropdown() {
