@@ -14,8 +14,11 @@ import PageHeader from "@/components/shared/PageHeader";
 import { usePostMutation } from "@/hooks-v2/api/usePostMutation";
 import { breadcrubms } from "@/features/admin/utils/constants/breadcrumbs";
 import { createStorePayload } from "@/features/admin/utils/storeHelpers";
+import useAuth from "@/hooks/auth/useAuth";
 
 export default function StoreForm() {
+  const { user } = useAuth();
+
   const { mutate, isPending } = usePostMutation({
     endpoint: "/api/v1/store",
     isTokenRequired: true,
@@ -34,11 +37,13 @@ export default function StoreForm() {
   const { handleSubmit } = form;
 
   const onSubmit = (data) => {
-    const formData = createStorePayload(data);
+    const formData = createStorePayload({
+      ...data,
+      tenantId: user?.data?.user?.id,
+    });
 
     mutate(formData, {
       onSuccess: (data) => {
-        console.log(data);
         if (!data?.success) {
           return toast.error(data?.message);
         }

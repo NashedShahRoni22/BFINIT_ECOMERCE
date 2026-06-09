@@ -1,12 +1,13 @@
+import { useSearchParams } from "react-router";
 import { ClipboardList } from "lucide-react";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 import PageHeader from "@/components/shared/PageHeader";
 import OrdersTable from "../components/sections/orders/OrdersTable";
-import useGetQuery from "@/hooks-v2/api/useGetQuery";
-import { breadcrubms } from "../utils/constants/breadcrumbs";
 import OrdersTableSkeleton from "@/components/skeletons/OrdersTableSkeleton";
 import TablePagination from "@/components/shared/TablePagination";
-import { useSearchParams } from "react-router";
+import EmptyState from "@/components/shared/EmptyState";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import { breadcrubms } from "../utils/constants/breadcrumbs";
 
 export default function Orders() {
   const [searchParams] = useSearchParams();
@@ -25,28 +26,36 @@ export default function Orders() {
     content = <OrdersTableSkeleton />;
   }
 
-  if (data?.success) {
+  if (data?.success && data?.data?.length > 0) {
     content = (
-      <div className="bg-card">
-        <OrdersTable orders={data?.data} />
-        <div className="py-3">
-          <TablePagination meta={data?.meta} itemLabel="orders" />
+      <>
+        <DynamicBreadcrumb items={breadcrubms.orders} />
+
+        <PageHeader
+          icon={ClipboardList}
+          title="Orders"
+          description="View and manage customer orders on the e-Bfinit"
+        />
+
+        <div className="bg-card">
+          <OrdersTable orders={data?.data} />
+          <div className="py-3">
+            <TablePagination meta={data?.meta} itemLabel="orders" />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
-  return (
-    <section className="space-y-6">
-      <DynamicBreadcrumb items={breadcrubms.orders} />
-
-      <PageHeader
+  if (!data?.data?.length > 0) {
+    content = (
+      <EmptyState
         icon={ClipboardList}
-        title="Orders"
-        description="View and manage customer orders on the e-Bfinit"
+        title="No Orders Yet"
+        description="Orders placed by customers will appear here."
       />
+    );
+  }
 
-      {content}
-    </section>
-  );
+  return <section className="space-y-6">{content}</section>;
 }

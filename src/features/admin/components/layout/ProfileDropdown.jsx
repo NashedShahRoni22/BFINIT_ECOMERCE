@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import useAuth from "@/hooks/auth/useAuth";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import useGetQuery from "@/hooks/api/useGetQuery";
 import { adminDropdownLinks } from "@/utils/contstants";
 
 export default function ProfileDropdown() {
@@ -26,14 +25,11 @@ export default function ProfileDropdown() {
   const { user } = useAuth();
   const { handleSetStore } = useSelectedStore();
 
-  // fetch client info
-  const { data: clientInfo } = useGetQuery({
-    endpoint: `/clients/${user?.data?.clientid}`,
-    token: user?.token,
-    clientId: user?.data?.clientid,
-    queryKey: ["clientInfo", user?.data?.clientid],
-    enabled: !!user?.data?.clientid && !!user?.token,
-  });
+  const userData = user?.data?.user;
+  const nameShorthand = userData?.name
+    ?.split(" ")
+    ?.map((word) => word?.charAt(0))
+    ?.join("");
 
   const handleLogOut = () => {
     localStorage.removeItem("authInfo");
@@ -43,11 +39,6 @@ export default function ProfileDropdown() {
     navigate("/login");
   };
 
-  const nameShorthand = user?.data?.name
-    ?.split(" ")
-    ?.map((word) => word?.charAt(0))
-    ?.join("");
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -56,7 +47,7 @@ export default function ProfileDropdown() {
             {nameShorthand}
           </div>
           <span className="hidden max-w-[120px] items-center truncate text-xs font-medium sm:inline-block">
-            {user?.data?.name}
+            {userData?.name}
           </span>
           <ChevronDown size={14} className="text-muted-foreground shrink-0" />
         </Button>
@@ -64,24 +55,21 @@ export default function ProfileDropdown() {
 
       <DropdownMenuContent align="end" className="w-56" sideOffset={8}>
         {/* User Info Section */}
-        {/* <DropdownMenuLabel className="font-normal">
+        <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="max-w-[200px] truncate text-sm font-semibold">
-              {clientInfo?.data?.clientFname} {clientInfo?.data?.clientLname}
+              {userData?.name}
             </p>
-            <p
-              className="text-muted-foreground max-w-[200px] truncate text-xs"
-              title={clientInfo?.data?.clientEmail}
-            >
-              {clientInfo?.data?.clientEmail}
+            <p className="text-muted-foreground max-w-[200px] truncate text-xs">
+              {userData?.email}
             </p>
           </div>
-        </DropdownMenuLabel> */}
+        </DropdownMenuLabel>
 
-        {/* <DropdownMenuSeparator /> */}
+        <DropdownMenuSeparator />
 
         {/* Account Management */}
-        {/* <DropdownMenuItem asChild>
+        <DropdownMenuItem asChild>
           <Link
             to="/accounts"
             className="flex cursor-pointer items-center gap-2"
@@ -91,10 +79,10 @@ export default function ProfileDropdown() {
           </Link>
         </DropdownMenuItem>
 
-        <DropdownMenuSeparator /> */}
+        <DropdownMenuSeparator />
 
         {/* Dynamic Navigation Links */}
-        {/* {adminDropdownLinks.map((link) => (
+        {adminDropdownLinks.map((link) => (
           <DropdownMenuItem key={link.url} asChild>
             <Link
               to={link.url}
@@ -104,10 +92,10 @@ export default function ProfileDropdown() {
               <span className="capitalize">{link.name}</span>
             </Link>
           </DropdownMenuItem>
-        ))} */}
+        ))}
 
         {/* Help & Support */}
-        {/* <DropdownMenuItem asChild>
+        <DropdownMenuItem asChild>
           <a
             href="https://ecomback.bfinit.com/uploads/ecom/guide/BFINIT%20E-Commerce%20Guide.pdf"
             target="_blank"
@@ -118,9 +106,9 @@ export default function ProfileDropdown() {
             <span>Help Guide</span>
             <ExternalLink className="ml-auto h-3 w-3 opacity-50" />
           </a>
-        </DropdownMenuItem> */}
+        </DropdownMenuItem>
 
-        {/* <DropdownMenuSeparator /> */}
+        <DropdownMenuSeparator />
 
         {/* Destructive Action */}
         <DropdownMenuItem

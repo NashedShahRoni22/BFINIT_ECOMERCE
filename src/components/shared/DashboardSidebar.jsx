@@ -1,22 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router";
-import {
-  ChevronDown,
-  Store,
-  LogOut,
-  FileDown,
-  BookOpen,
-  X,
-} from "lucide-react";
+import { ChevronDown, Store, LogOut, FileDown } from "lucide-react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
 import { adminDropdownLinks } from "@/utils/contstants";
 import useAuth from "@/hooks/auth/useAuth";
 import useGetQuery from "@/hooks/api/useGetQuery";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import useGetStores from "@/features/admin/hooks/store/useGetStores";
+import GuidePrompt from "@/features/admin/components/GuidePrompt";
 
 export default function DashboardSidebar({
   showSideNav,
@@ -27,7 +19,6 @@ export default function DashboardSidebar({
   const navigate = useNavigate();
   const location = useLocation();
   const [openDropdown, setOpenDropdown] = useState("");
-  const [showGuide, setShowGuide] = useState(true);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showStoreMenu, setShowStoreMenu] = useState(false);
 
@@ -44,16 +35,6 @@ export default function DashboardSidebar({
   const { data: stores } = useGetStores();
   const { selectedStore, handleSetStore } = useSelectedStore();
 
-  // check if user previously hide e-com guide download button
-  useEffect(() => {
-    if (user?.data?.clientid) {
-      const stored = localStorage.getItem(`guideKey_${user.data.clientid}`);
-      if (stored !== null) {
-        setShowGuide(JSON.parse(stored));
-      }
-    }
-  }, [user?.data?.clientid]);
-
   // handle dropdown toggle on click
   const toggleDropdown = (groupIndex, linkIndex) => {
     const dropdownKey = `${groupIndex}-${linkIndex}`;
@@ -63,15 +44,6 @@ export default function DashboardSidebar({
     } else {
       setOpenDropdown(dropdownKey);
     }
-  };
-
-  // handle guide close
-  const closeGuide = () => {
-    setShowGuide(false);
-    localStorage.setItem(
-      `guideKey_${user?.data?.clientid}`,
-      JSON.stringify(false),
-    );
   };
 
   const handleLogOut = () => {
@@ -124,7 +96,7 @@ export default function DashboardSidebar({
             </div>
             <ChevronDown
               size={14}
-              className={`flex-shrink-0 text-slate-500 transition-transform duration-200 ${
+              className={`shrink-0 text-slate-500 transition-transform duration-200 ${
                 showUserMenu ? "rotate-180" : ""
               }`}
             />
@@ -191,7 +163,7 @@ export default function DashboardSidebar({
             </div>
             <ChevronDown
               size={14}
-              className={`flex-shrink-0 text-slate-500 transition-transform duration-200 ${
+              className={`shrink-0 text-slate-500 transition-transform duration-200 ${
                 showStoreMenu ? "rotate-180" : ""
               }`}
             />
@@ -212,7 +184,7 @@ export default function DashboardSidebar({
                           : "hover:bg-slate-50"
                       }`}
                     >
-                      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-slate-100">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-100">
                         <Store className="h-4 w-4 text-slate-600" />
                       </div>
                       <div className="min-w-0 flex-1">
@@ -221,7 +193,7 @@ export default function DashboardSidebar({
                             {store?.storeName}
                           </span>
                           {selectedStore?.storeId === store?.storeId && (
-                            <div className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-600" />
+                            <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-blue-600" />
                           )}
                         </div>
                         {store?.storeDomain && (
@@ -391,43 +363,7 @@ export default function DashboardSidebar({
       </nav>
 
       {/* guide download btn */}
-      {showGuide && !isSuperAdmin && (
-        <Card className="border-border bg-card relative">
-          {/* Icon Badge */}
-          <div className="bg-primary absolute -top-4 left-1/2 flex size-8 -translate-x-1/2 items-center justify-center rounded-full">
-            <BookOpen className="text-primary-foreground size-4" />
-          </div>
-
-          {/* Close Button */}
-          <button
-            onClick={closeGuide}
-            className="bg-background hover:bg-muted focus:ring-ring absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full shadow-md transition-colors hover:cursor-pointer focus:ring-2 focus:outline-none"
-            aria-label="Close guide"
-          >
-            <X className="text-muted-foreground size-3.5" />
-          </button>
-
-          <CardContent className="space-y-2.5 py-2">
-            <div className="space-y-1 text-center">
-              <h3 className="text-xs font-semibold">BFINIT Guide</h3>
-              <p className="text-muted-foreground text-[11px] leading-tight">
-                How our ecommerce platform works
-              </p>
-            </div>
-
-            <Button asChild className="h-7 w-full text-xs" size="sm">
-              <a
-                href="https://ecomback.bfinit.com/uploads/ecom/guide/BFINIT%20E-Commerce%20Guide.pdf"
-                download
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Get Help Guide
-              </a>
-            </Button>
-          </CardContent>
-        </Card>
-      )}
+      {!isSuperAdmin && <GuidePrompt />}
     </aside>
   );
 }
