@@ -32,6 +32,7 @@ import UpdateBlog from "@/features/admin/pages/UpdateBlog";
 import PackageBankAccounts from "@/features/super-admin/pages/BankAccounts";
 import PlatformBankForm from "@/features/super-admin/components/sections/bank-accounts/BankForm";
 import StoreForm from "@/features/admin/components/sections/store/StoreForm";
+import StoreCard from "@/robiul/StoreCard";
 
 export const adminRoutes = {
   path: "/",
@@ -44,6 +45,10 @@ export const adminRoutes = {
     {
       path: "/",
       element: <Home />,
+    },
+    {
+      path:"/store-card",
+      element:<StoreCard/>
     },
     {
       path: "/themes",

@@ -39,7 +39,7 @@ export default function DashboardSidebar({
     queryKey: ["clientInfo", user?.data?.clientid],
     enabled: !!user?.data?.clientid && !!user?.token,
   });
-
+// console.log(!!user.token);
   // Fetch stores
   const { data: stores } = useGetStores();
   const { selectedStore, handleSetStore } = useSelectedStore();
