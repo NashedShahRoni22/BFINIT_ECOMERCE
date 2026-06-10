@@ -9,6 +9,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import SectionHeader from "../add-product/SectionHeader";
+import { getImgUrl } from "@/utils/getImgUrl";
 
 export default function Branding({ form }) {
   const logoRef = useRef();
@@ -67,7 +68,7 @@ export default function Branding({ form }) {
 
     if (value.preview) return value.preview;
 
-    if (typeof value === "string") return `https://ecomback.bfinit.com${value}`;
+    if (typeof value === "string") return getImgUrl(value);
 
     if (value.url) return value.url;
 

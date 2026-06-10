@@ -585,7 +585,7 @@ export default function PackageForm() {
               size="sm"
               className="min-w-[105px] text-xs"
             >
-              {isLoading ? (
+              {isUpdating || isCreating ? (
                 <>
                   <Spinner /> {btnLoadingLabel}
                 </>

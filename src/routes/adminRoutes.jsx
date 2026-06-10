@@ -147,8 +147,8 @@ export const adminRoutes = {
       element: <StoreForm />,
     },
     {
-      path: "stores/edit/:storeId",
-      element: <UpdateStore />,
+      path: "stores/edit/:id",
+      element: <StoreForm />,
     },
     {
       path: "products/edit/:productId",

@@ -1,4 +1,3 @@
-import { Link } from "react-router";
 import { Plus, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
@@ -7,13 +6,43 @@ import PageHeader from "../components/PageHeader";
 import StoreCard from "../components/sections/stores/StoreCard";
 import { breadcrubms } from "@/utils/constants/breadcrumbs";
 import useGetStores from "../hooks/useGetStores";
+import usePackageInfo from "../hooks/usePackageInfo";
+import { Link } from "react-router";
+import StoreCardSkeleton from "../components/skeletons/StoreCardSkeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Stores() {
-  const { data } = useGetStores();
+  const { data: packageInfo, isLoading: isPackageInfoLoading } =
+    usePackageInfo();
+  const { data, isLoading } = useGetStores();
 
   const stores = data?.data?.data ?? [];
+  const maxStoreLimit = packageInfo?.data?.package_upgrade?.package?.max_store;
+  const isStoreLimitExceeded = stores?.length >= maxStoreLimit;
 
-  if (!stores?.length > 0) {
+  let content = null;
+
+  if (isLoading) {
+    content = (
+      <>
+        {Array.from({ length: 3 }).map((_, i) => (
+          <StoreCardSkeleton key={i} />
+        ))}
+      </>
+    );
+  }
+
+  if (!isLoading && stores?.length >= 1) {
+    content = (
+      <>
+        {stores?.map((store) => (
+          <StoreCard key={store?.id} store={store} />
+        ))}
+      </>
+    );
+  }
+
+  if (!isLoading && stores?.length === 0) {
     return (
       <EmptyState
         icon={Store}
@@ -39,28 +68,37 @@ export default function Stores() {
           />
         </div>
 
-        <div className="flex items-center gap-4 pb-2">
-          {/* <span className="text-muted-foreground text-sm">
-            <span className="font-semibold">{stores?.data?.length || 0}</span>/
-            {user?.data?.storeLimit || 0} stores
-          </span> */}
+        {isLoading || isPackageInfoLoading ? (
+          <Skeleton className="h-7 w-40" />
+        ) : (
+          <div className="flex items-center gap-3">
+            <div className="flex flex-col gap-1">
+              <span className="text-muted-foreground text-xs">
+                {stores?.length} / {maxStoreLimit} stores used
+              </span>
+              <div className="bg-muted h-1.5 w-24 rounded-full">
+                <div
+                  className="bg-foreground h-1.5 rounded-full transition-all"
+                  style={{
+                    width: `${(stores?.length / maxStoreLimit) * 100}%`,
+                  }}
+                />
+              </div>
+            </div>
 
-          {/* {user?.data?.storeLimit > stores?.data?.length && (
-            <Button size="sm" asChild className="text-xs">
-              <Link to="/stores/create">
-                <Plus />
-                New Store
-              </Link>
-            </Button>
-          )} */}
-        </div>
+            {!isStoreLimitExceeded && (
+              <Button size="sm" asChild className="text-xs">
+                <Link to="/stores/create">
+                  <Plus />
+                  New Store
+                </Link>
+              </Button>
+            )}
+          </div>
+        )}
       </div>
 
-      <div className="grid gap-6">
-        {stores?.map((store) => (
-          <StoreCard key={store?.storeId} store={store} />
-        ))}
-      </div>
+      <div className="flex flex-wrap gap-4">{content}</div>
     </section>
   );
 }

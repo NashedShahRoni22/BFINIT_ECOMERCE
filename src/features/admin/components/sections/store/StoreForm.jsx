@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { useForm } from "react-hook-form";
 import { ChevronLeft, Store } from "lucide-react";
 import toast from "react-hot-toast";
@@ -15,26 +15,46 @@ import { usePostMutation } from "@/hooks-v2/api/usePostMutation";
 import { breadcrubms } from "@/features/admin/utils/constants/breadcrumbs";
 import { createStorePayload } from "@/features/admin/utils/storeHelpers";
 import useAuth from "@/hooks/auth/useAuth";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
 
 export default function StoreForm() {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const { user } = useAuth();
+
+  const isEditMode = !!id;
+
+  const { data, isLoading: isStoreLoading } = useGetQuery({
+    endpoint: `/api/v1/store/${id}`,
+    enabled: !!id,
+    isTokenRequired: true,
+    queryKey: ["store", id],
+  });
+
+  const store = data?.data;
+
+  const form = useForm({
+    values: {
+      logo: store?.logo ?? null,
+      favicon: store?.favicon ?? null,
+      name: store?.name ?? "",
+      countries: store?.country_ids ?? [],
+      default_country_id: store?.default_country_id ?? null,
+      is_active: store?.is_active ?? true,
+    },
+  });
+  const { handleSubmit } = form;
 
   const { mutate, isPending } = usePostMutation({
     endpoint: "/api/v1/store",
     isTokenRequired: true,
   });
 
-  const form = useForm({
-    values: {
-      logo: null,
-      name: "",
-      countries: [],
-      default_country_id: null,
-      is_active: true,
-    },
+  const { mutate: update, isPending: isUpdating } = usePatchMutation({
+    endpoint: `/api/v1/store/${id}`,
+    isTokenRequired: true,
   });
-
-  const { handleSubmit } = form;
 
   const onSubmit = (data) => {
     const formData = createStorePayload({
@@ -42,18 +62,36 @@ export default function StoreForm() {
       tenantId: user?.data?.user?.id,
     });
 
-    mutate(formData, {
-      onSuccess: (data) => {
-        if (!data?.success) {
-          return toast.error(data?.message);
-        }
-      },
+    const onSuccess = (data) => {
+      if (!data?.success) return toast.error(data?.message);
+      toast.success(data?.message);
+      navigate("/stores");
+    };
 
-      onError: (error) => {
-        console.log(error);
-      },
+    const onError = (error) => console.log(error);
+
+    if (!isEditMode) {
+      mutate(formData, {
+        onSuccess: (data) => {
+          form.reset();
+          onSuccess(data);
+        },
+
+        onError,
+      });
+
+      return;
+    }
+
+    update(formData, {
+      onSuccess,
+      onError,
     });
   };
+
+  const isLoading = isStoreLoading || isPending || isUpdating;
+  const btnLabel = isEditMode ? "Update Store" : "Create Store";
+  const btnLoadingLabel = isEditMode ? "Updating..." : "Creating...";
 
   return (
     <section className="space-y-6">
@@ -67,8 +105,8 @@ export default function StoreForm() {
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <fieldset
-            disabled={isPending}
-            className={`space-y-6 ${isPending ? "pointer-events-none" : ""}`}
+            disabled={isLoading}
+            className={`space-y-6 ${isLoading ? "pointer-events-none" : ""}`}
           >
             <Branding form={form} />
             <StoreInfo form={form} />
@@ -84,13 +122,13 @@ export default function StoreForm() {
               </Link>
             </Button>
 
-            <Button type="submit" disabled={isPending} size="sm">
-              {isPending ? (
+            <Button type="submit" disabled={isLoading} size="sm">
+              {isPending || isUpdating ? (
                 <>
-                  <Spinner /> Creating...
+                  <Spinner /> {btnLoadingLabel}
                 </>
               ) : (
-                "Create Store"
+                btnLabel
               )}
             </Button>
           </div>
