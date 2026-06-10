@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import {
   Loader2,
   Store,
@@ -16,79 +16,174 @@ import {
   DropdownMenuTrigger,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import useAuth from "@/hooks/auth/useAuth";
 import useSelectedStore from "@/hooks/useSelectedStore";
+import usePackageInfo from "../../hooks/usePackageInfo";
 import useGetStores from "@/features/admin/hooks/useGetStores";
-import { useEffect } from "react";
+import { cn } from "@/lib/utils";
+import { getImgUrl } from "@/utils/getImgUrl";
 
 export default function StoreSwitcherDropdown() {
-  const { data: stores, isLoading } = useGetStores();
-  const { selectedStore, handleSetStore } = useSelectedStore();
-  const { user } = useAuth();
-  const navigate = useNavigate();
+  const { selectStore, activeStore } = useSelectedStore();
 
-  const storeLimit = user?.data?.storeLimit || 0;
-  const hasStores = stores?.data?.length > 0;
+  const { data: packageInfo } = usePackageInfo();
+  const { data, isLoading } = useGetStores();
 
-  useEffect(() => {
-    if (!stores?.data || !selectedStore) return;
+  const stores = data?.data?.data ?? [];
+  const hasStores = stores?.length > 0;
+  const maxStoreLimit = packageInfo?.data?.package_upgrade?.package?.max_store;
+  const isStoreLimitExceeded = stores?.length >= maxStoreLimit;
 
-    const freshStore = stores.data.find(
-      (s) => s.storeId === selectedStore.storeId,
+  let btnContent = null;
+  let content = null;
+
+  if (isLoading) {
+    btnContent = (
+      <>
+        <Store className="text-muted-foreground h-4 w-4" />
+        <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
+      </>
     );
+  }
 
-    if (!freshStore) return;
+  if (!hasStores) return null;
 
-    // Check if any field differs and sync if so
-    const hasChanged = Object.keys(freshStore).some(
-      (key) => freshStore[key] !== selectedStore[key],
+  if (!isLoading && activeStore) {
+    btnContent = (
+      <>
+        <div className="bg-muted border-border flex size-6 shrink-0 items-center justify-center overflow-hidden rounded-md border">
+          <img
+            src={getImgUrl(activeStore?.logo)}
+            alt={activeStore?.name}
+            className="h-full w-full object-contain"
+          />
+        </div>
+
+        <span className="max-w-[120px] truncate text-sm font-medium">
+          {activeStore?.name || "Select store"}
+        </span>
+
+        <ChevronDown className="text-muted-foreground h-4 w-4 shrink-0 transition-transform group-data-[state=open]:rotate-180" />
+      </>
     );
+  }
 
-    if (hasChanged) {
-      handleSetStore(freshStore);
-    }
-  }, [stores?.data]);
+  // store list
+  if (!isLoading && hasStores) {
+    content = (
+      <>
+        <div className="max-h-72 overflow-y-auto p-1.5">
+          {stores.map((store) => (
+            <DropdownMenuItem
+              key={store.id}
+              onClick={() => selectStore(store)}
+              className={cn(
+                "flex cursor-pointer items-center gap-3 rounded-md px-2.5 py-2 transition-colors",
+                activeStore?.id === store.id && "bg-accent cursor-default",
+              )}
+            >
+              {/* Store Logo */}
+              <div className="border-border bg-muted flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-md border">
+                <img
+                  src={getImgUrl(store.logo)}
+                  loading="lazy"
+                  className="h-full w-full object-contain"
+                />
+              </div>
 
-  const handleStoreCreate = () => {
-    navigate("/stores/create");
-  };
+              {/* Store Info */}
+              <div className="min-w-0 flex-1">
+                <span className="block truncate text-sm leading-tight font-medium">
+                  {store.name}
+                </span>
+                {store.public_subdomain && (
+                  <span className="text-muted-foreground mt-0.5 block truncate text-[11px] leading-tight">
+                    {store.public_subdomain}.bfinit.com
+                  </span>
+                )}
+              </div>
 
-  if (!isLoading && !hasStores) return null;
+              {/* Active indicator — pushed to the right */}
+              {activeStore?.id === store.id && (
+                <Check className="text-primary h-3.5 w-3.5 shrink-0" />
+              )}
+            </DropdownMenuItem>
+          ))}
+        </div>
+
+        <DropdownMenuSeparator />
+
+        <div className="px-3 py-1">
+          <DropdownMenuItem asChild>
+            <Link
+              to="/stores"
+              className="group flex cursor-pointer items-center gap-2 rounded-md px-2.5 py-1.5"
+            >
+              <Settings className="text-muted-foreground group-hover:text-foreground size-4 shrink-0 transition-colors" />
+              <span className="text-muted-foreground group-hover:text-foreground text-xs transition-colors">
+                Manage Stores
+              </span>
+            </Link>
+          </DropdownMenuItem>
+
+          {!isStoreLimitExceeded && (
+            <DropdownMenuItem asChild>
+              <Link
+                to="/stores/create"
+                className="group flex cursor-pointer items-center gap-2 rounded-md px-2.5 py-1.5"
+              >
+                <Plus className="text-muted-foreground group-hover:text-foreground size-4 shrink-0" />
+                <span className="text-muted-foreground group-hover:text-foreground text-xs">
+                  Create New Store
+                </span>
+              </Link>
+            </DropdownMenuItem>
+          )}
+        </div>
+      </>
+    );
+  }
+
+  // empty store
+  if (!hasStores) {
+    content = (
+      <div className="px-3 py-1">
+        <div className="px-2.5 py-4 text-center">
+          <div className="bg-muted mx-auto mb-2.5 flex size-9 items-center justify-center rounded-md border">
+            <Store className="text-muted-foreground size-4" />
+          </div>
+          <p className="text-sm font-medium">No stores yet</p>
+          <p className="text-muted-foreground mt-0.5 text-[11px] leading-tight">
+            Create your first store to start selling
+          </p>
+        </div>
+
+        <DropdownMenuSeparator className="my-1" />
+
+        <DropdownMenuItem asChild>
+          <Link
+            to="/stores/create"
+            className="group flex cursor-pointer items-center gap-2 rounded-md px-2.5 py-1.5"
+          >
+            <Plus className="text-muted-foreground group-hover:text-foreground size-4 shrink-0 transition-colors" />
+            <span className="text-muted-foreground group-hover:text-foreground text-xs transition-colors">
+              Create New Store
+            </span>
+          </Link>
+        </DropdownMenuItem>
+      </div>
+    );
+  }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
+          disabled={isLoading}
           variant="outline"
           size="sm"
           className="group hover:bg-accent flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 shadow-none transition-all"
         >
-          {isLoading ? (
-            <>
-              <Store className="text-muted-foreground h-4 w-4" />
-              <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
-            </>
-          ) : (
-            <>
-              <div className="bg-muted flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded border">
-                {selectedStore?.storeLogo ? (
-                  <img
-                    src={`https://ecomback.bfinit.com${selectedStore.storeLogo}`}
-                    alt=""
-                    className="h-full w-full object-contain"
-                  />
-                ) : (
-                  <Store className="text-muted-foreground h-3.5 w-3.5" />
-                )}
-              </div>
-
-              <span className="max-w-[120px] truncate text-sm font-medium">
-                {selectedStore?.storeName || "Select store"}
-              </span>
-
-              <ChevronDown className="text-muted-foreground h-4 w-4 shrink-0 transition-transform group-data-[state=open]:rotate-180" />
-            </>
-          )}
+          {btnContent}
         </Button>
       </DropdownMenuTrigger>
 
@@ -99,104 +194,17 @@ export default function StoreSwitcherDropdown() {
             <h3 className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
               Your Stores
             </h3>
-            <span className="text-muted-foreground text-xs font-medium">
-              {stores?.data?.length || 0} of {storeLimit}
-            </span>
+            {hasStores && maxStoreLimit && (
+              <span className="text-muted-foreground text-xs">
+                {stores.length} / {maxStoreLimit}
+              </span>
+            )}
           </div>
         </DropdownMenuLabel>
 
         <DropdownMenuSeparator />
 
-        {/* Store List */}
-        {stores && stores?.data?.length > 0 ? (
-          <>
-            <div className="max-h-80 overflow-y-auto px-1">
-              {stores?.data?.map((store) => (
-                <DropdownMenuItem
-                  key={store?.storeId}
-                  onClick={() => handleSetStore(store)}
-                  className="flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-2 transition-colors"
-                >
-                  {/* Store Logo */}
-                  <div className="border-border bg-muted flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-md border p-0.5">
-                    <img
-                      src={`https://ecomback.bfinit.com${store?.storeLogo}`}
-                      loading="lazy"
-                      className="h-full w-full object-contain"
-                    />
-                  </div>
-
-                  {/* Store Info */}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5">
-                      <span className="truncate text-xs font-semibold">
-                        {store?.storeName}
-                      </span>
-                      {selectedStore?.storeId === store?.storeId && (
-                        <Check className="text-primary h-3.5 w-3.5 shrink-0" />
-                      )}
-                    </div>
-                    {store?.storeDomain && (
-                      <span className="text-muted-foreground mt-0.5 block truncate text-[11px] leading-tight">
-                        {store.storeDomain}
-                      </span>
-                    )}
-                  </div>
-                </DropdownMenuItem>
-              ))}
-            </div>
-
-            <DropdownMenuSeparator />
-
-            {/* Quick Actions */}
-            <div className="px-1 py-1">
-              <DropdownMenuItem asChild>
-                <Link
-                  to="/stores"
-                  className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-2"
-                >
-                  <Settings className="text-muted-foreground h-4 w-4" />
-                  <span className="text-xs font-medium">Manage Stores</span>
-                </Link>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem asChild>
-                <Link
-                  to="/stores/create"
-                  className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-2"
-                >
-                  <Plus className="text-muted-foreground h-4 w-4" />
-                  <span className="text-xs font-medium">Create New Store</span>
-                </Link>
-              </DropdownMenuItem>
-            </div>
-          </>
-        ) : (
-          /* Empty State */
-          <div className="px-4 py-8 text-center">
-            <div className="bg-muted mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full">
-              <Store className="text-muted-foreground h-6 w-6" />
-            </div>
-            <p className="text-sm font-semibold">No stores yet</p>
-            <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
-              Create your first store to start selling online
-            </p>
-
-            <DropdownMenuSeparator className="my-4" />
-
-            <DropdownMenuItem asChild>
-              <button
-                onClick={handleStoreCreate}
-                className="bg-primary/10 text-primary hover:bg-primary/20 flex w-full cursor-pointer items-center justify-center gap-2 rounded-md px-3 py-2 transition-colors"
-              >
-                <Plus className="h-4 w-4" />
-                <span className="text-xs font-semibold">
-                  Create Your First Store
-                </span>
-              </button>
-            </DropdownMenuItem>
-          </div>
-        )}
+        {content}
       </DropdownMenuContent>
     </DropdownMenu>
   );

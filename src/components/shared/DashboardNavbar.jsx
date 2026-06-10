@@ -29,7 +29,7 @@ export default function DashboardNavbar({ showSideNav, setShowSideNav }) {
         </Link>
 
         <div className="hidden md:inline-block">
-          {/* <StoreSwitcherDropdown /> */}
+          <StoreSwitcherDropdown />
         </div>
       </>
 

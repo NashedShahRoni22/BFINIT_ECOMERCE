@@ -9,7 +9,7 @@ import { breadcrubms } from "@/utils/constants/breadcrumbs";
 import useGetStores from "../hooks/useGetStores";
 
 export default function Stores() {
-  const { data, isLoading } = useGetStores();
+  const { data } = useGetStores();
 
   const stores = data?.data?.data ?? [];
 

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router";
 import { Plus, Store } from "lucide-react";
 import {
@@ -11,16 +12,28 @@ import {
 import { Button } from "@/components/ui/button";
 import useGetStores from "../../hooks/useGetStores";
 import useSelectedStore from "@/hooks/useSelectedStore";
+import usePackageInfo from "../../hooks/usePackageInfo";
 import { baseUrl } from "@/lib/api";
 
 export default function StoreSelectionModal() {
-  const { data, isLoading } = useGetStores();
   const { activeStore, selectStore } = useSelectedStore();
+
+  const { data: packageInfo } = usePackageInfo();
+  const { data, isLoading } = useGetStores();
 
   const stores = data?.data?.data ?? [];
   const hasStores = stores?.length > 0;
+  const maxStoreLimit = packageInfo?.data?.package_upgrade?.package?.max_store;
+  const isStoreLimitExceeded = stores?.length >= maxStoreLimit;
 
-  const isOpen = hasStores && !activeStore;
+  const isOpen = !isLoading && stores.length > 1 && !activeStore;
+
+  // auto select single store
+  useEffect(() => {
+    if (!isLoading && stores.length === 1 && !activeStore) {
+      selectStore(stores[0]);
+    }
+  }, [isLoading, stores, activeStore]);
 
   let content = null;
 
@@ -48,10 +61,12 @@ export default function StoreSelectionModal() {
 
   if (hasStores) {
     content = (
-      <AlertDialogContent>
+      <AlertDialogContent className="gap-4 sm:max-w-sm">
         <AlertDialogHeader>
-          <AlertDialogTitle>Select a store</AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogTitle className="text-sm font-semibold">
+            Select a store
+          </AlertDialogTitle>
+          <AlertDialogDescription className="text-xs">
             Choose which store you'd like to manage
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -73,8 +88,10 @@ export default function StoreSelectionModal() {
                   />
                 </div>
                 <div className="text-left">
-                  <p className="text-sm font-medium">{store.name}</p>
-                  <p className="text-muted-foreground text-xs">
+                  <p className="line-clamp-1 text-sm font-medium">
+                    {store.name}
+                  </p>
+                  <p className="text-muted-foreground line-clamp-1 text-xs">
                     {store.public_subdomain}.bfinit.com
                   </p>
                 </div>
@@ -83,27 +100,33 @@ export default function StoreSelectionModal() {
           ))}
         </ul>
 
-        <AlertDialogFooter className="border-t">
-          <Button asChild variant="ghost" className="w-full gap-2 rounded-none">
-            <Link to="/stores/create">
-              <Plus className="size-4" />
-              Create new store
-            </Link>
-          </Button>
-        </AlertDialogFooter>
+        {!isStoreLimitExceeded && (
+          <AlertDialogFooter className="border-t">
+            <Button
+              asChild
+              variant="ghost"
+              className="w-full gap-2 rounded-none"
+            >
+              <Link to="/stores/create">
+                <Plus className="size-4" />
+                Create new store
+              </Link>
+            </Button>
+          </AlertDialogFooter>
+        )}
       </AlertDialogContent>
     );
   }
 
   if (!hasStores) {
     content = (
-      <AlertDialogContent className="gap-6 sm:max-w-md">
+      <AlertDialogContent className="gap-4 sm:max-w-sm">
         <AlertDialogHeader>
-          <AlertDialogTitle className="flex items-center gap-2">
-            <Store className="text-muted-foreground size-4" /> Create your first
-            store
+          <AlertDialogTitle className="flex items-center gap-2 text-sm font-semibold">
+            <Store className="text-muted-foreground size-4" />
+            Create your first store
           </AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogDescription className="text-xs">
             Set up your store to start managing products, orders and customers.
           </AlertDialogDescription>
         </AlertDialogHeader>
