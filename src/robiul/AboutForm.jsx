@@ -1,0 +1,227 @@
+import { ChevronLeft, Info } from "lucide-react";
+import useSelectedStore from "@/hooks/useSelectedStore";
+import { breadcrubms } from "@/utils/constants/breadcrumbs";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
+import SunEditor from "suneditor-react";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
+import { Spinner } from "@/components/ui/spinner";
+import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
+import EmptyStoreState from "@/features/admin/components/EmptyStoreState";
+import PageHeader from "@/components/shared/PageHeader";
+import QuickTips from "@/features/admin/components/sections/home/QuickTips";
+import InfoBanner from "@/features/admin/components/sections/support/InfoBanner";
+import { usePostMutation } from "@/hooks-v2/api/usePostMutation";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
+
+export default function AboutForm() {
+  const queryClient = useQueryClient();
+  const { selectedStore } = useSelectedStore();
+
+  const { data: aboutContent, isLoading } = useGetQuery({
+    endpoint: `/api/v1/general/about/6`, // todo: have to update path to dynamic
+    isTokenRequired: true,
+    clientId: true,
+    queryKey: ["/store/aboutData", 6], // todo: change key to dynamic
+    enabled: true, // todo: have to change the logic
+  });
+  //   console.log(aboutContent?.data?.description);
+
+  const { mutate, isPending } = usePostMutation({
+    endpoint: `/api/v1/general/about`,
+    isTokenRequired: true,
+    clientId: true,
+  });
+
+  const { mutate: updateMutate, isPending: isUpdatePending } = usePatchMutation(
+    {
+      endpoint: `/api/v1/general/about/6`, // todo: have to update path to dynamic
+      isTokenRequired: true,
+      clientId: true,
+    },
+  );
+
+  const [content, setContent] = useState("");
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  const isEmptyHtml = (html) => {
+    if (!html) return true;
+    const text = html.replace(/<[^>]+>/g, "").trim();
+    return text.length === 0;
+  };
+
+  const handleContentChange = (content) => {
+    setContent(content);
+    setHasUnsavedChanges(content !== aboutContent?.data?.description);
+  };
+
+  useEffect(() => {
+    if (
+      //   selectedStore?.storeId &&   //todo: check this when storeId is available
+      !isLoading &&
+      aboutContent?.data?.description
+    ) {
+      const initialContent = isEmptyHtml(aboutContent?.data?.description)
+        ? ""
+        : aboutContent?.data?.description;
+      setContent(initialContent);
+      setHasUnsavedChanges(false);
+    } else {
+      setContent("");
+      setHasUnsavedChanges(false);
+    }
+  }, [selectedStore?.storeId, isLoading, aboutContent?.data?.description]);
+
+  const handlePublishContent = () => {
+    if (!content?.trim()) {
+      return toast.error("About Content can't be empty!");
+    }
+
+    const payload = { description: content }; // todo: change store_id to dynamic
+    console.log("update payload", payload);
+
+    if (aboutContent?.data?.description) {
+      updateMutate(payload, {
+        onSuccess: () => {
+          toast.success("About content updated!");
+          setHasUnsavedChanges(false);
+          queryClient.invalidateQueries([
+            "/store/aboutData",
+            // selectedStore?.storeId,
+            6, //todo: update the dynamic id
+          ]);
+        },
+
+        onError: () => {
+          toast.error("Something went wrong!");
+        },
+      });
+    } else {
+      mutate(payload, {
+        onSuccess: () => {
+          toast.success("About content created!");
+          setHasUnsavedChanges(false);
+          queryClient.invalidateQueries([
+            "/store/aboutData",
+            // selectedStore?.storeId,
+            6, //todo: update it to dynamic
+          ]);
+        },
+
+        onError: () => {
+          toast.error("Something went wrong!");
+        },
+      });
+    }
+  };
+
+  const isDisabled =
+    aboutContent?.data?.description === content ||
+    !hasUnsavedChanges ||
+    !content.trim() ||
+    isPending;
+
+  //   if (!selectedStore) {
+  //     return (
+  //       <EmptyStoreState
+  //         title="Store Required"
+  //         description="Create a store before adding shopping instructions for your customers."
+  //       />
+  //     );
+  //   }
+
+  return (
+    <section className="space-y-6">
+      {/* Breadcrumb Navigation */}
+      <DynamicBreadcrumb items={breadcrubms.AddAbout} />
+
+      {/* Page Header */}
+      <PageHeader
+        icon={Info}
+        title="About"
+        description="Create and update about page for"
+      />
+
+      <div className="bg-card space-y-6 rounded-lg p-5">
+        {aboutContent?.data?.description && <InfoBanner />}
+
+        <div className="space-y-2">
+          <h2 className="text-sm font-semibold">Article Content</h2>
+
+          <SunEditor
+            name="content"
+            height="400px"
+            setContents={content}
+            onChange={handleContentChange}
+            setOptions={{
+              buttonList: [
+                [
+                  "undo",
+                  "redo",
+                  "formatBlock",
+                  "bold",
+                  "italic",
+                  "underline",
+                  "strike",
+                ],
+                ["fontSize", "fontColor", "hiliteColor", "removeFormat"],
+                ["align", "list", "outdent", "indent", "lineHeight"],
+                [
+                  "blockquote",
+                  "horizontalRule",
+                  "table",
+                  "link",
+                  "image",
+                  "video",
+                ],
+                ["fullScreen", "showBlocks", "preview"],
+              ],
+              charCounter: true,
+              charCounterLabel: "Characters:",
+
+              formats: [
+                "p",
+                "div",
+                "h1",
+                "h2",
+                "h3",
+                "h4",
+                "h5",
+                "h6",
+                "blockquote",
+              ],
+              fontSize: [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36],
+            }}
+          />
+
+          <QuickTips />
+        </div>
+        <div className="flex flex-col-reverse gap-4 lg:flex-row lg:justify-between">
+          <Button variant="outline" size="sm" asChild className="text-xs">
+            <Link to="/">
+              <ChevronLeft /> Back to Home
+            </Link>
+          </Button>
+
+          <Button
+            disabled={isDisabled}
+            onClick={handlePublishContent}
+            size="sm"
+            className="text-xs"
+          >
+            {isPending ? (
+              <Spinner />
+            ) : aboutContent?.data?.description ? (
+              "Update Article"
+            ) : (
+              "Publish Article"
+            )}
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
+}
