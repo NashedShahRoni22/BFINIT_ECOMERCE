@@ -19,7 +19,6 @@ import ReturnsRefundsForm from "@/features/admin/pages/ReturnsRefundsForm";
 import TermsConditionsForm from "@/features/admin/pages/TermsConditionsForm";
 import HowToBuyForm from "@/features/admin/pages/HowToBuyForm";
 import Stores from "@/features/admin/pages/Stores";
-import UpdateStore from "@/features/admin/pages/UpdateStore";
 import SubCategoryUpdate from "@/features/admin/pages/SubCategoryUpdate";
 import UpdateProduct from "@/features/admin/pages/UpdateProduct";
 import AddAbout from "@/features/admin/pages/AddAbout";

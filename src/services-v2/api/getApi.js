@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/utils/api-config";
+import { BASE_URL } from "@/lib/api";
 
 export const getApi = async ({ endpoint, token }) => {
   const headers = {

@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import useGetStores from "../../hooks/useGetStores";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import usePackageInfo from "../../hooks/usePackageInfo";
-import { baseUrl } from "@/lib/api";
+import { BASE_URL } from "@/lib/api";
 
 export default function StoreSelectionModal() {
   const { activeStore, selectStore } = useSelectedStore();
@@ -82,7 +82,7 @@ export default function StoreSelectionModal() {
                 {/* logo */}
                 <div className="bg-background">
                   <img
-                    src={`${baseUrl}${store.logo}`}
+                    src={`${BASE_URL}${store.logo}`}
                     alt={store.name}
                     className="size-8 rounded border p-1"
                   />

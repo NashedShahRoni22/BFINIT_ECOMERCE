@@ -1,6 +1,6 @@
 import { BASE_URL } from "@/lib/api";
 
-export const postApi = async ({ endpoint, payload, token }) => {
+export const putApi = async ({ endpoint, payload, token }) => {
   const isFormData = payload instanceof FormData;
 
   const headers = {
@@ -9,7 +9,7 @@ export const postApi = async ({ endpoint, payload, token }) => {
   };
 
   const res = await fetch(`${BASE_URL}${endpoint}`, {
-    method: "POST",
+    method: "PUT",
     headers,
     body: isFormData ? payload : JSON.stringify(payload),
   });

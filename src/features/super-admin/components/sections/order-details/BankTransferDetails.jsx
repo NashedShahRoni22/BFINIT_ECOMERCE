@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { formatDate } from "@/utils/formatDate";
-import { BASE_URL } from "@/utils/api-config";
+import { BASE_URL } from "@/lib/api";
 
 export default function BankTransferDetails({ orderDetails = {} }) {
   const bankInfo = orderDetails?.manualPayments?.[0];

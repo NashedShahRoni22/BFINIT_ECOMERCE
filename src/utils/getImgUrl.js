@@ -1,3 +1,3 @@
-import { baseUrl } from "@/lib/api";
+import { BASE_URL } from "@/lib/api";
 
-export const getImgUrl = (path) => `${baseUrl}${path}`;
+export const getImgUrl = (path) => `${BASE_URL}${path}`;

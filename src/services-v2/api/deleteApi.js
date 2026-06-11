@@ -1,6 +1,6 @@
 import { BASE_URL } from "@/lib/api";
 
-export const postApi = async ({ endpoint, payload, token }) => {
+export const deleteApi = async ({ endpoint, payload, token }) => {
   const isFormData = payload instanceof FormData;
 
   const headers = {
@@ -8,11 +8,16 @@ export const postApi = async ({ endpoint, payload, token }) => {
     ...(token && { Authorization: `Bearer ${token}` }),
   };
 
-  const res = await fetch(`${BASE_URL}${endpoint}`, {
-    method: "POST",
+  const options = {
+    method: "DELETE",
     headers,
-    body: isFormData ? payload : JSON.stringify(payload),
-  });
+  };
+
+  if (payload) {
+    options.body = isFormData ? payload : JSON.stringify(payload);
+  }
+
+  const res = await fetch(`${BASE_URL}${endpoint}`, options);
 
   const data = await res.json();
 
