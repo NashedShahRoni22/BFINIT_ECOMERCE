@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import useAuth from "@/hooks/auth/useAuth";
-import { usePostMutation } from "@/hooks-v2/api/usePostMutation";
+import usePostMutation from "@/hooks-v2/api/usePostMutation";
 
 export default function useLogin() {
   const navigate = useNavigate();

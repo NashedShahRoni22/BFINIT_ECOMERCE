@@ -11,7 +11,7 @@ import { Form } from "@/components/ui/form";
 import { Spinner } from "@/components/ui/spinner";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 import PageHeader from "@/components/shared/PageHeader";
-import { usePostMutation } from "@/hooks-v2/api/usePostMutation";
+import usePostMutation from "@/hooks-v2/api/usePostMutation";
 import { breadcrubms } from "@/features/admin/utils/constants/breadcrumbs";
 import { createStorePayload } from "@/features/admin/utils/storeHelpers";
 import useAuth from "@/hooks/auth/useAuth";
@@ -25,6 +25,12 @@ export default function StoreForm() {
 
   const isEditMode = !!id;
 
+  const { data: countries, isLoading: isCountriesLoading } = useGetQuery({
+    endpoint: "/api/v1/country",
+    enabled: true,
+    queryKey: ["countries"],
+  });
+
   const { data, isLoading: isStoreLoading } = useGetQuery({
     endpoint: `/api/v1/store/${id}`,
     enabled: !!id,
@@ -34,12 +40,19 @@ export default function StoreForm() {
 
   const store = data?.data;
 
+  const savedCountries =
+    store?.country_ids && countries?.data
+      ? store.country_ids.map((countryId) =>
+          countries.data.find((c) => c.id === countryId),
+        )
+      : [];
+
   const form = useForm({
     values: {
       logo: store?.logo ?? null,
       favicon: store?.favicon ?? null,
       name: store?.name ?? "",
-      countries: store?.country_ids ?? [],
+      countries: savedCountries ?? [],
       default_country_id: store?.default_country_id ?? null,
       is_active: store?.is_active ?? true,
     },
@@ -68,7 +81,9 @@ export default function StoreForm() {
       navigate("/stores");
     };
 
-    const onError = (error) => console.log(error);
+    const onError = (error) => {
+      console.log(error);
+    };
 
     if (!isEditMode) {
       mutate(formData, {
@@ -76,7 +91,6 @@ export default function StoreForm() {
           form.reset();
           onSuccess(data);
         },
-
         onError,
       });
 
@@ -110,7 +124,11 @@ export default function StoreForm() {
           >
             <Branding form={form} />
             <StoreInfo form={form} />
-            <Location form={form} />
+            <Location
+              form={form}
+              countries={countries}
+              isLoading={isCountriesLoading}
+            />
             {/* <Social form={form} /> */}
           </fieldset>
 

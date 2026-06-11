@@ -15,15 +15,8 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import SectionHeader from "../add-product/SectionHeader";
-import useGetQuery from "@/hooks-v2/api/useGetQuery";
 
-export default function Location({ form }) {
-  const { data: countries, isLoading } = useGetQuery({
-    endpoint: "/api/v1/country",
-    enabled: true,
-    queryKey: ["countries"],
-  });
-
+export default function Location({ form, countries = [], isLoading = false }) {
   const selectedCountries = form.watch("countries");
   const defaultCountryId = form.watch("default_country_id");
 

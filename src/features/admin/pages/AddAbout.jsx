@@ -1,128 +1,116 @@
-import { ChevronLeft, Info } from "lucide-react";
-import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
-import EmptyStoreState from "../components/EmptyStoreState";
-import PageHeader from "../components/PageHeader";
-import useSelectedStore from "@/hooks/useSelectedStore";
-import { breadcrubms } from "@/utils/constants/breadcrumbs";
-import useGetQuery from "@/hooks/api/useGetQuery";
-import usePostMutation from "@/hooks/api/usePostMutation";
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
+import { ChevronLeft, Info, Store } from "lucide-react";
 import toast from "react-hot-toast";
-import { useQueryClient } from "@tanstack/react-query";
 import SunEditor from "suneditor-react";
+import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
+import EmptyState from "@/components/shared/EmptyState";
+import PageHeader from "../components/PageHeader";
 import QuickTips from "../components/sections/support/QuickTips";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router";
 import { Spinner } from "@/components/ui/spinner";
 import InfoBanner from "../components/sections/support/InfoBanner";
-import usePatchMutaion from "@/hooks/api/usePatchMutaion";
+import useSelectedStore from "@/hooks/useSelectedStore";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import usePostMutation from "@/hooks-v2/api/usePostMutation";
+import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
+import { breadcrubms } from "@/utils/constants/breadcrumbs";
+
+const isEmptyHtml = (html) => {
+  if (!html) return true;
+  const text = html.replace(/<[^>]+>/g, "").trim();
+  return text.length === 0;
+};
 
 export default function AddAbout() {
-  const queryClient = useQueryClient();
-  const { selectedStore } = useSelectedStore();
+  const { activeStore } = useSelectedStore();
 
-  const { data: aboutContent, isLoading } = useGetQuery({
-    endpoint: `/store/aboutData/${selectedStore?.storeId}`,
-    token: true,
-    clientId: true,
-    queryKey: ["/store/aboutData", selectedStore?.storeId],
-    enabled: !!selectedStore?.storeId,
+  const { data, isLoading } = useGetQuery({
+    endpoint: `/api/v1/general/about/${activeStore?.id}`,
+    enabled: !!activeStore?.id,
+    isTokenRequired: true,
+    queryKey: ["about", activeStore?.id],
   });
 
-  const { mutate, isPending } = usePostMutation({
-    endpoint: `/store/about/${selectedStore?.storeId}`,
-    token: true,
-    clientId: true,
-  });
-
-  const { mutate: updateMutate, isPending: isUpdatePending } = usePatchMutaion({
-    endpoint: `/store/updateAboutData/${selectedStore?.storeId}`,
-    token: true,
-    clientId: true,
-  });
-
+  const isEditMode = !!data?.data?.id;
   const [content, setContent] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-  const isEmptyHtml = (html) => {
-    if (!html) return true;
-    const text = html.replace(/<[^>]+>/g, "").trim();
-    return text.length === 0;
-  };
+  const { mutate, isPending } = usePostMutation({
+    endpoint: "/api/v1/general/about",
+    isTokenRequired: true,
+  });
+
+  const { mutate: update, isPending: isUpdating } = usePatchMutation({
+    endpoint: `/api/v1/general/about/${data?.data?.id}`,
+    isTokenRequired: true,
+  });
 
   const handleContentChange = (content) => {
     setContent(content);
-    setHasUnsavedChanges(content !== aboutContent?.data?.description);
+    setHasUnsavedChanges(content !== data?.data?.description);
+  };
+
+  const onSubmit = () => {
+    if (!content?.trim()) {
+      return toast.error("Content cannot be empty");
+    }
+
+    const payload = { store_id: activeStore?.id, description: content };
+
+    const onSuccess = (data) => {
+      if (!data?.success) return toast.error(data?.message);
+      toast.success(data?.message);
+      setHasUnsavedChanges(false);
+    };
+
+    const onError = (error) => {
+      console.log(error);
+    };
+
+    if (!isEditMode) {
+      mutate(payload, {
+        onSuccess,
+        onError,
+      });
+
+      return;
+    }
+
+    update(payload, {
+      onSuccess,
+      onError,
+    });
   };
 
   useEffect(() => {
-    if (
-      selectedStore?.storeId &&
-      !isLoading &&
-      aboutContent?.data?.description
-    ) {
-      const initialContent = isEmptyHtml(aboutContent?.data?.description)
+    if (activeStore?.id && !isLoading && data?.data?.description) {
+      const initialContent = isEmptyHtml(data?.data?.description)
         ? ""
-        : aboutContent?.data?.description;
+        : data?.data?.description;
       setContent(initialContent);
       setHasUnsavedChanges(false);
     } else {
       setContent("");
       setHasUnsavedChanges(false);
     }
-  }, [selectedStore?.storeId, isLoading, aboutContent?.data?.description]);
-
-  const handlePublishContent = () => {
-    if (!content?.trim()) {
-      return toast.error("About Content can't be empty!");
-    }
-
-    const payload = { description: content };
-
-    if (aboutContent?.data?.description) {
-      updateMutate(payload, {
-        onSuccess: () => {
-          toast.success("About content updated!");
-          setHasUnsavedChanges(false);
-          queryClient.invalidateQueries([
-            "/store/aboutData",
-            selectedStore?.storeId,
-          ]);
-        },
-
-        onError: () => {
-          toast.error("Something went wrong!");
-        },
-      });
-    } else {
-      mutate(payload, {
-        onSuccess: () => {
-          toast.success("About content created!");
-          setHasUnsavedChanges(false);
-          queryClient.invalidateQueries([
-            "/store/aboutData",
-            selectedStore?.storeId,
-          ]);
-        },
-
-        onError: () => {
-          toast.error("Something went wrong!");
-        },
-      });
-    }
-  };
+  }, [activeStore?.id, isLoading, data?.data?.description]);
 
   const isDisabled =
-    aboutContent?.data?.description === content ||
+    data?.data?.description === content ||
     !hasUnsavedChanges ||
     !content.trim() ||
-    isPending;
+    isPending ||
+    isUpdating;
 
-  if (!selectedStore) {
+  if (!activeStore) {
     return (
-      <EmptyStoreState
+      <EmptyState
+        icon={Store}
         title="Store Required"
-        description="Create a store before adding shopping instructions for your customers."
+        description="Create a store first to start adding your about page content."
+        actionText="Create Store"
+        actionPath="/stores/create"
       />
     );
   }
@@ -136,11 +124,11 @@ export default function AddAbout() {
       <PageHeader
         icon={Info}
         title="About"
-        description="Create and update about page for"
+        description="Manage your store's about page content"
       />
 
       <div className="bg-card space-y-6 rounded-lg p-5">
-        {aboutContent?.data?.description && <InfoBanner />}
+        {isEditMode && <InfoBanner />}
 
         <div className="space-y-2">
           <h2 className="text-sm font-semibold">Article Content</h2>
@@ -203,13 +191,13 @@ export default function AddAbout() {
 
           <Button
             disabled={isDisabled}
-            onClick={handlePublishContent}
+            onClick={onSubmit}
             size="sm"
             className="text-xs"
           >
             {isPending ? (
               <Spinner />
-            ) : aboutContent?.data?.description ? (
+            ) : data?.data?.description ? (
               "Update Article"
             ) : (
               "Publish Article"

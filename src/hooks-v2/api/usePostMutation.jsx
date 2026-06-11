@@ -2,7 +2,7 @@ import useAuth from "@/hooks/auth/useAuth";
 import { postApi } from "@/services-v2/api/postApi";
 import { useMutation } from "@tanstack/react-query";
 
-export function usePostMutation({
+export default function usePostMutation({
   endpoint = "",
   isTokenRequired = false,
   ...options
