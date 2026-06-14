@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { Store, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default function EmptyState({
   icon: Icon = Store,
@@ -8,9 +9,17 @@ export default function EmptyState({
   description,
   actionText,
   actionPath,
+  onAction,
+  className,
 }) {
   return (
-    <div className="bg-card flex min-h-[calc(100vh-95px)] flex-col items-center justify-center space-y-4 rounded-lg border border-dashed py-8 text-center">
+    <div
+      className={cn(
+        "bg-card flex flex-col items-center justify-center space-y-4 rounded-lg border border-dashed py-8 text-center",
+        "min-h-[calc(100dvh-95px)]",
+        className,
+      )}
+    >
       <div className="bg-muted rounded-full p-4">
         <Icon className="text-muted-foreground h-10 w-10" />
       </div>
@@ -20,11 +29,17 @@ export default function EmptyState({
       </div>
 
       {actionText && actionPath && (
-        <Button asChild size="sm" className="text-xs">
+        <Button asChild size="sm">
           <Link to={actionPath}>
-            <Plus className="h-3.5 w-3.5" />
+            <Plus className="size-3.5" />
             {actionText}
           </Link>
+        </Button>
+      )}
+
+      {actionText && onAction && (
+        <Button onClick={onAction} size="sm" variant="outline">
+          {actionText}
         </Button>
       )}
     </div>

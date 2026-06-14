@@ -61,7 +61,7 @@ export default function StoreSelectionModal() {
 
   if (hasStores) {
     content = (
-      <AlertDialogContent className="gap-4 sm:max-w-sm">
+      <AlertDialogContent className="gap-4">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-sm font-semibold">
             Select a store

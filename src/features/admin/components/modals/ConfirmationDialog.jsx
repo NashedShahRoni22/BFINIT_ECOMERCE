@@ -62,7 +62,7 @@ export default function ConfirmationDialog({
         onEscapeKeyDown={(e) => {
           if (isLoading) e.preventDefault();
         }}
-        className="gap-0 sm:max-w-[440px] [&>button]:hidden"
+        className="sm:max-w-[440px] [&>button]:hidden"
       >
         <DialogHeader>
           <div className="flex items-start gap-4">
@@ -84,20 +84,21 @@ export default function ConfirmationDialog({
 
         {children && <div className="mt-4">{children}</div>}
 
-        <div className="mt-9 flex items-center justify-end gap-3">
+        <div className="flex items-center justify-end gap-3">
           <Button
-            onClick={onCancel}
-            variant="outline"
             disabled={isLoading}
-            className="text-xs"
+            onClick={onCancel}
+            size="sm"
+            variant="outline"
           >
             {cancelText}
           </Button>
           <Button
-            onClick={onConfirm}
-            variant={config.actionVariant}
             disabled={isLoading}
-            className="min-w-24 text-xs"
+            onClick={onConfirm}
+            size="sm"
+            variant={config.actionVariant}
+            className="min-w-24"
           >
             {isLoading ? (
               <>

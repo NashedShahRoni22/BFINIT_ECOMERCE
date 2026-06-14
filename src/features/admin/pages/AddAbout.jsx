@@ -1,128 +1,122 @@
-import { ChevronLeft, Info } from "lucide-react";
-import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
-import EmptyStoreState from "../components/EmptyStoreState";
-import PageHeader from "../components/PageHeader";
-import useSelectedStore from "@/hooks/useSelectedStore";
-import { breadcrubms } from "@/utils/constants/breadcrumbs";
-import useGetQuery from "@/hooks/api/useGetQuery";
-import usePostMutation from "@/hooks/api/usePostMutation";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { useQueryClient } from "@tanstack/react-query";
-import SunEditor from "suneditor-react";
-import QuickTips from "../components/sections/support/QuickTips";
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
-import { Spinner } from "@/components/ui/spinner";
+import { ChevronLeft, Info, Store } from "lucide-react";
+import SunEditor from "suneditor-react";
+import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
+import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
+import EmptyState from "@/components/shared/EmptyState";
 import InfoBanner from "../components/sections/support/InfoBanner";
-import usePatchMutaion from "@/hooks/api/usePatchMutaion";
+import PageHeader from "@/components/shared/PageHeader";
+import QuickTips from "../components/sections/support/QuickTips";
+import { Spinner } from "@/components/ui/spinner";
+import useSelectedStore from "@/hooks/useSelectedStore";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import { usePostMutation } from "@/hooks-v2/api/usePostMutation";
+import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
+import { breadcrubms } from "../utils/constants/breadcrumbs";
 
 export default function AddAbout() {
-  const queryClient = useQueryClient();
-  const { selectedStore } = useSelectedStore();
+  const { activeStore } = useSelectedStore();
 
-  const { data: aboutContent, isLoading } = useGetQuery({
-    endpoint: `/store/aboutData/${selectedStore?.storeId}`,
-    token: true,
-    clientId: true,
-    queryKey: ["/store/aboutData", selectedStore?.storeId],
-    enabled: !!selectedStore?.storeId,
+  const { data, isLoading } = useGetQuery({
+    endpoint: "/api/v1/general/about",
+    enabled: true,
+    queryKey: ["about"],
   });
 
-  const { mutate, isPending } = usePostMutation({
-    endpoint: `/store/about/${selectedStore?.storeId}`,
-    token: true,
-    clientId: true,
-  });
-
-  const { mutate: updateMutate, isPending: isUpdatePending } = usePatchMutaion({
-    endpoint: `/store/updateAboutData/${selectedStore?.storeId}`,
-    token: true,
-    clientId: true,
-  });
-
+  const isEditMode = data?.data?.length > 0;
+  const [aboutData, setAboutData] = useState(null);
   const [content, setContent] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-  const isEmptyHtml = (html) => {
-    if (!html) return true;
-    const text = html.replace(/<[^>]+>/g, "").trim();
-    return text.length === 0;
-  };
+  // pre-filled form with api data
+  useEffect(() => {
+    const isEmptyHtml = (html = "") => {
+      const text = html.replace(/<[^>]+>/g, "").trim();
+      return text.length === 0;
+    };
+
+    if (isEditMode && data?.data?.length) {
+      const description = data.data[0]?.description ?? "";
+      setContent(isEmptyHtml(description) ? "" : description);
+      setAboutData(data?.data?.[0]);
+    } else {
+      setContent("");
+    }
+
+    setHasUnsavedChanges(false);
+  }, [isEditMode, data]);
 
   const handleContentChange = (content) => {
     setContent(content);
-    setHasUnsavedChanges(content !== aboutContent?.data?.description);
+    setHasUnsavedChanges(content !== data?.data?.description);
   };
 
-  useEffect(() => {
-    if (
-      selectedStore?.storeId &&
-      !isLoading &&
-      aboutContent?.data?.description
-    ) {
-      const initialContent = isEmptyHtml(aboutContent?.data?.description)
-        ? ""
-        : aboutContent?.data?.description;
-      setContent(initialContent);
-      setHasUnsavedChanges(false);
-    } else {
-      setContent("");
-      setHasUnsavedChanges(false);
-    }
-  }, [selectedStore?.storeId, isLoading, aboutContent?.data?.description]);
+  const { mutate, isPending } = usePostMutation({
+    endpoint: "/api/v1/general/about",
+    isTokenRequired: true,
+  });
 
-  const handlePublishContent = () => {
+  const { mutate: update, isPending: isUpdating } = usePatchMutation({
+    endpoint: `/api/v1/general/about/${aboutData?.id}`,
+    isTokenRequired: true,
+  });
+
+  const onSubmit = () => {
     if (!content?.trim()) {
       return toast.error("About Content can't be empty!");
     }
 
     const payload = { description: content };
 
-    if (aboutContent?.data?.description) {
-      updateMutate(payload, {
-        onSuccess: () => {
-          toast.success("About content updated!");
-          setHasUnsavedChanges(false);
-          queryClient.invalidateQueries([
-            "/store/aboutData",
-            selectedStore?.storeId,
-          ]);
-        },
+    const onSuccess = (data) => {
+      if (!data?.success) {
+        return toast.error(data?.message);
+      }
 
-        onError: () => {
-          toast.error("Something went wrong!");
-        },
-      });
-    } else {
+      setHasUnsavedChanges(false);
+      toast.success(data?.message);
+    };
+
+    const onError = (error) => {
+      console.log(error);
+    };
+
+    if (!isEditMode) {
       mutate(payload, {
-        onSuccess: () => {
-          toast.success("About content created!");
-          setHasUnsavedChanges(false);
-          queryClient.invalidateQueries([
-            "/store/aboutData",
-            selectedStore?.storeId,
-          ]);
-        },
-
-        onError: () => {
-          toast.error("Something went wrong!");
-        },
+        onSuccess,
+        onError,
       });
+
+      return;
     }
+
+    update(payload, {
+      onSuccess,
+      onError,
+    });
   };
 
   const isDisabled =
-    aboutContent?.data?.description === content ||
+    aboutData?.description === content ||
     !hasUnsavedChanges ||
     !content.trim() ||
-    isPending;
+    isPending ||
+    isLoading ||
+    isUpdating;
 
-  if (!selectedStore) {
+  const btnLabel = isEditMode ? "Save Changes" : "Create About Us";
+  const btnLoadingLabel = isEditMode ? "Saving..." : "Creating...";
+
+  if (!activeStore) {
     return (
-      <EmptyStoreState
-        title="Store Required"
-        description="Create a store before adding shopping instructions for your customers."
+      <EmptyState
+        icon={Store}
+        title="Create Your First Store"
+        description="Create a store before creating your About Us page."
+        actionText="Create Store"
+        actionPath="/stores/create"
       />
     );
   }
@@ -130,26 +124,26 @@ export default function AddAbout() {
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <DynamicBreadcrumb items={breadcrubms.AddAbout} />
+      <DynamicBreadcrumb items={breadcrubms.about} />
 
       {/* Page Header */}
       <PageHeader
         icon={Info}
-        title="About"
-        description="Create and update about page for"
+        title="About Us"
+        description="Manage the content displayed on your store's About Us page."
       />
 
       <div className="bg-card space-y-6 rounded-lg p-5">
-        {aboutContent?.data?.description && <InfoBanner />}
+        {isEditMode && <InfoBanner />}
 
         <div className="space-y-2">
           <h2 className="text-sm font-semibold">Article Content</h2>
 
           <SunEditor
+            onChange={handleContentChange}
+            setContents={content}
             name="content"
             height="400px"
-            setContents={content}
-            onChange={handleContentChange}
             setOptions={{
               buttonList: [
                 [
@@ -195,24 +189,19 @@ export default function AddAbout() {
         </div>
 
         <div className="flex flex-col-reverse gap-4 lg:flex-row lg:justify-between">
-          <Button variant="outline" size="sm" asChild className="text-xs">
+          <Button asChild size="sm" variant="outline">
             <Link to="/">
               <ChevronLeft /> Back to Home
             </Link>
           </Button>
 
-          <Button
-            disabled={isDisabled}
-            onClick={handlePublishContent}
-            size="sm"
-            className="text-xs"
-          >
-            {isPending ? (
-              <Spinner />
-            ) : aboutContent?.data?.description ? (
-              "Update Article"
+          <Button onClick={onSubmit} disabled={isDisabled} size="sm">
+            {isPending || isUpdating ? (
+              <>
+                <Spinner /> {btnLoadingLabel}
+              </>
             ) : (
-              "Publish Article"
+              btnLabel
             )}
           </Button>
         </div>
