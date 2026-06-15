@@ -1,39 +1,28 @@
 import { useEffect, useRef, useState } from "react";
-import { Check, Edit2, Trash2, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import useSelectedStore from "@/hooks/useSelectedStore";
-import useUpdateMutation from "@/hooks/api/useUpdateMutation";
-import { baseUrl } from "@/utils/api";
+import { Check, Pencil, Trash2, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 import ConfirmationDialog from "../../modals/ConfirmationDialog";
-import useDeleteMutation from "@/hooks/api/useDeleteMutation";
+import { Input } from "@/components/ui/input";
+import useSelectedStore from "@/hooks/useSelectedStore";
+import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
+import useDeleteMutation from "@/hooks-v2/api/useDeleteMutation";
+import { getImgUrl } from "@/utils/getImgUrl";
 
 export default function CategoryItem({ category }) {
   const { id, name, image } = category;
 
   const queryClient = useQueryClient();
-  const { selectedStore } = useSelectedStore();
-
-  const { mutate, isPending } = useUpdateMutation({
-    endpoint: `/category/update/${selectedStore?.storeId}/${id}`,
-    token: true,
-    clientId: true,
-  });
-
-  const { mutate: deleteMutate, isPending: isDeletePending } =
-    useDeleteMutation({
-      endpoint: `/category/delete/${selectedStore?.storeId}/${id}`,
-      token: true,
-      clientId: true,
-    });
+  const { activeStore } = useSelectedStore();
 
   const imageRef = useRef();
   const [isEditing, setIsEditing] = useState(false);
   const [newImage, setNewImage] = useState(null);
   const [editedName, setEditedName] = useState(name);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  const imgSrc = newImage?.preview || getImgUrl(image);
 
   useEffect(() => {
     return () => {
@@ -77,122 +66,132 @@ export default function CategoryItem({ category }) {
     setNewImage(imgData);
   };
 
-  const handleUpdateCategory = () => {
+  const { mutate: update, isPending: isUpdating } = usePatchMutation({
+    endpoint: `/api/v1/category/${id}`,
+    isTokenRequired: true,
+  });
+
+  const handleUpdate = () => {
     if (!editedName.trim()) {
       toast.error("Category name cannot be empty");
       return;
     }
 
-    const categoryPayload = new FormData();
-    categoryPayload.append("categoryName", editedName.trim());
-
+    const payload = new FormData();
+    payload.append("name", editedName.trim());
+    payload.append("store_id", activeStore?.id);
     if (newImage?.file) {
-      categoryPayload.append("categoryImage", newImage.file);
+      payload.append("image", newImage.file);
     }
 
-    mutate(categoryPayload, {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["categories", selectedStore?.storeId]);
-        toast.success("Category updated successfully!");
+    update(payload, {
+      onSuccess: (data) => {
+        if (!data?.success) {
+          return toast.error(data?.message);
+        }
         setIsEditing(false);
         setNewImage(null);
+        toast.success(data?.message);
+        queryClient.invalidateQueries(["categories"]);
       },
-      onError: () => {
-        toast.error("Failed to update category");
-      },
-    });
-  };
-
-  const handleCategoryDelete = () => {
-    deleteMutate(null, {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["categories", selectedStore?.storeId]);
-        toast.success("Category deleted!");
-      },
-      onError: () => {
-        toast.error("Something went wrong!");
+      onError: (error) => {
+        console.log(error);
       },
     });
   };
 
-  const currentImageSrc = newImage?.preview || `${baseUrl}${image}`;
+  const { mutate: remove, isPending: isDeleting } = useDeleteMutation({
+    endpoint: `/api/v1/category/${id}`,
+    isTokenRequired: true,
+  });
+
+  const handleDelete = () => {
+    remove(null, {
+      onSuccess: (data) => {
+        if (!data?.success) {
+          return toast.error(data?.message);
+        }
+        toast.success(data?.message);
+        queryClient.invalidateQueries(["categories"]);
+      },
+
+      onError: (error) => {
+        console.log(error);
+      },
+    });
+  };
 
   return (
     <>
-      <div className="hover:bg-accent/50 flex items-center justify-between rounded-lg border p-3 transition-colors">
-        <div className="flex items-center gap-3">
-          <div className="bg-muted group relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-md border transition-colors">
-            {/* image */}
-            <img
-              src={currentImageSrc}
-              alt={name}
-              className="h-full w-full object-contain"
-            />
-
-            {isEditing && (
-              <button
-                onClick={handleImgUpload}
-                type="button"
-                disabled={isPending}
-                className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-md bg-black/60 opacity-0 transition-opacity group-hover:opacity-100"
-              >
-                <Edit2 className="h-3.5 w-3.5 text-white" />
-              </button>
-            )}
-          </div>
-
-          {isEditing ? (
-            <>
-              <Input
-                disabled={isPending}
-                value={editedName}
-                onChange={(e) => setEditedName(e.target.value)}
-                className="text-sm"
-              />
-              <Input
-                ref={imageRef}
-                onChange={handleImgChange}
-                type="file"
-                accept="image/png,image/jpg,image/jpeg,image/webp"
-                className="hidden"
-              />
-            </>
-          ) : (
-            <p className="text-sm">{name}</p>
+      <div className="flex items-center gap-3 rounded-lg border px-3 py-2">
+        <div className="bg-muted group relative flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-md border transition-colors">
+          <img
+            src={imgSrc}
+            alt={name}
+            className="h-full w-full object-contain"
+          />
+          {isEditing && (
+            <button
+              onClick={handleImgUpload}
+              type="button"
+              disabled={isUpdating}
+              className="bg-foreground/60 absolute inset-0 flex cursor-pointer items-center justify-center rounded-md opacity-0 transition-opacity group-hover:opacity-100"
+            >
+              <Pencil className="text-primary-foreground size-3.5" />
+            </button>
           )}
         </div>
 
-        <div className="shrink-0">
+        {isEditing ? (
+          <>
+            <Input
+              autoFocus
+              disabled={isUpdating}
+              value={editedName}
+              onChange={(e) => setEditedName(e.target.value)}
+              className="min-w-0 flex-1 text-sm"
+            />
+            <Input
+              ref={imageRef}
+              onChange={handleImgChange}
+              type="file"
+              accept="image/png,image/jpg,image/jpeg,image/webp"
+              className="hidden"
+            />
+          </>
+        ) : (
+          <p className="min-w-0 flex-1 truncate text-sm">{name}</p>
+        )}
+
+        <div className="flex shrink-0 items-center">
           {isEditing ? (
             <>
               <Button
-                onClick={handleUpdateCategory}
-                disabled={isPending}
-                variant="icon"
-                className="text-success"
+                onClick={handleUpdate}
+                disabled={isUpdating}
+                variant="ghost-success"
+                size="icon-sm"
               >
                 <Check />
               </Button>
-
               <Button
                 onClick={toggleEditing}
-                disabled={isPending}
-                variant="icon"
-                className="text-destructive"
+                disabled={isUpdating}
+                variant="ghost-destructive"
+                size="icon-sm"
               >
                 <X />
               </Button>
             </>
           ) : (
             <>
-              <Button onClick={toggleEditing} variant="icon">
-                <Edit2 />
+              <Button onClick={toggleEditing} variant="ghost" size="icon-sm">
+                <Pencil />
               </Button>
-
               <Button
                 onClick={() => setIsDeleteOpen(true)}
-                variant="icon"
-                className="text-destructive"
+                variant="ghost-destructive"
+                size="icon-sm"
               >
                 <Trash2 />
               </Button>
@@ -212,11 +211,11 @@ export default function CategoryItem({ category }) {
             cannot be undone.
           </>
         }
-        onConfirm={handleCategoryDelete}
+        onConfirm={handleDelete}
         onCancel={() => setIsDeleteOpen(false)}
         confirmText="Delete"
         cancelText="Cancel"
-        isLoading={isDeletePending}
+        isLoading={isDeleting}
         loadingText="Deleting"
         variant="destructive"
       />

@@ -1,51 +1,110 @@
 import { useState } from "react";
-import { FolderOpen, FolderPlus } from "lucide-react";
-import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
-import PageHeader from "../components/PageHeader";
-import useSelectedStore from "@/hooks/useSelectedStore";
-import useGetCategories from "../hooks/category/useGetCategories";
-import EmptyStoreState from "../components/EmptyStoreState";
-import { breadcrubms } from "@/utils/constants/breadcrumbs";
+import { FolderOpen, FolderPlus, Store } from "lucide-react";
+import { useSearchParams } from "react-router";
 import CategoryToolbar from "../components/sections/category/CategoryToolbar";
 import CategoryItem from "../components/sections/category/CategoryItem";
-import EmptyState from "../components/EmptyState";
-import AddCategoryDialog from "../components/modals/AddCategoryDialog";
+import EmptyState from "@/components/shared/EmptyState";
+import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
+import PageHeader from "@/components/shared/PageHeader";
+import CategoryItemSkeleton from "../components/skeletons/CategoryItemSkeleton";
+import AddCategoryModal from "../components/modals/AddCategoryModal";
+import TablePagination from "@/components/shared/TablePagination";
+import useSelectedStore from "@/hooks/useSelectedStore";
 import useDebounce from "@/hooks/useDebounce";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import { breadcrubms } from "../utils/constants/breadcrumbs";
 
 export default function Category() {
-  const { selectedStore } = useSelectedStore();
-  const { data: categories } = useGetCategories();
+  const [searchParams] = useSearchParams();
+  const { activeStore } = useSelectedStore();
+  const page = searchParams.get("page") || 1;
+
+  const { data, isLoading } = useGetQuery({
+    endpoint: `/api/v1/category?page=${page}&limit=12`,
+    enabled: true,
+    isTokenRequired: true,
+    queryKey: ["categories", page],
+  });
 
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const debouncedSearch = useDebounce(search);
-
   const filteredCategories =
-    categories?.data?.filter((category) => {
+    data?.data?.filter((category) => {
       const searchTerm = debouncedSearch?.trim();
       if (!searchTerm) return true;
 
       return category.name.toLowerCase().includes(searchTerm.toLowerCase());
     }) ?? [];
 
-  if (!selectedStore) {
+  let content = null;
+
+  if (!activeStore) {
     return (
-      <EmptyStoreState
+      <EmptyState
+        icon={Store}
         title="No Store Selected"
-        description="Create a store before organizing your products into categories."
+        description="Create a store before organizing your products into categories"
+        actionText="Create Store"
+        actionPath="/stores/create"
+      />
+    );
+  }
+
+  if (isLoading) {
+    content = (
+      <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <CategoryItemSkeleton key={i} />
+        ))}
+      </div>
+    );
+  }
+
+  if (!isLoading && filteredCategories?.length > 0) {
+    content = (
+      <>
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+          {filteredCategories.map((category) => (
+            <CategoryItem key={category?.id} category={category} />
+          ))}
+        </div>
+
+        <TablePagination meta={data?.meta} />
+      </>
+    );
+  }
+
+  if (!isLoading && filteredCategories?.length === 0) {
+    content = (
+      <EmptyState
+        className="min-h-[calc(100dvh-300px)]"
+        icon={FolderOpen}
+        title={
+          debouncedSearch ? "No matching categories found" : "No categories yet"
+        }
+        description={
+          debouncedSearch
+            ? `No results for "${debouncedSearch}". Try a different keyword.`
+            : "Organize your products by creating categories"
+        }
+        actionText={debouncedSearch ? "Clear Search" : "Add Category"}
+        onAction={
+          debouncedSearch ? () => setSearch("") : () => setDialogOpen(true)
+        }
       />
     );
   }
 
   return (
     <section className="space-y-6">
-      <DynamicBreadcrumb items={breadcrubms.Category} />
+      <DynamicBreadcrumb items={breadcrubms.categories} />
 
       <PageHeader
         icon={FolderPlus}
-        title="Add Category"
-        description="Create and manage categories for"
+        title="Categories"
+        description="Manage your store's product categories"
       />
 
       <div className="bg-card space-y-6 rounded-lg p-5">
@@ -55,35 +114,10 @@ export default function Category() {
           onOpen={() => setDialogOpen(true)}
         />
 
-        {filteredCategories?.length > 0 ? (
-          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-            {filteredCategories?.map((category) => (
-              <CategoryItem key={category?.id} category={category} />
-            ))}
-          </div>
-        ) : (
-          <EmptyState
-            icon={FolderOpen}
-            title={
-              debouncedSearch
-                ? "No categories match your search"
-                : "No categories found"
-            }
-            description={
-              debouncedSearch
-                ? `No results for "${debouncedSearch}"`
-                : "Organize your products by creating categories"
-            }
-            actionLabel="Add Category"
-            onAction={() => setDialogOpen(true)}
-          />
-        )}
+        {content}
       </div>
 
-      <AddCategoryDialog
-        dialogOpen={dialogOpen}
-        setDialogOpen={setDialogOpen}
-      />
+      <AddCategoryModal dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} />
     </section>
   );
 }

@@ -1,40 +1,57 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { ChevronLeft, Info, Store } from "lucide-react";
-import toast from "react-hot-toast";
 import SunEditor from "suneditor-react";
+import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 import EmptyState from "@/components/shared/EmptyState";
-import PageHeader from "../components/PageHeader";
-import QuickTips from "../components/sections/support/QuickTips";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
 import InfoBanner from "../components/sections/support/InfoBanner";
+import PageHeader from "@/components/shared/PageHeader";
+import QuickTips from "../components/sections/support/QuickTips";
+import { Spinner } from "@/components/ui/spinner";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
-import usePostMutation from "@/hooks-v2/api/usePostMutation";
+import { usePostMutation } from "@/hooks-v2/api/usePostMutation";
 import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
-import { breadcrubms } from "@/utils/constants/breadcrumbs";
-
-const isEmptyHtml = (html) => {
-  if (!html) return true;
-  const text = html.replace(/<[^>]+>/g, "").trim();
-  return text.length === 0;
-};
+import { breadcrubms } from "../utils/constants/breadcrumbs";
 
 export default function AddAbout() {
   const { activeStore } = useSelectedStore();
 
   const { data, isLoading } = useGetQuery({
-    endpoint: `/api/v1/general/about/${activeStore?.id}`,
-    enabled: !!activeStore?.id,
-    isTokenRequired: true,
-    queryKey: ["about", activeStore?.id],
+    endpoint: "/api/v1/general/about",
+    enabled: true,
+    queryKey: ["about"],
   });
 
-  const isEditMode = !!data?.data?.id;
+  const isEditMode = data?.data?.length > 0;
+  const [aboutData, setAboutData] = useState(null);
   const [content, setContent] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  // pre-filled form with api data
+  useEffect(() => {
+    const isEmptyHtml = (html = "") => {
+      const text = html.replace(/<[^>]+>/g, "").trim();
+      return text.length === 0;
+    };
+
+    if (isEditMode && data?.data?.length) {
+      const description = data.data[0]?.description ?? "";
+      setContent(isEmptyHtml(description) ? "" : description);
+      setAboutData(data?.data?.[0]);
+    } else {
+      setContent("");
+    }
+
+    setHasUnsavedChanges(false);
+  }, [isEditMode, data]);
+
+  const handleContentChange = (content) => {
+    setContent(content);
+    setHasUnsavedChanges(content !== data?.data?.description);
+  };
 
   const { mutate, isPending } = usePostMutation({
     endpoint: "/api/v1/general/about",
@@ -42,26 +59,24 @@ export default function AddAbout() {
   });
 
   const { mutate: update, isPending: isUpdating } = usePatchMutation({
-    endpoint: `/api/v1/general/about/${data?.data?.id}`,
+    endpoint: `/api/v1/general/about/${aboutData?.id}`,
     isTokenRequired: true,
   });
 
-  const handleContentChange = (content) => {
-    setContent(content);
-    setHasUnsavedChanges(content !== data?.data?.description);
-  };
-
   const onSubmit = () => {
     if (!content?.trim()) {
-      return toast.error("Content cannot be empty");
+      return toast.error("About Content can't be empty!");
     }
 
-    const payload = { store_id: activeStore?.id, description: content };
+    const payload = { description: content };
 
     const onSuccess = (data) => {
-      if (!data?.success) return toast.error(data?.message);
-      toast.success(data?.message);
+      if (!data?.success) {
+        return toast.error(data?.message);
+      }
+
       setHasUnsavedChanges(false);
+      toast.success(data?.message);
     };
 
     const onError = (error) => {
@@ -83,32 +98,23 @@ export default function AddAbout() {
     });
   };
 
-  useEffect(() => {
-    if (activeStore?.id && !isLoading && data?.data?.description) {
-      const initialContent = isEmptyHtml(data?.data?.description)
-        ? ""
-        : data?.data?.description;
-      setContent(initialContent);
-      setHasUnsavedChanges(false);
-    } else {
-      setContent("");
-      setHasUnsavedChanges(false);
-    }
-  }, [activeStore?.id, isLoading, data?.data?.description]);
-
   const isDisabled =
-    data?.data?.description === content ||
+    aboutData?.description === content ||
     !hasUnsavedChanges ||
     !content.trim() ||
     isPending ||
+    isLoading ||
     isUpdating;
+
+  const btnLabel = isEditMode ? "Save Changes" : "Create About Us";
+  const btnLoadingLabel = isEditMode ? "Saving..." : "Creating...";
 
   if (!activeStore) {
     return (
       <EmptyState
         icon={Store}
-        title="Store Required"
-        description="Create a store first to start adding your about page content."
+        title="Create Your First Store"
+        description="Create a store before creating your About Us page."
         actionText="Create Store"
         actionPath="/stores/create"
       />
@@ -118,13 +124,13 @@ export default function AddAbout() {
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <DynamicBreadcrumb items={breadcrubms.AddAbout} />
+      <DynamicBreadcrumb items={breadcrubms.about} />
 
       {/* Page Header */}
       <PageHeader
         icon={Info}
-        title="About"
-        description="Manage your store's about page content"
+        title="About Us"
+        description="Manage the content displayed on your store's About Us page."
       />
 
       <div className="bg-card space-y-6 rounded-lg p-5">
@@ -134,10 +140,10 @@ export default function AddAbout() {
           <h2 className="text-sm font-semibold">Article Content</h2>
 
           <SunEditor
+            onChange={handleContentChange}
+            setContents={content}
             name="content"
             height="400px"
-            setContents={content}
-            onChange={handleContentChange}
             setOptions={{
               buttonList: [
                 [
@@ -183,24 +189,19 @@ export default function AddAbout() {
         </div>
 
         <div className="flex flex-col-reverse gap-4 lg:flex-row lg:justify-between">
-          <Button variant="outline" size="sm" asChild className="text-xs">
+          <Button asChild size="sm" variant="outline">
             <Link to="/">
               <ChevronLeft /> Back to Home
             </Link>
           </Button>
 
-          <Button
-            disabled={isDisabled}
-            onClick={onSubmit}
-            size="sm"
-            className="text-xs"
-          >
-            {isPending ? (
-              <Spinner />
-            ) : data?.data?.description ? (
-              "Update Article"
+          <Button onClick={onSubmit} disabled={isDisabled} size="sm">
+            {isPending || isUpdating ? (
+              <>
+                <Spinner /> {btnLoadingLabel}
+              </>
             ) : (
-              "Publish Article"
+              btnLabel
             )}
           </Button>
         </div>

@@ -1,11 +1,7 @@
+import { BASE_URL } from "@/lib/api";
 import { handleUnauthorized } from "@/lib/auth";
 
-const baseUrl = import.meta.env.VITE_BASE_URL;
-const NEW_BASE_URL = import.meta.env.VITE_NEW_BASE_URL;
-
-export const getApi = async (endpoint, token, clientId, newBaseUrl = false) => {
-  const BASE_URL = newBaseUrl ? NEW_BASE_URL : baseUrl;
-
+export const getApi = async (endpoint, token, clientId) => {
   const headers = {
     ...(token && { Authorization: `Bearer ${token}` }),
     ...(clientId && { clientid: clientId }),
