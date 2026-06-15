@@ -12,11 +12,11 @@ import QuickTips from "../components/sections/support/QuickTips";
 import { Spinner } from "@/components/ui/spinner";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
-import { usePostMutation } from "@/hooks-v2/api/usePostMutation";
+import usePostMutation from "@/hooks-v2/api/usePostMutation";
 import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
 import { breadcrubms } from "../utils/constants/breadcrumbs";
 
-export default function AddAbout() {
+export default function AboutUs() {
   const { activeStore } = useSelectedStore();
 
   const { data, isLoading } = useGetQuery({

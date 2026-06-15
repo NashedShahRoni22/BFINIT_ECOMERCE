@@ -21,7 +21,7 @@ import HowToBuyForm from "@/features/admin/pages/HowToBuyForm";
 import Stores from "@/features/admin/pages/Stores";
 import SubCategoryUpdate from "@/features/admin/pages/SubCategoryUpdate";
 import UpdateProduct from "@/features/admin/pages/UpdateProduct";
-import AddAbout from "@/features/admin/pages/AddAbout";
+import AboutUs from "@/features/admin/pages/AboutUs";
 import AddFaq from "@/features/admin/pages/AddFaq";
 import BankPayment from "@/features/admin/pages/BankPayment";
 import AddPrivacyPolicy from "@/features/admin/pages/AddPrivacryPolicy";
@@ -127,7 +127,7 @@ export const adminRoutes = {
     },
     {
       path: "/support/about",
-      element: <AddAbout />,
+      element: <AboutUs />,
     },
     {
       path: "/support/how-to-buy",

@@ -19,7 +19,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { usePostMutation } from "@/hooks-v2/api/usePostMutation";
+import usePostMutation from "@/hooks-v2/api/usePostMutation";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import { Spinner } from "@/components/ui/spinner";
 
