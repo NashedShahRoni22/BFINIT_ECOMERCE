@@ -23,12 +23,10 @@ import UpdateProduct from "@/features/admin/pages/UpdateProduct";
 import AboutUs from "@/features/admin/pages/AboutUs";
 import AddFaq from "@/features/admin/pages/AddFaq";
 import BankPayment from "@/features/admin/pages/BankPayment";
-import AddPrivacyPolicy from "@/features/admin/pages/AddPrivacryPolicy";
+import PrivacyPolicy from "@/features/admin/pages/PrivacyPolicy";
 import OrdersManagement from "@/Test";
 import Customers from "@/features/admin/pages/Customers";
 import UpdateBlog from "@/features/admin/pages/UpdateBlog";
-import PackageBankAccounts from "@/features/super-admin/pages/BankAccounts";
-import PlatformBankForm from "@/features/super-admin/components/sections/bank-accounts/BankForm";
 import StoreForm from "@/features/admin/components/sections/store/StoreForm";
 
 export const adminRoutes = {
@@ -121,7 +119,7 @@ export const adminRoutes = {
     },
     {
       path: "/support/privacy",
-      element: <AddPrivacyPolicy />,
+      element: <PrivacyPolicy />,
     },
     {
       path: "/support/about",
