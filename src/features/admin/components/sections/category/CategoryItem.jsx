@@ -10,6 +10,7 @@ import useSelectedStore from "@/hooks/useSelectedStore";
 import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
 import useDeleteMutation from "@/hooks-v2/api/useDeleteMutation";
 import { getImgUrl } from "@/utils/getImgUrl";
+import { cn } from "@/lib/utils";
 
 export default function CategoryItem({ category }) {
   const { id, name, image } = category;
@@ -139,7 +140,10 @@ export default function CategoryItem({ category }) {
               onClick={handleImgUpload}
               type="button"
               disabled={isUpdating}
-              className="bg-foreground/60 absolute inset-0 flex cursor-pointer items-center justify-center rounded-md opacity-0 transition-opacity group-hover:opacity-100"
+              className={cn(
+                "bg-foreground/60 absolute inset-0 flex items-center justify-center rounded-md opacity-0 transition-opacity",
+                !isUpdating && "cursor-pointer group-hover:opacity-100",
+              )}
             >
               <Pencil className="text-primary-foreground size-3.5" />
             </button>

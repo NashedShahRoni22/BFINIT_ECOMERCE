@@ -1,39 +1,32 @@
 import { useEffect, useRef, useState } from "react";
-import { Check, Edit2, Trash2, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import useSelectedStore from "@/hooks/useSelectedStore";
-import useUpdateMutation from "@/hooks/api/useUpdateMutation";
-import { baseUrl } from "@/utils/api";
+import { useSearchParams } from "react-router";
+import { Check, Pencil, Trash2, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import ConfirmationDialog from "../../modals/ConfirmationDialog";
-import useDeleteMutation from "@/hooks/api/useDeleteMutation";
+import useSelectedStore from "@/hooks/useSelectedStore";
+import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
+import useDeleteMutation from "@/hooks-v2/api/useDeleteMutation";
+import { getImgUrl } from "@/utils/getImgUrl";
+import { cn } from "@/lib/utils";
 
 export default function BrandItem({ brand }) {
   const { id, name, image } = brand;
 
+  const [searchParams] = useSearchParams();
+  const page = searchParams.get("page") || 1;
   const queryClient = useQueryClient();
-  const { selectedStore } = useSelectedStore();
-
-  const { mutate, isPending } = useUpdateMutation({
-    endpoint: `/brand/update/${selectedStore?.storeId}/${id}`,
-    token: true,
-    clientId: true,
-  });
-
-  const { mutate: deleteMutate, isPending: isDeletePending } =
-    useDeleteMutation({
-      endpoint: `/brand/delete/${selectedStore?.storeId}/${id}`,
-      token: true,
-      clientId: true,
-    });
+  const { activeStore } = useSelectedStore();
 
   const imageRef = useRef();
   const [isEditing, setIsEditing] = useState(false);
   const [newImage, setNewImage] = useState(null);
   const [editedName, setEditedName] = useState(name);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  const imgSrc = newImage?.preview || getImgUrl(image);
 
   useEffect(() => {
     return () => {
@@ -77,45 +70,60 @@ export default function BrandItem({ brand }) {
     setNewImage(imgData);
   };
 
-  const handleUpdateBrand = () => {
+  const { mutate: update, isPending: isUpdating } = usePatchMutation({
+    endpoint: `/api/v1/brand/${id}`,
+    isTokenRequired: true,
+  });
+
+  const handleUpdate = () => {
     if (!editedName.trim()) {
       toast.error("Brand name cannot be empty");
       return;
     }
 
-    const brandPayload = new FormData();
-    brandPayload.append("brandName", editedName.trim());
-
+    const payload = new FormData();
+    payload.append("name", editedName.trim());
+    payload.append("store_id", activeStore?.id);
     if (newImage?.file) {
-      brandPayload.append("brandImage", newImage.file);
+      payload.append("image", newImage.file);
     }
 
-    mutate(brandPayload, {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["brands", selectedStore?.storeId]);
-        toast.success("Brand updated successfully!");
+    update(payload, {
+      onSuccess: (data) => {
+        if (!data?.success) {
+          return toast.error(data?.message);
+        }
         setIsEditing(false);
         setNewImage(null);
+        toast.success(data?.message);
+        queryClient.invalidateQueries(["brands", activeStore?.id, page]);
       },
-      onError: () => {
-        toast.error("Failed to update brand");
-      },
-    });
-  };
-
-  const handleBrandDelete = () => {
-    deleteMutate(null, {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["brands", selectedStore?.storeId]);
-        toast.success("Brand deleted!");
-      },
-      onError: () => {
-        toast.error("Something went wrong!");
+      onError: (error) => {
+        console.log(error);
       },
     });
   };
 
-  const currentImageSrc = newImage?.preview || `${baseUrl}${image}`;
+  const { mutate: remove, isPending: isDeleting } = useDeleteMutation({
+    endpoint: `/api/v1/brand/${id}`,
+    isTokenRequired: true,
+  });
+
+  const handleDelete = () => {
+    remove(null, {
+      onSuccess: (data) => {
+        if (!data?.success) {
+          return toast.error(data?.message);
+        }
+        toast.success(data?.message);
+        queryClient.invalidateQueries(["brands", activeStore?.id, page]);
+      },
+
+      onError: (error) => {
+        console.log(error);
+      },
+    });
+  };
 
   return (
     <>
@@ -124,7 +132,7 @@ export default function BrandItem({ brand }) {
           <div className="bg-muted group relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-md border transition-colors">
             {/* image */}
             <img
-              src={currentImageSrc}
+              src={imgSrc}
               alt={name}
               className="h-full w-full object-contain"
             />
@@ -133,10 +141,13 @@ export default function BrandItem({ brand }) {
               <button
                 onClick={handleImgUpload}
                 type="button"
-                disabled={isPending}
-                className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-md bg-black/60 opacity-0 transition-opacity group-hover:opacity-100"
+                disabled={isUpdating}
+                className={cn(
+                  "bg-foreground/60 absolute inset-0 flex items-center justify-center rounded-md opacity-0 transition-opacity",
+                  !isUpdating && "cursor-pointer group-hover:opacity-100",
+                )}
               >
-                <Edit2 className="h-3.5 w-3.5 text-white" />
+                <Pencil className="h-3.5 w-3.5 text-white" />
               </button>
             )}
           </div>
@@ -144,7 +155,7 @@ export default function BrandItem({ brand }) {
           {isEditing ? (
             <>
               <Input
-                disabled={isPending}
+                disabled={isUpdating}
                 value={editedName}
                 onChange={(e) => setEditedName(e.target.value)}
                 className="text-sm"
@@ -162,12 +173,12 @@ export default function BrandItem({ brand }) {
           )}
         </div>
 
-        <div className="shrink-0">
+        <div className="shrink-0 items-center">
           {isEditing ? (
             <>
               <Button
-                onClick={handleUpdateBrand}
-                disabled={isPending}
+                onClick={handleUpdate}
+                disabled={isUpdating}
                 variant="icon"
                 className="text-success"
               >
@@ -176,7 +187,7 @@ export default function BrandItem({ brand }) {
 
               <Button
                 onClick={toggleEditing}
-                disabled={isPending}
+                disabled={isUpdating}
                 variant="icon"
                 className="text-destructive"
               >
@@ -186,7 +197,7 @@ export default function BrandItem({ brand }) {
           ) : (
             <>
               <Button onClick={toggleEditing} variant="icon">
-                <Edit2 />
+                <Pencil />
               </Button>
 
               <Button
@@ -204,7 +215,7 @@ export default function BrandItem({ brand }) {
       <ConfirmationDialog
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
-        title="Delete brand?"
+        title="Delete Brand?"
         description={
           <>
             Are you sure you want to delete{" "}
@@ -212,11 +223,11 @@ export default function BrandItem({ brand }) {
             cannot be undone.
           </>
         }
-        onConfirm={handleBrandDelete}
+        onConfirm={handleDelete}
         onCancel={() => setIsDeleteOpen(false)}
         confirmText="Delete"
         cancelText="Cancel"
-        isLoading={isDeletePending}
+        isLoading={isDeleting}
         loadingText="Deleting"
         variant="destructive"
       />

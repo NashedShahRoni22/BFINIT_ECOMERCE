@@ -1,51 +1,110 @@
 import { useState } from "react";
-import { FolderOpen, Tag } from "lucide-react";
-import useGetBrands from "../hooks/brands/useGetBrands";
-import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
-import PageHeader from "../components/PageHeader";
-import useSelectedStore from "@/hooks/useSelectedStore";
-import EmptyStoreState from "../components/EmptyStoreState";
-import { breadcrubms } from "@/utils/constants/breadcrumbs";
+import { FolderOpen, FolderPlus, Store } from "lucide-react";
+import { useSearchParams } from "react-router";
 import BrandToolbar from "../components/sections/brands/BrandToolbar";
 import BrandItem from "../components/sections/brands/BrandItem";
-import AddBrandDialog from "../components/modals/AddBrandDialog";
-import EmptyState from "../components/EmptyState";
+import EmptyState from "@/components/shared/EmptyState";
+import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
+import PageHeader from "@/components/shared/PageHeader";
+import BrandItemSkeleton from "../components/skeletons/BrandItemSkeleton";
+import AddBrandModal from "../components/modals/AddBrandModal";
+import TablePagination from "@/components/shared/TablePagination";
+import useSelectedStore from "@/hooks/useSelectedStore";
 import useDebounce from "@/hooks/useDebounce";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import { breadcrubms } from "../utils/constants/breadcrumbs";
 
 export default function Brands() {
-  const { selectedStore } = useSelectedStore();
-  const { data: brands } = useGetBrands();
+  const [searchParams] = useSearchParams();
+  const page = searchParams.get("page") || 1;
+  const { activeStore } = useSelectedStore();
+
+  const { data, isLoading } = useGetQuery({
+    endpoint: `/api/v1/brand/pagination/${activeStore?.id}?page=${page}&limit=12`,
+    enabled: true,
+    isTokenRequired: true,
+    queryKey: ["brands", activeStore?.id, page],
+  });
+
+  const categories = data?.data?.data ?? [];
 
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const debouncedSearch = useDebounce(search);
-
   const filteredBrands =
-    brands?.data?.filter((brand) => {
+    categories?.filter((brand) => {
       const searchTerm = debouncedSearch?.trim();
       if (!searchTerm) return true;
 
       return brand?.name?.toLowerCase().includes(searchTerm.toLowerCase());
     }) ?? [];
 
-  if (!selectedStore) {
+  let content = null;
+
+  if (!activeStore) {
     return (
-      <EmptyStoreState
+      <EmptyState
+        icon={Store}
         title="No Store Selected"
-        description="Create a store before adding and managing product brands."
+        description="Create a store before organizing your products into Brands"
+        actionText="Create Store"
+        actionPath="/stores/create"
+      />
+    );
+  }
+
+  if (isLoading) {
+    content = (
+      <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <BrandItemSkeleton key={i} />
+        ))}
+      </div>
+    );
+  }
+
+  if (!isLoading && filteredBrands?.length > 0) {
+    content = (
+      <>
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+          {filteredBrands.map((brand) => (
+            <BrandItem key={brand?.id} brand={brand} />
+          ))}
+        </div>
+
+        <TablePagination meta={data?.meta} />
+      </>
+    );
+  }
+
+  if (!isLoading && filteredBrands?.length === 0) {
+    content = (
+      <EmptyState
+        className="min-h-[calc(100dvh-300px)]"
+        icon={FolderOpen}
+        title={debouncedSearch ? "No matching brands found" : "No brands yet"}
+        description={
+          debouncedSearch
+            ? `No results for "${debouncedSearch}". Try a different keyword.`
+            : "Organize your products by creating brands"
+        }
+        actionText={debouncedSearch ? "Clear Search" : "Add Brand"}
+        onAction={
+          debouncedSearch ? () => setSearch("") : () => setDialogOpen(true)
+        }
       />
     );
   }
 
   return (
     <section className="space-y-6">
-      <DynamicBreadcrumb items={breadcrubms.Brands} />
+      <DynamicBreadcrumb items={breadcrubms.brands} />
 
       <PageHeader
-        icon={Tag}
-        title="Add Brand"
-        description="Create and manage brands for"
+        icon={FolderPlus}
+        title="Brands"
+        description="Manage your store's product Brands"
       />
 
       <div className="bg-card space-y-6 rounded-lg p-5">
@@ -55,32 +114,10 @@ export default function Brands() {
           onOpen={() => setDialogOpen(true)}
         />
 
-        {filteredBrands?.length > 0 ? (
-          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-            {filteredBrands?.map((brand) => (
-              <BrandItem key={brand?.id} brand={brand} />
-            ))}
-          </div>
-        ) : (
-          <EmptyState
-            icon={FolderOpen}
-            title={
-              debouncedSearch
-                ? "No brands match your search"
-                : "No brands found"
-            }
-            description={
-              debouncedSearch
-                ? `No results for "${debouncedSearch}"`
-                : "Organize your products by creating brands"
-            }
-            actionLabel="Add Brands"
-            onAction={() => setDialogOpen(true)}
-          />
-        )}
+        {content}
       </div>
 
-      <AddBrandDialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} />
+      <AddBrandModal dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} />
     </section>
   );
 }

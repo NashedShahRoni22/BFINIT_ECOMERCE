@@ -16,20 +16,6 @@ export const breadcrubms = {
     { label: "Inventory" },
   ],
 
-  Brands: [
-    { label: "Home", href: "/" },
-    {
-      label: "Products",
-      dropdown: [
-        { label: "Category", href: "/products/category" },
-        { label: "Sub Category", href: "/products/sub-category" },
-        { label: "Add Product", href: "/products/add-product" },
-        { label: "Inventory", href: "/products/inventory" },
-      ],
-    },
-    { label: "Brands" },
-  ],
-
   Add_Product: [
     { label: "Home", href: "/" },
     {

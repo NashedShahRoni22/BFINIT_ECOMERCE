@@ -1,3 +1,8 @@
+import { useRef } from "react";
+import { useForm } from "react-hook-form";
+import { Image } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,43 +19,26 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import usePostMutation from "@/hooks/api/usePostMutation";
+import { Spinner } from "@/components/ui/spinner";
+import usePostMutation from "@/hooks-v2/api/usePostMutation";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import { useQueryClient } from "@tanstack/react-query";
-import { Image } from "lucide-react";
-import { useRef } from "react";
-import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 
-export default function AddBrandDialog({ dialogOpen, setDialogOpen }) {
+export default function AddBrandModal({ dialogOpen, setDialogOpen }) {
   const queryClient = useQueryClient();
-  const { selectedStore } = useSelectedStore();
-
-  const { mutate, isPending } = usePostMutation({
-    endpoint: `/brand/create/${selectedStore?.storeId}`,
-    token: true,
-    clientId: true,
-  });
+  const { activeStore } = useSelectedStore();
 
   const imageRef = useRef();
-
   const form = useForm({
     defaultValues: {
       name: "",
       image: null,
     },
   });
-
   const {
     handleSubmit,
     reset,
     formState: { errors },
   } = form;
-
-  const handleFormClose = () => {
-    setDialogOpen(false);
-    reset();
-  };
 
   const handleImgChange = (e, onChange) => {
     const files = e.target.files;
@@ -79,19 +67,33 @@ export default function AddBrandDialog({ dialogOpen, setDialogOpen }) {
     onChange(imgData);
   };
 
-  const onSubmit = (data) => {
-    const brandPayload = new FormData();
-    brandPayload.append("brandName", data.name);
-    brandPayload.append("brandImage", data.image.file);
+  const handleFormClose = () => {
+    setDialogOpen(false);
+    reset();
+  };
 
-    mutate(brandPayload, {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["brands", selectedStore?.storeId]);
+  const { mutate, isPending } = usePostMutation({
+    endpoint: "/api/v1/brand",
+    isTokenRequired: true,
+  });
+
+  const onSubmit = (data) => {
+    const payload = new FormData();
+    payload.append("name", data.name);
+    payload.append("store_id", activeStore?.id);
+    payload.append("image", data.image.file);
+
+    mutate(payload, {
+      onSuccess: (data) => {
+        if (!data?.success) {
+          return toast.error(data?.message);
+        }
         handleFormClose();
-        toast.success("Brand created successfully");
+        toast.success(data?.message);
+        queryClient.invalidateQueries(["brands"]);
       },
-      onError: () => {
-        toast.error("Failed to create brand. Please try again.");
+      onError: (error) => {
+        console.log(error);
       },
     });
   };
@@ -152,6 +154,9 @@ export default function AddBrandDialog({ dialogOpen, setDialogOpen }) {
                       />
 
                       <FormMessage className="text-xs" />
+                      <p className="text-muted-foreground text-xs">
+                        PNG, JPG, WEBP. Max 2MB.
+                      </p>
                     </div>
                   </FormControl>
                 </FormItem>
@@ -179,17 +184,23 @@ export default function AddBrandDialog({ dialogOpen, setDialogOpen }) {
                 variant="outline"
                 size="sm"
                 onClick={handleFormClose}
-                className="text-xs"
               >
                 Cancel
               </Button>
+
               <Button
+                disabled={isPending}
                 type="submit"
                 size="sm"
-                disabled={isPending}
-                className="text-xs"
+                className="min-w-[104px]"
               >
-                {isPending ? "Adding..." : "Add Brand"}
+                {isPending ? (
+                  <>
+                    <Spinner /> Adding...
+                  </>
+                ) : (
+                  "Add Brand"
+                )}
               </Button>
             </div>
           </form>

@@ -17,7 +17,7 @@ export const breadcrubms = {
     { label: "Category" },
   ],
   subCategory: [
-    { label: "Home", href: "/" },
+    { label: "Home", href: Home_Url },
     {
       label: "Products",
       dropdown: [
@@ -28,6 +28,19 @@ export const breadcrubms = {
       ],
     },
     { label: "Subcategory" },
+  ],
+  brands: [
+    { label: "Home", href: Home_Url },
+    {
+      label: "Products",
+      dropdown: [
+        { label: "Category", href: "/products/category" },
+        { label: "Sub Category", href: "/products/sub-category" },
+        { label: "Add Product", href: "/products/add-product" },
+        { label: "Inventory", href: "/products/inventory" },
+      ],
+    },
+    { label: "Brands" },
   ],
 
   // === Settings ===
