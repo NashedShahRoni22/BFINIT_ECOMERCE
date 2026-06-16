@@ -16,7 +16,7 @@ import Domains from "@/features/admin/pages/Domains";
 import StripePayments from "@/features/admin/pages/StripePayments";
 import HelpCenterForm from "@/features/admin/pages/HelpCenterForm";
 import ReturnsRefundsForm from "@/features/admin/pages/ReturnsRefundsForm";
-import TermsConditionsForm from "@/features/admin/pages/TermsConditionsForm";
+import TermsConditions from "@/features/admin/pages/TermsAndConditions";
 import HowToBuyForm from "@/features/admin/pages/HowToBuyForm";
 import Stores from "@/features/admin/pages/Stores";
 import UpdateProduct from "@/features/admin/pages/UpdateProduct";
@@ -115,7 +115,7 @@ export const adminRoutes = {
     },
     {
       path: "/support/terms-conditions",
-      element: <TermsConditionsForm />,
+      element: <TermsConditions />,
     },
     {
       path: "/support/privacy",

@@ -121,19 +121,6 @@ export const breadcrubms = {
     { label: "Return & Refunds" },
   ],
 
-  Terms: [
-    { label: "Home", href: "/" },
-    {
-      label: "Support",
-      dropdown: [
-        { label: "Help Center", href: "/support/help-center" },
-        { label: "Return & Refunds", href: "/support/returns-refunds" },
-        { label: "How to Buy", href: "/support/how-to-buy" },
-      ],
-    },
-    { label: "Terms & Conditions" },
-  ],
-
   BuyGuide: [
     { label: "Home", href: "/" },
     {
