@@ -1,18 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router";
+import { Check, Image, Pencil, Trash2, X } from "lucide-react";
 import toast from "react-hot-toast";
-import { Check, Pencil, Trash2, X } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import ConfirmationDialog from "../../modals/ConfirmationDialog";
 import { Input } from "@/components/ui/input";
-import useSelectedStore from "@/hooks/useSelectedStore";
+import ConfirmationDialog from "../../modals/ConfirmationDialog";
 import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
 import useDeleteMutation from "@/hooks-v2/api/useDeleteMutation";
+import useSelectedStore from "@/hooks/useSelectedStore";
+import { cn } from "@/lib/utils";
 import { getImgUrl } from "@/utils/getImgUrl";
 
-export default function CategoryItem({ category }) {
-  const { id, name, image } = category;
+export default function SubcategoryItem({ category, subcategory }) {
+  const { id, name, image } = subcategory;
 
   const [searchParams] = useSearchParams();
   const page = searchParams.get("page") || 1;
@@ -21,11 +22,11 @@ export default function CategoryItem({ category }) {
 
   const imageRef = useRef();
   const [isEditing, setIsEditing] = useState(false);
-  const [newImage, setNewImage] = useState(null);
   const [editedName, setEditedName] = useState(name);
+  const [newImage, setNewImage] = useState(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  const imgSrc = newImage?.preview || getImgUrl(image);
+  const imgSrc = newImage?.preview || (image ? getImgUrl(image) : null);
 
   useEffect(() => {
     return () => {
@@ -71,19 +72,20 @@ export default function CategoryItem({ category }) {
   };
 
   const { mutate: update, isPending: isUpdating } = usePatchMutation({
-    endpoint: `/api/v1/category/${id}`,
+    endpoint: `/api/v1/subcategory/${id}`,
     isTokenRequired: true,
   });
 
   const handleUpdate = () => {
     if (!editedName.trim()) {
-      toast.error("Category name cannot be empty");
+      toast.error("Subcategory name cannot be empty");
       return;
     }
 
     const payload = new FormData();
     payload.append("name", editedName.trim());
     payload.append("store_id", activeStore?.id);
+    payload.append("category_id", category?.category_id);
     if (newImage?.file) {
       payload.append("image", newImage.file);
     }
@@ -96,7 +98,7 @@ export default function CategoryItem({ category }) {
         setIsEditing(false);
         setNewImage(null);
         toast.success(data?.message);
-        queryClient.invalidateQueries(["categories", activeStore?.id, page]);
+        queryClient.invalidateQueries(["subcategories", activeStore?.id, page]);
       },
       onError: (error) => {
         console.log(error);
@@ -105,7 +107,7 @@ export default function CategoryItem({ category }) {
   };
 
   const { mutate: remove, isPending: isDeleting } = useDeleteMutation({
-    endpoint: `/api/v1/category/${id}`,
+    endpoint: `/api/v1/subcategory/${id}`,
     isTokenRequired: true,
   });
 
@@ -116,7 +118,7 @@ export default function CategoryItem({ category }) {
           return toast.error(data?.message);
         }
         toast.success(data?.message);
-        queryClient.invalidateQueries(["categories", activeStore?.id, page]);
+        queryClient.invalidateQueries(["subcategories", activeStore?.id, page]);
       },
 
       onError: (error) => {
@@ -126,20 +128,28 @@ export default function CategoryItem({ category }) {
   };
 
   return (
-    <>
-      <div className="flex items-center gap-3 rounded-lg border px-3 py-2">
-        <div className="bg-muted group relative flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-md border">
-          <img
-            src={imgSrc}
-            alt={name}
-            className="h-full w-full object-contain"
-          />
+    <div className="flex items-center justify-between border-b pb-2 last:border-b-0">
+      <div className="flex items-center gap-2">
+        <div className="bg-muted group relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-md border">
+          {imgSrc ? (
+            <img
+              src={imgSrc}
+              alt={name}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <Image className="text-muted-foreground size-4" />
+          )}
+
           {isEditing && (
             <button
               onClick={handleImgUpload}
               type="button"
               disabled={isUpdating}
-              className="bg-foreground/60 absolute inset-0 flex cursor-pointer items-center justify-center rounded-md opacity-0 transition-opacity group-hover:opacity-100"
+              className={cn(
+                "bg-foreground/60 absolute inset-0 flex items-center justify-center rounded-md opacity-0 transition-opacity",
+                !isUpdating && "cursor-pointer group-hover:opacity-100",
+              )}
             >
               <Pencil className="text-primary-foreground size-3.5" />
             </button>
@@ -166,48 +176,49 @@ export default function CategoryItem({ category }) {
         ) : (
           <p className="min-w-0 flex-1 truncate text-sm">{name}</p>
         )}
+      </div>
 
-        <div className="flex shrink-0 items-center">
-          {isEditing ? (
-            <>
-              <Button
-                onClick={handleUpdate}
-                disabled={isUpdating}
-                variant="ghost-success"
-                size="icon-sm"
-              >
-                <Check />
-              </Button>
-              <Button
-                onClick={toggleEditing}
-                disabled={isUpdating}
-                variant="ghost-destructive"
-                size="icon-sm"
-              >
-                <X />
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button onClick={toggleEditing} variant="ghost" size="icon-sm">
-                <Pencil />
-              </Button>
-              <Button
-                onClick={() => setIsDeleteOpen(true)}
-                variant="ghost-destructive"
-                size="icon-sm"
-              >
-                <Trash2 />
-              </Button>
-            </>
-          )}
-        </div>
+      <div className="flex shrink-0 items-center">
+        {isEditing ? (
+          <>
+            <Button
+              onClick={handleUpdate}
+              disabled={isUpdating}
+              variant="ghost-success"
+              size="icon-sm"
+            >
+              <Check />
+            </Button>
+            <Button
+              onClick={toggleEditing}
+              disabled={isUpdating}
+              variant="ghost-destructive"
+              size="icon-sm"
+            >
+              <X />
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button onClick={toggleEditing} variant="ghost" size="icon-sm">
+              <Pencil />
+            </Button>
+
+            <Button
+              onClick={() => setIsDeleteOpen(true)}
+              variant="ghost-destructive"
+              size="icon-sm"
+            >
+              <Trash2 />
+            </Button>
+          </>
+        )}
       </div>
 
       <ConfirmationDialog
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
-        title="Delete category?"
+        title="Delete subcategory?"
         description={
           <>
             Are you sure you want to delete{" "}
@@ -223,6 +234,6 @@ export default function CategoryItem({ category }) {
         loadingText="Deleting"
         variant="destructive"
       />
-    </>
+    </div>
   );
 }

@@ -13,8 +13,6 @@ import {
   LifeBuoy,
   Building2,
   Users,
-  Crown,
-  Landmark,
 } from "lucide-react";
 
 export const adminNavGroups = [
@@ -46,7 +44,7 @@ export const adminNavGroups = [
             icon: CornerDownRight,
           },
           {
-            name: "Sub Category",
+            name: "Subcategory",
             url: "/products/sub-category",
             icon: CornerDownRight,
           },

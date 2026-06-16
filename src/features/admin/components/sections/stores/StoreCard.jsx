@@ -18,7 +18,7 @@ export default function StoreCard({ store = {} }) {
   return (
     <Card
       className={cn(
-        "relative w-full max-w-sm border p-4",
+        "relative w-full max-w-sm p-4",
         isCurrentStore && "bg-muted border-dashed",
       )}
     >

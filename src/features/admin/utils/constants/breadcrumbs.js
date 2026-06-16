@@ -1,6 +1,8 @@
 const Home_Url = "/";
 
 export const breadcrubms = {
+  // === Main ===
+  createStore: [{ label: "Home", href: Home_Url }, { label: "Create Store" }],
   categories: [
     { label: "Home", href: Home_Url },
     {
@@ -14,8 +16,21 @@ export const breadcrubms = {
     },
     { label: "Category" },
   ],
+  subCategory: [
+    { label: "Home", href: "/" },
+    {
+      label: "Products",
+      dropdown: [
+        { label: "Category", href: "/products/category" },
+        { label: "Brands", href: "/products/brands" },
+        { label: "Add Product", href: "/products/add-product" },
+        { label: "Inventory", href: "/products/inventory" },
+      ],
+    },
+    { label: "Subcategory" },
+  ],
 
-  // settings
+  // === Settings ===
   about: [
     { label: "Home", href: Home_Url },
     {
@@ -28,5 +43,4 @@ export const breadcrubms = {
     },
     { label: "About" },
   ],
-  createStore: [{ label: "Home", href: "/" }, { label: "Create Store" }],
 };

@@ -15,7 +15,7 @@ export default function CategoryToolbar({ search, setSearch, onOpen }) {
         />
       </div>
 
-      <Button onClick={onOpen} size="sm" className="text-xs">
+      <Button onClick={onOpen} size="sm">
         <Plus /> Add Category
       </Button>
     </div>

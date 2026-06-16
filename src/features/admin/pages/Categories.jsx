@@ -14,24 +14,26 @@ import useDebounce from "@/hooks/useDebounce";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import { breadcrubms } from "../utils/constants/breadcrumbs";
 
-export default function Category() {
+export default function Categories() {
   const [searchParams] = useSearchParams();
-  const { activeStore } = useSelectedStore();
   const page = searchParams.get("page") || 1;
+  const { activeStore } = useSelectedStore();
 
   const { data, isLoading } = useGetQuery({
-    endpoint: `/api/v1/category?page=${page}&limit=12`,
+    endpoint: `/api/v1/category/pagination/${activeStore?.id}?page=${page}&limit=12`,
     enabled: true,
     isTokenRequired: true,
-    queryKey: ["categories", page],
+    queryKey: ["categories", activeStore?.id, page],
   });
+
+  const categories = data?.data?.data ?? [];
 
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const filteredCategories =
-    data?.data?.filter((category) => {
+    categories?.filter((category) => {
       const searchTerm = debouncedSearch?.trim();
       if (!searchTerm) return true;
 
@@ -65,13 +67,13 @@ export default function Category() {
   if (!isLoading && filteredCategories?.length > 0) {
     content = (
       <>
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
           {filteredCategories.map((category) => (
             <CategoryItem key={category?.id} category={category} />
           ))}
         </div>
 
-        <TablePagination meta={data?.meta} />
+        <TablePagination meta={data?.data?.meta} />
       </>
     );
   }
