@@ -68,6 +68,18 @@ export const breadcrubms = {
     },
     { label: "Terms & Conditions" },
   ],
+  faq: [
+    { label: "Home", href: Home_Url },
+    {
+      label: "Support",
+      dropdown: [
+        { label: "Help Center", href: "/support/help-center" },
+        { label: "Return & Refunds", href: "/support/returns-refunds" },
+        { label: "Terms & Conditions", href: "/support/terms-conditions" },
+      ],
+    },
+    { label: "Faq" },
+  ],
   about: [
     { label: "Home", href: Home_Url },
     {
