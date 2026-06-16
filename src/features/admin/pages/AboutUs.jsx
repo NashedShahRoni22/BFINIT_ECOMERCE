@@ -68,7 +68,10 @@ export default function AboutUs() {
       return toast.error("About Content can't be empty!");
     }
 
-    const payload = { description: content };
+    const payload = {
+      description: content,
+      ...(!isEditMode && { store_id: activeStore?.id }),
+    };
 
     const onSuccess = (data) => {
       if (!data?.success) {
