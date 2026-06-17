@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { ChevronLeft, PackagePlus } from "lucide-react";
+import { ChevronLeft, PackagePlus, Store } from "lucide-react";
 import { Form } from "@/components/ui/form";
 import ProductStatus from "../components/sections/add-product/product-status/ProductStatus";
 import { Button } from "@/components/ui/button";
@@ -11,21 +11,21 @@ import { transformProductForApi } from "@/utils/productMapper";
 import ProductDetails from "../components/sections/add-product/ProductDetails";
 import ProductImages from "../components/sections/add-product/product-images/ProductImages";
 import CountryPricing from "../components/sections/add-product/Pricing";
-import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
-import PageHeader from "../components/PageHeader";
 import usePostMutation from "@/hooks/api/usePostMutation";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import {
   validateCountryPricing,
   validateVariants,
 } from "@/utils/productValidation";
-import EmptyStoreState from "../components/EmptyStoreState";
-import { breadcrubms } from "@/utils/constants/breadcrumbs";
 import useGetStorePreference from "../hooks/store/useGetStorePreference";
 import { useMemo, useState } from "react";
+import EmptyState from "@/components/shared/EmptyState";
+import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
+import { breadcrubms } from "../utils/constants/breadcrumbs";
+import PageHeader from "@/components/shared/PageHeader";
 
 export default function AddProduct() {
-  const { selectedStore } = useSelectedStore();
+  const { selectedStore, activeStore } = useSelectedStore();
   const { data: storePreference } = useGetStorePreference();
 
   const storeId = selectedStore?.storeId;
@@ -124,22 +124,26 @@ export default function AddProduct() {
     });
   };
 
-  if (!selectedStore) {
+  if (!activeStore) {
     return (
-      <EmptyStoreState
-        title="Store Required"
-        description="You need to create a store before you can add products to sell."
+      <EmptyState
+        icon={Store}
+        title="No Store Selected"
+        description="You need an active store to add and manage products"
+        actionText="Create Store"
+        actionPath="/stores/create"
       />
     );
   }
 
   return (
     <section className="space-y-6">
-      <DynamicBreadcrumb items={breadcrubms.Add_Product} />
+      <DynamicBreadcrumb items={breadcrubms.addProduct} />
+
       <PageHeader
         icon={PackagePlus}
         title="Add Product"
-        description="Create a new product for"
+        description="Add and configure a new product for your store"
       />
 
       <Form {...form}>

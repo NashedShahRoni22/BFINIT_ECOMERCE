@@ -20,13 +20,13 @@ export default function AboutUs() {
   const { activeStore } = useSelectedStore();
 
   const { data, isLoading } = useGetQuery({
-    endpoint: "/api/v1/general/about",
+    endpoint: `/api/v1/general/about/${activeStore?.id}`,
     enabled: true,
-    queryKey: ["about"],
+    isTokenRequired: true,
+    queryKey: ["about", activeStore?.id],
   });
 
-  const isEditMode = data?.data?.length > 0;
-  const [aboutData, setAboutData] = useState(null);
+  const isEditMode = !!data?.data?.id;
   const [content, setContent] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
@@ -37,10 +37,9 @@ export default function AboutUs() {
       return text.length === 0;
     };
 
-    if (isEditMode && data?.data?.length) {
-      const description = data.data[0]?.description ?? "";
+    if (isEditMode) {
+      const description = data?.data?.description ?? "";
       setContent(isEmptyHtml(description) ? "" : description);
-      setAboutData(data?.data?.[0]);
     } else {
       setContent("");
     }
@@ -59,7 +58,7 @@ export default function AboutUs() {
   });
 
   const { mutate: update, isPending: isUpdating } = usePatchMutation({
-    endpoint: `/api/v1/general/about/${aboutData?.id}`,
+    endpoint: `/api/v1/general/about/${activeStore?.id}/${data?.data?.id}`,
     isTokenRequired: true,
   });
 
@@ -102,7 +101,7 @@ export default function AboutUs() {
   };
 
   const isDisabled =
-    aboutData?.description === content ||
+    data?.data?.description === content ||
     !hasUnsavedChanges ||
     !content.trim() ||
     isPending ||

@@ -42,6 +42,19 @@ export const breadcrubms = {
     },
     { label: "Brands" },
   ],
+  addProduct: [
+    { label: "Home", href: Home_Url },
+    {
+      label: "Products",
+      dropdown: [
+        { label: "Category", href: "/products/category" },
+        { label: "Sub Category", href: "/products/sub-category" },
+        { label: "Brands", href: "/products/brands" },
+        { label: "Inventory", href: "/products/inventory" },
+      ],
+    },
+    { label: "Add Product" },
+  ],
 
   // === Settings ===
   privacyPolicy: [
