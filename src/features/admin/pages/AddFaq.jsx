@@ -1,119 +1,123 @@
-import { ChevronLeft, FileQuestionMark, Info } from "lucide-react";
-import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
-import EmptyStoreState from "../components/EmptyStoreState";
-import PageHeader from "../components/PageHeader";
-import useSelectedStore from "@/hooks/useSelectedStore";
-import { breadcrubms } from "@/utils/constants/breadcrumbs";
-import useGetQuery from "@/hooks/api/useGetQuery";
-import usePostMutation from "@/hooks/api/usePostMutation";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { useQueryClient } from "@tanstack/react-query";
-import SunEditor from "suneditor-react";
-import QuickTips from "../components/sections/support/QuickTips";
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
-import { Spinner } from "@/components/ui/spinner";
+import { ChevronLeft, FileQuestionMark, Store } from "lucide-react";
+import SunEditor from "suneditor-react";
+import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
+import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
+import EmptyState from "@/components/shared/EmptyState";
 import InfoBanner from "../components/sections/support/InfoBanner";
-import usePatchMutaion from "@/hooks/api/usePatchMutaion";
+import PageHeader from "@/components/shared/PageHeader";
+import QuickTips from "../components/sections/support/QuickTips";
+import { Spinner } from "@/components/ui/spinner";
+import useSelectedStore from "@/hooks/useSelectedStore";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import usePostMutation from "@/hooks-v2/api/usePostMutation";
+import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
+import { breadcrubms } from "../utils/constants/breadcrumbs";
 
 export default function AddFaq() {
-  const queryClient = useQueryClient();
-  const { selectedStore } = useSelectedStore();
+  const { activeStore } = useSelectedStore();
 
-  const { data: faqContent, isLoading } = useGetQuery({
-    endpoint: `/faq/${selectedStore?.storeId}`,
-    token: true,
-    clientId: true,
-    queryKey: ["/faq", selectedStore?.storeId],
-    enabled: !!selectedStore?.storeId,
+  const { data, isLoading } = useGetQuery({
+    endpoint: `/api/v1/general/faq/${activeStore?.id}`,
+    enabled: true,
+    isTokenRequired: true,
+    queryKey: ["faq", activeStore?.id],
   });
 
-  const { mutate, isPending } = usePostMutation({
-    endpoint: `/faq/${selectedStore?.storeId}`,
-    token: true,
-    clientId: true,
-  });
-
-  const { mutate: updateMutate, isPending: isUpdatePending } = usePatchMutaion({
-    endpoint: `/faq/${faqContent?.data?._id}`,
-    token: true,
-    clientId: true,
-  });
-
+  const isEditMode = !!data?.data?.id;
   const [content, setContent] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-  const isEmptyHtml = (html) => {
-    if (!html) return true;
-    const text = html.replace(/<[^>]+>/g, "").trim();
-    return text.length === 0;
-  };
+  useEffect(() => {
+    const isEmptyHtml = (html = "") => {
+      const text = html.replace(/<[^>]+>/g, "").trim();
+      return text.length === 0;
+    };
+
+    if (isEditMode) {
+      const description = data?.data?.description ?? "";
+      setContent(isEmptyHtml(description) ? "" : description);
+    } else {
+      setContent("");
+    }
+
+    setHasUnsavedChanges(false);
+  }, [isEditMode, data]);
 
   const handleContentChange = (content) => {
     setContent(content);
-    setHasUnsavedChanges(content !== faqContent?.data?.description);
+    setHasUnsavedChanges(content !== data?.data?.description);
   };
 
-  useEffect(() => {
-    if (selectedStore?.storeId && !isLoading && faqContent?.data?.description) {
-      const initialContent = isEmptyHtml(faqContent?.data?.description)
-        ? ""
-        : faqContent?.data?.description;
-      setContent(initialContent);
-      setHasUnsavedChanges(false);
-    } else {
-      setContent("");
-      setHasUnsavedChanges(false);
-    }
-  }, [selectedStore?.storeId, isLoading, faqContent?.data?.description]);
+  const { mutate, isPending } = usePostMutation({
+    endpoint: "/api/v1/general/faq",
+    isTokenRequired: true,
+  });
 
-  const handlePublishContent = () => {
+  const { mutate: update, isPending: isUpdating } = usePatchMutation({
+    endpoint: `/api/v1/general/faq/${activeStore?.id}/${data?.data?.id}`,
+    isTokenRequired: true,
+  });
+
+  const onSubmit = () => {
     if (!content?.trim()) {
       return toast.error("Faq Content can't be empty!");
     }
 
-    const payload = { description: content };
+    const payload = {
+      description: content,
+      ...(!isEditMode && { store_id: activeStore?.id }),
+    };
 
-    if (faqContent?.data?.description) {
-      updateMutate(payload, {
-        onSuccess: () => {
-          toast.success("Faq content updated!");
-          setHasUnsavedChanges(false);
-          queryClient.invalidateQueries(["/faq", selectedStore?.storeId]);
-        },
+    const onSuccess = (data) => {
+      if (!data?.success) {
+        return toast.error(data?.message);
+      }
 
-        onError: () => {
-          toast.error("Something went wrong!");
-        },
-      });
-    } else {
+      setHasUnsavedChanges(false);
+      toast.success(data?.message);
+    };
+
+    const onError = (error) => {
+      console.log(error);
+    };
+
+    if (!isEditMode) {
       mutate(payload, {
-        onSuccess: () => {
-          toast.success("Faq content created!");
-          setHasUnsavedChanges(false);
-          queryClient.invalidateQueries(["/faq", selectedStore?.storeId]);
-        },
-
-        onError: () => {
-          toast.error("Something went wrong!");
-        },
+        onSuccess,
+        onError,
       });
+
+      return;
     }
+
+    update(payload, {
+      onSuccess,
+      onError,
+    });
   };
 
   const isDisabled =
-    faqContent?.data?.description === content ||
+    data?.data?.description === content ||
     !hasUnsavedChanges ||
     !content.trim() ||
     isPending ||
-    isUpdatePending;
+    isLoading ||
+    isUpdating;
 
-  if (!selectedStore) {
+  const btnLabel = isEditMode ? "Save Changes" : "Create Faq";
+  const btnLoadingLabel = isEditMode ? "Saving..." : "Creating...";
+
+  if (!activeStore) {
     return (
-      <EmptyStoreState
-        title="Store Required"
-        description="Create a store before adding FAQ instructions for your customers."
+      <EmptyState
+        icon={Store}
+        title="Create Your First Store"
+        description="Create a store before creating your Faq page."
+        actionText="Create Store"
+        actionPath="/stores/create"
       />
     );
   }
@@ -121,7 +125,7 @@ export default function AddFaq() {
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <DynamicBreadcrumb items={breadcrubms.Faq} />
+      <DynamicBreadcrumb items={breadcrubms.faq} />
 
       {/* Page Header */}
       <PageHeader
@@ -131,7 +135,7 @@ export default function AddFaq() {
       />
 
       <div className="bg-card space-y-6 rounded-lg p-5">
-        {faqContent?.data?.description && <InfoBanner />}
+        {isEditMode && <InfoBanner />}
 
         <div className="space-y-2">
           <h2 className="text-sm font-semibold">Article Content</h2>
@@ -186,24 +190,19 @@ export default function AddFaq() {
         </div>
 
         <div className="flex flex-col-reverse gap-4 lg:flex-row lg:justify-between">
-          <Button variant="outline" size="sm" asChild className="text-xs">
+          <Button asChild size="sm" variant="outline">
             <Link to="/">
               <ChevronLeft /> Back to Home
             </Link>
           </Button>
 
-          <Button
-            disabled={isDisabled}
-            onClick={handlePublishContent}
-            size="sm"
-            className="text-xs"
-          >
-            {isPending ? (
-              <Spinner />
-            ) : faqContent?.data?.description ? (
-              "Update Article"
+          <Button onClick={onSubmit} disabled={isDisabled} size="sm">
+            {isPending || isUpdating ? (
+              <>
+                <Spinner /> {btnLoadingLabel}
+              </>
             ) : (
-              "Publish Article"
+              btnLabel
             )}
           </Button>
         </div>

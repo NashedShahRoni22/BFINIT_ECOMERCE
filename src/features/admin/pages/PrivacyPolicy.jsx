@@ -20,17 +20,16 @@ export default function PrivacyPolicy() {
   const { activeStore } = useSelectedStore();
 
   const { data, isLoading } = useGetQuery({
-    endpoint: "/api/v1/general/privacyPolicy",
+    endpoint: `/api/v1/general/privacyPolicy/${activeStore?.id}`,
     enabled: true,
-    queryKey: ["privacyPolicy"],
+    isTokenRequired: true,
+    queryKey: ["privacyPolicy", activeStore?.id],
   });
 
-  const isEditMode = data?.data?.length > 0;
+  const isEditMode = !!data?.data?.id;
   const [content, setContent] = useState("");
-  const [privacyPolicyData, setPrivacyPolicyData] = useState(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-  // pre-filled form with api data
   useEffect(() => {
     const isEmptyHtml = (html) => {
       if (!html) return true;
@@ -38,10 +37,9 @@ export default function PrivacyPolicy() {
       return text.length === 0;
     };
 
-    if (isEditMode && data?.data?.length) {
-      const description = data.data[0]?.description ?? "";
+    if (isEditMode) {
+      const description = data.data?.description ?? "";
       setContent(isEmptyHtml(description) ? "" : description);
-      setPrivacyPolicyData(data?.data?.[0]);
     } else {
       setContent("");
     }
@@ -60,7 +58,7 @@ export default function PrivacyPolicy() {
   });
 
   const { mutate: update, isPending: isUpdating } = usePatchMutation({
-    endpoint: `/api/v1/general/privacyPolicy/${privacyPolicyData?.id}`,
+    endpoint: `/api/v1/general/privacyPolicy/${activeStore?.id}/${data?.data?.id}`,
     isTokenRequired: true,
   });
 

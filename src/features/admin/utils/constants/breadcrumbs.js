@@ -56,6 +56,66 @@ export const breadcrubms = {
     },
     { label: "Privacy Policy" },
   ],
+  terms: [
+    { label: "Home", href: "/" },
+    {
+      label: "Support",
+      dropdown: [
+        { label: "Help Center", href: "/support/help-center" },
+        { label: "Return & Refunds", href: "/support/returns-refunds" },
+        { label: "How to Buy", href: "/support/how-to-buy" },
+      ],
+    },
+    { label: "Terms & Conditions" },
+  ],
+  help: [
+    { label: "Home", href: "/" },
+    {
+      label: "Support",
+      dropdown: [
+        { label: "Return & Refunds", href: "/support/returns-refunds" },
+        { label: "Terms & Conditions", href: "/support/terms-conditions" },
+        { label: "How to Buy", href: "/support/how-to-buy" },
+      ],
+    },
+    { label: "Help Center" },
+  ],
+  faq: [
+    { label: "Home", href: "/" },
+    {
+      label: "Support",
+      dropdown: [
+        { label: "Help Center", href: "/support/help-center" },
+        { label: "Return & Refunds", href: "/support/returns-refunds" },
+        { label: "Terms & Conditions", href: "/support/terms-conditions" },
+      ],
+    },
+    { label: "Faq" },
+  ],
+  buyGuide: [
+    { label: "Home", href: "/" },
+    {
+      label: "Support",
+      dropdown: [
+        { label: "Help Center", href: "/support/help-center" },
+        { label: "Return & Refunds", href: "/support/returns-refunds" },
+        { label: "Terms & Conditions", href: "/support/terms-conditions" },
+      ],
+    },
+    { label: "How to Buy" },
+  ],
+  return: [
+    { label: "Home", href: "/" },
+    {
+      label: "Support",
+      dropdown: [
+        { label: "Help Center", href: "/support/help-center" },
+        { label: "Terms & Conditions", href: "/support/terms-conditions" },
+        { label: "How to Buy", href: "/support/how-to-buy" },
+      ],
+    },
+    { label: "Return & Refunds" },
+  ],
   about: [
     { label: "Home", href: Home_Url },
     {
