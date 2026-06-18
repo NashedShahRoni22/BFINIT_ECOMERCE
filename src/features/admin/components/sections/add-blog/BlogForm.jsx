@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router";
-import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import SunEditor from "suneditor-react";
 import { ChevronLeft, Upload, X } from "lucide-react";
+import { useForm } from "react-hook-form";
+import SunEditor from "suneditor-react";
 import {
   Form,
   FormControl,
@@ -15,39 +15,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import usePostMutation from "@/hooks/api/usePostMutation";
+import { Textarea } from "@/components/ui/textarea";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import useUpdateMutation from "@/hooks/api/useUpdateMutation";
+import usePostMutation from "@/hooks-v2/api/usePostMutation";
+import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
+import { getImgUrl } from "@/utils/getImgUrl";
 
-const maxFileSize = 2000 * 1024;
-
-const handleFile = (files, onChange) => {
-  const file = files[0];
-  if (!file) return;
-
-  // Validate file type
-  if (!file.type.startsWith("image/")) {
-    return;
-  }
-
-  // Validate file size
-  if (file.size > maxFileSize) {
-    toast.error("File size must be less than 2MB");
-    return;
-  }
-
-  const imageData = {
-    id: crypto.randomUUID(),
-    file: file,
-    preview: URL.createObjectURL(file),
-    name: file.name,
-  };
-
-  onChange(imageData);
-};
-
-export default function BlogForm({ blogDetails }) {
-  const { selectedStore } = useSelectedStore();
+export default function BlogForm({ data }) {
+  const { activeStore } = useSelectedStore();
   const navigate = useNavigate();
 
   const imgRef = useRef();
@@ -56,43 +31,65 @@ export default function BlogForm({ blogDetails }) {
   const form = useForm({
     defaultValues: {
       blogImages: null,
-      blogHeading: "",
-      blogCustomUrl: "",
-      blogDescription: "",
+      title: "",
+      short_description: "",
+      description: "",
     },
   });
-
   const { handleSubmit, reset } = form;
 
   // Track original image URL for deletion on update
   const originalImageUrl = useRef(null);
 
   useEffect(() => {
-    if (blogDetails?.blogId) {
-      const { blogName, blogImage, blogCustomUrl, blogDescription } =
-        blogDetails;
+    if (data?.id) {
+      const { image, short_description, description, title } = data;
 
       // Store original image URL for later deletion
-      originalImageUrl.current = blogImage[0];
+      originalImageUrl.current = image;
 
       reset({
         blogImages: {
-          preview: `https://ecomback.bfinit.com${blogImage[0]}`,
+          preview: getImgUrl(image),
           isExisting: true, // Flag to identify existing image
         },
-        blogHeading: blogName,
-        blogCustomUrl,
-        blogDescription,
+        title,
+        short_description,
+        description,
       });
     }
-  }, [blogDetails, reset]);
+  }, [data, reset]);
 
   const handleFileInput = (e, onChange) => {
-    handleFile(e.target.files, onChange);
+    const files = e.target.files;
+
+    const file = files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      return;
+    }
+
+    // Validate file size
+    const maxFileSize = 2000 * 1024;
+    if (file.size > maxFileSize) {
+      toast.error("File size must be less than 2MB");
+      return;
+    }
+
+    const imageData = {
+      id: crypto.randomUUID(),
+      file: file,
+      preview: URL.createObjectURL(file),
+      name: file.name,
+    };
+
+    onChange(imageData);
   };
 
   const handleDescriptionChange = (content) => {
-    form.setValue("blogDescription", content);
+    form.setValue("description", content);
   };
 
   const removeImage = (onChange, currentImage) => {
@@ -107,36 +104,30 @@ export default function BlogForm({ blogDetails }) {
 
   // Create mutation
   const { mutate: createMutate, isPending: isCreatePending } = usePostMutation({
-    endpoint: `/blog/create/${selectedStore?.storeId}`,
-    token: true,
-    clientId: true,
+    endpoint: "/api/v1/general/blog",
+    isTokenRequired: true,
   });
 
   // Update mutation
-  const { mutate: updateMutate, isPending: isUpdatePending } =
-    useUpdateMutation({
-      endpoint: `/blog/update/${blogDetails?.blogId}`,
-      token: true,
-      clientId: true,
-    });
+  const { mutate: updateMutate, isPending: isUpdatePending } = usePatchMutation(
+    {
+      endpoint: `/api/v1/general/blog/${activeStore?.id}/${data?.id}`,
+      isTokenRequired: true,
+    },
+  );
 
-  const onSubmit = (data) => {
-    const { blogHeading, blogCustomUrl, blogDescription, blogImages } = data;
-
-    const blogData = {
-      blogHeading,
-      blogCustomUrl,
-      blogDescription,
-    };
-
+  const onSubmit = ({ title, short_description, description, blogImages }) => {
     const payload = new FormData();
-    payload.append("blogData", JSON.stringify(blogData));
+    payload.append("store_id", activeStore?.id);
+    payload.append("title", title);
+    payload.append("description", description);
+    payload.append("short_description", short_description);
 
     // Check if we're updating
-    if (blogDetails?.blogId) {
+    if (data?.id) {
       // Only append new image if user selected one
       if (blogImages?.file) {
-        payload.append("blogImages", blogImages.file);
+        payload.append("image", blogImages.file);
         // Include original image URL for deletion as a stringified array
         payload.append(
           "deleteImageUrl",
@@ -160,7 +151,7 @@ export default function BlogForm({ blogDetails }) {
         return;
       }
 
-      payload.append("blogImages", blogImages.file);
+      payload.append("image", blogImages.file);
 
       createMutate(payload, {
         onSuccess: () => {
@@ -187,7 +178,7 @@ export default function BlogForm({ blogDetails }) {
           control={form.control}
           name="blogImages"
           rules={{
-            required: blogDetails?.blogId ? false : "Please add a blog image",
+            required: data?.id ? false : "Please add a blog image",
           }}
           render={({ field }) => (
             <FormItem>
@@ -260,12 +251,12 @@ export default function BlogForm({ blogDetails }) {
           )}
         />
 
-        {/* title & slug */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+        {/* title & short description */}
+        <div>
           {/* title */}
           <FormField
             control={form.control}
-            name="blogHeading"
+            name="title"
             rules={{
               required: "Please enter a blog title",
             }}
@@ -281,42 +272,52 @@ export default function BlogForm({ blogDetails }) {
                     {...field}
                   />
                 </FormControl>
-
                 <FormMessage className="text-xs" />
               </FormItem>
             )}
           />
 
-          {/* slug */}
-          <FormField
-            control={form.control}
-            name="blogCustomUrl"
-            rules={{
-              required: "Please enter a URL slug",
-            }}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-xs">
-                  URL Slug <span className="text-destructive">*</span>
-                </FormLabel>
-
-                <FormControl>
-                  <Input
-                    placeholder="e.g., summer-wardrobe-styling-tips"
-                    {...field}
-                  />
-                </FormControl>
-
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
+          <div className="mt-6">
+            <FormField
+              control={form.control}
+              name="short_description"
+              rules={{
+                maxLength: {
+                  value: 150,
+                  message: "Short description must be 150 characters or less",
+                },
+              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-xs">
+                    Short Description{" "}
+                    <span className="text-destructive">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      rows={3}
+                      maxLength={150}
+                      placeholder="Write a short description (150 characters max)"
+                      className="resize-none"
+                    />
+                  </FormControl>
+                  <div className="mt-0.5 flex items-center justify-between gap-2">
+                    <FormMessage className="flex-1 text-xs" />
+                    <p className="text-muted-foreground shrink-0 text-xs tabular-nums">
+                      {field.value ? field.value.length : 0}/150
+                    </p>
+                  </div>
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
 
         {/* description */}
         <FormField
           control={form.control}
-          name="blogDescription"
+          name="description"
           rules={{
             required: "Please enter blog content",
           }}
@@ -329,7 +330,7 @@ export default function BlogForm({ blogDetails }) {
                 <SunEditor
                   ref={sunEditorRef}
                   onChange={handleDescriptionChange}
-                  name="blogDescription"
+                  name="description"
                   height="220px"
                   placeholder="Write your blog content here..."
                   setContents={field.value || ""}
@@ -396,9 +397,9 @@ export default function BlogForm({ blogDetails }) {
             {isPending ? (
               <>
                 <Spinner size="3.5" />
-                {blogDetails?.blogId ? "Updating..." : "Publishing..."}
+                {data?.id ? "Updating..." : "Publishing..."}
               </>
-            ) : blogDetails?.blogId ? (
+            ) : data?.id ? (
               "Update Blog"
             ) : (
               "Publish Blog"

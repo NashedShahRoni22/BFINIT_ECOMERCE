@@ -159,22 +159,4 @@ export const breadcrubms = {
     },
     { label: "Faq" },
   ],
-
-  addBlog: [
-    { label: "Home", href: "/" },
-    {
-      label: "Blogs",
-      dropdown: [{ label: "Manage Blog", href: "/blogs/manage" }],
-    },
-    { label: "Add Blog" },
-  ],
-
-  manageBlogs: [
-    { label: "Home", href: "/" },
-    {
-      label: "Blogs",
-      dropdown: [{ label: "Add Blog", href: "/blogs/add" }],
-    },
-    { label: "Manage Blog" },
-  ],
 };

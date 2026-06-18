@@ -73,7 +73,7 @@ export default function Brands() {
           ))}
         </div>
 
-        <TablePagination meta={data?.meta} />
+        <TablePagination meta={data?.data?.meta} />
       </>
     );
   }

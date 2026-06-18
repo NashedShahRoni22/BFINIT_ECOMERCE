@@ -43,6 +43,24 @@ export const breadcrubms = {
     { label: "Brands" },
   ],
 
+  // Blog
+  addBlog: [
+    { label: "Home", href: Home_Url },
+    {
+      label: "Blogs",
+      dropdown: [{ label: "Manage Blog", href: "/blogs/manage" }],
+    },
+    { label: "Add Blog" },
+  ],
+  manageBlogs: [
+    { label: "Home", href: Home_Url },
+    {
+      label: "Blogs",
+      dropdown: [{ label: "Add Blog", href: "/blogs/add" }],
+    },
+    { label: "Manage Blog" },
+  ],
+
   // === Settings ===
   privacyPolicy: [
     { label: "Home", href: Home_Url },

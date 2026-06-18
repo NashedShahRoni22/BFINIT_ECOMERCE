@@ -15,10 +15,7 @@ import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import PageHeader from "../components/PageHeader";
 import usePostMutation from "@/hooks/api/usePostMutation";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import {
-  validateCountryPricing,
-  validateVariants,
-} from "@/utils/productValidation";
+import { validateCountryPricing } from "@/utils/productValidation";
 import EmptyStoreState from "../components/EmptyStoreState";
 import { breadcrubms } from "@/utils/constants/breadcrumbs";
 import useGetStorePreference from "../hooks/store/useGetStorePreference";
@@ -123,15 +120,6 @@ export default function AddProduct() {
       },
     });
   };
-
-  if (!selectedStore) {
-    return (
-      <EmptyStoreState
-        title="Store Required"
-        description="You need to create a store before you can add products to sell."
-      />
-    );
-  }
 
   return (
     <section className="space-y-6">

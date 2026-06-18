@@ -1,24 +1,24 @@
+import { useParams } from "react-router";
 import { PenSquare } from "lucide-react";
 import EmptyStoreState from "../components/EmptyStoreState";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import PageHeader from "../components/PageHeader";
 import BlogForm from "../components/sections/add-blog/BlogForm";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import { breadcrubms } from "@/utils/constants/breadcrumbs";
-import { useParams } from "react-router";
-import useGetQuery from "@/hooks/api/useGetQuery";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import { breadcrubms } from "../utils/constants/breadcrumbs";
 
 export default function UpdateBlog() {
   const { id } = useParams();
-  const { selectedStore } = useSelectedStore();
-
-  const { data: blogDetails } = useGetQuery({
-    endpoint: `/blog/?blogId=${id}`,
+  const { activeStore } = useSelectedStore();
+  const { data } = useGetQuery({
+    endpoint: `/api/v1/general/blog/${activeStore?.id}/${id}`,
     queryKey: ["blog", id],
+    isTokenRequired: true,
     enabled: !!id,
   });
 
-  if (!selectedStore) {
+  if (!activeStore) {
     return (
       <EmptyStoreState
         title="No Store Selected"
@@ -40,7 +40,7 @@ export default function UpdateBlog() {
       />
 
       {/* Blog form */}
-      <BlogForm blogDetails={blogDetails?.data} />
+      <BlogForm data={data?.data} />
     </section>
   );
 }

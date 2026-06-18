@@ -2,6 +2,7 @@ import { BASE_URL } from "@/lib/api";
 
 export const postApi = async ({ endpoint, payload, token }) => {
   const isFormData = payload instanceof FormData;
+  console.log({ isFormData });
 
   const headers = {
     ...(!isFormData && { "Content-Type": "application/json" }),

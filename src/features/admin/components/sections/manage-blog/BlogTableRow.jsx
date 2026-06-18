@@ -1,31 +1,31 @@
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useState } from "react";
+import { Link } from "react-router";
+import { EllipsisVertical, Eye, Pencil, Trash2 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
-import useSelectedStore from "@/hooks/useSelectedStore";
-import { EllipsisVertical, Eye, Pencil, Trash2 } from "lucide-react";
-import { useState } from "react";
-import { Link } from "react-router";
 import ConfirmationDialog from "../../modals/ConfirmationDialog";
+import useSelectedStore from "@/hooks/useSelectedStore";
 import useDeleteMutation from "@/hooks/api/useDeleteMutation";
-import toast from "react-hot-toast";
-import { useQueryClient } from "@tanstack/react-query";
+import { getImgUrl } from "@/utils/getImgUrl";
 
 export default function BlogTableRow({ blog }) {
   const queryClient = useQueryClient();
-  const { storeId } = useSelectedStore();
+  const { activeStore } = useSelectedStore();
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const { blogName, blogImage, blogId } = blog;
+  const { title, image, id } = blog;
 
   const { mutate, isPending } = useDeleteMutation({
-    endpoint: `/blog/delete/${blog?.blogId}`,
+    endpoint: `/api/v1/general/blog/${activeStore?.id}/${id}`,
     token: true,
     clientId: true,
   });
@@ -35,7 +35,7 @@ export default function BlogTableRow({ blog }) {
       onSuccess: () => {
         toast.success("Blog deleted!");
         close();
-        queryClient.invalidateQueries(["blogs", storeId]);
+        queryClient.invalidateQueries(["blogs", activeStore?.id]);
       },
       onError: () => {
         toast.error("Something went wrong!");
@@ -55,15 +55,15 @@ export default function BlogTableRow({ blog }) {
           <div className="flex items-start gap-3">
             <div className="aspect-square size-10 overflow-hidden rounded-md border">
               <img
-                src={`https://ecomback.bfinit.com${blogImage}`}
-                alt={blogName}
+                src={getImgUrl(image)}
+                alt={title}
                 loading="lazy"
                 className="size-full object-cover"
               />
             </div>
             <div className="mt-1 text-xs">
-              <p title={blogName} className="max-w-xs truncate font-medium">
-                {blogName}
+              <p title={title} className="max-w-xs truncate font-medium">
+                {title}
               </p>
             </div>
           </div>
@@ -81,7 +81,7 @@ export default function BlogTableRow({ blog }) {
               <DropdownMenuItem asChild>
                 <Link
                   target="_blank"
-                  to={`/stores/${storeId}/blog/${blogId}`}
+                  to={`/stores/${activeStore?.id}/blog/${id}`}
                   className="cursor-pointer text-xs font-medium"
                 >
                   <Eye />
@@ -90,7 +90,7 @@ export default function BlogTableRow({ blog }) {
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link
-                  to={`/blogs/edit/${blogId}`}
+                  to={`/blogs/edit/${id}`}
                   className="cursor-pointer text-xs font-medium"
                 >
                   <Pencil />
@@ -123,7 +123,7 @@ export default function BlogTableRow({ blog }) {
         description={
           <>
             Are you sure you want to delete{" "}
-            <span className="font-medium">&quot;{blogName}&quot;</span>? This
+            <span className="font-medium">&quot;{title}&quot;</span>? This
             action cannot be undone.
           </>
         }

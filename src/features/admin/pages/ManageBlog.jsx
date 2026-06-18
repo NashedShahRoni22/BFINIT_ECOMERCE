@@ -1,15 +1,8 @@
-import useGetQuery from "@/hooks/api/useGetQuery";
-import useSelectedStore from "@/hooks/useSelectedStore";
-import { FileText, Plus, Search } from "lucide-react";
-import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
-import PageHeader from "../components/PageHeader";
-import EmptyStoreState from "../components/EmptyStoreState";
-import { breadcrubms } from "@/utils/constants/breadcrumbs";
-import EmptyState from "../components/EmptyState";
 import { useState } from "react";
+import { Link, useSearchParams } from "react-router";
+import { FileText, Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router";
 import {
   Table,
   TableBody,
@@ -17,21 +10,31 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Checkbox } from "@/components/ui/checkbox";
+import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
+import PageHeader from "../components/PageHeader";
+import EmptyStoreState from "../components/EmptyStoreState";
+import EmptyState from "../components/EmptyState";
 import BlogTableRow from "../components/sections/manage-blog/BlogTableRow";
+import useSelectedStore from "@/hooks/useSelectedStore";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import TablePagination from "@/components/shared/TablePagination";
+import { breadcrubms } from "../utils/constants/breadcrumbs";
 
 export default function ManageBlog() {
-  const { selectedStore } = useSelectedStore();
+  const { activeStore } = useSelectedStore();
   const [search, setSearch] = useState("");
+  const [searchParams] = useSearchParams();
+  const page = searchParams.get("page") || 1;
 
   // fetch all blogs of currently selected store
-  const { data: blogsData } = useGetQuery({
-    endpoint: `/blog/all/?storeId=${selectedStore?.storeId}`,
-    queryKey: ["blogs", selectedStore?.storeId],
-    enabled: !!selectedStore?.storeId,
+  const { data, isLoading } = useGetQuery({
+    endpoint: `/api/v1/general/blog/store/${activeStore?.id}?page=${page}&limit=`,
+    enabled: true,
+    isTokenRequired: true,
+    queryKey: ["blogs", activeStore?.id, page],
   });
 
-  if (!selectedStore) {
+  if (!activeStore) {
     return (
       <EmptyStoreState
         title="No Store Selected"
@@ -40,7 +43,17 @@ export default function ManageBlog() {
     );
   }
 
-  const blogs = blogsData?.data;
+  let content = null;
+
+  if (!isLoading) {
+    content = (
+      <>
+        <TablePagination meta={data?.data?.meta} />
+      </>
+    );
+  }
+
+  const blogs = data?.data?.data;
   const hasBlogs = blogs?.length > 0;
 
   return (
@@ -95,7 +108,7 @@ export default function ManageBlog() {
 
               <TableBody>
                 {blogs.map((blog) => (
-                  <BlogTableRow key={blog.blogId} blog={blog} />
+                  <BlogTableRow key={blog.id} blog={blog} />
                 ))}
               </TableBody>
             </Table>
@@ -109,6 +122,7 @@ export default function ManageBlog() {
             actionPath="/blogs/add"
           />
         )}
+        {content}
       </div>
     </section>
   );
