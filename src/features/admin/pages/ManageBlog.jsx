@@ -19,6 +19,7 @@ import useSelectedStore from "@/hooks/useSelectedStore";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import TablePagination from "@/components/shared/TablePagination";
 import { breadcrubms } from "../utils/constants/breadcrumbs";
+import BlogTableRowSkeleton from "../components/skeletons/BlogTableRowSkeleton";
 
 export default function ManageBlog() {
   const { activeStore } = useSelectedStore();
@@ -69,7 +70,15 @@ export default function ManageBlog() {
       />
 
       <div className="bg-card space-y-6 rounded-lg py-5">
-        {hasBlogs ? (
+        {isLoading ? (
+          <Table>
+            <TableBody>
+              {Array.from({ length: 4 }).map((_, i) => (
+                <BlogTableRowSkeleton key={i} />
+              ))}
+            </TableBody>
+          </Table>
+        ) : hasBlogs ? (
           <>
             {/* search and add blog tools */}
             <div className="flex items-center justify-end gap-4 px-5">
@@ -94,9 +103,6 @@ export default function ManageBlog() {
             <Table>
               <TableHeader className="bg-card hover:bg-transparent">
                 <TableRow>
-                  {/* <TableHead className="h-12 w-10 border border-l-0 text-xs font-semibold">
-                    <Checkbox />
-                  </TableHead> */}
                   <TableHead className="border text-xs font-semibold">
                     Blog
                   </TableHead>
@@ -122,6 +128,7 @@ export default function ManageBlog() {
             actionPath="/blogs/add"
           />
         )}
+
         {content}
       </div>
     </section>
