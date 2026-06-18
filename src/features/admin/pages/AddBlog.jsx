@@ -9,14 +9,14 @@ import { breadcrubms } from "@/utils/constants/breadcrumbs";
 export default function AddBlog() {
   const { selectedStore } = useSelectedStore();
 
-  if (!selectedStore) {
-    return (
-      <EmptyStoreState
-        title="No Store Selected"
-        description="Create a store before publishing blog posts to engage your customers."
-      />
-    );
-  }
+  // if (!selectedStore) {
+  //   return (
+  //     <EmptyStoreState
+  //       title="No Store Selected"
+  //       description="Create a store before publishing blog posts to engage your customers."
+  //     />
+  //   );
+  // }
 
   return (
     <section className="space-y-6">

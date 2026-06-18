@@ -20,27 +20,25 @@ export default function FAQ() {
   const { activeStore } = useSelectedStore();
 
   const { data, isLoading } = useGetQuery({
-    endpoint: "/api/v1/general/faq",
+    endpoint: `/api/v1/general/faq/${activeStore?.id}`,
     enabled: true,
-    queryKey: ["faq"],
+    isTokenRequired: true,
+    queryKey: ["faq", activeStore?.id],
   });
 
-  const isEditMode = data?.data?.length > 0;
-  const [faqData, setFaqData] = useState(null);
+  const isEditMode = !!data?.data?.id;
   const [content, setContent] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-  // pre-filled form with api data
   useEffect(() => {
     const isEmptyHtml = (html = "") => {
       const text = html.replace(/<[^>]+>/g, "").trim();
       return text.length === 0;
     };
 
-    if (isEditMode && data?.data?.length) {
-      const description = data.data[0]?.description ?? "";
+    if (isEditMode) {
+      const description = data?.data?.description ?? "";
       setContent(isEmptyHtml(description) ? "" : description);
-      setFaqData(data?.data?.[0]);
     } else {
       setContent("");
     }
@@ -59,7 +57,7 @@ export default function FAQ() {
   });
 
   const { mutate: update, isPending: isUpdating } = usePatchMutation({
-    endpoint: `/api/v1/general/faq/${faqData?.id}`,
+    endpoint: `/api/v1/general/faq/${activeStore?.id}/${data?.data?.id}`,
     isTokenRequired: true,
   });
 
@@ -70,8 +68,7 @@ export default function FAQ() {
 
     const payload = {
       description: content,
-      store_id: activeStore.id,
-      title: "static title for all faq", // FIXME: Remove from backend and frontend too
+      ...(!isEditMode && { store_id: activeStore?.id }),
     };
 
     const onSuccess = (data) => {
@@ -103,14 +100,14 @@ export default function FAQ() {
   };
 
   const isDisabled =
-    faqData?.description === content ||
+    data?.data?.description === content ||
     !hasUnsavedChanges ||
     !content.trim() ||
     isPending ||
     isLoading ||
     isUpdating;
 
-  const btnLabel = isEditMode ? "Save Changes" : "Create FAQs";
+  const btnLabel = isEditMode ? "Save Changes" : "Create Faq";
   const btnLoadingLabel = isEditMode ? "Saving..." : "Creating...";
 
   if (!activeStore) {
@@ -193,7 +190,7 @@ export default function FAQ() {
         </div>
 
         <div className="flex flex-col-reverse gap-4 lg:flex-row lg:justify-between">
-          <Button variant="outline" size="sm" asChild className="text-xs">
+          <Button asChild size="sm" variant="outline">
             <Link to="/">
               <ChevronLeft /> Back to Home
             </Link>

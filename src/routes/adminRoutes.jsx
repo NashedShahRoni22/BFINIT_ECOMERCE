@@ -14,17 +14,16 @@ import AddBlog from "@/features/admin/pages/AddBlog";
 import ManageBlog from "@/features/admin/pages/ManageBlog";
 import Domains from "@/features/admin/pages/Domains";
 import StripePayments from "@/features/admin/pages/StripePayments";
-import HelpCenterForm from "@/features/admin/pages/HelpCenterForm";
-import ReturnsRefundsForm from "@/features/admin/pages/ReturnsRefundsForm";
-import TermsConditions from "@/features/admin/pages/TermsAndConditions";
-import HowToBuyForm from "@/features/admin/pages/HowToBuyForm";
+import CustomerSupport from "@/features/admin/pages/CustomerSupport";
+import ReturnPolicy from "@/features/admin/pages/ReturnPolicy";
+import TermsAndConditions from "@/features/admin/pages/TermsAndConditions";
+import ShoppingGuide from "@/features/admin/pages/ShoppingGuide";
 import Stores from "@/features/admin/pages/Stores";
 import UpdateProduct from "@/features/admin/pages/UpdateProduct";
 import AboutUs from "@/features/admin/pages/AboutUs";
 import FAQ from "@/features/admin/pages/FAQ";
 import BankPayment from "@/features/admin/pages/BankPayment";
 import PrivacyPolicy from "@/features/admin/pages/PrivacyPolicy";
-import OrdersManagement from "@/Test";
 import Customers from "@/features/admin/pages/Customers";
 import UpdateBlog from "@/features/admin/pages/UpdateBlog";
 import StoreForm from "@/features/admin/components/sections/store/StoreForm";
@@ -106,28 +105,28 @@ export const adminRoutes = {
       element: <BankPayment />,
     },
     {
-      path: "/support/help-center",
-      element: <HelpCenterForm />,
+      path: "/support/customer-support",
+      element: <CustomerSupport />,
     },
     {
-      path: "/support/returns-refunds",
-      element: <ReturnsRefundsForm />,
+      path: "/legal/return-policy",
+      element: <ReturnPolicy />,
     },
     {
-      path: "/support/terms-conditions",
-      element: <TermsConditions />,
+      path: "/legal/terms-and-conditions",
+      element: <TermsAndConditions />,
     },
     {
-      path: "/support/privacy",
+      path: "/legal/privacy-policy",
       element: <PrivacyPolicy />,
     },
     {
-      path: "/support/about",
+      path: "/company/about",
       element: <AboutUs />,
     },
     {
-      path: "/support/how-to-buy",
-      element: <HowToBuyForm />,
+      path: "/support/shopping-guide",
+      element: <ShoppingGuide />,
     },
     {
       path: "/support/faq",
@@ -148,10 +147,6 @@ export const adminRoutes = {
     {
       path: "products/edit/:productId",
       element: <UpdateProduct />,
-    },
-    {
-      path: "test",
-      element: <OrdersManagement />,
     },
   ],
 };

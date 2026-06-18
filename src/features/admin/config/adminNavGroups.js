@@ -144,12 +144,17 @@ export const adminNavGroups = [
         subCategories: [
           {
             name: "Privacy Policy",
-            url: "/support/privacy",
+            url: "/legal/privacy-policy",
             icon: CornerDownRight,
           },
           {
             name: "Legal & Terms",
-            url: "/support/terms-conditions",
+            url: "/legal/terms-and-conditions",
+            icon: CornerDownRight,
+          },
+          {
+            name: "Return Policy",
+            url: "/legal/return-policy",
             icon: CornerDownRight,
           },
         ],
@@ -160,7 +165,7 @@ export const adminNavGroups = [
         subCategories: [
           {
             name: "Customer Support",
-            url: "/support/help-center",
+            url: "/support/customer-support",
             icon: CornerDownRight,
           },
           {
@@ -170,12 +175,7 @@ export const adminNavGroups = [
           },
           {
             name: "Shopping Guide",
-            url: "/support/how-to-buy",
-            icon: CornerDownRight,
-          },
-          {
-            name: "Return Policy",
-            url: "/support/returns-refunds",
+            url: "/support/shopping-guide",
             icon: CornerDownRight,
           },
         ],
@@ -186,7 +186,7 @@ export const adminNavGroups = [
         subCategories: [
           {
             name: "About",
-            url: "/support/about",
+            url: "/company/about",
             icon: CornerDownRight,
           },
         ],

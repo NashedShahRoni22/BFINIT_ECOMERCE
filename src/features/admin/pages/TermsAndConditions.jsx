@@ -6,9 +6,9 @@ import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 import EmptyState from "@/components/shared/EmptyState";
-import InfoBanner from "@/features/admin/components/sections/support/InfoBanner";
+import InfoBanner from "../components/sections/support/InfoBanner";
 import PageHeader from "@/components/shared/PageHeader";
-import QuickTips from "@/features/admin/components/sections/support/QuickTips";
+import QuickTips from "../components/sections/support/QuickTips";
 import { Spinner } from "@/components/ui/spinner";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
@@ -16,31 +16,29 @@ import usePostMutation from "@/hooks-v2/api/usePostMutation";
 import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
 import { breadcrubms } from "../utils/constants/breadcrumbs";
 
-export default function TermsConditions() {
+export default function TermsAndConditions() {
   const { activeStore } = useSelectedStore();
 
   const { data, isLoading } = useGetQuery({
-    endpoint: "/api/v1/general/termsAndConditions",
+    endpoint: `/api/v1/general/termsAndCondition/${activeStore?.id}`,
     enabled: true,
-    queryKey: ["termsAndConditions"],
+    isTokenRequired: true,
+    queryKey: ["termsAndCondition", activeStore?.id],
   });
 
-  const isEditMode = data?.data?.length > 0;
-  const [termsData, setTermsData] = useState(null);
+  const isEditMode = !!data?.data?.id;
   const [content, setContent] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-  // pre-filled form with api data
   useEffect(() => {
     const isEmptyHtml = (html = "") => {
       const text = html.replace(/<[^>]+>/g, "").trim();
       return text.length === 0;
     };
 
-    if (isEditMode && data?.data?.length) {
-      const description = data.data[0]?.description ?? "";
+    if (isEditMode) {
+      const description = data?.data?.description ?? "";
       setContent(isEmptyHtml(description) ? "" : description);
-      setTermsData(data?.data?.[0]);
     } else {
       setContent("");
     }
@@ -54,21 +52,25 @@ export default function TermsConditions() {
   };
 
   const { mutate, isPending } = usePostMutation({
-    endpoint: "/api/v1/general/termsAndConditions",
+    endpoint: "/api/v1/general/termsAndCondition",
     isTokenRequired: true,
   });
 
   const { mutate: update, isPending: isUpdating } = usePatchMutation({
-    endpoint: `/api/v1/general/termsAndConditions/${termsData?.id}`,
+    endpoint: `/api/v1/general/termsAndCondition/${activeStore?.id}/${data?.data?.id}`,
     isTokenRequired: true,
   });
 
   const onSubmit = () => {
     if (!content?.trim()) {
-      return toast.error("Terms And Conditions can't be empty!");
+      return toast.error("Terms And Condition Content can't be empty!");
     }
 
-    const payload = { description: content, store_id: activeStore?.id };
+    const payload = {
+      description: content,
+      ...(!isEditMode && { store_id: activeStore?.id }),
+    };
+
     const onSuccess = (data) => {
       if (!data?.success) {
         return toast.error(data?.message);
@@ -98,14 +100,14 @@ export default function TermsConditions() {
   };
 
   const isDisabled =
-    termsData?.description === content ||
+    data?.data?.description === content ||
     !hasUnsavedChanges ||
     !content.trim() ||
     isPending ||
     isLoading ||
     isUpdating;
 
-  const btnLabel = isEditMode ? "Save Changes" : "Create Terms And Conditions";
+  const btnLabel = isEditMode ? "Save Changes" : "Create Terms And Condition";
   const btnLoadingLabel = isEditMode ? "Saving..." : "Creating...";
 
   if (!activeStore) {
@@ -113,7 +115,7 @@ export default function TermsConditions() {
       <EmptyState
         icon={Store}
         title="Create Your First Store"
-        description="Create a store before creating your Terms And Conditions page."
+        description="Create a store before creating your Terms And Condition page."
         actionText="Create Store"
         actionPath="/stores/create"
       />
@@ -129,11 +131,11 @@ export default function TermsConditions() {
       <PageHeader
         icon={FileText}
         title="Terms & Conditions"
-        description="Manage the content displayed on your store's Terms & Conditions page."
+        description="Manage the content displayed on your store's Terms And Conditions page."
       />
 
       <div className="bg-card space-y-6 rounded-lg p-5">
-        {isEditMode?.data && <InfoBanner />}
+        {isEditMode && <InfoBanner />}
 
         <div className="space-y-2">
           <h2 className="text-sm font-semibold">Article Content</h2>
@@ -188,7 +190,7 @@ export default function TermsConditions() {
         </div>
 
         <div className="flex flex-col-reverse gap-4 lg:flex-row lg:justify-between">
-          <Button variant="outline" size="sm" asChild className="text-xs">
+          <Button asChild size="sm" variant="outline">
             <Link to="/">
               <ChevronLeft /> Back to Home
             </Link>

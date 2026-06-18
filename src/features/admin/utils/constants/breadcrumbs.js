@@ -3,6 +3,7 @@ const Home_Url = "/";
 export const breadcrubms = {
   // === Main ===
   createStore: [{ label: "Home", href: Home_Url }, { label: "Create Store" }],
+  // Products
   categories: [
     { label: "Home", href: Home_Url },
     {
@@ -57,52 +58,76 @@ export const breadcrubms = {
   ],
 
   // === Settings ===
+  // Legal
   privacyPolicy: [
     { label: "Home", href: Home_Url },
     {
-      label: "Support",
+      label: "Legal",
       dropdown: [
-        { label: "Help Center", href: "/support/help-center" },
-        { label: "Return & Refunds", href: "/support/returns-refunds" },
-        { label: "Terms & Conditions", href: "/support/terms-conditions" },
+        { label: "Legal & Terms", href: "/legal/terms-and-conditions" },
+        { label: "Return Policy", href: "/legal/return-policy" },
       ],
     },
     { label: "Privacy Policy" },
   ],
   termsAndConditions: [
-    { label: "Home", href: "/" },
+    { label: "Home", href: Home_Url },
     {
-      label: "Support",
+      label: "Legal",
       dropdown: [
-        { label: "Help Center", href: "/support/help-center" },
-        { label: "Return & Refunds", href: "/support/returns-refunds" },
-        { label: "How to Buy", href: "/support/how-to-buy" },
+        { label: "Privacy Policy", href: "/legal/privacy-policy" },
+        { label: "Return Policy", href: "/legal/return-policy" },
       ],
     },
     { label: "Terms & Conditions" },
+  ],
+  returnPolicy: [
+    { label: "Home", href: Home_Url },
+    {
+      label: "Legal",
+      dropdown: [
+        { label: "Privacy Policy", href: "/legal/privacy-policy" },
+        { label: "Legal & Terms", href: "/legal/terms-and-conditions" },
+      ],
+    },
+    { label: "Return Policy" },
+  ],
+
+  // Support
+  customerSupport: [
+    { label: "Home", href: Home_Url },
+    {
+      label: "Support",
+      dropdown: [
+        { label: "FAQ", href: "/support/faq" },
+        { label: "Shopping Guide", href: "/support/shopping-guide" },
+      ],
+    },
+    { label: "Customer Support" },
   ],
   faq: [
     { label: "Home", href: Home_Url },
     {
       label: "Support",
       dropdown: [
-        { label: "Help Center", href: "/support/help-center" },
-        { label: "Return & Refunds", href: "/support/returns-refunds" },
-        { label: "Terms & Conditions", href: "/support/terms-conditions" },
+        { label: "Customer Support", href: "/support/customer-support" },
+        { label: "Shopping Guide", href: "/support/shopping-guide" },
       ],
     },
     { label: "Faq" },
   ],
-  about: [
+  shoppingGuide: [
     { label: "Home", href: Home_Url },
     {
       label: "Support",
       dropdown: [
-        { label: "Help Center", href: "/support/help-center" },
-        { label: "Return & Refunds", href: "/support/returns-refunds" },
-        { label: "Terms & Conditions", href: "/support/terms-conditions" },
+        { label: "Customer Support", href: "/support/customer-support" },
+        { label: "FAQ", href: "/support/faq" },
       ],
     },
-    { label: "About" },
+    { label: "Shopping Guide" },
   ],
+
+  // Company
+  about: [{ label: "Home", href: Home_Url }, { label: "About" }],
 };
