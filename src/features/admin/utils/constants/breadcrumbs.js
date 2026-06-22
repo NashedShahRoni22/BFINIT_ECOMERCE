@@ -61,6 +61,16 @@ export const breadcrubms = {
     { label: "Manage Blog" },
   ],
 
+  // payment
+  bankPayment: [
+    { label: "Home", href: Home_Url },
+    {
+      label: "Payments",
+      dropdown: [{ label: "Stripe", href: "/payments/stripe" }],
+    },
+    { label: "Bank" },
+  ],
+
   // === Settings ===
   privacyPolicy: [
     { label: "Home", href: Home_Url },

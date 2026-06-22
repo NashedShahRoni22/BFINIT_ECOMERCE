@@ -132,8 +132,13 @@ export const adminNavGroups = [
             icon: CornerDownRight,
           },
           {
-            name: "Bank",
+            name: "Add Bank",
             url: "/payments/bank",
+            icon: CornerDownRight,
+          },
+          {
+            name: "Manage Bank",
+            url: "/payments/manage-bank",
             icon: CornerDownRight,
           },
         ],

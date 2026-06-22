@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 import {
   Landmark,
   AlertCircle,
@@ -8,8 +9,7 @@ import {
   Code,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
-import PageHeader from "../components/PageHeader";
+import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -21,6 +21,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
 import {
   Form,
   FormControl,
@@ -30,70 +31,78 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { breadcrubms } from "@/utils/constants/breadcrumbs";
-import usePostMutation from "@/hooks/api/usePostMutation";
+import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
+import PageHeader from "../components/PageHeader";
+import usePostMutation from "@/hooks-v2/api/usePostMutation";
+import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import toast from "react-hot-toast";
-import useGetQuery from "@/hooks/api/useGetQuery";
-import usePatchMutaion from "@/hooks/api/usePatchMutaion";
+import useAuth from "@/hooks/auth/useAuth";
+import { breadcrubms } from "@/utils/constants/breadcrumbs";
 
 const fillFormWithBankData = (bankPayment, form) => {
-  const { bankName, accountName, accountNumber, routingNumber, swiftCode } =
-    bankPayment.data;
+  const {
+    bank_name,
+    account_name,
+    account_number,
+    routing_number,
+    swift_code,
+    is_active,
+  } = bankPayment;
 
   form.reset({
-    bankName,
-    accountName,
-    accountNumber,
-    routingNumber,
-    swiftCode,
+    bank_name,
+    account_name,
+    account_number,
+    routing_number,
+    swift_code,
+    is_active,
   });
 };
 
-export default function BankPayment() {
-  const { selectedStore } = useSelectedStore();
-
-  const { data: bankPayment } = useGetQuery({
-    endpoint: `/bankpayment/${selectedStore?.storeId}`,
-    token: true,
-    clientId: true,
-    queryKey: ["bankpayment", selectedStore?.storeId],
-    enabled: !!selectedStore?.storeId,
-  });
-
-  const { mutate, isPending } = usePostMutation({
-    endpoint: `/bankpayment/${selectedStore?.storeId}`,
-    token: true,
-    clientId: true,
-  });
-
-  const { mutate: updateMutate, isPending: isUpdatePending } = usePatchMutaion({
-    endpoint: `/bankpayment/${bankPayment?.data?._id}`,
-    token: true,
-    clientId: true,
-  });
+export default function BankPayment({ data }) {
+  const { activeStore } = useSelectedStore();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const form = useForm({
     defaultValues: {
-      bankName: "",
-      accountName: "",
-      accountNumber: "",
-      routingNumber: "",
-      swiftCode: "",
+      bank_name: "",
+      account_name: "",
+      account_number: "",
+      routing_number: "",
+      swift_code: "",
+      is_active: true,
     },
   });
 
   useEffect(() => {
-    if (bankPayment?.data) {
-      fillFormWithBankData(bankPayment, form);
+    if (data) {
+      fillFormWithBankData(data, form);
     }
-  }, [bankPayment, form]);
+  }, [data, form]);
 
-  const onSubmit = async (data) => {
-    if (!bankPayment?.data) {
-      mutate(data, {
+  const { mutate, isPending } = usePostMutation({
+    endpoint: "/api/v1/bankPayment/create",
+    isTokenRequired: true,
+  });
+
+  const { mutate: updateMutate, isPending: isUpdatePending } = usePatchMutation(
+    {
+      endpoint: `/api/v1/bankPayment/update/${activeStore?.id}/${data?.id}`,
+      isTokenRequired: true,
+    },
+  );
+
+  const onSubmit = async (accountData) => {
+    accountData.id = user.data.packageStatus[0].id;
+    accountData.user_id = user.data.packageStatus[0].user_id;
+    accountData.store_id = activeStore.id;
+    accountData.tenant_id = user.data.roles[0].tenant_id;
+    if (!data?.id) {
+      mutate(accountData, {
         onSuccess: () => {
           toast.success("Bank account connected successfully");
+          navigate("/payments/manage-bank");
         },
 
         onError: () => {
@@ -101,9 +110,10 @@ export default function BankPayment() {
         },
       });
     } else {
-      updateMutate(data, {
+      updateMutate(accountData, {
         onSuccess: () => {
           toast.success("Bank account updated successfully");
+          navigate("/payments/manage-bank");
         },
 
         onError: () => {
@@ -112,6 +122,20 @@ export default function BankPayment() {
       });
     }
   };
+
+  let btnText = null;
+  if (isPending) {
+    btnText = "Connecting...";
+  }
+  if (isUpdatePending) {
+    btnText = "Updating...";
+  }
+  if (data?.id && !isPending && !isUpdatePending) {
+    btnText = "Update Bank Account";
+  }
+  if (!data?.id && !isPending && !isUpdatePending) {
+    btnText = "Connect Bank Account";
+  }
 
   return (
     <section className="space-y-6">
@@ -150,7 +174,7 @@ export default function BankPayment() {
               {/* Bank Name */}
               <FormField
                 control={form.control}
-                name="bankName"
+                name="bank_name"
                 rules={{
                   required: "Bank name is required",
                   minLength: {
@@ -182,7 +206,7 @@ export default function BankPayment() {
               {/* Account Name */}
               <FormField
                 control={form.control}
-                name="accountName"
+                name="account_name"
                 rules={{
                   required: "Account holder name is required",
                   minLength: {
@@ -215,7 +239,7 @@ export default function BankPayment() {
               {/* Account Number */}
               <FormField
                 control={form.control}
-                name="accountNumber"
+                name="account_number"
                 rules={{
                   required: "Account number is required",
                   minLength: {
@@ -247,7 +271,7 @@ export default function BankPayment() {
               {/* Routing Number */}
               <FormField
                 control={form.control}
-                name="routingNumber"
+                name="routing_number"
                 rules={{
                   required: "Routing number is required",
                   minLength: {
@@ -284,7 +308,7 @@ export default function BankPayment() {
               {/* SWIFT Code */}
               <FormField
                 control={form.control}
-                name="swiftCode"
+                name="swift_code"
                 rules={{
                   required: "SWIFT code is required",
                   minLength: {
@@ -318,6 +342,28 @@ export default function BankPayment() {
                 )}
               />
 
+              <FormField
+                control={form.control}
+                name="is_active"
+                render={({ field }) => (
+                  <FormItem className="flex items-center justify-between rounded-lg border p-3">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-sm">Active Bank</FormLabel>
+                      <FormDescription className="text-xs">
+                        Enable or disable active bank
+                      </FormDescription>
+                    </div>
+
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
               <Separator />
 
               {/* Action Buttons */}
@@ -327,9 +373,7 @@ export default function BankPayment() {
                   disabled={isPending || isUpdatePending}
                   className="text-sm"
                 >
-                  {isPending || isUpdatePending
-                    ? "Connecting..."
-                    : "Connect Bank Account"}
+                  {btnText}
                 </Button>
                 <Button
                   type="button"

@@ -28,6 +28,8 @@ import OrdersManagement from "@/Test";
 import Customers from "@/features/admin/pages/Customers";
 import UpdateBlog from "@/features/admin/pages/UpdateBlog";
 import StoreForm from "@/features/admin/components/sections/store/StoreForm";
+import ManageBank from "@/features/admin/pages/ManageBank";
+import UpdateBank from "@/features/admin/pages/UpdateBank";
 
 export const adminRoutes = {
   path: "/",
@@ -104,6 +106,14 @@ export const adminRoutes = {
     {
       path: "/payments/bank",
       element: <BankPayment />,
+    },
+    {
+      path: "/payments/manage-bank",
+      element: <ManageBank />,
+    },
+    {
+      path: "/payment/edit/:id",
+      element: <UpdateBank />,
     },
     {
       path: "/support/help-center",
