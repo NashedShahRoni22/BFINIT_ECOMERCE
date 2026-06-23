@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { FolderOpen, FolderPlus, Store } from "lucide-react";
-import { useSearchParams } from "react-router";
 import CategoryToolbar from "../components/sections/category/CategoryToolbar";
 import CategoryItem from "../components/sections/category/CategoryItem";
 import EmptyState from "@/components/shared/EmptyState";
@@ -10,35 +9,25 @@ import CategoryItemSkeleton from "../components/skeletons/CategoryItemSkeleton";
 import AddCategoryModal from "../components/modals/AddCategoryModal";
 import TablePagination from "@/components/shared/TablePagination";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import useDebounce from "@/hooks/useDebounce";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import { breadcrubms } from "../utils/constants/breadcrumbs";
+import { useSearchParam } from "../hooks/searchAndPagination/useSearchParam";
+import { usePageParam } from "../hooks/searchAndPagination/usePageParam";
 
 export default function Categories() {
-  const [searchParams] = useSearchParams();
-  const page = searchParams.get("page") || 1;
   const { activeStore } = useSelectedStore();
-
-  const { data, isLoading } = useGetQuery({
-    endpoint: `/api/v1/category/pagination/${activeStore?.id}?page=${page}&limit=12`,
-    enabled: true,
-    isTokenRequired: true,
-    queryKey: ["categories", activeStore?.id, page],
-  });
-
-  const categories = data?.data?.data ?? [];
-
-  const [search, setSearch] = useState("");
-  const debouncedSearch = useDebounce(search);
+  const { search, debouncedSearch, clearSearch } = useSearchParam();
+  const { page } = usePageParam();
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const filteredCategories =
-    categories?.filter((category) => {
-      const searchTerm = debouncedSearch?.trim();
-      if (!searchTerm) return true;
+  const { data, isLoading } = useGetQuery({
+    endpoint: `/api/v1/category/search/${activeStore?.id}?search=${debouncedSearch}&page=${page}&limit=4`,
+    enabled: true,
+    isTokenRequired: true,
+    queryKey: ["categories", activeStore?.id, page, debouncedSearch],
+  });
 
-      return category.name.toLowerCase().includes(searchTerm.toLowerCase());
-    }) ?? [];
+  const categories = data?.data ?? [];
 
   let content = null;
 
@@ -64,21 +53,21 @@ export default function Categories() {
     );
   }
 
-  if (!isLoading && filteredCategories?.length > 0) {
+  if (!isLoading && categories?.length > 0) {
     content = (
       <>
         <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-          {filteredCategories.map((category) => (
+          {categories.map((category) => (
             <CategoryItem key={category?.id} category={category} />
           ))}
         </div>
 
-        <TablePagination meta={data?.data?.meta} />
+        <TablePagination meta={data?.meta} />
       </>
     );
   }
 
-  if (!isLoading && filteredCategories?.length === 0) {
+  if (!isLoading && categories?.length === 0) {
     content = (
       <EmptyState
         className="min-h-[calc(100dvh-300px)]"
@@ -92,9 +81,7 @@ export default function Categories() {
             : "Organize your products by creating categories"
         }
         actionText={debouncedSearch ? "Clear Search" : "Add Category"}
-        onAction={
-          debouncedSearch ? () => setSearch("") : () => setDialogOpen(true)
-        }
+        onAction={search ? clearSearch : () => setDialogOpen(true)}
       />
     );
   }
@@ -110,11 +97,7 @@ export default function Categories() {
       />
 
       <div className="bg-card space-y-6 rounded-lg p-5">
-        <CategoryToolbar
-          search={search}
-          setSearch={setSearch}
-          onOpen={() => setDialogOpen(true)}
-        />
+        <CategoryToolbar onOpen={() => setDialogOpen(true)} />
 
         {content}
       </div>

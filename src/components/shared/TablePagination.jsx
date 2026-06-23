@@ -1,4 +1,3 @@
-import { useSearchParams } from "react-router";
 import {
   Pagination,
   PaginationContent,
@@ -8,6 +7,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { usePageParam } from "@/features/admin/hooks/searchAndPagination/usePageParam";
 import { cn } from "@/lib/utils";
 
 const getPageNumbers = (totalPages, currentPage) => {
@@ -45,7 +45,7 @@ const getPageNumbers = (totalPages, currentPage) => {
 };
 
 export default function TablePagination({ meta, itemLabel = "items" }) {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { handlePageChange } = usePageParam();
 
   const currentPage = meta?.page || 1;
   const totalPages = meta?.totalPages || 1;
@@ -54,12 +54,6 @@ export default function TablePagination({ meta, itemLabel = "items" }) {
 
   const startItem = (currentPage - 1) * perPage + 1;
   const endItem = Math.min(currentPage * perPage, totalItems);
-
-  const handlePageChange = (page) => {
-    if (page < 1 || page > totalPages) return;
-    searchParams.set("page", page.toString());
-    setSearchParams(searchParams, { replace: true });
-  };
 
   const pageNumbers = getPageNumbers(totalPages, currentPage);
 

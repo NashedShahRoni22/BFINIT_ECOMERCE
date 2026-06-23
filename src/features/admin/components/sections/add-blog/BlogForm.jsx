@@ -107,7 +107,7 @@ export default function BlogForm({ blogDetails }) {
 
   // Create mutation
   const { mutate: createMutate, isPending: isCreatePending } = usePostMutation({
-    endpoint: `/blog/create/${selectedStore?.storeId}`,
+    endpoint: `/api/v1/general/blog`,
     token: true,
     clientId: true,
   });
