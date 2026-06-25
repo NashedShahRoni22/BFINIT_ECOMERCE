@@ -5,7 +5,6 @@ import Themes from "@/features/admin/pages/Themes";
 import Categories from "@/features/admin/pages/Categories";
 import Subcategories from "@/features/admin/pages/Subcategories";
 import Brands from "@/features/admin/pages/Brands";
-import AddProduct from "@/features/admin/pages/AddProduct";
 import Inventory from "@/features/admin/pages/Inventory";
 import Orders from "@/features/admin/pages/Orders";
 import OrderDetails from "@/features/admin/pages/OrderDetails";
@@ -19,7 +18,6 @@ import ReturnPolicy from "@/features/admin/pages/ReturnPolicy";
 import TermsAndConditions from "@/features/admin/pages/TermsAndConditions";
 import ShoppingGuide from "@/features/admin/pages/ShoppingGuide";
 import Stores from "@/features/admin/pages/Stores";
-import UpdateProduct from "@/features/admin/pages/UpdateProduct";
 import AboutUs from "@/features/admin/pages/AboutUs";
 import FAQ from "@/features/admin/pages/FAQ";
 import BankPayment from "@/features/admin/pages/BankPayment";
@@ -27,6 +25,7 @@ import PrivacyPolicy from "@/features/admin/pages/PrivacyPolicy";
 import Customers from "@/features/admin/pages/Customers";
 import UpdateBlog from "@/features/admin/pages/UpdateBlog";
 import StoreForm from "@/features/admin/components/sections/store/StoreForm";
+import ProductForm from "@/features/admin/pages/ProductForm";
 
 export const adminRoutes = {
   path: "/",
@@ -57,8 +56,8 @@ export const adminRoutes = {
       element: <Brands />,
     },
     {
-      path: "/products/add-product",
-      element: <AddProduct />,
+      path: "/products/inventory/add",
+      element: <ProductForm />,
     },
     {
       path: "/products/inventory",
@@ -143,10 +142,6 @@ export const adminRoutes = {
     {
       path: "stores/edit/:id",
       element: <StoreForm />,
-    },
-    {
-      path: "products/edit/:productId",
-      element: <UpdateProduct />,
     },
   ],
 };
