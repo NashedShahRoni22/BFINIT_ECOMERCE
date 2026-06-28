@@ -66,7 +66,7 @@ export default function Details({ form }) {
     if (!selectedCategoryId) return "Select a category first";
     if (isSubcategoriesLoading) return "Loading subcategories...";
     if (availableSubcategories.length === 0)
-      return "No subcategories available";
+      return "No subcategories have been added yet.";
     return "Select a subcategory";
   };
 
@@ -218,7 +218,7 @@ export default function Details({ form }) {
                       isBrandsLoading
                         ? "Loading brands..."
                         : brands.length === 0
-                          ? "No brands available"
+                          ? "No brands have been added yet."
                           : "Select a brand"
                     }
                   />
@@ -270,7 +270,7 @@ export default function Details({ form }) {
                 {...field}
                 rows={3}
                 id={field.name}
-                placeholder="A brief summary shown on product cards and search results"
+                placeholder="e.g. Lightweight cotton T-shirt with a regular fit."
                 className="resize-none"
               />
               <div className="flex items-center justify-between">
@@ -279,7 +279,7 @@ export default function Details({ form }) {
                 >
                   {field.value.length > 150
                     ? "Longer descriptions may be cut off on cards and in search results."
-                    : "Shown on listing cards and in search engine results."}
+                    : "Displayed on product cards and in search results."}
                 </FieldDescription>
                 <span
                   className={cn(
@@ -308,7 +308,7 @@ export default function Details({ form }) {
                 setContents={field.value}
                 setOptions={sunEditorOptions}
                 height="220px"
-                placeholder="Full product details shown on the product page."
+                placeholder="Describe the product, its features, specifications and benefits."
               />
             </Field>
           )}

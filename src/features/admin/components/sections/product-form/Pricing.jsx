@@ -1,11 +1,13 @@
-import {
-  FieldDescription,
-  FieldGroup,
-  FieldLegend,
-  FieldSet,
-} from "@/components/ui/field";
+import { useFieldArray } from "react-hook-form";
+import { FieldDescription, FieldLegend, FieldSet } from "@/components/ui/field";
+import PricingRow from "./pricing/PricingRow";
 
-export default function Pricing() {
+export default function Pricing({ form }) {
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "pricing",
+  });
+
   return (
     <FieldSet>
       <div className="border-b px-5 py-4">
@@ -15,7 +17,9 @@ export default function Pricing() {
         </FieldDescription>
       </div>
 
-      <FieldGroup></FieldGroup>
+      {fields.map((field, index) => (
+        <PricingRow key={field.id} form={form} index={index} />
+      ))}
     </FieldSet>
   );
 }

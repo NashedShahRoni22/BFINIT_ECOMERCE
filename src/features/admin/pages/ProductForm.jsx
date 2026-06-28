@@ -37,6 +37,17 @@ export default function ProductForm() {
       flash_deal_end_date: null,
       image: null,
       images: [],
+      pricing: [
+        {
+          price: undefined,
+          discount_value: undefined,
+          discount_type: "",
+          stock: undefined,
+          variants_enabled: false,
+          options: [],
+          variants: [],
+        },
+      ],
     },
   });
 

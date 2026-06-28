@@ -65,9 +65,7 @@ export default function TagsInput({ id, value = [], onChange }) {
         id={id}
         value={currentTag}
         placeholder={
-          isLimitReached
-            ? "Tag Limit Reached"
-            : "Press enter or comma to add tag"
+          isLimitReached ? "Tag Limit Reached" : "Type a tag and press Enter"
         }
         onChange={(e) => setCurrentTag(e.target.value)}
         onKeyDown={handleKeyDown}
