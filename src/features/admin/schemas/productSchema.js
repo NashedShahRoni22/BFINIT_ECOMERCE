@@ -15,6 +15,16 @@ const optionSchema = z
     const hasName = data.name.trim().length > 0;
     const hasValues = data.values.length > 0;
 
+    if (!hasName && !hasValues) {
+      ctx.addIssue({
+        code: "custom",
+        message:
+          "Enter an option name and add at least one value, or remove this option.",
+        path: ["name"],
+      });
+      return;
+    }
+
     if (hasValues && !hasName) {
       ctx.addIssue({
         code: "custom",
@@ -32,41 +42,100 @@ const optionSchema = z
     }
   });
 
-const pricingSchema = z
+const variantSchema = z
   .object({
-    price: z.number({ error: "Price is required!" }),
+    optionValues: z.record(z.string(), z.string()),
+    sku: z.string().trim().min(1, "SKU is required!"),
+    price: z.number().optional(),
     discount_value: z.number().optional(),
-    discount_type: z.enum(["", "percentage", "fixed"]).optional(),
     stock: z.number({ error: "Stock is required!" }),
-    variants_enabled: z.boolean(),
-    options: z.array(optionSchema).optional(),
+    image: z.instanceof(File).nullable().optional(),
+    is_active: z.boolean(),
   })
   .superRefine((data, ctx) => {
-    const hasType = !!data.discount_type;
-    const hasValue = data.discount_value != null;
-
-    if (hasValue && !hasType) {
+    if (
+      data.discount_value != null &&
+      data.price != null &&
+      data.discount_value >= data.price
+    ) {
       ctx.addIssue({
         code: "custom",
-        message: "Select a discount type!",
-        path: ["discount_type"],
+        message: "Sale price must be lower than price!",
+        path: ["discount_value"],
+      });
+    }
+  });
+
+const pricingSchema = z
+  .object({
+    country_id: z.number({ error: "Country is required!" }),
+    price: z.number({ error: "Price is required!" }),
+    discount_value: z.number().optional(),
+    stock: z.number({ error: "Stock is required!" }),
+    variants_enabled: z.boolean(),
+    use_default_pricing: z.boolean(),
+    options: z.array(optionSchema).optional(),
+    variants: z.array(variantSchema).optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.use_default_pricing) {
+      data.variants?.forEach((variant, i) => {
+        if (variant.price == null) {
+          ctx.addIssue({
+            code: "custom",
+            message: "Price is required!",
+            path: ["variants", i, "price"],
+          });
+        }
+      });
+    }
+
+    if (data.discount_value != null && data.discount_value >= data.price) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Sale price must be lower than price!",
+        path: ["discount_value"],
+      });
+    }
+
+    const completeOptions =
+      data.options?.filter(
+        (opt) => opt.name.trim() !== "" && opt.values.length > 0,
+      ) ?? [];
+
+    if (completeOptions.length === 0) return;
+
+    if (!data.variants || data.variants.length === 0) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Generate variants before saving, or remove the option.",
+        path: ["options"],
       });
       return;
     }
 
-    if (data.discount_type === "fixed" && data.discount_value > data.price) {
-      ctx.addIssue({
-        code: "custom",
-        message: "Discount amount can't be higher than price!",
-        path: ["discount_value"],
-      });
-    }
+    // Expected variant count if fully generated: product of each option's value count
+    const expectedCount = completeOptions.reduce(
+      (total, opt) => total * opt.values.length,
+      1,
+    );
 
-    if (data.discount_type === "percentage" && data.discount_value > 100) {
+    // Every complete option's id must appear as a key in every variant's optionValues
+    const everyVariantCoversAllOptions = data.variants.every((variant) =>
+      completeOptions.every((opt) =>
+        Object.prototype.hasOwnProperty.call(variant.optionValues, opt.id),
+      ),
+    );
+
+    if (
+      data.variants.length !== expectedCount ||
+      !everyVariantCoversAllOptions
+    ) {
       ctx.addIssue({
         code: "custom",
-        message: "Percentage discount can't exceed 100%!",
-        path: ["discount_value"],
+        message:
+          "Variant options have changed. Regenerate variants before saving.",
+        path: ["options"],
       });
     }
   });

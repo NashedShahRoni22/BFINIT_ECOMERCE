@@ -176,7 +176,7 @@ export default function Status({ form }) {
           )}
         />
 
-        <FlashSale form={form} />
+        {/* <FlashSale form={form} /> */}
       </FieldGroup>
     </FieldSet>
   );
